@@ -23,7 +23,9 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @since Moodle 3.1
  */
+// TODO Events.
 
+ /*
 defined('MOODLE_INTERNAL') || die();
 
 $services = array(
@@ -87,3 +89,4 @@ $functions = array(
                 )
         )
 );
+*/

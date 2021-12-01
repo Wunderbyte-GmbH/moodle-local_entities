@@ -26,6 +26,7 @@
 namespace local_entities;
 
 use local_entities_external;
+use stdClass;
 
 defined('MOODLE_INTERNAL') || die;
 
@@ -36,7 +37,7 @@ defined('MOODLE_INTERNAL') || die;
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-class entity {
+class entity_manager {
 
     /**
      * @var $_data
@@ -57,7 +58,7 @@ class entity {
      *
      * @param mixed $data
      * @return Object
-     */
+     */ 
     private function createentity($data) {
         global $DB;
         $handler = \local_entities\customfield\entities_handler::create();
@@ -89,7 +90,7 @@ class entity {
      * @param mixed $data
      * @return mixed
      */
-    public function update($data) {
+    public function updateorcreateentity($data) {
         global $USER;
         $data->createdby = $USER->id;
         $data->timemodified = time();
@@ -104,8 +105,54 @@ class entity {
         } else {
             $data->timecreated = time();
             $result = $this->createentity($data);
+            if ($result) {
+                $this->createaddress($data, $result);
+            }
         }
         return $result;
+    }
+
+    /**
+     *
+     * This is to update the entity based on the data object
+     *
+     * @param mixed $data
+     * @return mixed
+     */
+    private function updateaddress($data, $id) {
+        global $DB;
+        $recordaddress = $this->prepareaddress($data);
+        return $DB->update_record('local_entities_address', $recordaddress);
+    }
+
+    /**
+     *
+     * This is to update the entity based on the data object
+     *
+     * @param mixed $data
+     * @return mixed
+     */
+    private function createaddress($data, $id) {
+        global $DB;
+        $recordaddress = $this->prepareaddress($data);
+        $recordaddress->entityid = $id; 
+        return $DB->update_record('local_entities_address', $recordaddress);
+    }
+
+    /**
+     *
+     * This is to update the entity based on the data object
+     *
+     * @param mixed $data
+     * @return $addressdata
+     */
+    private function prepareaddress($data) {
+        $addressdata = new stdClass();
+        $addressdata->country = $data->country;
+        $addressdata->city = $data->city;
+        $addressdata->streetname = $data->streetname;
+        $addressdata->streetnumber = $data->streetnumber;
+        return $addressdata;
     }
 
     /**

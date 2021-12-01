@@ -42,3 +42,4 @@ function local_entities_extend_navigation($navigation) {
     $nodecreatecourse = $nodehome->add($pluginname, $link, navigation_node::NODETYPE_LEAF, $pluginname, 'entities', $icon);
     $nodecreatecourse->showinflatnavigation = true;
 }
+//TODO add pluginfile

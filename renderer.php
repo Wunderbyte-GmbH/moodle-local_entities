@@ -25,7 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->dirroot . '/local/entities/forms/edit.php');
+//require_once($CFG->dirroot . '/local/entities/forms/edit.php');
 
 /**
  *
@@ -42,119 +42,67 @@ class local_entities_renderer extends plugin_renderer_base
      */
     public $errorfields = array();
 
-    /**
-     *
-     * List the entities for the user to view
-     *
-     * @return string
-     */
+
+    public function get_submenuitem($parent, $name) {
+        global $DB, $CFG, $USER;
+        $html = '';
+        $records = \local_entities\entities::list_all_subentities($parent);
+        if ($records) {
+            $html .= "<li class='custompages-list-element'>";
+            $html .= '<div class="pull-right">' .
+                '<a href="' . new moodle_url($CFG->wwwroot . '/local/entities/',
+                    array('id' => $parent)) . '" class="btn btn--plain btn--smaller btn--primary btn_edit">' .
+                    '<i class="fa fa-edit"></i>' .
+                get_string('view', 'local_pages') . '</a> | ' .
+                '<a href="' . new moodle_url($CFG->wwwroot . '/local/entities/edit.php',
+                    array('id' => $parent)) . '" class="btn btn--plain btn--smaller btn--primary btn_edit">' .
+                    '<i class="fa fa-edit"></i>' .
+                get_string('edit', 'local_pages') . '</a> | ' .
+                '<a href="' . new moodle_url($CFG->wwwroot . '/local/entities/entities.php',
+                    array('pagedel' => $parent, 'sesskey' => $USER->sesskey)) . '" class="btn btn--plain btn--smaller btn--primary btn_edit">' .
+                    '<i class="fa fa fa-trash"></i>' .
+                    get_string('delete', 'local_pages') . ' </a></div>';
+            $html .= "<h4 class=''>" . $name . "</h4>";
+            $html .= "<ul class='pl-4 border-0'>";
+            foreach ($records as $page) {
+                $html .= $this->get_submenuitem($page->id, $page->name);
+            }
+            $html .= "</ul>";
+            $html .= "</li>";
+        } else {
+            $html .= "<li class='custompages-list-element'>";
+            $html .= '<div class="pull-right">' .
+                '<a href="' . new moodle_url($CFG->wwwroot . '/local/entities/',
+                    array('id' => $parent)) . '" class="btn btn--plain btn--smaller btn--primary btn_edit">' .
+                    '<i class="fa fa fa-edit"></i>' .
+                get_string('view', 'local_pages') . '</a> | ' .
+                '<a href="' . new moodle_url($CFG->wwwroot . '/local/entities/edit.php',
+                    array('id' => $parent)) . '" class="btn btn--plain btn--smaller btn--primary btn_edit">' .
+                    '<i class="fa fa fa-edit"></i>' .
+                get_string('edit', 'local_pages') . '</a> | ' .
+                '<a href="' . new moodle_url($CFG->wwwroot . '/local/entities/entities.php',
+                    array('del' => $parent, 'sesskey' => $USER->sesskey)) . '" class="btn btn--plain btn--smaller btn--primary btn_edit">' .
+                    '<i class="fa fa fa-trash"></i>' .
+                get_string('delete', 'local_pages') . ' </a></div>';
+            $html .= "<h4 class=''>" . $name . "</h4>";
+            $html .= "</li>";
+        }
+        return $html;
+    }
     public function list_entities() {
         global $DB, $CFG;
-        $html = '<ul class="customentities-list">';
-        $records = $DB->get_records_sql("SELECT * FROM {local_entities}");
-        foreach ($records as $entity) {
-            $html .= $this->get_submenuitem($entity->id, $entity->entityname);
+        $html = '<ul class="customenities-list">';
+        $records = \local_entities\entities::list_all_entities();
+        foreach ($records as $page) {
+            $html .= $this->get_submenuitem($page->id, $page->name);
         }
 
-        $html .= "<li class='customentities-list-element'>
+        $html .= "<li class='custompages-list-element'>
                 	<a href='" . new moodle_url($CFG->wwwroot . '/local/entities/edit.php') .
-            "' class='customentities-add'>" . get_string("addentity", "local_entities") . "</a></li>";
+            "' class='custompages-add'>" . get_string("addpage", "local_pages") . "</a></li>";
 
         $html .= "</ul>";
         return $html;
-    }
-
-    /**
-     *
-     * Process the submitted form up update entity data
-     *
-     * @param mixed $entity
-     */
-    public function processform($entity) {
-        global $DB;
-        $touser = get_admin();
-        $fromuser = clone $touser;
-
-        $touser->email = isset($entity->emailto) && trim($entity->emailto) ? $entity->emailto : $touser->email;
-        $touser->emailstop = 0;
-
-        $messagetext = '';
-        $fields = array();
-        $records = json_decode($entity->entitydata);
-        $outarray = array();
-        foreach ((array)$records as $key => $value) {
-            if ($value->type != "HTML") {
-                $outarray[] = "{" . $value->name . "}";
-
-                $tmpparam = str_replace(" ", "_", $value->name);
-                $tmpparam = optional_param($tmpparam, '', PARAM_RAW);
-                $tmpparam = $this->cleanme($tmpparam, $value->type);
-                $fields[$value->name] = $tmpparam;
-                $messagetext .= ucfirst($value->name) . ": " . $tmpparam . "\r\n";
-                $field = strtolower(str_replace(" ", "", $value->name));
-                $fromuser->$field = $tmpparam;
-            }
-        }
-
-        $messagehtml = nl2br($messagetext);
-        $subject = $entity->entityname;
-
-        $data = new stdClass();
-        $data->formdate = date('U');
-        $data->formcontent = json_encode($fields);
-        $data->formname = $entity->id;
-        $DB->insert_record('local_entitieslogging', $data);
-
-        email_to_user($touser, $fromuser, $subject, $messagetext, $messagehtml, '', '', true);
-
-        $outarray[] = "{table}";
-        $fields[] = $messagetext;
-
-        $messageforuser = str_replace($outarray, $fields, get_config('local_entities', 'message_copy'));
-        $messagetext = strip_tags(str_replace(array("</p>", "<br>", "&nbsp;"), array("</p>\r\n", "<br>\r\n", ""),
-            $messageforuser));
-
-        // Emails a copy to the user.
-        if (get_config('local_entities', 'user_copy') == 1) {
-            email_to_user($fromuser, $touser, $subject, $messagetext, $messageforuser, '', '', true);
-        }
-    }
-
-    /**
-     *
-     * Save the entity to the database and redirect the user
-     *
-     * @param bool $entity
-     */
-    public function save_entity($entity = false) {
-        global $CFG;
-        $mform = new entities_form($entity);
-        if ($mform->is_cancelled()) {
-            redirect(new moodle_url($CFG->wwwroot . '/local/entities/entities.php'));
-        } else if ($data = $mform->get_data()) {
-            require_once($CFG->libdir . '/formslib.php');
-            $context = context_system::instance();
-            $data->entitycontent['text'] = file_save_draft_area_files($data->entitycontent['itemid'], $context->id,
-                'local_entities', 'entitycontent',
-                0, array('subdirs' => true), $data->entitycontent['text']);
-
-            $data->entitydata = '';
-            $recordentity = new stdClass();
-            $recordentity->id = $data->id;
-            $recordentity->name = $data->name;
-            $recordentity->sortorder = intval($data->sortorder);      
-            $recordentity->type = $data->type;
-            $recordentity->parentid = intval($data->parentid);
-            $recordentity->description = $data->description['text'];
-            $result = $entity->update($recordentity);
-            if ($result && $result > 0) {
-                $options = array('subdirs' => 0, 'maxbytes' => 204800, 'maxfiles' => 1, 'accepted_types' => '*');
-                if (isset($data->ogimage_filemanager)) {
-                    file_postupdate_standard_filemanager($data, 'ogimage', $options, $context, 'local_entities', 'ogimage', $result);
-                }
-                redirect(new moodle_url($CFG->wwwroot . '/local/entities/edit.php', array('id' => $result)));
-            }
-        }
     }
 
     /**

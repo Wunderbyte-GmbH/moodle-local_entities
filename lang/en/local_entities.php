@@ -25,5 +25,21 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['entities:copymodule'] = 'Copy Module';
 $string['pluginname'] = 'Entity Manager';
+$string['none'] = 'None';
+$string['edit_details'] = 'Edit details';
+$string['entity_name'] = 'Entity name';
+$string['edit_image'] = 'Edit image';
+$string['entity_parent'] = 'Entity parent';
+$string['entity_order'] = 'Sort order';
+$string['entity_category'] = 'Entity category';
+$string['entity_description'] = 'Entity describtion';
+$string['address'] = 'Address';
+$string['address_country'] = 'Country';
+$string['address_postcode'] = 'Postcode';
+$string['address_streetname'] = 'Street name';
+$string['address_streenumber'] = 'Street number';
+$string['contacts'] = 'Contacts';
+$string['contacts_givenname'] = 'Given name';
+$string['contacts_surname'] = 'Surname';
+$string['contacts_mailaddress'] = 'E-Mail';

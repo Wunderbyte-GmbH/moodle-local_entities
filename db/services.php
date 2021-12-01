@@ -22,7 +22,7 @@
  * @copyright 2021 Wunderbyte GmbH (info@wunderbyte.at)
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
+/*TODO webservices
 defined('MOODLE_INTERNAL') || die();
 
 $services = array(
@@ -84,5 +84,5 @@ $functions = array(
                 'services' => array(
                         'local_entities_external'
                 )
-        )*/
-);
+        )
+); */

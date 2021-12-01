@@ -22,10 +22,11 @@
  */
 
 use local_entities\entity;
+use local_entities\entities;
 require_once('../../config.php');
 
 
-$delid = optional_param('entitydel', 0, PARAM_INT);
+$delid = optional_param('del', 0, PARAM_INT);
 $context = \context_system::instance();
 $PAGE->set_context($context);
 require_login();

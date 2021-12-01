@@ -21,64 +21,31 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use local_entities\entities;
 use local_entities\entity;
-
 require_once('../../config.php');
 
-global $USER,$DB;
 
 $context = \context_system::instance();
 $PAGE->set_context($context);
 require_login();
-$PAGE->set_url(new moodle_url('/local/entities/test.php', array()));
 
-$title = "Test cases";
+$PAGE->set_url(new moodle_url('/local/entities/customfield.php', array()));
+
+$title = "Dashboard entities";
 $PAGE->set_title($title);
 $PAGE->set_heading($title);
 
-
+$renderer = $PAGE->get_renderer('local_entities');
 
 
 echo $OUTPUT->header();
-$test = $DB->get_record('local_entities', ['id' => 1]);
-/* test input */
-$input = 1;
-$update = 1;
-$list = 1;
-if ($input) {
-    $data = new stdClass();
-    $data->name = "asdasfd";
-    $data->description = "asd";
-    $data->type = "category";
-    $data->timecreated = time();
-    $data->timemodified = time();
-    $data->createdby = $USER->id;
-    $data->parentid = 0;
-    $entity = new entity($data);
-    $entity->update($data);
-}
+$output = $PAGE->get_renderer('core_customfield');
+$handler = local_entities\customfield\entities_handler::create();
+$outputpage = new \core_customfield\output\management($handler);
 
-if ($update) {
-    $data = new stdClass();
-    $data->id = 1;
-    $data->name = "asdasfd";
-    $data->description = "asd";
-    $data->type = "category";
-    $data->timecreated = time();
-    $data->timemodified = time();
-    $data->createdby = $USER->id;
-    $data->parentid = 0;
-    $entity = new entity($data);
-    $entity->update($data);
-}
-
-if ($list) {
-    $entities = new entities();
-    $list = $entities->list_all_entities();
-}
-
-
+echo $output->render($outputpage);
+//echo $renderer->list_entities();
 
 
 echo $OUTPUT->footer();
+
