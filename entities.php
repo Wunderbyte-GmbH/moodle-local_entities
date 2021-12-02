@@ -23,6 +23,8 @@
 
 use local_entities\entity;
 use local_entities\entities;
+use local_entities\settings_manager;
+
 require_once('../../config.php');
 
 
@@ -34,14 +36,14 @@ require_login();
 //add capability
 if ($delid !== 0) {
     if (confirm_sesskey()) {
-        $entity = new entity(array('id' => $delid));
-        $entity->delete();  
+        $entity = new settings_manager($delid);
+        $entity->delete();
     }
 }
 
 $PAGE->set_url(new moodle_url('/local/entities/entities.php', array()));
 
-$title = "Dashboard entities";
+$title = "Entity Manager";
 $PAGE->set_title($title);
 $PAGE->set_heading($title);
 

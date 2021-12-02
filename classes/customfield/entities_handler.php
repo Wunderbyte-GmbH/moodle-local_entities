@@ -60,7 +60,7 @@ class entities_handler extends \core_customfield\handler {
      * Returns a singleton
      *
      * @param int $itemid
-     * @return \core_course\customfield\course_handler
+     * @return \local_entites\customfield\entities_handler
      */
     public static function create(int $itemid = 0) : \core_customfield\handler {
         if (static::$singleton === null) {

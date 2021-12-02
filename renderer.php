@@ -48,7 +48,7 @@ class local_entities_renderer extends plugin_renderer_base
         $html = '';
         $records = \local_entities\entities::list_all_subentities($parent);
         if ($records) {
-            $html .= "<li class='custompages-list-element'>";
+            $html .= "<li class='list-group-item'>";
             $html .= '<div class="pull-right">' .
                 '<a href="' . new moodle_url($CFG->wwwroot . '/local/entities/',
                     array('id' => $parent)) . '" class="btn btn--plain btn--smaller btn--primary btn_edit">' .
@@ -64,13 +64,13 @@ class local_entities_renderer extends plugin_renderer_base
                     get_string('delete', 'local_pages') . ' </a></div>';
             $html .= "<h4 class=''>" . $name . "</h4>";
             $html .= "<ul class='pl-4 border-0'>";
-            foreach ($records as $page) {
-                $html .= $this->get_submenuitem($page->id, $page->name);
+            foreach ($records as $entity) {
+                $html .= $this->get_submenuitem($entity->id, $entity->name);
             }
             $html .= "</ul>";
             $html .= "</li>";
         } else {
-            $html .= "<li class='custompages-list-element'>";
+            $html .= "<li class='list-group-item'>";
             $html .= '<div class="pull-right">' .
                 '<a href="' . new moodle_url($CFG->wwwroot . '/local/entities/',
                     array('id' => $parent)) . '" class="btn btn--plain btn--smaller btn--primary btn_edit">' .
@@ -91,15 +91,19 @@ class local_entities_renderer extends plugin_renderer_base
     }
     public function list_entities() {
         global $DB, $CFG;
-        $html = '<ul class="customenities-list">';
+
+        $html = '<ul class="list-group mb-4">';
+        $html .= '<li class="list-group-item bg-light"><h4>Entity List</h4></li>';
         $records = \local_entities\entities::list_all_entities();
-        foreach ($records as $page) {
-            $html .= $this->get_submenuitem($page->id, $page->name);
+        foreach ($records as $entity) {
+            $html .= $this->get_submenuitem($entity->id, $entity->name);
         }
 
-        $html .= "<li class='custompages-list-element'>
+        $html .= "<li class='list-group-item'>
                 	<a href='" . new moodle_url($CFG->wwwroot . '/local/entities/edit.php') .
-            "' class='custompages-add'>" . get_string("addpage", "local_pages") . "</a></li>";
+            "' class='btn btn-smaller btn-primary pull-right'>" .
+            '<i class="fa fa-plus"></i>' .
+             get_string("addentity", "local_entities") . "</a></li>";
 
         $html .= "</ul>";
         return $html;

@@ -36,6 +36,7 @@ defined('MOODLE_INTERNAL') || die;
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+
 class entity {
 
     /**
@@ -51,72 +52,8 @@ class entity {
         $this->_data = $data;
     }
 
-    /**
-     *
-     * This is to create a new entity in the database
-     *
-     * @param mixed $data
-     * @return Object
-     */
-    private function createentity($data) {
-        global $DB;
-        $handler = \local_entities\customfield\entities_handler::create();
-        $id = $DB->insert_record('local_entities', $data);
-        // Custom fields save needs id.
-        $data->id  = $id;
-        $handler->instance_form_save($data);
+    public function isopen($data) {
 
-    }
-
-    /**
-     *
-     * This is to update the entity based on the data object
-     *
-     * @param mixed $data
-     * @return mixed
-     */
-    private function updateentity($data) {
-        global $DB;
-        $handler = \local_entities\customfield\entities_handler::create();
-        $handler->instance_form_save($data);
-        return $DB->update_record('local_entities', $data);
-    }
-
-    /**
-     *
-     * This is to update or create an entity if it does not exist
-     *
-     * @param mixed $data
-     * @return mixed
-     */
-    public function update($data) {
-        global $USER;
-        $data->createdby = $USER->id;
-        $data->timemodified = time();
-        if (!isset($data->parentid)) {
-            $data->parentid = 0;
-        }
-        if (isset($data->id) && $data->id > 0) {
-            $result = $this->updateentity($data);
-            if ($result) {
-                $result = $data->id;
-            }
-        } else {
-            $data->timecreated = time();
-            $result = $this->createentity($data);
-        }
-        return $result;
-    }
-
-    /**
-     *
-     * This is to update or delete an entity if it does not exist
-     *
-     * @return mixed
-     */
-    public function delete() {
-        global $DB;
-        return $DB->delete_records('local_entities', $this->_data);
     }
 
     /**

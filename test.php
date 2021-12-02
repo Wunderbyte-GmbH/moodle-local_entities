@@ -23,6 +23,8 @@
 
 use local_entities\entities;
 use local_entities\entity;
+use local_entities\entity_manager;
+use local_entities\settings_manager;
 
 require_once('../../config.php');
 
@@ -43,9 +45,36 @@ $PAGE->set_heading($title);
 echo $OUTPUT->header();
 $test = $DB->get_record('local_entities', ['id' => 1]);
 /* test input */
-$input = 1;
-$update = 1;
-$list = 1;
+
+$enity_manager = new settings_manager();
+$out = $enity_manager->get_settings('5');
+
+$json_pretty = json_encode($out, JSON_PRETTY_PRINT);
+echo "<pre>".$json_pretty."<pre/>";
+
+/*
+$data = new stdClass();
+$data->country_1 = 'country_1';
+$data->city_1 = 'city_1';
+$data->streetname_1 = 'streetname_1';
+$data->streetnumber_1 = 'streetnumber_1';
+$data->country_2 = 'country_2';
+$data->city_2 = 'city_2';
+$data->streetname_2 = 'streetname_2';
+$data->streetnumber_2 = 'streetnumber_2';
+$id = 1;
+$out = $enity_manager->prepareaddress($data, $id);
+
+$json_pretty = json_encode($out, JSON_PRETTY_PRINT);
+echo "<pre>".$json_pretty."<pre/>";
+$id = 2;
+$out = $enity_manager->prepareaddress($data, $id);
+$json_pretty = json_encode($out,  JSON_PRETTY_PRINT);
+echo "<pre>".$json_pretty."<pre/>";
+*/
+$input = 0;
+$update = 0;
+$list = 0;
 if ($input) {
     $data = new stdClass();
     $data->name = "asdasfd";

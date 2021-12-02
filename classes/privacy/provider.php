@@ -29,7 +29,7 @@ defined('MOODLE_INTERNAL') || die();
 /**
  * The local_entities module does not store any data.
  *
- * @copyright  2021 Georg Maißer <info@wunderbyte.at>
+ * @copyright  2021  Thomas Winkler <info@wunderbyte.at>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class provider implements \core_privacy\local\metadata\null_provider {

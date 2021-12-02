@@ -26,6 +26,7 @@
 require_once(dirname(__FILE__) . '/../../config.php');
 require_once($CFG->dirroot . '/local/entities/lib.php');
 require_once($CFG->dirroot . '/local/entities/forms/edit_form.php');
+use core_customfield\api;
 
 $entityid = optional_param('id', 0, PARAM_INT);
 $categoryid = optional_param('catid', 0, PARAM_INT);
@@ -40,7 +41,6 @@ $PAGE->set_url($CFG->wwwroot . '/local/entities/edit.php', array("id" => $pageid
 // Force the user to login/create an account to access this page.
 require_login();
 
-
 // Add chosen Javascript to list.
 $PAGE->requires->jquery();
 
@@ -50,11 +50,24 @@ $PAGE->set_pagelayout('standard');
 //$renderer = $PAGE->get_renderer('local_entities');
 
 $entitytoedit = \local_entities\entity::load($entityid, true);
+$settingsmanager = new \local_entities\settings_manager();
 $handler = \local_entities\customfield\entities_handler::create(1);
 
+$editablefields = $handler->get_editable_fields($entityid);
+$fieldswithdata = api::get_instance_fields_data($editablefields, $entityid);
+$handler->get_editable_fields($entityid);
+$lastcategoryid = null;
+foreach ($fieldswithdata as $data) {
+        $categoryid = $data->get_field()->get_category()->get('id');
+}
+$categories = $handler->get_categories_with_fields();
+foreach ($categories as $category) {
+    $categoryid = $category->get('name');
+}
+
 $mform = new entities_form($entitytoedit);
-
-
+$data = \local_entities\settings_manager::get_settings($entitytoedit->id);
+$mform->set_data($data);
 if ($mform->is_cancelled()) {
     redirect(new moodle_url($CFG->wwwroot . '/local/entities/entities.php'));
 } else if ($data = $mform->get_data()) {
@@ -73,7 +86,7 @@ if ($mform->is_cancelled()) {
     $recordentity->type = $data->type;
     $recordentity->parentid = intval($data->parentid);
     $recordentity->description = $data->description['text'];
-    $result = $entitytoedit->update($recordentity);
+    $result = $settingsmanager->update_or_createentity($recordentity);
     if ($result && $result > 0) {
         $options = array('subdirs' => 0, 'maxbytes' => 204800, 'maxfiles' => 1, 'accepted_types' => '*');
         if (isset($data->ogimage_filemanager)) {
@@ -84,19 +97,19 @@ if ($mform->is_cancelled()) {
 }
 
 // Print the page header.
-$PAGE->set_title(get_string('entitiesetup_title', 'local_entities'));
-$PAGE->set_heading(get_string('entitiesetup_heading', 'local_entities'));
+$title = isset($entitytoedit) ? $entitytoedit->name : get_string('entitiesetup_title', 'local_entities');
+$heading = isset($entitytoedit->id) ? get_string('edit_entity', 'local_entities') : get_string('new_entity', 'local_entities');
+$PAGE->set_title($title);
+$PAGE->set_heading($heading);
 
 
-    echo $OUTPUT->header();
+echo $OUTPUT->header();
 
-    printf('<h1 class="page__title">%s<a style="float:right;font-size:15px" href="' .
-        new moodle_url($CFG->wwwroot . '/local/entities/entities.php') . '"> '.
-        get_string('backtolist', 'local_entities') .'</a></h1>',
-        get_string('entity_title', 'local_entities'));
+printf('<h1 class="page__title">%s<a style="float:right;font-size:15px" href="' .
+    new moodle_url($CFG->wwwroot . '/local/entities/entities.php') . '"> '.
+    get_string('backtolist', 'local_entities') .'</a></h1>',
+    $title);
 
-        $mform->edit_entity($entitytoedit);
+$mform->display();
 
-
-    echo $OUTPUT->footer();
-
+echo $OUTPUT->footer();

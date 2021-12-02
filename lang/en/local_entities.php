@@ -35,6 +35,7 @@ $string['entity_order'] = 'Sort order';
 $string['entity_category'] = 'Entity category';
 $string['entity_description'] = 'Entity describtion';
 $string['address'] = 'Address';
+$string['address_city'] = 'City';
 $string['address_country'] = 'Country';
 $string['address_postcode'] = 'Postcode';
 $string['address_streetname'] = 'Street name';
@@ -43,3 +44,11 @@ $string['contacts'] = 'Contacts';
 $string['contacts_givenname'] = 'Given name';
 $string['contacts_surname'] = 'Surname';
 $string['contacts_mailaddress'] = 'E-Mail';
+$string['addentity'] = 'Add Entity';
+$string['entitysetup_heading'] = 'Edit or Create Entity';
+$string['entity_title'] = 'Entity';
+$string['backtolist'] = 'Back to Entity Manager';
+$string['new_entity'] = 'New Entity';
+$string['edit_entity'] = 'Edit Entity';
+
+

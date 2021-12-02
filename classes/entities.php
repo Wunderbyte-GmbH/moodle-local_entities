@@ -48,9 +48,9 @@ class entities {
      *
      * This is to return all entities from the database
      *
-     * @return Object
+     * @return array Object
      */
-    public static function list_all_entities() {
+    public static function list_all_entities(): array {
         global $DB;
         return $DB->get_records_sql("SELECT * FROM {local_entities} ORDER BY sortorder");
     }
@@ -59,15 +59,15 @@ class entities {
      *
      * This is to return all children from parententity the database
      *
-     * @return Object
+     * @return array - returns array of Objects
      */
-    public static function list_all_subentities(int $parentid) {
+    public static function list_all_subentities(int $parentid): array {
         global $DB;
         return $DB->get_records_sql("SELECT * FROM {local_entities} WHERE " .
         "parentid=? ORDER BY sortorder", array($parentid));
     }
 
-    
+
     /**
      *
      * This is to return all categories and fields from the database
