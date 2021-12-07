@@ -41,11 +41,6 @@ class entities_form extends moodleform {
 
 
     /**
-     * @var $_entitydata
-     */
-    public $entitydata;
-
-    /**
      * @var $callingentity
      */
     public $callingentity;
@@ -57,7 +52,6 @@ class entities_form extends moodleform {
     public function __construct($entity = null) {
         if ($entity) {
             $this->entity = $entity;
-            $this->entitydata = $entity->entitydata;
             $this->callingentity = $entity->id;
         }
         parent::__construct();
@@ -100,10 +94,12 @@ class entities_form extends moodleform {
         }
 
         $mform = $this->_form;
-        $handler = local_entities\customfield\entities_handler::create();
-        $categorynames = $this->get_customfieldcategories($handler);
+    
         // entity DETAILS.
         $mform->addElement('header', 'details', get_string('edit_details', 'local_entities'));
+        $renderer =& $this->_form->defaultRenderer();
+        $highlightheadertemplate = str_replace('ftoggler', 'ftoggler highlight', $renderer->_headerTemplate);
+        $renderer->setElementTemplate($highlightheadertemplate , 'details');
 
         $mform->addElement('text', 'name', get_string('entity_name', 'local_entities'));
         $mform->setType('name', PARAM_TEXT);
@@ -112,53 +108,69 @@ class entities_form extends moodleform {
         $options['maxbytes'] = 204800;
         $options['maxfiles'] = 1;
         $options['accepted_types'] = ['jpg', 'jpeg', 'png', 'svg', 'webp'];
+        $handler = local_entities\customfield\entities_handler::create();
+        $categorynames = $this->get_customfieldcategories($handler);
         $mform->addElement('filemanager', 'image_filemanager', get_string('edit_image', 'local_entities'), null, $options);
-        $mform->addElement('select', 'category', get_string('entity_category', 'local_entities'),
-        $categorynames);
+        $mform->addElement('select', 'type', get_string('entity_category', 'local_entities'), $categorynames);
          
         $context = context_system::instance();
         $editoroptions = array('maxfiles' => EDITOR_UNLIMITED_FILES, 'noclean' => true, 'context' => $context);
 
         $mform->addElement('editor', 'description', get_string('entity_description', 'local_entities'),
-            get_string('entity_content_description', 'local_entities'), $editoroptions);
+            '', $editoroptions);
 
         $mform->addRule('description', null, 'required', null, 'client');
         $mform->setType('description', PARAM_RAW);
         $mform->addElement('select', 'parentid', get_string('entity_parent', 'local_entities'), $entities);
         // Entity DISPLAY.
-        $mform->addElement('header', 'htmlbody', "entity Display");
+        $mform->addElement('header', 'display', "entity Display");
         $mform->addElement('text', 'sortorder', get_string('entity_order', 'local_entities'));
         $mform->setType('sortorder', PARAM_INT);
-        // Get categories from entities.
- 
-        // XSS is prevented when printing the block contents and serving files.
-        $mform->addHelpButton('entitycontent', 'entitycontent_description', 'local_entities');    
-        
+        $mform->addElement('checkbox', 'somecheckbox', 'TESTBOX', null, ['class' => 'hidden']);
+                
         // ADDRESS BLOCK.
         // Later Iteration Add more than one address
+        $this->entity->addresscount = isset($this->entity->addresscount) ? $this->entity->addresscount : 1;
+        $mform->addElement('hidden', 'adresscount', $this->entity->addresscount);
+        $mform->setType('adresscount', PARAM_INT);
         for ($i = 0; $i < $this->entity->addresscount; $i++) {
-            $mform->addElement('hidden', 'addresscount', 1);
             $mform->addElement('hidden', 'addressid_'.$i, null);
-            $mform->addElement('header', 'htmlbody', get_string('address', 'local_entities'));
+            $mform->setType('addressid_'.$i, PARAM_INT);
+            $mform->addElement('header', 'address', get_string('address', 'local_entities'));
             $mform->addElement('text', 'country_'.$i, get_string('address_country', 'local_entities'));
+            $mform->setType('country_'.$i, PARAM_TEXT);
             $mform->addElement('text', 'city_'.$i, get_string('address_city', 'local_entities'));
+            $mform->setType('city_'.$i, PARAM_TEXT);
             $mform->addElement('text', 'postcode_'.$i, get_string('address_postcode', 'local_entities'));
+            $mform->setType('postcode_'.$i, PARAM_TEXT);
             $mform->addElement('text', 'streetname_'.$i, get_string('address_streetname', 'local_entities'));
-            $mform->addElement('text', 'streenumber_'.$i, get_string('address_streenumber', 'local_entities'));
+            $mform->setType('streetname_'.$i, PARAM_TEXT);
+            $mform->addElement('text', 'streetnumber_'.$i, get_string('address_streetnumber', 'local_entities'));
+            $mform->setType('streetnumber_'.$i, PARAM_TEXT);
         }
       
         // Contact BLOCK.
         // Later Iteration Add more than one contact
+        $this->entity->contactscount = isset($this->entity->contactscount) ? $this->entity->contactscount : 1;
+        $mform->addElement('hidden', 'contactscount', $this->entity->contactscount);
+        $mform->setType('contactscount', PARAM_INT);
         for ($j = 0; $j < $this->entity->contactscount; $j++) {
-            $mform->addElement('hidden', 'contactscount', 1);
             $mform->addElement('hidden', 'contactsid_'.$j, null);
+            $mform->setType('contactsid_'.$j, PARAM_INT);
             $mform->addElement('header', 'htmlbody', get_string('contacts', 'local_entities'));
             $mform->addElement('text', 'givenname_'.$j, get_string('contacts_givenname', 'local_entities'));
+            $mform->setType('givenname_'.$j, PARAM_TEXT);
             $mform->addElement('text', 'surname_'.$j, get_string('contacts_surname', 'local_entities'));
-            $mform->addElement('text', 'mailaddress_'.$j, get_string('contacts_mailaddress', 'local_entities'));
+            $mform->setType('surname_'.$j, PARAM_TEXT);
+            $mform->addElement('text', 'mail_'.$j, get_string('contacts_mail', 'local_entities'));
+            $mform->setType('mail_'.$j, PARAM_TEXT);
         }
-
-        $handler->instance_form_definition($mform, 0);
+        
+        $mform->addElement('header', 'meta', 'Meta Infos');
+        $test = $handler->instance_form_definition($mform, $entity->id);
+ 
+        $mform->hideIf('display', 'somecheckbox');
+       
 
         // FORM BUTTONS.
         $this->add_action_buttons();
@@ -190,22 +202,33 @@ class entities_form extends moodleform {
         $mform->addElement('text', 'mailaddress_'.$j, get_string('contacts_mailaddress', 'local_entities'));
     }
 
-    // DELETE!
+    
     /**
      *
-     * Show the entity information to edit
+     * Set the page data.
      *
-     * @param bool $entity
+     * @param mixed $defaults
+     * @return mixed
      */
-    public function edit_entity($entity = false) {
-        $forform = new stdClass();
-        $forform->description['text'] = $entity->description;
-        $forform->name = $entity->name;
-        $forform->id = $entity->id;
-        $forform->parentid = $entity->parentid;
-        $forform->sortorder  = $entity->sortorder;
-        $this->set_data($forform);
-        $this->display();
+    public function set_data($defaults) {
+        $context = context_system::instance();
+        $draftideditor = file_get_submitted_draft_itemid('description');
+        $defaults->description['text'] = file_prepare_draft_area($draftideditor, $context->id,
+            'local_entities', 'entitycontent', 0, array('subdirs' => true), $defaults->description['text']);
+        $defaults->description['itemid'] = $draftideditor;
+        $defaults->description['format'] = FORMAT_HTML;
+
+        $options = array('maxbytes' => 204800, 'maxfiles' => 1, 'accepted_types' => ['jpg, png']);
+        $defaults->image = file_prepare_standard_filemanager(
+            $defaults,
+            'image',
+            $options,
+            $context,
+            'local_entities',
+            'image',
+            $defaults->id);
+
+        return parent::set_data($defaults);
     }
 
     /**
@@ -218,20 +241,9 @@ class entities_form extends moodleform {
         $categories = $handler->get_categories_with_fields();
         foreach ($categories as $category) {
             $name = $category->get('name');
-            // Mabye use later $id = $category->get('id');.
-            $categorynames[$name] = $name;
+            $id = $category->get('id');
+            $categorynames[$id] = $name;
         }
         return $categorynames;
-    }
-
-
-     /**
-     *
-     * Show the entity information to edit
-     *
-     * @param bool $entity
-     */
-    public function get_categories() {
-
     }
 }

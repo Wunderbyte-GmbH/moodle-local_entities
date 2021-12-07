@@ -57,7 +57,6 @@ class settings_manager {
 
     /**
      * entity constructor.
-     * 
      */
     public function __construct(int $id = null) {
         $this->id = $id;
@@ -111,20 +110,15 @@ class settings_manager {
             $data->parentid = 0;
         }
         if (isset($data->id) && $data->id > 0) {
-            $result = $this->update_entity($data);
-            if ($result) {
-                // TODO Check if address id exists -> than update else create new address  
-                for ($i = 0; $i < $data->addresscount; $i++) {
-                    $this->update_address($data, $result, $i);
-                }
-                for ($i = 0; $i < $data->contactscount; $i++) {
-                    if ($this->get_all_contacts($data)) {
-                        $this->update_contacts($data, $result, $i);
-                    } else {
-                        $this->update_contacts($data, $result, $i);
-                    }
-                }
+            $this->update_entity($data);
+            // TODO Check if address id exists -> than update else create new address  
+            for ($i = 0; $i < $data->addresscount; $i++) {
+                $this->update_address($data, $i);
             }
+            for ($i = 0; $i < $data->contactscount; $i++) {
+                $this->update_contacts($data, $i);
+            }
+            $result = $data->id;
         } else {
             $data->timecreated = time();
             $result = $this->create_entity($data);
@@ -144,35 +138,50 @@ class settings_manager {
      *
      * This is to update the entity based on the data object
      *
-     * @param mixed $data
+     * @param stdClass $data
+     * @param int $index
      * @return mixed
      */
-    private function update_address(stdClass $data, int $index, int $id): int {
+    private function update_address(stdClass $data, int $index): int {
         global $DB;
-        $recordaddress = $this->prepare_address($data, $id);
-        return $DB->update_record('local_entities_address', $recordaddress);
-    }
-
-    /**
-     *
-     * This is to update the entity based on the data object
-     *
-     * @param mixed $data
-     * @return mixed
-     */
-    private function create_address(stdClass $data, int $id, int $i): int {
-        global $DB;
-        $recordaddress = $this->prepare_address($data, $i);
-        if ($recordaddress) {
-            $recordaddress->entityidto = $id;
+        $recordaddress = $this->prepare_address($data, $index);
+        $recordaddress->entityidto = $data->id;
+        if ($recordaddress->id == 0) {
             return $DB->insert_record('local_entities_address', $recordaddress);
+        } else {
+            return $DB->update_record('local_entities_address', $recordaddress);
         }
     }
 
-    private function update_contacts(stdClass $data, int $id): int {
+    /**
+     *
+     * This is to update the entity based on the data object
+     *
+     * @param mixed $data
+     * @return mixed
+     */
+    private function create_address(stdClass $data, int $index): int {
         global $DB;
-        $recordcontacts = $this->prepare_contacts($data, $id);
-        return $DB->update_record('local_entities_contacts', $recordcontacts);
+        $recordaddress = $this->prepare_address($data, $index);
+        if ($recordaddress->id == 0) {
+            $recordaddress->entityidto = $data->id;
+            return $DB->insert_record('local_entities_address', $recordaddress);
+        } else {
+            $recordaddress->entityidto = $data->id;
+            return $DB->update_record('local_entities_address', $recordaddress);
+        }
+
+    }
+
+    private function update_contacts(stdClass $data, int $index): int {
+        global $DB;
+        $recordcontacts = $this->prepare_contacts($data, $index);
+        $recordcontacts->entityidto = $data->id;
+        if ($recordcontacts->id == 0) {
+            return $DB->insert_record('local_entities_contacts', $recordcontacts);
+        } else {
+            return $DB->update_record('local_entities_contacts', $recordcontacts);
+        }
     }
 
     /**
@@ -182,11 +191,11 @@ class settings_manager {
      * @param mixed $data
      * @return mixed
      */
-    private function create_contacts(stdClass $data, int $id, int $i): int {
+    private function create_contacts(stdClass $data, int $index): int {
         global $DB;
-        $recordcontacts = $this->prepare_contacts($data, $i);
+        $recordcontacts = $this->prepare_contacts($data, $index);
+        $recordcontacts->entityidto = $data->id;
         if ($recordcontacts) {
-            $recordcontacts->entityidto = $id;
             return $DB->insert_record('local_entities_contacts', $recordcontacts);
         }
         else {
@@ -196,24 +205,22 @@ class settings_manager {
 
     /**
      *
-     * This is to update the entity based on the data object
+     * Prepare the address for the DB and remove the postfixes for multiple addresses
      *
      * @param stdClass $data
+     * @param int $i index
      * @return stdClass $addressdata
      * @return null
      */
     public function prepare_address($data, $i): stdClass {
         $addressdata = new stdClass();
-        $addressdata->id = isset($data->{'id' . $i}) ? $data->{'id' . $i} : 0;
+        $addressdata->id = isset($data->{'addressid_' . $i}) ? $data->{'addressid_' . $i} : 0;
         $addressdata->country = $data->{'country_' . $i};
         $addressdata->city = $data->{'city_' . $i};
-        $addressdata->postcode = $data->{'postcode' . $i};
+        $addressdata->postcode = $data->{'postcode_' . $i};
         $addressdata->streetname = $data->{'streetname_' . $i};
         $addressdata->streetnumber = $data->{'streetnumber_' . $i};
-        if ( $addressdata->streetnumber || $addressdata->streetname || $addressdata->postcode || $addressdata->city || $addressdata->country) {
-            return $addressdata;
-        }
-        return null;
+        return $addressdata;
     }
 
     /**
@@ -237,7 +244,7 @@ class settings_manager {
      * Given a db record make it ready for the form.
      *
      * @param stdClass $record
-     * @return stdClass
+     * @return stdClass $formdata
      */
     public static function db_to_form(stdClass $record): stdClass {
         $formdata = new stdClass();
@@ -248,28 +255,37 @@ class settings_manager {
         $formdata->id = $record->id;
         $formdata->parentid = $record->parentid;
         $formdata->sortorder  = $record->sortorder;
-        $formdata->category  = $record->category;
+        $formdata->type  = $record->type;
         // Address.
         $i = 0;
-        foreach ($record->address as $address) {
-            $formdata->{'addressid_' . $i} = $address->id;
-            $formdata->{'country_' . $i} = $address->country;
-            $formdata->{'city_' . $i} = $address->city;
-            $formdata->{'postcode_' . $i} = $address->postcode;
-            $formdata->{'streetname_' . $i} = $address->streetname;
-            $formdata->{'streetnumber_' . $i} = $address->streetnumber; 
-            $i++;
+        if ($record->address[0]) {
+            foreach ($record->address[0] as $address) {
+                $formdata->{'addressid_' . $i} = $address->id;
+                $formdata->{'country_' . $i} = $address->country;
+                $formdata->{'city_' . $i} = $address->city;
+                $formdata->{'postcode_' . $i} = $address->postcode;
+                $formdata->{'streetname_' . $i} = $address->streetname;
+                $formdata->{'streetnumber_' . $i} = $address->streetnumber;
+                $i++;
+            }
+        } else {
+            $i = 1;
         }
+
         $formdata->addresscount = $i;
-     
+
         // Contacts.
         $j = 0;
-        foreach ($record->contacts as $contact) {
-            $formdata->{'contactsid_' . $i} = $address->id;
-            $formdata->{'givenname_' . $j} = $contact->givenname;
-            $formdata->{'surname_' . $j} = $contact->surname;
-            $formdata->{'mail_' . $j} = $contact->mail;
-            $j++;
+        if (($record->contacts[0])) {
+            foreach ($record->contacts[0] as $contact) {
+                $formdata->{'contactsid_' . $j} = $contact->id;
+                $formdata->{'givenname_' . $j} = $contact->givenname;
+                $formdata->{'surname_' . $j} = $contact->surname;
+                $formdata->{'mail_' . $j} = $contact->mail;
+                $j++;
+            }
+        } else {
+            $j = 1;
         }
         $formdata->contactscount = $j;
 
@@ -278,17 +294,19 @@ class settings_manager {
 
     /**
      *
-     * Prepare contactdata object for DB (remove postfixes)
+     * Prepare contact for DB and remove the postfixes for multiple contacts
      *
      * @param stdClass $data
-     * @return stdClass $contactdata
+     * @param int $i index
+     * @return stdClass $addressdata
+     * @return null
      */
     public function prepare_contacts($data, $i) {
         $contactdata = new stdClass();
-        $contactdata->id = isset($data->{'id' . $i}) ? $data->{'id' . $i} : 0;
-        $contactdata->givenname = $data->{'givenname' . $i};
-        $contactdata->surname = $data->{'surname' . $i};
-        $contactdata->mail = $data->{'mail' . $i};
+        $contactdata->id = isset($data->{'contactsid_' . $i}) ? $data->{'contactsid_' . $i} : 0;
+        $contactdata->givenname = $data->{'givenname_' . $i};
+        $contactdata->surname = $data->{'surname_' . $i};
+        $contactdata->mail = $data->{'mail_' . $i};
         return $contactdata;
     }
 
@@ -303,8 +321,10 @@ class settings_manager {
     public static function get_settings(int $entityid): stdClass {
         global $DB;
         $record = $DB->get_record('local_entities', array('id' => $entityid));
-        $record->address[] = $DB->get_record('local_entities_address', array('entityidto' => $entityid));
-        $record->contacts[] = $DB->get_record('local_entities_contacts', array('entityidto' => $entityid));
+        $address = $DB->get_records('local_entities_address', array('entityidto' => $entityid));
+        $contacts = $DB->get_records('local_entities_contacts', array('entityidto' => $entityid));
+        $record->address[] = $address ? $address : null;
+        $record->contacts[] = $contacts ? $contacts : null;
         return self::db_to_form($record);
     }
 
@@ -328,7 +348,7 @@ class settings_manager {
      * @param string $item
      * @return mixed
      */
-    public function __get($item) {
+    public function get($item) {
         if (isset($this->data->$item)) {
             return $this->data->$item;
         }

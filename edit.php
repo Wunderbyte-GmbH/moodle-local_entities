@@ -18,8 +18,8 @@
  * local entities
  *
  * @package     local_entities
- * @author      Kevin Dibble
- * @copyright   2017 LearningWorks Ltd
+ * @author      Thomas Winkler
+ * @copyright   2021 Wunderbyte GmbH
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -36,7 +36,7 @@ global $USER, $PAGE;
 
 // Set PAGE variables.
 $PAGE->set_context($context);
-$PAGE->set_url($CFG->wwwroot . '/local/entities/edit.php', array("id" => $pageid));
+$PAGE->set_url($CFG->wwwroot . '/local/entities/edit.php', array("id" => $entityid));
 
 // Force the user to login/create an account to access this page.
 require_login();
@@ -50,31 +50,29 @@ $PAGE->set_pagelayout('standard');
 //$renderer = $PAGE->get_renderer('local_entities');
 
 $settingsmanager = new \local_entities\settings_manager();
-$handler = \local_entities\customfield\entities_handler::create(1);
 
-$editablefields = $handler->get_editable_fields($entityid);
-$fieldswithdata = api::get_instance_fields_data($editablefields, $entityid);
-$handler->get_editable_fields($entityid);
-$lastcategoryid = null;
-foreach ($fieldswithdata as $data) {
-        $categoryid = $data->get_field()->get_category()->get('id');
+
+if ($entityid) {
+    $data = \local_entities\settings_manager::get_settings($entityid);
+    $mform = new entities_form($data);
+    $handler = local_entities\customfield\entities_handler::create();
+    $handler->instance_form_before_set_data($data);
+    $mform->set_data($data);
+} else {
+    $mform = new entities_form();
 }
-$categories = $handler->get_categories_with_fields();
-foreach ($categories as $category) {
-    $categoryid = $category->get('name');
-}
-$data = \local_entities\settings_manager::get_settings($entityid);
-$mform = new entities_form($data);
-$mform->set_data($data);
-$mform->add_contacts();
+
+// Print the page header.
+$title = isset($data) ? $data->name : get_string('entitiesetup_title', 'local_entities');
+$heading = isset($data->id) ? $data->name : get_string('new_entity', 'local_entities');
 if ($mform->is_cancelled()) {
     redirect(new moodle_url($CFG->wwwroot . '/local/entities/entities.php'));
 } else if ($data = $mform->get_data()) {
     require_once($CFG->libdir . '/formslib.php');
     $context = context_system::instance();
-    $data->entitycontent['text'] = file_save_draft_area_files($data->entitycontent['itemid'], $context->id,
+    $data->description['text'] = file_save_draft_area_files($data->description['itemid'], $context->id,
         'local_entities', 'entitycontent',
-        0, array('subdirs' => true), $data->entitycontent['text']);
+        0, array('subdirs' => true), $data->description['text']);
 
     $data->entitydata = '';
     $recordentity = new stdClass();
@@ -88,16 +86,12 @@ if ($mform->is_cancelled()) {
     $result = $settingsmanager->update_or_createentity($recordentity);
     if ($result && $result > 0) {
         $options = array('subdirs' => 0, 'maxbytes' => 204800, 'maxfiles' => 1, 'accepted_types' => '*');
-        if (isset($data->ogimage_filemanager)) {
-            file_postupdate_standard_filemanager($data, 'ogimage', $options, $context, 'local_entities', 'ogimage', $result);
+        if (isset($data->image_filemanager)) {
+            file_postupdate_standard_filemanager($data, 'image', $options, $context, 'local_entities', 'image', $result);
         }
         redirect(new moodle_url($CFG->wwwroot . '/local/entities/edit.php', array('id' => $result)));
     }
 }
-
-// Print the page header.
-$title = isset($entitytoedit) ? $entitytoedit->name : get_string('entitiesetup_title', 'local_entities');
-$heading = isset($entitytoedit->id) ? get_string('edit_entity', 'local_entities') : get_string('new_entity', 'local_entities');
 $PAGE->set_title($title);
 $PAGE->set_heading($heading);
 
@@ -109,6 +103,19 @@ printf('<h1 class="page__title">%s<a style="float:right;font-size:15px" href="' 
     get_string('backtolist', 'local_entities') .'</a></h1>',
     $title);
 
+
+ob_start("callback");
 $mform->display();
+$result = ob_get_contents();
+ob_end_flush();
+
+function callback($buffer) {
+    return ($buffer);        
+}
+
 
 echo $OUTPUT->footer();
+
+
+
+

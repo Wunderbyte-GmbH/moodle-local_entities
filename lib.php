@@ -15,8 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    local_edusupport
- * @copyright  2020 Center for Learningmanagement (www.lernmanagement.at)
+ * @package    local_entities
+ * @copyright  2021 Wunderbyte GmbH
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
 */
 
@@ -43,3 +43,34 @@ function local_entities_extend_navigation($navigation) {
     $nodecreatecourse->showinflatnavigation = true;
 }
 //TODO add pluginfile
+/**
+ *
+ * Get saved files for the page
+ *
+ * @param mixed $course
+ * @param mixed $birecordorcm
+ * @param mixed $context
+ * @param mixed $filearea
+ * @param mixed $args
+ * @param bool $forcedownload
+ * @param array $options
+ */
+function local_entities_pluginfile($course, $birecordorcm, $context, $filearea, $args, $forcedownload, array $options = array()) {
+    $fs = get_file_storage();
+
+    $filename = array_pop($args);
+    $filepath = $args ? '/' . implode('/', $args) . '/' : '/';
+
+    if ($filearea === 'entitycontent') {
+        if (!$file = $fs->get_file($context->id, 'local_entities', 'entitycontent', 0, $filepath, $filename) or $file->is_directory()) {
+            send_file_not_found();
+        }
+    } else if ($filearea === 'image') {
+        $itemid = array_pop($args);
+        $file = $fs->get_file($context->id, 'local_entities', $filearea, $itemid, '/', $filename);
+        // Todo: Maybe put in fall back image.
+    }
+
+    \core\session\manager::write_close();
+    send_stored_file($file, null, 0, $forcedownload, $options);
+}

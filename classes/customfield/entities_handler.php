@@ -113,10 +113,9 @@ class entities_handler extends \core_customfield\handler {
         }
     }
 
-
-    public function instance_form_definition(\MoodleQuickForm $mform, int $instanceid = 0,
+    
+  /*  public function instance_form_definition(\MoodleQuickForm $mform, int $instanceid = 0,
     ?string $headerlangidentifier = null, ?string $headerlangcomponent = null) {
-
         $editablefields = $this->get_editable_fields($instanceid);
         $fieldswithdata = api::get_instance_fields_data($editablefields, $instanceid);
         $lastcategoryid = null;
@@ -124,7 +123,7 @@ class entities_handler extends \core_customfield\handler {
         foreach ($fieldswithdata as $data) {
             $categoryid = $data->get_field()->get_category()->get('id');
             if (isset($paramcategoryid) && $paramcategoryid != $categoryid) {
-                continue;
+               // continue;
             }
             if ($categoryid != $lastcategoryid) {
                 $categoryname = format_string($data->get_field()->get_category()->get('name'));
@@ -133,22 +132,26 @@ class entities_handler extends \core_customfield\handler {
                 if (!empty($headerlangidentifier)) {
                     $categoryname = get_string($headerlangidentifier, $headerlangcomponent, $categoryname);
                 }
-
-                $mform->addElement('header', 'category_' . $categoryid, $categoryname);
+                $mform->addElement('header', 'test');
+                /*$renderer =& $mform->defaultRenderer();
+                $highlightheadertemplate = str_replace('ftoggler', 'ftoggler customfields disabled', $renderer->_headerTemplate);
+                $renderer->setElementTemplate($highlightheadertemplate , 'category_' . $categoryid);
                 $lastcategoryid = $categoryid;
             }
+
+            $test = $mform->_elements[34];
             $data->instance_form_definition($mform);
             $field = $data->get_field()->to_record();
+            
             if (strlen($field->description)) {
                 // Add field description.
                 $context = $this->get_configuration_context();
                 $value = file_rewrite_pluginfile_urls($field->description, 'pluginfile.php',
                     $context->id, 'core_customfield', 'description', $field->id);
                 $value = format_text($value, $field->descriptionformat, ['context' => $context]);
-                $mform->addElement('static', 'customfield_' . $field->shortname . '_static', '', $value);
             }
         }
-    }
+    } */
 
     /**
      * The current user can view custom fields on the given course.
