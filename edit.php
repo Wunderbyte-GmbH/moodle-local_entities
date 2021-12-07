@@ -49,7 +49,6 @@ $PAGE->set_pagelayout('standard');
 // Get the renderer for this page.
 //$renderer = $PAGE->get_renderer('local_entities');
 
-$entitytoedit = \local_entities\entity::load($entityid, true);
 $settingsmanager = new \local_entities\settings_manager();
 $handler = \local_entities\customfield\entities_handler::create(1);
 
@@ -64,10 +63,10 @@ $categories = $handler->get_categories_with_fields();
 foreach ($categories as $category) {
     $categoryid = $category->get('name');
 }
-
-$mform = new entities_form($entitytoedit);
-$data = \local_entities\settings_manager::get_settings($entitytoedit->id);
+$data = \local_entities\settings_manager::get_settings($entityid);
+$mform = new entities_form($data);
 $mform->set_data($data);
+$mform->add_contacts();
 if ($mform->is_cancelled()) {
     redirect(new moodle_url($CFG->wwwroot . '/local/entities/entities.php'));
 } else if ($data = $mform->get_data()) {

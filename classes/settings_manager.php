@@ -147,7 +147,7 @@ class settings_manager {
      * @param mixed $data
      * @return mixed
      */
-    private function update_address(stdClass $data, int $id): int {
+    private function update_address(stdClass $data, int $index, int $id): int {
         global $DB;
         $recordaddress = $this->prepare_address($data, $id);
         return $DB->update_record('local_entities_address', $recordaddress);
@@ -167,9 +167,6 @@ class settings_manager {
             $recordaddress->entityidto = $id;
             return $DB->insert_record('local_entities_address', $recordaddress);
         }
-        else {
-            return false;
-        }
     }
 
     private function update_contacts(stdClass $data, int $id): int {
@@ -187,7 +184,7 @@ class settings_manager {
      */
     private function create_contacts(stdClass $data, int $id, int $i): int {
         global $DB;
-        $recordcontacts = $this->prepare_address($data, $i);
+        $recordcontacts = $this->prepare_contacts($data, $i);
         if ($recordcontacts) {
             $recordcontacts->entityidto = $id;
             return $DB->insert_record('local_entities_contacts', $recordcontacts);
@@ -203,9 +200,11 @@ class settings_manager {
      *
      * @param stdClass $data
      * @return stdClass $addressdata
+     * @return null
      */
     public function prepare_address($data, $i): stdClass {
         $addressdata = new stdClass();
+        $addressdata->id = isset($data->{'id' . $i}) ? $data->{'id' . $i} : 0;
         $addressdata->country = $data->{'country_' . $i};
         $addressdata->city = $data->{'city_' . $i};
         $addressdata->postcode = $data->{'postcode' . $i};
@@ -234,7 +233,6 @@ class settings_manager {
         return $record;
     }
 
-       
     /**
      * Given a db record make it ready for the form.
      *
@@ -254,6 +252,7 @@ class settings_manager {
         // Address.
         $i = 0;
         foreach ($record->address as $address) {
+            $formdata->{'addressid_' . $i} = $address->id;
             $formdata->{'country_' . $i} = $address->country;
             $formdata->{'city_' . $i} = $address->city;
             $formdata->{'postcode_' . $i} = $address->postcode;
@@ -266,6 +265,7 @@ class settings_manager {
         // Contacts.
         $j = 0;
         foreach ($record->contacts as $contact) {
+            $formdata->{'contactsid_' . $i} = $address->id;
             $formdata->{'givenname_' . $j} = $contact->givenname;
             $formdata->{'surname_' . $j} = $contact->surname;
             $formdata->{'mail_' . $j} = $contact->mail;
@@ -283,8 +283,9 @@ class settings_manager {
      * @param stdClass $data
      * @return stdClass $contactdata
      */
-    public function prepare_contacts_to_form($data, $i) {
+    public function prepare_contacts($data, $i) {
         $contactdata = new stdClass();
+        $contactdata->id = isset($data->{'id' . $i}) ? $data->{'id' . $i} : 0;
         $contactdata->givenname = $data->{'givenname' . $i};
         $contactdata->surname = $data->{'surname' . $i};
         $contactdata->mail = $data->{'mail' . $i};

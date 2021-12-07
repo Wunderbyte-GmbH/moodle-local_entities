@@ -36,6 +36,10 @@ require_once(dirname(__FILE__) . '/../lib.php');
  */
 class entities_form extends moodleform {
 
+
+    public $settings;
+
+
     /**
      * @var $_entitydata
      */
@@ -50,7 +54,7 @@ class entities_form extends moodleform {
      * entities_edit_product_form constructor.
      * @param mixed $entity
      */
-    public function __construct($entity) {
+    public function __construct($entity = null) {
         if ($entity) {
             $this->entity = $entity;
             $this->entitydata = $entity->entitydata;
@@ -94,6 +98,7 @@ class entities_form extends moodleform {
                 $entities[$entity->id] = $entity->name;
             }
         }
+
         $mform = $this->_form;
         $handler = local_entities\customfield\entities_handler::create();
         $categorynames = $this->get_customfieldcategories($handler);
@@ -131,25 +136,28 @@ class entities_form extends moodleform {
         
         // ADDRESS BLOCK.
         // Later Iteration Add more than one address
-        $i = 0;
-        $mform->addElement('hidden', 'addresscount', 1);
-        $mform->addElement('header', 'htmlbody', get_string('address', 'local_entities'));
-        $mform->addElement('text', 'country_'.$i, get_string('address_country', 'local_entities'));
-        $mform->addElement('text', 'city'.$i, get_string('address_city', 'local_entities'));
-        $mform->addElement('text', 'postcode_'.$i, get_string('address_postcode', 'local_entities'));
-        $mform->addElement('text', 'streetname_'.$i, get_string('address_streetname', 'local_entities'));
-        $mform->addElement('text', 'streenumber_'.$i, get_string('address_streenumber', 'local_entities'));
-
+        for ($i = 0; $i < $this->entity->addresscount; $i++) {
+            $mform->addElement('hidden', 'addresscount', 1);
+            $mform->addElement('hidden', 'addressid_'.$i, null);
+            $mform->addElement('header', 'htmlbody', get_string('address', 'local_entities'));
+            $mform->addElement('text', 'country_'.$i, get_string('address_country', 'local_entities'));
+            $mform->addElement('text', 'city_'.$i, get_string('address_city', 'local_entities'));
+            $mform->addElement('text', 'postcode_'.$i, get_string('address_postcode', 'local_entities'));
+            $mform->addElement('text', 'streetname_'.$i, get_string('address_streetname', 'local_entities'));
+            $mform->addElement('text', 'streenumber_'.$i, get_string('address_streenumber', 'local_entities'));
+        }
+      
         // Contact BLOCK.
         // Later Iteration Add more than one contact
-        $j = 0;
-        $mform->addElement('hidden', 'contactscount', 1);
-        $mform->addElement('header', 'htmlbody', get_string('contacts', 'local_entities'));
-        $mform->addElement('text', 'givenname_'.$j, get_string('contacts_givenname', 'local_entities'));
-        $mform->addElement('text', 'surname_'.$j, get_string('contacts_surname', 'local_entities'));
-        $mform->addElement('text', 'mailaddress_'.$j, get_string('contacts_mailaddress', 'local_entities'));
-        
- 
+        for ($j = 0; $j < $this->entity->contactscount; $j++) {
+            $mform->addElement('hidden', 'contactscount', 1);
+            $mform->addElement('hidden', 'contactsid_'.$j, null);
+            $mform->addElement('header', 'htmlbody', get_string('contacts', 'local_entities'));
+            $mform->addElement('text', 'givenname_'.$j, get_string('contacts_givenname', 'local_entities'));
+            $mform->addElement('text', 'surname_'.$j, get_string('contacts_surname', 'local_entities'));
+            $mform->addElement('text', 'mailaddress_'.$j, get_string('contacts_mailaddress', 'local_entities'));
+        }
+
         $handler->instance_form_definition($mform, 0);
 
         // FORM BUTTONS.
@@ -172,6 +180,15 @@ class entities_form extends moodleform {
         return $errors;
     }
 
+
+    public function add_contacts() {
+        $mform = $this->_form;
+        $j = 1;
+        $mform->addElement('header', 'htmlbody', get_string('contacts', 'local_entities'));
+        $mform->addElement('text', 'givenname_'.$j, get_string('contacts_givenname', 'local_entities'));
+        $mform->addElement('text', 'surname_'.$j, get_string('contacts_surname', 'local_entities'));
+        $mform->addElement('text', 'mailaddress_'.$j, get_string('contacts_mailaddress', 'local_entities'));
+    }
 
     // DELETE!
     /**
