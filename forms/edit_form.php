@@ -125,11 +125,8 @@ class entities_form extends moodleform {
         $mform->addRule('description', null, 'required', null, 'client');
         $mform->setType('description', PARAM_RAW);
         $mform->addElement('select', 'parentid', get_string('entity_parent', 'local_entities'), $entities);
-        // Entity DISPLAY.
-        $mform->addElement('header', 'display', "entity Display");
         $mform->addElement('text', 'sortorder', get_string('entity_order', 'local_entities'));
         $mform->setType('sortorder', PARAM_INT);
-        $mform->addElement('checkbox', 'somecheckbox', 'TESTBOX', null, ['class' => 'hidden']);
                 
         // ADDRESS BLOCK.
         // Later Iteration Add more than one address
@@ -171,10 +168,7 @@ class entities_form extends moodleform {
         
         $mform->addElement('header', 'meta', 'Meta Infos');
         $handler->instance_form_definition($mform, $this->entity->id);
- 
-        $mform->hideIf('display', 'somecheckbox');
        
-
         // FORM BUTTONS.
         $this->add_action_buttons();
         //$handler->instance_form_before_set_data($course);
@@ -242,6 +236,7 @@ class entities_form extends moodleform {
      */
     public function get_customfieldcategories(local_entities\customfield\entities_handler $handler) {
         $categories = $handler->get_categories_with_fields();
+        $categorynames['0'] = get_string("none", "local_entities");
         foreach ($categories as $category) {
             $name = $category->get('name');
             $id = $category->get('id');

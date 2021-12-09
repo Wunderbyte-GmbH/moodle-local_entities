@@ -53,15 +53,15 @@ class local_entities_renderer extends plugin_renderer_base
                 '<a href="' . new moodle_url($CFG->wwwroot . '/local/entities/',
                     array('id' => $parent)) . '" class="btn btn--plain btn--smaller btn--primary btn_edit">' .
                     '<i class="fa fa-edit"></i>' .
-                get_string('view', 'local_pages') . '</a> | ' .
+                get_string('view', 'local_entities') . '</a> | ' .
                 '<a href="' . new moodle_url($CFG->wwwroot . '/local/entities/edit.php',
                     array('id' => $parent)) . '" class="btn btn--plain btn--smaller btn--primary btn_edit">' .
                     '<i class="fa fa-edit"></i>' .
-                get_string('edit', 'local_pages') . '</a> | ' .
+                get_string('edit', 'local_entities') . '</a> | ' .
                 '<a href="' . new moodle_url($CFG->wwwroot . '/local/entities/entities.php',
                     array('pagedel' => $parent, 'sesskey' => $USER->sesskey)) . '" class="btn btn--plain btn--smaller btn--primary btn_edit">' .
                     '<i class="fa fa fa-trash"></i>' .
-                    get_string('delete', 'local_pages') . ' </a></div>';
+                    get_string('delete', 'local_entities') . ' </a></div>';
             $html .= "<h4 class=''>" . $name . "</h4>";
             $html .= "<ul class='pl-4 border-0'>";
             foreach ($records as $entity) {

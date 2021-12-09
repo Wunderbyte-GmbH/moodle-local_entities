@@ -50,5 +50,6 @@ $string['entity_title'] = 'Entity';
 $string['backtolist'] = 'Back to Entity Manager';
 $string['new_entity'] = 'New Entity';
 $string['edit_entity'] = 'Edit Entity';
-
-
+$string['view'] = "View";
+$string['edit'] = "Edit";
+$string['delete'] = "Delete";
