@@ -61,7 +61,7 @@ function local_entities_pluginfile($course, $birecordorcm, $context, $filearea, 
     $filename = array_pop($args);
     $filepath = $args ? '/' . implode('/', $args) . '/' : '/';
 
-    if ($filearea === 'entitycontent') {
+    if ($filearea === 'description') {
         if (!$file = $fs->get_file($context->id, 'local_entities', 'entitycontent', 0, $filepath, $filename) or $file->is_directory()) {
             send_file_not_found();
         }

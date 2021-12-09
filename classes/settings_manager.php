@@ -310,7 +310,7 @@ class settings_manager {
      * @return stdClass
      * @throws dml_exception
      */
-    public static function get_settings(int $entityid): stdClass {
+    public static function get_settings_forform(int $entityid): stdClass {
         global $DB;
         $record = $DB->get_record('local_entities', array('id' => $entityid));
         $address = $DB->get_records('local_entities_address', array('entityidto' => $entityid));
@@ -319,6 +319,24 @@ class settings_manager {
         $record->contacts[] = $contacts ? $contacts : null;
         return self::db_to_form($record);
     }
+
+    /**
+     * Given the entitiy id, get data from db formatted for moodle form.
+     *
+     * @param int $entity
+     * @return stdClass
+     * @throws dml_exception
+     */
+    public static function get_settings(int $entityid): stdClass {
+        global $DB;
+        $record = $DB->get_record('local_entities', array('id' => $entityid));
+        $address = $DB->get_records('local_entities_address', array('entityidto' => $entityid));
+        $contacts = $DB->get_records('local_entities_contacts', array('entityidto' => $entityid));
+        $record->address[] = $address ? $address : null;
+        $record->contacts[] = $contacts ? $contacts : null;
+        return $record;
+    }
+
 
     /**
      *

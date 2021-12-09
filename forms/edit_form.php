@@ -211,12 +211,12 @@ class entities_form extends moodleform {
         $context = context_system::instance();
         $draftideditor = file_get_submitted_draft_itemid('description');
         $defaults->description['text'] = file_prepare_draft_area($draftideditor, $context->id,
-            'local_entities', 'entitycontent', 0, array('subdirs' => true), $defaults->description['text']);
+            'local_entities', 'description', 0, array('subdirs' => true), $defaults->description['text']);
         $defaults->description['itemid'] = $draftideditor;
         $defaults->description['format'] = FORMAT_HTML;
 
         $options = array('maxbytes' => 204800, 'maxfiles' => 1, 'accepted_types' => ['jpg, png']);
-        $defaults->image = file_prepare_standard_filemanager(
+        $defaults->picture = file_prepare_standard_filemanager(
             $defaults,
             'image',
             $options,
@@ -224,7 +224,7 @@ class entities_form extends moodleform {
             'local_entities',
             'image',
             $defaults->id);
-
+        
         return parent::set_data($defaults);
     }
 

@@ -53,7 +53,7 @@ $settingsmanager = new \local_entities\settings_manager();
 
 
 if ($entityid) {
-    $data = \local_entities\settings_manager::get_settings($entityid);
+    $data = \local_entities\settings_manager::get_settings_forform($entityid);
     $mform = new entities_form($data);
     $handler = local_entities\customfield\entities_handler::create();
     $handler->instance_form_before_set_data($data);
