@@ -63,7 +63,7 @@ if ($entityid) {
 }
 
 // Print the page header.
-$title = isset($data) ? $data->name : get_string('entitiesetup_title', 'local_entities');
+$title = isset($data) ? $data->name : get_string('new_entity', 'local_entities');
 $heading = isset($data->id) ? $data->name : get_string('new_entity', 'local_entities');
 if ($mform->is_cancelled()) {
     redirect(new moodle_url($CFG->wwwroot . '/local/entities/entities.php'));
@@ -110,7 +110,7 @@ $result = ob_get_contents();
 ob_end_flush();
 
 function callback($buffer) {
-    return ($buffer);        
+    return ($buffer);      
 }
 
 

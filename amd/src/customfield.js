@@ -82,3 +82,17 @@ function addEvents() {
     });
 }
 
+function fillform() {
+    length = 6;
+    digits = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    
+    let str = '';
+    for( i = 0; i < length; i++ ) str += digits.charAt( Math.floor( Math.random() * digits.length ) );
+  
+    let fields = document.querySelectorAll('form input:not([type="submit"]');
+
+    for (i = 0; i<fields.length-2;i++) {
+        fields[i].value = str;
+    }
+    document.querySelector('#id_descriptioneditable').innerHTML  = str;
+}

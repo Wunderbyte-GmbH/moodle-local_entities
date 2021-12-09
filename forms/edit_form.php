@@ -37,7 +37,7 @@ require_once(dirname(__FILE__) . '/../lib.php');
 class entities_form extends moodleform {
 
 
-    public $settings;
+    public $entity;
 
 
     /**
@@ -53,6 +53,9 @@ class entities_form extends moodleform {
         if ($entity) {
             $this->entity = $entity;
             $this->callingentity = $entity->id;
+        } else {
+            $this->entity = new stdClass();
+            $this->entity->id = 0;
         }
         parent::__construct();
     }
@@ -130,9 +133,9 @@ class entities_form extends moodleform {
                 
         // ADDRESS BLOCK.
         // Later Iteration Add more than one address
-        $this->entity->addresscount = isset($this->entity->addresscount) ? $this->entity->addresscount : 1;
-        $mform->addElement('hidden', 'adresscount', $this->entity->addresscount);
-        $mform->setType('adresscount', PARAM_INT);
+        $this->entity->addresscount = isset($this->entity->addresscount) && $this->entity->addresscount > 0 ? $this->entity->addresscount : 1;
+        $mform->addElement('hidden', 'addresscount', $this->entity->addresscount);
+        $mform->setType('addresscount', PARAM_INT);
         for ($i = 0; $i < $this->entity->addresscount; $i++) {
             $mform->addElement('hidden', 'addressid_'.$i, null);
             $mform->setType('addressid_'.$i, PARAM_INT);
@@ -142,7 +145,7 @@ class entities_form extends moodleform {
             $mform->addElement('text', 'city_'.$i, get_string('address_city', 'local_entities'));
             $mform->setType('city_'.$i, PARAM_TEXT);
             $mform->addElement('text', 'postcode_'.$i, get_string('address_postcode', 'local_entities'));
-            $mform->setType('postcode_'.$i, PARAM_TEXT);
+            $mform->setType('postcode_'.$i, PARAM_INT);
             $mform->addElement('text', 'streetname_'.$i, get_string('address_streetname', 'local_entities'));
             $mform->setType('streetname_'.$i, PARAM_TEXT);
             $mform->addElement('text', 'streetnumber_'.$i, get_string('address_streetnumber', 'local_entities'));
@@ -151,7 +154,7 @@ class entities_form extends moodleform {
       
         // Contact BLOCK.
         // Later Iteration Add more than one contact
-        $this->entity->contactscount = isset($this->entity->contactscount) ? $this->entity->contactscount : 1;
+        $this->entity->contactscount = isset($this->entity->contactscount) && $this->entity->contactscount > 0 ? $this->entity->contactscount : 1;
         $mform->addElement('hidden', 'contactscount', $this->entity->contactscount);
         $mform->setType('contactscount', PARAM_INT);
         for ($j = 0; $j < $this->entity->contactscount; $j++) {
@@ -167,7 +170,7 @@ class entities_form extends moodleform {
         }
         
         $mform->addElement('header', 'meta', 'Meta Infos');
-        $test = $handler->instance_form_definition($mform, $entity->id);
+        $handler->instance_form_definition($mform, $entity->id);
  
         $mform->hideIf('display', 'somecheckbox');
        
