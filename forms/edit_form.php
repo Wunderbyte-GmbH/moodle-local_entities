@@ -75,8 +75,8 @@ class entities_form extends moodleform {
         if ($id = $this->optional_param('id', 0, PARAM_INT)) {
             $entity = $DB->get_record('local_entities', ['id' => $id]);
             $handler = local_entities\customfield\entities_handler::create();
-            $handler->instance_form_before_set_data($entity);
-            $this->set_data($entity);
+            $handler->instance_form_before_set_data($this->entity);
+            $this->set_data($this->entity);
         }
     }
 
@@ -84,7 +84,7 @@ class entities_form extends moodleform {
      * Get a list of all entities
      */
     public function definition() {
-        global $DB, $entity;
+        global $DB;
 
         // Get a list of all entities.
         $none = get_string("none", "local_entities");
@@ -170,7 +170,7 @@ class entities_form extends moodleform {
         }
         
         $mform->addElement('header', 'meta', 'Meta Infos');
-        $handler->instance_form_definition($mform, $entity->id);
+        $handler->instance_form_definition($mform, $this->entity->id);
  
         $mform->hideIf('display', 'somecheckbox');
        
