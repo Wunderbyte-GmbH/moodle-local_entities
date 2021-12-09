@@ -59,7 +59,7 @@ class local_entities_renderer extends plugin_renderer_base
                     '<i class="fa fa-edit"></i>' .
                 get_string('edit', 'local_entities') . '</a> | ' .
                 '<a href="' . new moodle_url($CFG->wwwroot . '/local/entities/entities.php',
-                    array('pagedel' => $parent, 'sesskey' => $USER->sesskey)) . '" class="btn btn--plain btn--smaller btn--primary btn_edit">' .
+                    array('del' => $parent, 'sesskey' => $USER->sesskey)) . '" class="btn btn--plain btn--smaller btn--primary btn_edit">' .
                     '<i class="fa fa fa-trash"></i>' .
                     get_string('delete', 'local_entities') . ' </a></div>';
             $html .= "<h4 class=''>" . $name . "</h4>";
