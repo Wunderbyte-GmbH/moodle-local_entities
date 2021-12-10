@@ -113,46 +113,6 @@ class entities_handler extends \core_customfield\handler {
         }
     }
 
-    
-  /*  public function instance_form_definition(\MoodleQuickForm $mform, int $instanceid = 0,
-    ?string $headerlangidentifier = null, ?string $headerlangcomponent = null) {
-        $editablefields = $this->get_editable_fields($instanceid);
-        $fieldswithdata = api::get_instance_fields_data($editablefields, $instanceid);
-        $lastcategoryid = null;
-        $paramcategoryid = optional_param('catid', 0, PARAM_INT);
-        foreach ($fieldswithdata as $data) {
-            $categoryid = $data->get_field()->get_category()->get('id');
-            if (isset($paramcategoryid) && $paramcategoryid != $categoryid) {
-               // continue;
-            }
-            if ($categoryid != $lastcategoryid) {
-                $categoryname = format_string($data->get_field()->get_category()->get('name'));
-
-                // Load category header lang string if specified.
-                if (!empty($headerlangidentifier)) {
-                    $categoryname = get_string($headerlangidentifier, $headerlangcomponent, $categoryname);
-                }
-                $mform->addElement('header', 'test');
-                /*$renderer =& $mform->defaultRenderer();
-                $highlightheadertemplate = str_replace('ftoggler', 'ftoggler customfields disabled', $renderer->_headerTemplate);
-                $renderer->setElementTemplate($highlightheadertemplate , 'category_' . $categoryid);
-                $lastcategoryid = $categoryid;
-            }
-
-            $test = $mform->_elements[34];
-            $data->instance_form_definition($mform);
-            $field = $data->get_field()->to_record();
-            
-            if (strlen($field->description)) {
-                // Add field description.
-                $context = $this->get_configuration_context();
-                $value = file_rewrite_pluginfile_urls($field->description, 'pluginfile.php',
-                    $context->id, 'core_customfield', 'description', $field->id);
-                $value = format_text($value, $field->descriptionformat, ['context' => $context]);
-            }
-        }
-    } */
-
     /**
      * The current user can view custom fields on the given course.
      *

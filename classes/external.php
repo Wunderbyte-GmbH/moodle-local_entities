@@ -29,5 +29,5 @@ defined('MOODLE_INTERNAL') || die();
  * Class local_entities_external
  */
 class local_entities_external extends external_api {
-// TODO.
+    // TODO.
 }

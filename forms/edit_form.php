@@ -97,8 +97,8 @@ class entities_form extends moodleform {
         }
 
         $mform = $this->_form;
-    
-        // entity DETAILS.
+
+        // Entity DETAILS.
         $mform->addElement('header', 'details', get_string('edit_details', 'local_entities'));
         $renderer =& $this->_form->defaultRenderer();
         $highlightheadertemplate = str_replace('ftoggler', 'ftoggler highlight', $renderer->_headerTemplate);
@@ -115,7 +115,7 @@ class entities_form extends moodleform {
         $categorynames = $this->get_customfieldcategories($handler);
         $mform->addElement('filemanager', 'image_filemanager', get_string('edit_image', 'local_entities'), null, $options);
         $mform->addElement('select', 'type', get_string('entity_category', 'local_entities'), $categorynames);
-         
+
         $context = context_system::instance();
         $editoroptions = array('maxfiles' => EDITOR_UNLIMITED_FILES, 'noclean' => true, 'context' => $context);
 
@@ -127,10 +127,11 @@ class entities_form extends moodleform {
         $mform->addElement('select', 'parentid', get_string('entity_parent', 'local_entities'), $entities);
         $mform->addElement('text', 'sortorder', get_string('entity_order', 'local_entities'));
         $mform->setType('sortorder', PARAM_INT);
-                
+
         // ADDRESS BLOCK.
-        // Later Iteration Add more than one address
-        $this->entity->addresscount = isset($this->entity->addresscount) && $this->entity->addresscount > 0 ? $this->entity->addresscount : 1;
+        // Later Iteration Add more than one address.
+        $this->entity->addresscount = isset($this->entity->addresscount) && $this->entity->addresscount > 0
+        ? $this->entity->addresscount : 1;
         $mform->addElement('hidden', 'addresscount', $this->entity->addresscount);
         $mform->setType('addresscount', PARAM_INT);
         for ($i = 0; $i < $this->entity->addresscount; $i++) {
@@ -148,10 +149,11 @@ class entities_form extends moodleform {
             $mform->addElement('text', 'streetnumber_'.$i, get_string('address_streetnumber', 'local_entities'));
             $mform->setType('streetnumber_'.$i, PARAM_TEXT);
         }
-      
+
         // Contact BLOCK.
-        // Later Iteration Add more than one contact
-        $this->entity->contactscount = isset($this->entity->contactscount) && $this->entity->contactscount > 0 ? $this->entity->contactscount : 1;
+        // Later Iteration Add more than one contact.
+        $this->entity->contactscount = isset($this->entity->contactscount) && $this->entity->contactscount > 0 ?
+        $this->entity->contactscount : 1;
         $mform->addElement('hidden', 'contactscount', $this->entity->contactscount);
         $mform->setType('contactscount', PARAM_INT);
         for ($j = 0; $j < $this->entity->contactscount; $j++) {
@@ -165,13 +167,13 @@ class entities_form extends moodleform {
             $mform->addElement('text', 'mail_'.$j, get_string('contacts_mail', 'local_entities'));
             $mform->setType('mail_'.$j, PARAM_TEXT);
         }
-        
+
         $mform->addElement('header', 'meta', 'Meta Infos');
         $handler->instance_form_definition($mform, $this->entity->id);
-       
+
         // FORM BUTTONS.
         $this->add_action_buttons();
-        //$handler->instance_form_before_set_data($course);
+        // ...$handler->instance_form_before_set_data($course);
         $mform->addElement('hidden', 'id', null);
         $mform->setType('id', PARAM_INT);
     }
@@ -199,7 +201,7 @@ class entities_form extends moodleform {
         $mform->addElement('text', 'mailaddress_'.$j, get_string('contacts_mailaddress', 'local_entities'));
     }
 
-    
+
     /**
      *
      * Set the page data.
@@ -224,7 +226,7 @@ class entities_form extends moodleform {
             'local_entities',
             'image',
             $defaults->id);
-        
+
         return parent::set_data($defaults);
     }
 

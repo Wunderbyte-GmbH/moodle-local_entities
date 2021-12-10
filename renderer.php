@@ -25,8 +25,6 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-//require_once($CFG->dirroot . '/local/entities/forms/edit.php');
-
 /**
  *
  * Class local_entities_renderer
@@ -53,7 +51,8 @@ class local_entities_renderer extends plugin_renderer_base
                     '<i class="fa fa-edit"></i>' .
                 get_string('edit', 'local_entities') . '</a> | ' .
                 '<a href="' . new moodle_url($CFG->wwwroot . '/local/entities/entities.php',
-                    array('del' => $parent, 'sesskey' => $USER->sesskey)) . '" class="btn btn--plain btn--smaller btn--primary btn_edit">' .
+                    array('del' => $parent, 'sesskey' => $USER->sesskey)) .
+                    '" class="btn btn--plain btn--smaller btn--primary btn_edit">' .
                     '<i class="fa fa fa-trash"></i>' .
                     get_string('delete', 'local_entities') . ' </a></div>';
             $html .= "<h4 class=''>" . $name . "</h4>";
@@ -75,7 +74,8 @@ class local_entities_renderer extends plugin_renderer_base
                     '<i class="fa fa fa-edit"></i>' .
                 get_string('edit', 'local_entities') . '</a> | ' .
                 '<a href="' . new moodle_url($CFG->wwwroot . '/local/entities/entities.php',
-                    array('del' => $parent, 'sesskey' => $USER->sesskey)) . '" class="btn btn--plain btn--smaller btn--primary btn_edit">' .
+                    array('del' => $parent, 'sesskey' => $USER->sesskey)) .
+                    '" class="btn btn--plain btn--smaller btn--primary btn_edit">' .
                     '<i class="fa fa fa-trash"></i>' .
                 get_string('delete', 'local_entities') . ' </a></div>';
             $html .= "<h4 class=''>" . $name . "</h4>";
@@ -94,8 +94,8 @@ class local_entities_renderer extends plugin_renderer_base
             $html .= $this->get_submenuitem($entity->id, $entity->name);
         }
 
-        $html .= "<li class='list-group-item'>
-                	<a href='" . new moodle_url($CFG->wwwroot . '/local/entities/edit.php') .
+        $html .= "<li class='list-group-item'><a href='"
+         . new moodle_url($CFG->wwwroot . '/local/entities/edit.php') .
             "' class='btn btn-smaller btn-primary pull-right'>" .
             '<i class="fa fa-plus"></i> ' .
              get_string("addentity", "local_entities") . "</a></li>";
@@ -104,23 +104,6 @@ class local_entities_renderer extends plugin_renderer_base
         return $html;
     }
 
-    /**
-     *
-     * Show the entity information to edit
-     *
-     * @param bool $entity
-     */
-    public function edit_entity($entity = false) {
-        $mform = new entities_form($entity);
-        $forform = new stdClass();
-        $forform->description['text'] = $entity->description;
-        $forform->name = $entity->name;
-        $forform->id = $entity->id;
-        $forform->parentid = $entity->parentid;
-        $forform->sortorder  = $entity->sortorder;
-        $mform->set_data($forform);
-        $mform->display();
-    }
 
     /**
      *
@@ -149,7 +132,7 @@ class local_entities_renderer extends plugin_renderer_base
             $canaccess = true;
             foreach ($records as $entity) {
                 if (isset($entity->accesslevel) && stripos($entity->accesslevel, ":") !== false) {
-                    $canaccess = false;        // entity Has level Requirements - check rights.
+                    $canaccess = false;
                     $levels = explode(",", $entity->accesslevel);
                     foreach ($levels as $level) {
                         if ($canaccess != true) {

@@ -18,7 +18,7 @@
  * @package    local_entities
  * @copyright  2021 Wunderbyte GmbH
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
-*/
+ */
 
 defined('MOODLE_INTERNAL') || die;
 
@@ -42,7 +42,7 @@ function local_entities_extend_navigation($navigation) {
     $nodecreatecourse = $nodehome->add($pluginname, $link, navigation_node::NODETYPE_LEAF, $pluginname, 'entities', $icon);
     $nodecreatecourse->showinflatnavigation = true;
 }
-//TODO add pluginfile
+
 /**
  *
  * Get saved files for the page

@@ -57,7 +57,7 @@ class settings_manager {
 
     /**
      * entity constructor.
-     * 
+     *
      */
     public function __construct(int $id = null) {
         $this->id = $id;
@@ -112,7 +112,7 @@ class settings_manager {
         }
         if (isset($data->id) && $data->id > 0) {
             $this->update_entity($data);
-            // TODO Check if address id exists -> than update else create new address  
+            // TODO Check if address id exists -> than update else create new address.
             for ($i = 0; $i < $data->addresscount; $i++) {
                 $this->update_address($data, $i);
             }
@@ -151,7 +151,7 @@ class settings_manager {
         global $DB;
         $recordaddress = $this->prepare_address($data, $index);
         $recordaddress->entityidto = $data->id;
-        if ($recordaddress->id == 0) { 
+        if ($recordaddress->id == 0) {
             $result = $DB->insert_record('local_entities_address', $recordaddress);
         } else {
             $result = $DB->update_record('local_entities_address', $recordaddress);
@@ -282,7 +282,7 @@ class settings_manager {
                 $formdata->{'city_' . $i} = $address->city;
                 $formdata->{'postcode_' . $i} = $address->postcode;
                 $formdata->{'streetname_' . $i} = $address->streetname;
-                $formdata->{'streetnumber_' . $i} = $address->streetnumber; 
+                $formdata->{'streetnumber_' . $i} = $address->streetnumber;
                 $i++;
             }
         } else {
@@ -370,8 +370,8 @@ class settings_manager {
     public function delete() {
         global $DB;
         $DB->delete_records('local_entities', array('id' => $this->id));
-        //$DB->delete_records('local_addresses', $this->data);
-        //$DB->delete_records('local_contacts', $this->data); 
+        // $DB->delete_records('local_addresses', $this->data);.
+        // $DB->delete_records('local_contacts', $this->data);.
     }
 
     /**

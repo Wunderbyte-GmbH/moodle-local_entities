@@ -28,7 +28,7 @@ use local_entities\settings_manager;
 
 require_once('../../config.php');
 
-global $USER,$DB;
+global $USER, $DB;
 
 $context = \context_system::instance();
 $PAGE->set_context($context);
@@ -46,11 +46,11 @@ echo $OUTPUT->header();
 $test = $DB->get_record('local_entities', ['id' => 1]);
 /* test input */
 
-$enity_manager = new settings_manager();
-$out = $enity_manager->get_settings('5');
+$enitymanager = new settings_manager();
+$out = $enitymanager->get_settings('5');
 
-$json_pretty = json_encode($out, JSON_PRETTY_PRINT);
-echo "<pre>".$json_pretty."<pre/>";
+$jsonpretty = json_encode($out, JSON_PRETTY_PRINT);
+echo "<pre>".$jsonpretty."<pre/>";
 
 /*
 $data = new stdClass();
