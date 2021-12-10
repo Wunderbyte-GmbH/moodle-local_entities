@@ -132,6 +132,11 @@ class settings_manager {
                 }
             }
         }
+        if (!isset($data->image_filemanager)) {
+            $data = $this->prepare_image($data, $result);
+        }
+
+        $data->picture = "test";
         return $result;
     }
 
@@ -196,6 +201,24 @@ class settings_manager {
         if ($recordcontacts->id == 0) {
             return $DB->insert_record('local_entities_contacts', $recordcontacts);
         }
+    }
+
+    /**
+     *
+     * This is to update the entity based on the data object
+     *
+     * @param stdClass $data
+     * @param int $result
+     * @return stdClass $addressdata
+     * @return null
+     */
+    public function prepare_image($data, $i): stdClass {
+        if (isset($data->ogimage_filemanager)) {
+            $context = \context_system::instance();
+            $options = array('subdirs' => 0, 'maxbytes' => 204800, 'maxfiles' => 1, 'accepted_types' => '*');
+            $data = file_postupdate_standard_filemanager($data, 'image', $options, $context->id, 'local_entities', 'image', $i);
+        }
+        return $data;
     }
 
     /**
@@ -332,8 +355,8 @@ class settings_manager {
         $record = $DB->get_record('local_entities', array('id' => $entityid));
         $address = $DB->get_records('local_entities_address', array('entityidto' => $entityid));
         $contacts = $DB->get_records('local_entities_contacts', array('entityidto' => $entityid));
-        $record->address[] = $address ? $address : null;
-        $record->contacts[] = $contacts ? $contacts : null;
+        $record->address = $address ? $address : null;
+        $record->contacts = $contacts ? $contacts : null;
         return $record;
     }
 

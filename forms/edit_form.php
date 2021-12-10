@@ -230,17 +230,18 @@ class entities_form extends moodleform {
 
     /**
      *
-     * Show the entity information to edit
+     * Get Categories from Customfield Categories
      *
      * @param bool $entity
+     * @return array $categorynames
      */
-    public function get_customfieldcategories(local_entities\customfield\entities_handler $handler) {
+    public function get_customfieldcategories(local_entities\customfield\entities_handler $handler): array {
         $categories = $handler->get_categories_with_fields();
         $categorynames['0'] = get_string("none", "local_entities");
         foreach ($categories as $category) {
             $name = $category->get('name');
             $id = $category->get('id');
-            $categorynames[$id] = $name;
+            $categorynames[$id . '_' . $name] = $name;
         }
         return $categorynames;
     }

@@ -18,8 +18,8 @@
  * Local entities Renderer
  *
  * @package     local_entities
- * @author      Kevin Dibble
- * @copyright   2017 LearningWorks Ltd
+ * @author      Thomas Winkler
+ * @copyright   2021 Wunderbyte GmbH
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -31,17 +31,11 @@ defined('MOODLE_INTERNAL') || die;
  *
  * Class local_entities_renderer
  *
- * @copyright   2017 LearningWorks Ltd
+ * @copyright   2021 Wunderbyte GmbH
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class local_entities_renderer extends plugin_renderer_base
 {
-
-    /**
-     * @var array
-     */
-    public $errorfields = array();
-
 
     public function get_submenuitem($parent, $name) {
         global $DB, $CFG, $USER;
@@ -50,7 +44,7 @@ class local_entities_renderer extends plugin_renderer_base
         if ($records) {
             $html .= "<li class='list-group-item'>";
             $html .= '<div class="pull-right">' .
-                '<a href="' . new moodle_url($CFG->wwwroot . '/local/entities/',
+                '<a href="' . new moodle_url($CFG->wwwroot . '/local/entities/view.php',
                     array('id' => $parent)) . '" class="btn btn--plain btn--smaller btn--primary btn_edit">' .
                     '<i class="fa fa-edit"></i>' .
                 get_string('view', 'local_entities') . '</a> | ' .
@@ -72,7 +66,7 @@ class local_entities_renderer extends plugin_renderer_base
         } else {
             $html .= "<li class='list-group-item'>";
             $html .= '<div class="pull-right">' .
-                '<a href="' . new moodle_url($CFG->wwwroot . '/local/entities/',
+                '<a href="' . new moodle_url($CFG->wwwroot . '/local/entities/view.php',
                     array('id' => $parent)) . '" class="btn btn--plain btn--smaller btn--primary btn_edit">' .
                     '<i class="fa fa fa-edit"></i>' .
                 get_string('view', 'local_entities') . '</a> | ' .
@@ -89,6 +83,7 @@ class local_entities_renderer extends plugin_renderer_base
         }
         return $html;
     }
+
     public function list_entities() {
         global $DB, $CFG;
 
@@ -102,7 +97,7 @@ class local_entities_renderer extends plugin_renderer_base
         $html .= "<li class='list-group-item'>
                 	<a href='" . new moodle_url($CFG->wwwroot . '/local/entities/edit.php') .
             "' class='btn btn-smaller btn-primary pull-right'>" .
-            '<i class="fa fa-plus"></i>' .
+            '<i class="fa fa-plus"></i> ' .
              get_string("addentity", "local_entities") . "</a></li>";
 
         $html .= "</ul>";

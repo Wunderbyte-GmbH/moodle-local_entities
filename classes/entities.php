@@ -52,7 +52,7 @@ class entities {
      */
     public static function list_all_entities(): array {
         global $DB;
-        return $DB->get_records_sql("SELECT * FROM {local_entities} ORDER BY sortorder");
+        return $DB->get_records_sql("SELECT * FROM {local_entities} ORDER BY  sortorder, timecreated");
     }
 
     /**

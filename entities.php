@@ -53,8 +53,6 @@ $renderer = $PAGE->get_renderer('local_entities');
 echo $OUTPUT->header();
 
 echo $renderer->list_entities();
-$data = new stdClass();
-echo $OUTPUT->render_from_template('local_entities/entities', $data);
-echo $OUTPUT->render_from_template('local_entities/bookingcard', $data);
+
 
 echo $OUTPUT->footer();
