@@ -1,35 +1,4 @@
-Skip to content
-Search or jump to…
-Pull requests
-Issues
-Marketplace
-Explore
- 
-@winnidat 
-Wunderbyte-GmbH
-/
-moodle-local_wunderbyte_table
-Public
-2
-0
-0
-Code
-Issues
-Pull requests
-Actions
-Projects
-Wiki
-Security
-Insights
-Settings
-moodle-local_wunderbyte_table/amd/src/init.js /
-
-georgmaisser Include js call inside (to make it work also with Ajax)
-Latest commit 7869ef3 on 26 Oct
- History
- 1 contributor
-262 lines (237 sloc)  8.71 KB
-   
+  
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
