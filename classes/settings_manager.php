@@ -151,10 +151,15 @@ class settings_manager {
         global $DB;
         $recordaddress = $this->prepare_address($data, $index);
         $recordaddress->entityidto = $data->id;
-        if ($recordaddress->id == 0) {
-            $result = $DB->insert_record('local_entities_address', $recordaddress);
-        } else {
-            $result = $DB->update_record('local_entities_address', $recordaddress);
+        if ($recordaddress->del == 1) {
+            $this->delete_address($recordaddress->id);
+            $result = 0;
+        } else if ($recordaddress->id != -1) {
+            if ($recordaddress->id == 0) {
+                $result = $DB->insert_record('local_entities_address', $recordaddress);
+            } else {
+                $result = $DB->update_record('local_entities_address', $recordaddress);
+            }
         }
         return $result;
     }
@@ -231,15 +236,17 @@ class settings_manager {
      */
     public function prepare_address($data, $i): stdClass {
         $addressdata = new stdClass();
-        if (!empty($data->city) && $data->postcode > 0) {
+        if (!empty($data->{'city_' . $i}) && $data->{'postcode_' . $i} > 0) {
             $addressdata->id = isset($data->{'addressid_' . $i}) ? $data->{'addressid_' . $i} : 0;
             $addressdata->country = $data->{'country_' . $i};
             $addressdata->city = $data->{'city_' . $i};
             $addressdata->postcode = $data->{'postcode_' . $i};
             $addressdata->streetname = $data->{'streetname_' . $i};
             $addressdata->streetnumber = $data->{'streetnumber_' . $i};
+            $addressdata->del = 0;
         } else {
-            $addressdata->id = null;
+            $addressdata->id = isset($data->{'addressid_' . $i}) ? $data->{'addressid_' . $i} : 0;
+            $addressdata->del = isset($data->{'addressid_' . $i}) ? 1 : 0;
         }
         return $addressdata;
     }
@@ -394,6 +401,15 @@ class settings_manager {
         $handler->delete_instance();
     }
 
+    /**
+     *
+     * This is to delete an entity via webservice
+     *
+     */
+    public static function delete_address($id) {
+        global $DB;
+        $DB->delete_records('local_entities_address', array('id' => $id));
+    }
 
 
 

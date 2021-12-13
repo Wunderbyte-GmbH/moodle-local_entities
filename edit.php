@@ -97,17 +97,17 @@ $PAGE->set_title($title);
 $PAGE->set_heading($heading);
 
 $PAGE->requires->js_call_amd('local_entities/customfield', 'init');
+
 echo $OUTPUT->header();
+echo '<div style="max-width: 900px">';
 
 printf('<h1 class="page__title">%s<a style="float:right;font-size:15px" href="' .
     new moodle_url($CFG->wwwroot . '/local/entities/entities.php') . '"> '.
     get_string('backtolist', 'local_entities') .'</a></h1>',
     $title);
 
-
-
 $mform->display();
-
+echo '</div>';
 
 echo $OUTPUT->footer();
 

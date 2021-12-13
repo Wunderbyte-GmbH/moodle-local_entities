@@ -33,9 +33,9 @@ function reloadCats() {
         if (i + 1 == catid) { 
             catfieldsets[i].hidden = false;
             catfieldsets[i].disabled = false;
-        } else {         
+        } else {     
+        catfieldsets[i].disabled = true;    
         catfieldsets[i].hidden = true;
-        catfieldsets[i].disabled = true;
         }
     }
 }
@@ -45,4 +45,28 @@ function addEvents() {
     select.addEventListener('change', () => {
         reloadCats();
     });
+    let form  = document.querySelector('.mform');
+    form.addEventListener('submit', () => {
+        removeInputs();
+        alert("remove");
+    });
+}
+
+
+// TODO disabled fields get sent WHYYYYYYY?
+function removeInputs() {
+    let catfieldsets = document.querySelectorAll('[id^=id_category]');
+    for (var i = 0, len = catfieldsets.length + 0; i < len; i++) {
+        if (catfieldsets[i].hidden == true) { 
+            catfieldsets[i].remove();
+        } 
+    }
+}
+
+function addAddress() {
+
+}
+
+function addContacts() {
+    
 }
