@@ -96,7 +96,7 @@ if ($mform->is_cancelled()) {
 $PAGE->set_title($title);
 $PAGE->set_heading($heading);
 
-
+$PAGE->requires->js_call_amd('local_entities/customfield', 'init');
 echo $OUTPUT->header();
 
 printf('<h1 class="page__title">%s<a style="float:right;font-size:15px" href="' .
@@ -105,14 +105,8 @@ printf('<h1 class="page__title">%s<a style="float:right;font-size:15px" href="' 
     $title);
 
 
-ob_start("callback");
-$mform->display();
-$result = ob_get_contents();
-ob_end_flush();
 
-function callback($buffer) {
-    return ($buffer);      
-}
+$mform->display();
 
 
 echo $OUTPUT->footer();

@@ -1,4 +1,3 @@
-  
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -15,26 +14,23 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /*
- * @package    local_wunderbyte_table
+ * @package    local_entities
  * @copyright  Wunderbyte GmbH <info@wunderbyte.at>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-/**
- * Gets called from mustache template.
- * @param {string} catid
- * @param {string} encodedtable
- */
 export const init = () => {
     reloadCats();
     addEvents();
 };
 
 function reloadCats() {
-    catfieldsets = document.querySelectorAll('[id^=id_category]');
-    select = document.getElementById('id_type').value;
+    let catfieldsets = document.querySelectorAll('[id^=id_category]');
+    let select = document.getElementById('id_type').value;
+    let selectsplit = select.split('_');
+    let catid = selectsplit[0];
     for (var i = 0, len = catfieldsets.length + 0; i < len; i++) {
-        if (i + 1 == select) { 
+        if (i + 1 == catid) { 
             catfieldsets[i].hidden = false;
             catfieldsets[i].disabled = false;
         } else {         
@@ -45,23 +41,8 @@ function reloadCats() {
 }
 
 function addEvents() {
-    select = document.getElementById('id_type');
+    let select = document.getElementById('id_type');
     select.addEventListener('change', () => {
-        loadCategories();
+        reloadCats();
     });
-}
-
-function fillform() {
-    length = 6;
-    digits = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    
-    let str = '';
-    for( i = 0; i < length; i++ ) str += digits.charAt( Math.floor( Math.random() * digits.length ) );
-  
-    let fields = document.querySelectorAll('form input:not([type="submit"]');
-
-    for (i = 0; i<fields.length-2;i++) {
-        fields[i].value = str;
-    }
-    document.querySelector('#id_descriptioneditable').innerHTML  = str;
 }
