@@ -46,6 +46,5 @@ $outputpage = new \core_customfield\output\management($handler);
 echo $output->render($outputpage);
 //echo $renderer->list_entities();
 
-
 echo $OUTPUT->footer();
 

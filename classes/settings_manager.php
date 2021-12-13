@@ -15,7 +15,6 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * local pages
  *
  * @package     local_entities
  * @author      Thomas Winkler
@@ -386,11 +385,11 @@ class settings_manager {
         $handler->delete_instance();
     }
 
-    
     /**
      *
      * This is to delete an entity via webservice
      *
+     * @param int $id of entitiy
      */
     public static function deletews($id) {
         global $DB;
@@ -403,14 +402,25 @@ class settings_manager {
 
     /**
      *
-     * This is to delete an entity via webservice
+     * This is to delete a address entry
      *
+     * @param int $id of address
      */
     public static function delete_address($id) {
         global $DB;
         $DB->delete_records('local_entities_address', array('id' => $id));
     }
 
+    /**
+     *
+     * This is to delete a contact entry
+     *
+     * @param int $id of contact entry
+     */
+    public static function delete_contacts($id) {
+        global $DB;
+        $DB->delete_records('local_entities_contacts', array('id' => $id));
+    }
 
 
     /**

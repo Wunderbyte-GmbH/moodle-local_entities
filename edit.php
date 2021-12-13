@@ -83,14 +83,13 @@ if ($mform->is_cancelled()) {
     $recordentity->type = $data->type;
     $recordentity->parentid = intval($data->parentid);
     $recordentity->description = $data->description['text'];
-    
     $result = $settingsmanager->update_or_createentity($recordentity);
     if ($result && $result > 0) {
         $options = array('subdirs' => 0, 'maxbytes' => 204800, 'maxfiles' => 1, 'accepted_types' => '*');
         if (isset($data->image_filemanager)) {
             file_postupdate_standard_filemanager($data, 'image', $options, $context, 'local_entities', 'image', $result);
         }
-        redirect(new moodle_url($CFG->wwwroot . '/local/entities/edit.php', array('id' => $result)));
+        redirect(new moodle_url($CFG->wwwroot . '/local/entities/entities.php'));
     }
 }
 $PAGE->set_title($title);
@@ -101,7 +100,7 @@ $PAGE->requires->js_call_amd('local_entities/customfield', 'init');
 echo $OUTPUT->header();
 echo '<div style="max-width: 900px">';
 
-printf('<h1 class="page__title">%s<a style="float:right;font-size:15px" href="' .
+printf('<h1 class="page__title">%s<a class="btn btn-primary" style="float:right;font-size:15px" href="' .
     new moodle_url($CFG->wwwroot . '/local/entities/entities.php') . '"> '.
     get_string('backtolist', 'local_entities') .'</a></h1>',
     $title);

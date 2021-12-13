@@ -93,7 +93,7 @@ $entity->metadata = $metadata;
 $entity->description = file_rewrite_pluginfile_urls($entity->description, 'pluginfile.php',
 $context->id, 'local_entity', 'description', null);
 
-
+$entity->isopen = $entity->open ? 'checked' : '';
 $entity->picture = isset($url) ? $url : null;
 $entity->hasaddress = isset($entity->address);
 $entity->hascontacts = isset($entity->contacts);
