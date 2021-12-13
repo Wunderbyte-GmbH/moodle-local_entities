@@ -169,11 +169,11 @@ class settings_manager {
     private function create_address(stdClass $data, int $index): int {
         global $DB;
         $recordaddress = $this->prepare_address($data, $index);
-        if ($recordaddress->id == 0) {
+        if (isset($recordaddress->id)) {
             $recordaddress->entityidto = $data->id;
             return $DB->insert_record('local_entities_address', $recordaddress);
         }
-
+        return 0;
     }
 
     private function update_contacts(stdClass $data, int $index): int {
@@ -231,12 +231,16 @@ class settings_manager {
      */
     public function prepare_address($data, $i): stdClass {
         $addressdata = new stdClass();
-        $addressdata->id = isset($data->{'addressid_' . $i}) ? $data->{'addressid_' . $i} : 0;
-        $addressdata->country = $data->{'country_' . $i};
-        $addressdata->city = $data->{'city_' . $i};
-        $addressdata->postcode = $data->{'postcode_' . $i};
-        $addressdata->streetname = $data->{'streetname_' . $i};
-        $addressdata->streetnumber = $data->{'streetnumber_' . $i};
+        if (!empty($data->city) && $data->postcode > 0) {
+            $addressdata->id = isset($data->{'addressid_' . $i}) ? $data->{'addressid_' . $i} : 0;
+            $addressdata->country = $data->{'country_' . $i};
+            $addressdata->city = $data->{'city_' . $i};
+            $addressdata->postcode = $data->{'postcode_' . $i};
+            $addressdata->streetname = $data->{'streetname_' . $i};
+            $addressdata->streetnumber = $data->{'streetnumber_' . $i};
+        } else {
+            $addressdata->id = null;
+        }
         return $addressdata;
     }
 
@@ -370,8 +374,8 @@ class settings_manager {
     public function delete() {
         global $DB;
         $DB->delete_records('local_entities', array('id' => $this->id));
-        // $DB->delete_records('local_addresses', $this->data);.
-        // $DB->delete_records('local_contacts', $this->data);.
+        $DB->delete_records('local_addresses', array('enityto' => $this->id));
+        $DB->delete_records('local_contacts', array('enityto' => $this->id));
     }
 
     /**

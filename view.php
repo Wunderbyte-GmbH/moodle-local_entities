@@ -94,9 +94,16 @@ $entity->description = file_rewrite_pluginfile_urls($entity->description, 'plugi
 $context->id, 'local_entity', 'description', null);
 
 
-$entity->picture = $url;
-$entity->addresscleaned = array_values($entity->address);
-$entity->contactscleaned = array_values($entity->contacts);
+$entity->picture = isset($url) ? $url : null;
+$entity->hasaddress = isset($entity->address);
+$entity->hascontacts = isset($entity->contacts);
+$entity->haspicture = isset($entity->picture);
+if ($entity->hasaddress) {
+    $entity->addresscleaned = array_values($entity->address);
+}
+if ($entity->hascontacts) {
+    $entity->contactscleaned = array_values($entity->contacts);
+}
 if (isset($entity->type)) {
     $type = explode('_', $entity->type, 2);
     $entity->type = $type[1];
@@ -104,6 +111,9 @@ if (isset($entity->type)) {
 $entity->editurl = new moodle_url('/local/entities/edit.php', array( 'id' => $id));
 $entity->delurl = new moodle_url('/local/entities/entities.php', array( 'del' => $id , 'sesskey' => $USER->sesskey));
 $entity->description = format_text($entity->description, FORMAT_HTML);
+
+
+
 echo $OUTPUT->render_from_template('local_entities/view', $entity);
 
 

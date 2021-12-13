@@ -55,18 +55,88 @@
     letter-spacing: 3px;
   }
   .headerpill {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      font-size: 22px;
-      color: white;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 22px;
+    color: white;
   }
+ 
+    .switch {
+    position: absolute;
+    display: inline-block;
+    width: 60px;
+    height: 20px;
+    right: 5px;
+    top: 5px;
+    }
+
+
+    .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    }
+
+
+    .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+    }
+
+    .slider:before {
+    position: absolute;
+    content: "";
+    height: 12px;
+    width: 12px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+    }
+
+    input:checked + .slider {
+    background-color: green;
+    }
+
+    input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+    }
+
+    input:checked + .slider:before {
+    -webkit-transform: translateX(39px);
+    -ms-transform: translateX(39px);
+    transform: translateX(39px);
+    }
+
+    /* Rounded sliders */
+    .slider.round {
+    border-radius: 34px;
+    }
+
+    .slider.round:before {
+    border-radius: 50%;
+    }
 </style>
 
 <div class="card" style="max-width: 900px">
-<div class="card-header p-0 m-0">
+<div class="card-header p-0 m-0" style="min-height:60px; background: #fff">
     <div class="headerpill badge badge-info">{{type}}</div>
-    <img src="{{picture}}" class="w-100" alt="{{name}}-picture">
+    <label class="switch headerswitch">
+        <input type="checkbox">
+        <span class="slider round"></span>
+    </label>
+    {{#haspicture}}
+        <img src="{{picture}}" class="w-100" alt="{{name}}-picture">
+    {{/haspicture}}
 </div>
 <div class="card-header">
     <h3>{{name}}</h3>
@@ -74,7 +144,9 @@
 <div class="card-body">
     {{{description}}}
     <hr>
+    {{#hasaddress}}
     <div class="container-fluid">
+
     <div class="row">
         <div class="col-md-6">
         <i class="fa fa-map-marker fa-2x"></i>
@@ -94,19 +166,21 @@
                 {{/contactscleaned}}
             </ul>
         </div>
+        
     </div>
     </div>
     <hr>
+    {{/hasaddress}}
     <div class="container-fluid">
         
-
+    {{#metadata}}   
     <h5>Additonal Info</h5>
     <div class="row">
         <div class="col">
             {{{metadata}}}
         </div>
     </div>
-
+    {{/metadata}}   
     </div>
 
 </div>
@@ -114,6 +188,7 @@
 <div class="card-footer d-flex">
     <a class="btn" title="Ressource bearbeiten" href="{{editurl}}"><i class="fa fa-edit"></i> Bearbeiten</a>
       <div class="d-block ml-auto">
+
         <a data-confirm="Diese Ressource wirklich löschen?" class="btn" title="Ressource löschen" rel="nofollow" data-method="delete" href="{{delurl}}"><i class="fa fa-trash"></i> Löschen</a>
       </div>
   </div>

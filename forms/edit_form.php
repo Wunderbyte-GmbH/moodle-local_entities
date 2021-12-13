@@ -239,7 +239,7 @@ class entities_form extends moodleform {
      */
     public function get_customfieldcategories(local_entities\customfield\entities_handler $handler): array {
         $categories = $handler->get_categories_with_fields();
-        $categorynames['0'] = get_string("none", "local_entities");
+        $categorynames['0_none'] = get_string("none", "local_entities");
         foreach ($categories as $category) {
             $name = $category->get('name');
             $id = $category->get('id');
