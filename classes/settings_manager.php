@@ -367,16 +367,35 @@ class settings_manager {
 
     /**
      *
-     * This is to update or delete an entity if it does not exist
+     * This is to delete an entity
      *
-     * @return mixed
      */
     public function delete() {
         global $DB;
         $DB->delete_records('local_entities', array('id' => $this->id));
-        $DB->delete_records('local_addresses', array('enityto' => $this->id));
-        $DB->delete_records('local_contacts', array('enityto' => $this->id));
+        $DB->delete_records('local_entities_address', array('entityidto' => $this->id));
+        $DB->delete_records('local_entities_contacts', array('entityidto' => $this->id));
+        $handler = \local_entities\customfield\entities_handler::create($this->id);
+        $handler->delete_instance();
     }
+
+    
+    /**
+     *
+     * This is to delete an entity via webservice
+     *
+     */
+    public static function deletews($id) {
+        global $DB;
+        $DB->delete_records('local_entities', array('id' => $id));
+        $DB->delete_records('local_entities_address', array('entityidto' => $id));
+        $DB->delete_records('local_entities_contacts', array('entityidto' => $id));
+        $handler = \local_entities\customfield\entities_handler::create($id);
+        $handler->delete_instance();
+    }
+
+
+
 
     /**
      *
