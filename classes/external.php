@@ -20,14 +20,54 @@
  * @package local_entities
  * @category external
  * @copyright 2021 Wunderbyte Gmbh <info@wunderbyte.at>
+ * @author Rea Sutter
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
+require_once("$CFG->libdir/externallib.php");
+require_once("entities.php");
+
+use local_entities\entities;
+
 /**
  * Class local_entities_external
  */
 class local_entities_external extends external_api {
-    // TODO.
+
+    public static function list_all_entities_parameters(){
+        return new external_function_parameters(
+            array( )
+            );
+    }
+
+    public static function list_all_entities() {
+
+        $returned_entities = array();
+
+        $entities = entities::list_all_entities();
+        foreach ($entities as $entity) {
+            $entity_record = array();
+            $entity_record['id'] = $entity->id;
+            $entity_record['name'] = $entity->name;
+            $entity_record['description'] = $entity->description;
+            $returned_entities[] = $entity_record;
+        }
+
+        return $returned_entities;
+
+    }
+
+    public static function list_all_entities_returns() {
+        return new external_multiple_structure(
+            new external_single_structure(
+                array(
+                    'id'=> new external_value(PARAM_INT, 'id of the entity', VALUE_REQUIRED),
+                    'name' => new external_value(PARAM_TEXT, 'name of the entity' ,VALUE_REQUIRED),
+                    'description'=> new external_value(PARAM_TEXT, 'description of the entity' ,VALUE_OPTIONAL),
+                )
+            )
+        );
+    }
 }

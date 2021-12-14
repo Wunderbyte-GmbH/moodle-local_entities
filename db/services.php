@@ -22,10 +22,34 @@
  * @copyright 2021 Wunderbyte GmbH (info@wunderbyte.at)
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-/*TODO webservices
+//TODO webservices
+
 defined('MOODLE_INTERNAL') || die();
 
+$functions = array(
+        'local_entities_list_all_entities' => array(
+                'classname'   => 'local_entities_external',
+                'methodname'  => 'list_all_entities',
+                'classpath'   => 'local/entities/classes/entities.php',
+                'description' => 'fetches all entities',
+                'type'        => 'read',
+                'ajax'        => true,
+                'services' => array(),
+                'capabilities' => ''
+        ),
+);
+
 $services = array(
+        'Wunderbyte entities external' => array(
+                'functions' => array (
+                        'local_entities_list_all_entities'
+                ),
+                'restrictedusers' => 0,
+                'shortname' => 'local_entities_external',
+                'enabled' => 1
+        )
+);
+/*$services = array(
         'Wunderbyte entities external' => array(
                 'functions' => array (
                         'local_entities_copy_module'
