@@ -106,7 +106,8 @@ class entities_form extends moodleform {
 
         $mform->addElement('text', 'name', get_string('entity_name', 'local_entities'));
         $mform->setType('name', PARAM_TEXT);
-        $mform->addElement('checkbox', 'open', get_string('open', 'local_entities'), true);
+        $mform->addElement('checkbox', 'open', get_string('open', 'local_entities'));
+        $mform->setType('open', PARAM_BOOL);
         // IMAGE CONTENT.
         $options['subdirs'] = 0;
         $options['maxbytes'] = 204800;
@@ -121,7 +122,7 @@ class entities_form extends moodleform {
         $editoroptions = array('maxfiles' => EDITOR_UNLIMITED_FILES, 'noclean' => true, 'context' => $context);
 
         $mform->addElement('editor', 'description', get_string('entity_description', 'local_entities'),
-            '', $editoroptions); 
+            '', $editoroptions);
         $mform->addRule('description', null, 'required', null, 'client');
         $mform->setType('description', PARAM_RAW);
         $mform->addElement('select', 'parentid', get_string('entity_parent', 'local_entities'), $entities);
@@ -216,7 +217,7 @@ class entities_form extends moodleform {
             'local_entities', 'description', 0, array('subdirs' => true), $defaults->description['text']);
         $defaults->description['itemid'] = $draftideditor;
         $defaults->description['format'] = FORMAT_HTML;
-
+        $defaults->open = $defaults->open;
         $options = array('maxbytes' => 204800, 'maxfiles' => 1, 'accepted_types' => ['jpg, png']);
         $defaults->picture = file_prepare_standard_filemanager(
             $defaults,

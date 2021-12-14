@@ -52,6 +52,8 @@ class settings_manager {
 
     private $sortorder;
 
+    private $open;
+
     private $data;
 
     /**
@@ -283,6 +285,7 @@ class settings_manager {
         $formdata->parentid = $record->parentid;
         $formdata->sortorder  = $record->sortorder;
         $formdata->type  = $record->type;
+        $formdata->open  = $record->open;
         // Address.
         $i = 0;
         if ($record->address[0]) {

@@ -53,6 +53,7 @@ $settingsmanager = new \local_entities\settings_manager();
 
 
 if ($entityid) {
+    // Add record exists.
     $data = \local_entities\settings_manager::get_settings_forform($entityid);
     $mform = new entities_form($data);
     $handler = local_entities\customfield\entities_handler::create();
