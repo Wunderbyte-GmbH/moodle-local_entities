@@ -36,7 +36,7 @@ use local_entities\entities;
  */
 class local_entities_external extends external_api {
 
-    public static function list_all_entities_parameters(){
+    public static function list_all_entities_parameters() {
         return new external_function_parameters(
             array( )
             );
@@ -44,18 +44,18 @@ class local_entities_external extends external_api {
 
     public static function list_all_entities() {
 
-        $returned_entities = array();
+        $returnedentities = array();
 
         $entities = entities::list_all_entities();
         foreach ($entities as $entity) {
-            $entity_record = array();
-            $entity_record['id'] = $entity->id;
-            $entity_record['name'] = $entity->name;
-            $entity_record['description'] = $entity->description;
-            $returned_entities[] = $entity_record;
+            $entityrecord = array();
+            $entityrecord['id'] = $entity->id;
+            $entityrecord['name'] = $entity->name;
+            $entityrecord['description'] = $entity->description;
+            $returnedentities[] = $entityrecord;
         }
 
-        return $returned_entities;
+        return $returnedentities;
 
     }
 
@@ -63,9 +63,9 @@ class local_entities_external extends external_api {
         return new external_multiple_structure(
             new external_single_structure(
                 array(
-                    'id'=> new external_value(PARAM_INT, 'id of the entity', VALUE_REQUIRED),
-                    'name' => new external_value(PARAM_TEXT, 'name of the entity' ,VALUE_REQUIRED),
-                    'description'=> new external_value(PARAM_TEXT, 'description of the entity' ,VALUE_OPTIONAL),
+                    'id' => new external_value(PARAM_INT, 'id of the entity', VALUE_REQUIRED),
+                    'name' => new external_value(PARAM_RAW, 'name of the entity', VALUE_REQUIRED),
+                    'description' => new external_value(PARAM_RAW, 'description of the entity', VALUE_OPTIONAL),
                 )
             )
         );
