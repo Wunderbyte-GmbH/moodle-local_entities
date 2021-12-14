@@ -36,16 +36,24 @@ use local_entities\entities;
  */
 class local_entities_external extends external_api {
 
+    /**
+     * Describes the parameters for list_all_parameters.
+     *
+     * @return external_function_parameters
+     */
     public static function list_all_entities_parameters() {
         return new external_function_parameters(
             array( )
             );
     }
 
+    /**
+     * returns id, name and description of all local entities
+     *
+     * @return array of entities
+     */
     public static function list_all_entities() {
-
         $returnedentities = array();
-
         $entities = entities::list_all_entities();
         foreach ($entities as $entity) {
             $entityrecord = array();
@@ -59,6 +67,11 @@ class local_entities_external extends external_api {
 
     }
 
+    /**
+     * Describes the list_all_entities return value.
+     *
+     * @return external_single_structure
+     */
     public static function list_all_entities_returns() {
         return new external_multiple_structure(
             new external_single_structure(
