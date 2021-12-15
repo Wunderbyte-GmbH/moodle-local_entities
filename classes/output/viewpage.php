@@ -28,6 +28,10 @@ namespace local_entities\output;
 use renderable;
 use renderer_base;
 use templatable;
+use local_entities\settings_manager;
+use local_entities\customfield\entities_handler;
+use stdClass;
+use moodle_url;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -38,25 +42,59 @@ defined('MOODLE_INTERNAL') || die();
  */
 class viewpage implements renderable, templatable {
 
-    /**
-     * An array of headings
-     *
-     * @var array
-     */
-    protected $headings;
 
-    /**
-     * An array of rows
-     *
-     * @var array
-     */
-    protected $rows;
-
+    private $data;
     /**
      * Constructor.
-     * @param array $data
+     * @param settings_manager $data
      */
-    public function __construct(array $data) {
+    public function __construct(int $id) {
+        global $USER;
+        $data = settings_manager::get_settings($id);
+        $context = \context_system::instance();
+        $fs = get_file_storage();
+        $files = $fs->get_area_files($context->id, 'local_entities', 'image', $data->id);
+        foreach ($files as $file) {
+            $filename = $file->get_filename();
+            if ($file->get_filesize() > 0) {
+                $url = moodle_url::make_file_url('/pluginfile.php', '/1/local_entities/image/' . $data->id . '/' . $filename);
+            }
+        }
+
+        $handler = entities_handler::create($id);
+        $customfields = $handler->get_instance_data($id);
+        $customdata = '';
+        foreach ($customfields as $customfield) {
+            if (empty($customfield->get_value())) {
+                continue;
+            }
+            $cat = $customfield->get_field()->get_category()->get('name');
+            $metakey = $customfield->get_field()->get('name');
+            $customdata .= '<span><b>' . $metakey . '</b>: ' . $customfield->get_value() .'</span></br>';
+        }
+        $data->customdata = $customdata;
+        $data->url = $url;
+        $data->description = file_rewrite_pluginfile_urls($data->description, 'pluginfile.php',
+        $context->id, 'local_entity', 'description', null);
+
+        $data->isopen = $data->open ? 'checked' : '';
+        $data->picture = isset($url) ? $url : null;
+        $data->hasaddress = isset($data->address);
+        $data->hascontacts = isset($data->contacts);
+        $data->haspicture = isset($data->picture);
+        if ($data->hasaddress) {
+            $data->addresscleaned = array_values($data->address);
+        }
+        if ($data->hascontacts) {
+            $data->contactscleaned = array_values($data->contacts);
+        }
+        if (isset($data->type)) {
+            $type = explode('_', $data->type, 2);
+            $data->type = $type[1];
+        }
+        $data->editurl = new moodle_url('/local/entities/edit.php', array( 'id' => $data->id));
+        $data->delurl = new moodle_url('/local/entities/entities.php', array( 'del' => $data->id , 'sesskey' => $USER->sesskey));
+        $data->description = format_text($data->description, FORMAT_HTML);
         $this->data = $data;
     }
 
@@ -68,13 +106,9 @@ class viewpage implements renderable, templatable {
      */
     public function export_for_template(renderer_base $output) {
         $data = $this->data;
-
-        /*if (isset($data[''questions'])) {
-            foreach ($data['questions'] as $question) {
-                $question->replace_category_id_by_name();
-            }
-        }*/
-
         return $data;
     }
+
+
+
 }

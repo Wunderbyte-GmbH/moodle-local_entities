@@ -139,7 +139,7 @@
     {{/haspicture}}
 </div>
 <div class="card-header">
-    <h3>{{name}}</h3>
+    <h3><b>{{name}}</b></h3>
 </div>
 <div class="card-body">
     {{{description}}}
@@ -173,14 +173,14 @@
     {{/hasaddress}}
     <div class="container-fluid">
         
-    {{#metadata}}   
+    {{#customdata}}   
     <h5>Additonal Info</h5>
     <div class="row">
         <div class="col">
-            {{{metadata}}}
+            {{{customdata}}}
         </div>
     </div>
-    {{/metadata}}   
+    {{/customdata}}   
     </div>
 
 </div>

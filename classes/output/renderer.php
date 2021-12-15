@@ -22,10 +22,11 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace local_entites\output;
+namespace local_entities\output;
 
 use plugin_renderer_base;
 use templatable;
+use moodle_url;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -43,28 +44,170 @@ class renderer extends plugin_renderer_base {
      */
     public function render_viewpage(templatable $viewpage) {
         $data = $viewpage->export_for_template($this);
-        return $this->render_from_template('mod_mooduell/viewpage', $data);
+        return $this->render_from_template('local_entities/view', $data);
+    }
+
+
+    public function get_submenuitem($parent, $name) {
+        global $DB, $CFG, $USER;
+        $html = '';
+        $records = \local_entities\entities::list_all_subentities($parent);
+        if ($records) {
+            $html .= "<li class='list-group-item'>";
+            $html .= '<div class="pull-right">' .
+                '<a href="' . new moodle_url($CFG->wwwroot . '/local/entities/view.php',
+                    array('id' => $parent)) . '" class="btn btn--plain btn--smaller btn--primary btn_edit">' .
+                    '<i class="fa fa-edit"></i>' .
+                get_string('view', 'local_entities') . '</a> | ' .
+                '<a href="' . new moodle_url($CFG->wwwroot . '/local/entities/edit.php',
+                    array('id' => $parent)) . '" class="btn btn--plain btn--smaller btn--primary btn_edit">' .
+                    '<i class="fa fa-edit"></i>' .
+                get_string('edit', 'local_entities') . '</a> | ' .
+                '<a href="' . new moodle_url($CFG->wwwroot . '/local/entities/entities.php',
+                    array('del' => $parent, 'sesskey' => $USER->sesskey)) .
+                    '" class="btn btn--plain btn--smaller btn--primary btn_edit">' .
+                    '<i class="fa fa fa-trash"></i>' .
+                    get_string('delete', 'local_entities') . ' </a></div>';
+            $html .= "<h4 class=''>" . $name . "</h4>";
+            $html .= "<ul class='pl-4 border-0'>";
+            foreach ($records as $entity) {
+                $html .= $this->get_submenuitem($entity->id, $entity->name);
+            }
+            $html .= "</ul>";
+            $html .= "</li>";
+        } else {
+            $html .= "<li class='list-group-item'>";
+            $html .= '<div class="pull-right">' .
+                '<a href="' . new moodle_url($CFG->wwwroot . '/local/entities/view.php',
+                    array('id' => $parent)) . '" class="btn btn--plain btn--smaller btn--primary btn_edit">' .
+                    '<i class="fa fa fa-edit"></i>' .
+                get_string('view', 'local_entities') . '</a> | ' .
+                '<a href="' . new moodle_url($CFG->wwwroot . '/local/entities/edit.php',
+                    array('id' => $parent)) . '" class="btn btn--plain btn--smaller btn--primary btn_edit">' .
+                    '<i class="fa fa fa-edit"></i>' .
+                get_string('edit', 'local_entities') . '</a> | ' .
+                '<a href="' . new moodle_url($CFG->wwwroot . '/local/entities/entities.php',
+                    array('del' => $parent, 'sesskey' => $USER->sesskey)) .
+                    '" class="btn btn--plain btn--smaller btn--primary btn_edit">' .
+                    '<i class="fa fa fa-trash"></i>' .
+                get_string('delete', 'local_entities') . ' </a></div>';
+            $html .= "<h4 class=''>" . $name . "</h4>";
+            $html .= "</li>";
+        }
+        return $html;
+    }
+
+    public function list_entities() {
+        global $DB, $CFG;
+
+        $html = '<ul class="list-group mb-4">';
+        $html .= '<li class="list-group-item bg-light"><h4>Entity List</h4></li>';
+        $records = \local_entities\entities::list_all_entities();
+        foreach ($records as $entity) {
+            $html .= $this->get_submenuitem($entity->id, $entity->name);
+        }
+
+        $html .= "<li class='list-group-item'><a href='"
+         . new moodle_url($CFG->wwwroot . '/local/entities/edit.php') .
+            "' class='btn btn-smaller btn-primary pull-right'>" .
+            '<i class="fa fa-plus"></i> ' .
+             get_string("addentity", "local_entities") . "</a></li>";
+
+        $html .= "</ul>";
+        return $html;
+    }
+
+
+    /**
+     *
+     * Gets all the menu items
+     *
+     * @param mixed $parent
+     * @param string $name
+     * @param string $url
+     * @return string
+     */
+    public function get_menuitem($parent, $name, $url) {
+        global $DB, $CFG;
+        $context = context_system::instance();
+        $html = '';
+        $urllocation = new moodle_url($CFG->wwwroot . '/local/entities/', array('id' => $parent));
+        if (get_config('local_entities', 'cleanurl_enabled')) {
+            $urllocation = new moodle_url($CFG->wwwroot . '/local/entities/' . $url);
+        }
+        $today = date('U');
+        $records = $DB->get_records_sql("SELECT * FROM {local_entities} WHERE deleted=0 AND onmenu=1 " .
+            "AND entitytype='entity' AND entityparent=? AND entitydate <=? " .
+            "ORDER BY entityorder", array($parent, $today));
+        if ($records) {
+            $html .= "<li class='customentities_item'><a href='" . $urllocation . "'>" . $name . "</a>";
+            $html .= "<ul class='customentities_submenu'>";
+            $canaccess = true;
+            foreach ($records as $entity) {
+                if (isset($entity->accesslevel) && stripos($entity->accesslevel, ":") !== false) {
+                    $canaccess = false;
+                    $levels = explode(",", $entity->accesslevel);
+                    foreach ($levels as $level) {
+                        if ($canaccess != true) {
+                            if (stripos($level, "!") !== false) {
+                                $level = str_replace("!", "", $level);
+                                $canaccess = has_capability(trim($level), $context) ? false : true;
+                            } else {
+                                $canaccess = has_capability(trim($level), $context) ? true : false;
+                            }
+                        }
+                    }
+                }
+                if ($canaccess) {
+                    $html .= $this->get_menuitem($entity->id, $entity->entityname, $entity->menuname);
+                }
+            }
+            $html .= "</ul>";
+            $html .= "</li>";
+        } else {
+            $html .= "<li class='customentities_item'><a href='" . $urllocation . "'>" . $name . "</a></li>";
+        }
+        return $html;
     }
 
     /**
-     * Render viewpage students.
-     * @param templatable $viewpage
-     * @return bool|string
-     * @throws \moodle_exception
+     *
+     * Builds the menu for the entity
+     *
+     * @return string
      */
-    public function render_viewpagestudents(templatable $viewpage) {
-        $data = $viewpage->export_for_template($this);
-        return $this->render_from_template('mod_mooduell/viewpagestudents', $data);
-    }
-
-    /**
-     * Render a mooduell list of questions
-     * @param templatable $viewpage
-     * @return bool|string
-     * @throws \moodle_exception
-     */
-    public function render_viewquestions(templatable $viewpage) {
-        $data = $viewpage->export_for_template($this);
-        return $this->render_from_template('mod_mooduell/viewquestions', $data);
+    public function build_menu() {
+        global $DB;
+        $context = context_system::instance();
+        $dbman = $DB->get_manager();
+        $html = '';
+        if ($dbman->table_exists('local_entities')) {
+            $html = '<ul class="customentities_nav">';
+            $today = date('U');
+            $records = $DB->get_records_sql("SELECT * FROM {local_entities} WHERE deleted=0 AND onmenu=1 " .
+                "AND entitytype='entity' AND entityparent=0 AND entitydate <= ? ORDER BY entityorder", array($today));
+            $canaccess = true;
+            foreach ($records as $entity) {
+                if (isset($entity->accesslevel) && stripos($entity->accesslevel, ":") !== false) {
+                    $canaccess = false;
+                    $levels = explode(",", $entity->accesslevel);
+                    foreach ($levels as $key => $level) {
+                        if ($canaccess != true) {
+                            if (stripos($level, "!") !== false) {
+                                $level = str_replace("!", "", $level);
+                                $canaccess = has_capability(trim($level), $context) ? false : true;
+                            } else {
+                                $canaccess = has_capability(trim($level), $context) ? true : false;
+                            }
+                        }
+                    }
+                }
+                if ($canaccess) {
+                    $html .= $this->get_menuitem($entity->id, $entity->entityname, $entity->menuname);
+                }
+            }
+            $html .= "</ul>";
+        }
+        return $html;
     }
 }

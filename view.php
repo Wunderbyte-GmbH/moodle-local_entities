@@ -22,6 +22,7 @@
  * @copyright       2021 Wunderbyte GmbH
  * @license         http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later.
  */
+use local_entities\output\viewpage;
 
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 
@@ -47,77 +48,18 @@ $PAGE->set_pagelayout('standard');
 if ($id) {
         // Make the page name lowercase.
     $entity = \local_entities\settings_manager::get_settings($id);
-
-
-    // More page setup.
     $PAGE->set_title($entity->name);
-    //$PAGE->set_heading($entity->name);
-
-    // Generate the class name with the following naming convention {pagetype}-local-pages-{pagename}-{pageid}.
     $classname = "{$entity->type}-local-pages-{$entity->name}-{$id}";
-
-    // Now add that class name to the body of this page :).
     $PAGE->add_body_class($classname);
 }
 
 // Output the header.
 echo $OUTPUT->header();
 
-// Output the page content.
-//echo $renderer->showpage($custompage);
-$context = \context_system::instance();
-
-// Rendere Func       
-$fs = get_file_storage();
-$files = $fs->get_area_files($context->id, 'local_entities', 'image', $id);     
-foreach ($files as $file) {
-    $filename = $file->get_filename();
-    if ($file->get_filesize() > 0) {
-        $url = moodle_url::make_file_url('/pluginfile.php', '/1/local_entities/image/' . $id . '/' . $filename);
-    }
-}
-
-
-$handler = local_entities\customfield\entities_handler::create();
-$datas = $handler->get_instance_data($id);
-$metadata = '';
-foreach ($datas as $data) {
-    if (empty($data->get_value())) {
-        continue;
-    }
-    $cat = $data->get_field()->get_category()->get('name');
-    $metakey = $data->get_field()->get('name');
-    $metadata .= '<span><b>' . $metakey . '</b>: ' . $data->get_value() .'</span></br>';
-}
-$entity->metadata = $metadata;
-$entity->description = file_rewrite_pluginfile_urls($entity->description, 'pluginfile.php',
-$context->id, 'local_entity', 'description', null);
-
-$entity->isopen = $entity->open ? 'checked' : '';
-$entity->picture = isset($url) ? $url : null;
-$entity->hasaddress = isset($entity->address);
-$entity->hascontacts = isset($entity->contacts);
-$entity->haspicture = isset($entity->picture);
-if ($entity->hasaddress) {
-    $entity->addresscleaned = array_values($entity->address);
-}
-if ($entity->hascontacts) {
-    $entity->contactscleaned = array_values($entity->contacts);
-}
-if (isset($entity->type)) {
-    $type = explode('_', $entity->type, 2);
-    $entity->type = $type[1];
-}
-$entity->editurl = new moodle_url('/local/entities/edit.php', array( 'id' => $id));
-$entity->delurl = new moodle_url('/local/entities/entities.php', array( 'del' => $id , 'sesskey' => $USER->sesskey));
-$entity->description = format_text($entity->description, FORMAT_HTML);
-
-
-
-echo $OUTPUT->render_from_template('local_entities/view', $entity);
-
-
-
+$output = $PAGE->get_renderer('local_entities');
+$viewpage = new viewpage($id);
+$out = $output->render_viewpage($viewpage);
+echo $out;
 
 // Now output the footer.
 echo $OUTPUT->footer();

@@ -23,6 +23,9 @@
 
 
 use local_entities\settings_manager;
+use local_entities\output\viewpage;
+use local_entities\output;
+use local_entities\output\local_entities_renderer;
 
 require_once('../../config.php');
 
@@ -42,10 +45,12 @@ $PAGE->set_heading($title);
 
 echo $OUTPUT->header();
 
-$enitymanager = new settings_manager(4);
-$a = "asd";
-$jsonpretty = json_encode($enitymanager, JSON_PRETTY_PRINT);
-echo "<pre>".$jsonpretty."<pre/>";
+$output = $PAGE->get_renderer('local_entities');
+$viewpage = new viewpage(4);
+$out = $output->render_viewpage($viewpage);
+
+echo $out;
+
 
 /*
 $data = new stdClass();

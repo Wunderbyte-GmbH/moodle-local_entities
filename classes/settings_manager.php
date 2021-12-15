@@ -65,7 +65,7 @@ class settings_manager {
      *
      */
     public function __construct(int $id = null) {
-        if (isset($id)) {
+        if (isset($id) && $id > 0) {
             $this->id = $id;
             $this->data = new stdClass();
             $this->data = $this->get_settings($this->id);
@@ -291,25 +291,25 @@ class settings_manager {
      * @param stdClass $record
      * @return stdClass
      */
-    public static function db_to_form(stdClass $record, int $copy = 0): stdClass {
+    public function db_to_form(int $copy = 0): stdClass {
         $formdata = new stdClass();
         if ($copy) {
             $formdata->id = 0;
         } else {
-            $formdata->id = isset($record->id) ? $record->id : 0;
+            $formdata->id = isset($this->data->id) ? $this->data->id : 0;
         }
-        $formdata->name = $record->name;
-        $formdata->description['text'] = $record->description;
-        $formdata->name = $record->name;
-        $formdata->id = $record->id;
-        $formdata->parentid = $record->parentid;
-        $formdata->sortorder  = $record->sortorder;
-        $formdata->type  = $record->type;
-        $formdata->open  = $record->open;
+        $formdata->name = $this->data->name;
+        $formdata->description['text'] = $this->data->description;
+        $formdata->name = $this->data->name;
+        $formdata->id = $this->data->id;
+        $formdata->parentid = $this->data->parentid;
+        $formdata->sortorder  = $this->data->sortorder;
+        $formdata->type  = $this->data->type;
+        $formdata->open  = $this->data->open;
         // Address.
         $i = 0;
-        if ($record->address) {
-            foreach ($record->address as $address) {
+        if ($this->data->address) {
+            foreach ($this->data->address as $address) {
                 $formdata->{'addressid_' . $i} = $address->id;
                 $formdata->{'country_' . $i} = $address->country;
                 $formdata->{'city_' . $i} = $address->city;
@@ -326,8 +326,8 @@ class settings_manager {
 
         // Contacts.
         $j = 0;
-        if ($record->contacts) {
-            foreach ($record->contacts as $contact) {
+        if ($this->data->contacts) {
+            foreach ($this->data->contacts as $contact) {
                 $formdata->{'contactsid_' . $j} = $contact->id;
                 $formdata->{'givenname_' . $j} = $contact->givenname;
                 $formdata->{'surname_' . $j} = $contact->surname;
@@ -362,12 +362,12 @@ class settings_manager {
     /**
      * Given the entitiy id, get data from db formatted for moodle form.
      *
-     * @param int $copy 
+     * @param int $copy
      * @return stdClass
      * @throws dml_exception
      */
     public function get_settings_forform(int $copy = 0): stdClass {
-        return self::db_to_form($this->data, $copy);
+        return self::db_to_form($copy);
     }
 
     /**
