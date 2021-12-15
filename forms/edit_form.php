@@ -89,7 +89,7 @@ class entities_form extends moodleform {
         // Get a list of all entities.
         $none = get_string("none", "local_entities");
         $entities = array(0 => $none);
-        $allentities = local_entities\entities::list_all_entities();
+        $allentities = local_entities\entities::list_all_parent_entities();
         foreach ($allentities as $entity) {
             if ($entity->id != $this->callingentity) {
                 $entities[$entity->id] = $entity->name;

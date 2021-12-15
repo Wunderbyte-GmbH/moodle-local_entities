@@ -28,6 +28,7 @@ namespace local_entities;
 use stdClass;
 
 defined('MOODLE_INTERNAL') || die;
+
 require_once("$CFG->libdir/externallib.php");
 
 /**
@@ -47,13 +48,13 @@ class entities {
 
     /**
      *
-     * This is to return all entities from the database
+     * This is to return all parent entities from the database
      *
      * @return array Object
      */
-    public static function list_all_entities(): array {
+    public static function list_all_parent_entities(): array {
         global $DB;
-        $stmt = "SELECT * FROM {local_entities} ORDER BY  sortorder, timecreated";
+        $stmt = "SELECT * FROM {local_entities} WHERE parentid = '0' ORDER BY sortorder, timecreated";
         return $DB->get_records_sql($stmt);
     }
 

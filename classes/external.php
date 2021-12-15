@@ -52,9 +52,9 @@ class local_entities_external extends external_api {
      *
      * @return array of entities
      */
-    public static function list_all_entities() {
+    public static function list_all_parent_entities() {
         $returnedentities = array();
-        $entities = entities::list_all_entities();
+        $entities = entities::list_all_parent_entities();
         foreach ($entities as $entity) {
             $entityrecord = array();
             $entityrecord['id'] = $entity->id;

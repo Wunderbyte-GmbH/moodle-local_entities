@@ -89,7 +89,7 @@ class local_entities_renderer extends plugin_renderer_base
 
         $html = '<ul class="list-group mb-4">';
         $html .= '<li class="list-group-item bg-light"><h4>Entity List</h4></li>';
-        $records = \local_entities\entities::list_all_entities();
+        $records = \local_entities\entities::list_all_parent_entities();
         foreach ($records as $entity) {
             $html .= $this->get_submenuitem($entity->id, $entity->name);
         }
