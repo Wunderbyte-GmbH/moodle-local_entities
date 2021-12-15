@@ -77,7 +77,7 @@ class viewpage implements renderable, templatable {
         $data->description = file_rewrite_pluginfile_urls($data->description, 'pluginfile.php',
         $context->id, 'local_entities', 'description', null);
 
-        $data->isopen = $data->open ? 'checked' : '';
+        $data->isactive = $data->active ? 'checked' : '';
         $data->picture = isset($url) ? $url : null;
         $data->hasaddress = isset($data->address);
         $data->hascontacts = isset($data->contacts);
