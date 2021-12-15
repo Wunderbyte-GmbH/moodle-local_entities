@@ -60,6 +60,7 @@ class local_entities_external extends external_api {
             $entityrecord['id'] = $entity->id;
             $entityrecord['name'] = $entity->name;
             $entityrecord['description'] = $entity->description;
+            $entityrecord['type'] = $entity->type;
             $returnedentities[] = $entityrecord;
         }
 
@@ -79,6 +80,7 @@ class local_entities_external extends external_api {
                     'id' => new external_value(PARAM_INT, 'id of the entity', VALUE_REQUIRED),
                     'name' => new external_value(PARAM_RAW, 'name of the entity', VALUE_REQUIRED),
                     'description' => new external_value(PARAM_RAW, 'description of the entity', VALUE_OPTIONAL),
+                    'type' => new external_value(PARAM_RAW, 'type of the entity', VALUE_OPTIONAL),
                 )
             )
         );
