@@ -140,9 +140,6 @@ class entities_handler extends \core_customfield\handler {
         return true;
     }
 
-
-
-
     /**
      * Sets parent context for the course
      *
@@ -225,7 +222,6 @@ class entities_handler extends \core_customfield\handler {
      * @param \restore_task $task
      * @param array $data
      */
-    public function restore_instance_data_from_backup(\restore_task $task, array $data) {
-        
+    public function restore_instance_data_from_backup(\restore_task $task, array $data) {  
     }
 }

@@ -21,8 +21,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use local_entities\entity;
-use local_entities\entities;
 use local_entities\settings_manager;
 
 require_once('../../config.php');
@@ -49,10 +47,8 @@ $PAGE->set_heading($title);
 
 $renderer = $PAGE->get_renderer('local_entities');
 
-
 echo $OUTPUT->header();
 
 echo $renderer->list_entities();
-
 
 echo $OUTPUT->footer();

@@ -54,6 +54,10 @@ class settings_manager {
 
     private $open;
 
+    private $addresses = array();
+
+    private $contacts = array();
+
     private $data;
 
     /**
@@ -61,9 +65,20 @@ class settings_manager {
      *
      */
     public function __construct(int $id = null) {
-        $this->id = $id;
-        $this->data = new stdClass();
-        $this->data->id = $this->id;
+        if (isset($id)) {
+            $this->id = $id;
+            $this->data = new stdClass();
+            $this->data = $this->get_settings($this->id);
+            $this->name = $this->data->name;
+            $this->description = $this->data->description;
+            $this->parentid = $this->data->parentid;
+            $this->open = $this->data->open;
+            $this->type = $this->data->type;
+            $this->addresses = $this->data->address;
+            $this->contacts = $this->data->contacts;
+        } else {
+            $this->id = 0;
+        }
     }
 
     /**
@@ -203,10 +218,11 @@ class settings_manager {
     private function create_contacts(stdClass $data, int $index): int {
         global $DB;
         $recordcontacts = $this->prepare_contacts($data, $index);
-        $recordcontacts->entityidto = $data->id;
-        if ($recordcontacts->id == 0) {
-            return $DB->insert_record('local_entities_contacts', $recordcontacts);
+        if (isset($recordcontacts->id)) {
+            $recordcontacts->entityidto = $data->id;
+            return $DB->insert_record('local_entities_address', $recordcontacts);
         }
+        return 0;
     }
 
     /**
@@ -275,9 +291,13 @@ class settings_manager {
      * @param stdClass $record
      * @return stdClass
      */
-    public static function db_to_form(stdClass $record): stdClass {
+    public static function db_to_form(stdClass $record, int $copy = 0): stdClass {
         $formdata = new stdClass();
-        $formdata->id = isset($record->id) ? $record->id : 0;
+        if ($copy) {
+            $formdata->id = 0;
+        } else {
+            $formdata->id = isset($record->id) ? $record->id : 0;
+        }
         $formdata->name = $record->name;
         $formdata->description['text'] = $record->description;
         $formdata->name = $record->name;
@@ -288,8 +308,8 @@ class settings_manager {
         $formdata->open  = $record->open;
         // Address.
         $i = 0;
-        if ($record->address[0]) {
-            foreach ($record->address[0] as $address) {
+        if ($record->address) {
+            foreach ($record->address as $address) {
                 $formdata->{'addressid_' . $i} = $address->id;
                 $formdata->{'country_' . $i} = $address->country;
                 $formdata->{'city_' . $i} = $address->city;
@@ -306,8 +326,8 @@ class settings_manager {
 
         // Contacts.
         $j = 0;
-        if (($record->contacts[0])) {
-            foreach ($record->contacts[0] as $contact) {
+        if ($record->contacts) {
+            foreach ($record->contacts as $contact) {
                 $formdata->{'contactsid_' . $j} = $contact->id;
                 $formdata->{'givenname_' . $j} = $contact->givenname;
                 $formdata->{'surname_' . $j} = $contact->surname;
@@ -342,18 +362,12 @@ class settings_manager {
     /**
      * Given the entitiy id, get data from db formatted for moodle form.
      *
-     * @param int $entity
+     * @param int $copy 
      * @return stdClass
      * @throws dml_exception
      */
-    public static function get_settings_forform(int $entityid): stdClass {
-        global $DB;
-        $record = $DB->get_record('local_entities', array('id' => $entityid));
-        $address = $DB->get_records('local_entities_address', array('entityidto' => $entityid));
-        $contacts = $DB->get_records('local_entities_contacts', array('entityidto' => $entityid));
-        $record->address[] = $address ? $address : null;
-        $record->contacts[] = $contacts ? $contacts : null;
-        return self::db_to_form($record);
+    public function get_settings_forform(int $copy = 0): stdClass {
+        return self::db_to_form($this->data, $copy);
     }
 
     /**

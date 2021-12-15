@@ -29,32 +29,32 @@ require_once($CFG->dirroot . '/local/entities/forms/edit_form.php');
 use core_customfield\api;
 
 $entityid = optional_param('id', 0, PARAM_INT);
-$categoryid = optional_param('catid', 0, PARAM_INT);
+$copy = optional_param('copy', 0, PARAM_INT);
 $context = context_system::instance();
 
 global $USER, $PAGE;
 
 // Set PAGE variables.
 $PAGE->set_context($context);
-$PAGE->set_url($CFG->wwwroot . '/local/entities/edit.php', array("id" => $entityid));
+$PAGE->set_url($CFG->wwwroot . '/local/entities/edit.php', array("id" => $entityid, "copy" => $copy));
 
 // Force the user to login/create an account to access this page.
 require_login();
 
 // Add chosen Javascript to list.
-$PAGE->requires->jquery();
 
 $PAGE->set_pagelayout('standard');
 
 // Get the renderer for this page.
 //$renderer = $PAGE->get_renderer('local_entities');
 
-$settingsmanager = new \local_entities\settings_manager();
+
 
 
 if ($entityid) {
     // Add record exists.
-    $data = \local_entities\settings_manager::get_settings_forform($entityid);
+    $settingsmanager = new \local_entities\settings_manager($entityid);
+    $data = $settingsmanager->get_settings_forform($entityid, $copy);
     $mform = new entities_form($data);
     $handler = local_entities\customfield\entities_handler::create();
     $handler->instance_form_before_set_data($data);
@@ -78,7 +78,7 @@ if ($mform->is_cancelled()) {
     $data->entitydata = '';
     $recordentity = new stdClass();
     $recordentity = $data;
-    $recordentity->id = $data->id;
+    $recordentity->id = isset($data->id) ? $data->id : 0;
     $recordentity->name = $data->name;
     $recordentity->sortorder = intval($data->sortorder);
     $recordentity->type = $data->type;

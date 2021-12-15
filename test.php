@@ -21,9 +21,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use local_entities\entities;
-use local_entities\entity;
-use local_entities\entity_manager;
+
 use local_entities\settings_manager;
 
 require_once('../../config.php');
@@ -43,13 +41,10 @@ $PAGE->set_heading($title);
 
 
 echo $OUTPUT->header();
-$test = $DB->get_record('local_entities', ['id' => 1]);
-/* test input */
 
-$enitymanager = new settings_manager();
-$out = $enitymanager->get_settings('5');
-
-$jsonpretty = json_encode($out, JSON_PRETTY_PRINT);
+$enitymanager = new settings_manager(4);
+$a = "asd";
+$jsonpretty = json_encode($enitymanager, JSON_PRETTY_PRINT);
 echo "<pre>".$jsonpretty."<pre/>";
 
 /*

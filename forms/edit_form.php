@@ -60,9 +60,6 @@ class entities_form extends moodleform {
         parent::__construct();
     }
 
-
-
-
     /**
      *
      * Set the entity data.
