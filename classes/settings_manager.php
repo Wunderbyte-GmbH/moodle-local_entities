@@ -95,7 +95,7 @@ class settings_manager {
     /**
      * Entity constructor.
      *
-     * @param integer|null $id
+     * @param int|null $id
      */
     public function __construct(int $id = null) {
         if (isset($id) && $id > 0) {
@@ -333,7 +333,7 @@ class settings_manager {
     /**
      * Given a db record make it ready for the form.
      *
-     * @param integer $copy
+     * @param int $copy
      * @return stdClass
      */
     public function db_to_form(int $copy = 0): stdClass {

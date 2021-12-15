@@ -103,7 +103,7 @@ class local_entities_external extends external_api {
     }
 
     /**
-     * updates a number of fields in table local_entities from oldvalue to newvalue
+     * Updates a number of fields in table local_entities from oldvalue to newvalue.
      *
      * @return array of booleans
      */

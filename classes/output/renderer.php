@@ -33,7 +33,7 @@ defined('MOODLE_INTERNAL') || die();
 
 /**
  * Renderer class.
- * @package mod_mooduell
+ * @package local_entities
  */
 class renderer extends plugin_renderer_base {
 
@@ -48,7 +48,13 @@ class renderer extends plugin_renderer_base {
         return $this->render_from_template('local_entities/view', $data);
     }
 
-
+    /**
+     * Get Submenu item.
+     *
+     * @param int $parent
+     * @param string $name
+     * @return void
+     */
     public function get_submenuitem($parent, $name) {
         global $DB, $CFG, $USER;
         $html = '';
@@ -98,6 +104,11 @@ class renderer extends plugin_renderer_base {
         return $html;
     }
 
+    /**
+     * List entities.
+     *
+     * @return void
+     */
     public function list_entities() {
         global $DB, $CFG;
 

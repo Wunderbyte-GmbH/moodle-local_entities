@@ -16,7 +16,6 @@
 
 /**
  * Entities Class to display list of entity records.
- *
  * @package local_entities
  * @author Thomas Winkler
  * @copyright 2021 Wunderbyte GmbH
@@ -91,10 +90,10 @@ class entities
 
     /**
      *
-     * This is to return all children from parententity the database
+     * This is to return all children from parententity the database.
      *
      * @param integer $parentid
-     * @return array returns array of Objects
+     * @return array
      */
     public static function list_all_subentities(int $parentid): array {
         global $DB;

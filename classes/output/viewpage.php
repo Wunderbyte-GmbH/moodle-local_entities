@@ -49,7 +49,7 @@ class viewpage implements renderable, templatable {
     /**
      * Constructor.
      *
-     * @param integer $id
+     * @param int $id
      */
     public function __construct(int $id) {
         global $USER;

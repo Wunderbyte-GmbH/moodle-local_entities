@@ -235,8 +235,8 @@ class entities_form extends moodleform {
      *
      * Get Categories from Customfield Categories
      *
-     * @param bool $entity
-     * @return array $categorynames
+     * @param local_entities\customfield\entities_handler $handler
+     * @return array
      */
     public function get_customfieldcategories(local_entities\customfield\entities_handler $handler): array {
         $categories = $handler->get_categories_with_fields();
