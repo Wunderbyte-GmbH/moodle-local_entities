@@ -23,6 +23,9 @@ export const init = () => {
     addEvents();
 };
 
+/**
+ * Add Events.
+ */
 function addEvents() {
     let toggle = document.querySelector('.headerswitch input');
     toggle.addEventListener('change', () => {
@@ -30,6 +33,10 @@ function addEvents() {
     });
 }
 
+/**
+ * Set inactive.
+ */
 function setInactive() {
+    // eslint-disable-next-line no-alert
     alert("setinactive");
 }

@@ -202,8 +202,7 @@ class settings_manager {
 
     /**
      *
-     * This is to update or create one contact of an entity based on the index and based on existence
-     * 
+     * This is to update or create one contact of an entity based on the index and based on existence.
      *
      * @param stdClass $data
      * @param int $index of form contactfieldset
@@ -222,7 +221,7 @@ class settings_manager {
 
     /**
      *
-     * This is to create one contact for an entity based on the data object
+     * This is to create one contact for an entity based on the data object.
      *
      * @param stdClass $data
      * @param int $index of contact form fieldset
@@ -240,7 +239,7 @@ class settings_manager {
 
     /**
      *
-     * Prepares the image for the database
+     * Prepares the image for the database.
      *
      * @param stdClass $data
      * @param int $result
@@ -258,7 +257,7 @@ class settings_manager {
 
     /**
      *
-     * Prepares the address and deletes the postfixes from form "e.g. city_11 becomes city"
+     * Prepares the address and deletes the postfixes from form "e.g. city_11 becomes city".
      *
      * @param stdClass $data
      * @param stdClass $i index from form fieldset
@@ -358,7 +357,7 @@ class settings_manager {
 
     /**
      *
-     * Prepare contactdata object for DB (remove postfixes)
+     * Prepare contactdata object for DB (remove postfixes).
      *
      * @param stdClass $data
      * @param int $i
@@ -382,7 +381,7 @@ class settings_manager {
      * @throws dml_exception
      */
     public function get_settings_forform(int $copy = 0): stdClass {
-        return self::db_to_form($copy);
+        return $this->db_to_form($copy);
     }
 
     /**
@@ -404,7 +403,6 @@ class settings_manager {
 
 
     /**
-     *
      * This is to delete an entity and all data in different tables
      *
      */
@@ -414,7 +412,7 @@ class settings_manager {
         $DB->delete_records('local_entities_address', array('entityidto' => $this->id));
         $DB->delete_records('local_entities_contacts', array('entityidto' => $this->id));
         $handler = \local_entities\customfield\entities_handler::create($this->id);
-        $handler->delete_instance();
+        $handler->delete_instance($this->id);
     }
 
     /**
@@ -429,7 +427,7 @@ class settings_manager {
         $DB->delete_records('local_entities_address', array('entityidto' => $id));
         $DB->delete_records('local_entities_contacts', array('entityidto' => $id));
         $handler = \local_entities\customfield\entities_handler::create($id);
-        $handler->delete_instance();
+        $handler->delete_instance($id);
     }
 
     /**

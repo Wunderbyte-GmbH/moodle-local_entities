@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    local_entites
+ * @package    local_entities
  * @copyright  2021 Wunderbyte GmbH
  * @author     Thomas Winkler
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -44,7 +44,6 @@ $handler = local_entities\customfield\entities_handler::create();
 $outputpage = new \core_customfield\output\management($handler);
 
 echo $output->render($outputpage);
-//echo $renderer->list_entities();
 
 echo $OUTPUT->footer();
 

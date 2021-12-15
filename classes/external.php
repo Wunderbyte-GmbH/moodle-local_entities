@@ -86,7 +86,7 @@ class local_entities_external extends external_api {
             )
         );
     }
-    
+
     /**
      * Describes the parameters for list_all_parameters.
      *
@@ -101,7 +101,7 @@ class local_entities_external extends external_api {
             )
         );
     }
-    
+
     /**
      * updates a number of fields in table local_entities from oldvalue to newvalue
      *
@@ -113,31 +113,31 @@ class local_entities_external extends external_api {
         $transaction = $DB->start_delegated_transaction();
         $table = '{local_entities}';
         $allupdated = array();
-        
+
         foreach ($params['values'] as $value) {
             $value = (object)$value;
-            
-            if($value->name == '' or $value->oldvalue == '' or $value->newvalue == ''){
+
+            if ($value->name == '' or $value->oldvalue == '' or $value->newvalue == '') {
                 throw new invalid_parameter_exception('Invalid values.');
             }
-            
-            $conditions = array($value->name=>$value->oldvalue);
+
+            $conditions = array($value->name => $value->oldvalue);
             $id = $DB->get_record($table, $conditions, 'id');
-            if(!$id) {
+            if (!$id) {
                 throw new invalid_parameter_exception('Invalid values');
             }
             $value->id = $id;
             // TODO security checks -> after capabilities are implemented.
-            
-            $updated = entities::update_entities($value);
+
+            $updated = entities::update_entities((array)$value);
             $allupdated[] = $updated;
         }
         $transaction->allow_commit();
-        
+
         return $allupdated;
-        
+
     }
-    
+
     /**
      * all return values should be booleans
      *

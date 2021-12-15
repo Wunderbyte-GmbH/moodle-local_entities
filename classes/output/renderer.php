@@ -17,13 +17,14 @@
 /**
  * Plugin event observers are registered here.
  *
- * @package local_entites
+ * @package local_entities
  * @copyright 2021 Wunderbyte Gmbh <info@wunderbyte.at>
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 namespace local_entities\output;
 
+use context_system;
 use plugin_renderer_base;
 use templatable;
 use moodle_url;

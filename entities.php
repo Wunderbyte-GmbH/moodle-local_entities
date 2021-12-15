@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    local_entites
+ * @package    local_entities
  * @copyright  2021 Wunderbyte GmbH
  * @author     Thomas Winkler
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -31,7 +31,7 @@ $context = \context_system::instance();
 $PAGE->set_context($context);
 require_login();
 
-//add capability
+// Add capability.
 if ($delid !== 0) {
     if (confirm_sesskey()) {
         $entity = new settings_manager($delid);
