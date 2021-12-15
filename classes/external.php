@@ -26,6 +26,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+global $CFG;
 require_once("$CFG->libdir/externallib.php");
 require_once("entities.php");
 
@@ -83,6 +84,68 @@ class local_entities_external extends external_api {
                     'type' => new external_value(PARAM_RAW, 'type of the entity', VALUE_OPTIONAL),
                 )
             )
+        );
+    }
+    
+    /**
+     * Describes the parameters for list_all_parameters.
+     *
+     * @return external_function_parameters
+     */
+    public static function update_entities_parameters() {
+        return new external_function_parameters(
+            array(
+                'field' => new external_value(PARAM_TEXT, VALUE_REQUIRED),
+                'oldvalue' => new external_value(PARAM_RAW, VALUE_REQUIRED),
+                'newvalue' => new external_value(PARAM_RAW, VALUE_REQUIRED),
+            )
+        );
+    }
+    
+    /**
+     * updates a number of fields in table local_entities from oldvalue to newvalue
+     *
+     * @return array of booleans
+     */
+    public static function update_entities($values) {
+        global $DB;
+        $params = self::validate_parameters(self::update_entities_parameters(), (array('values' => $values)));
+        $transaction = $DB->start_delegated_transaction();
+        $table = '{local_entities}';
+        $allupdated = array();
+        
+        foreach ($params['values'] as $value) {
+            $value = (object)$value;
+            
+            if($value->name == '' or $value->oldvalue == '' or $value->newvalue == ''){
+                throw new invalid_parameter_exception('Invalid values.');
+            }
+            
+            $conditions = array($value->name=>$value->oldvalue);
+            $id = $DB->get_record($table, $conditions, 'id');
+            if(!$id) {
+                throw new invalid_parameter_exception('Invalid values');
+            }
+            $value->id = $id;
+            // TODO security checks -> after capabilities are implemented.
+            
+            $updated = entities::update_entities($value);
+            $allupdated[] = $updated;
+        }
+        $transaction->allow_commit();
+        
+        return $allupdated;
+        
+    }
+    
+    /**
+     * all return values should be booleans
+     *
+     * @return external_value (boolean)
+     */
+    public static function update_entities_returns() {
+        return new external_value(
+            PARAM_BOOL, 'indicates success of update', VALUE_REQUIRED
         );
     }
 }

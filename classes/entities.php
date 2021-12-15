@@ -8,43 +8,44 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+// along with Moodle. If not, see <http://www.gnu.org/licenses/>.
 
 /**
  * local pages
  *
- * @package     local_entities
- * @author      Thomas Winkler
- * @copyright   2021 Wunderbyte GmbH
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package local_entities
+ * @author Thomas Winkler
+ * @copyright 2021 Wunderbyte GmbH
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 namespace local_entities;
 
 use stdClass;
+defined('MOODLE_INTERNAL') || die();
 
-defined('MOODLE_INTERNAL') || die;
+global $CFG;
 
-require_once("$CFG->libdir/externallib.php");
+require_once ("$CFG->libdir/externallib.php");
 
 /**
  * Class entity
- * @author      Thomas Winkler
- * @copyright   2021 Wunderbyte GmbH
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ *
+ * @author Thomas Winkler
+ * @copyright 2021 Wunderbyte GmbH
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-class entities {
+class entities
+{
 
     /**
      * entities constructor.
      */
-    public function __construct() {
-    }
+    public function __construct()
+    {}
 
     /**
      *
@@ -52,14 +53,32 @@ class entities {
      *
      * @return array Object
      */
-    public static function list_all_parent_entities(): array {
+    public static function list_all_parent_entities(): array
+    {
         global $DB;
         $stmt = "SELECT * FROM {local_entities} WHERE parentid = '0' ORDER BY sortorder, timecreated";
         return $DB->get_records_sql($stmt);
     }
 
-
-
+    /**
+     *
+     * This is to update values in the database
+     * 
+     * @param array of objects with information on what to update: (field) name, oldvalue, newvalue
+     * @return true in case of success, false otherwise.
+     * @throws \invalid_parameter_exception in case oldvalue was not found.
+     */
+    public static function update_entities(array $values): bool
+    {
+        global $DB;
+        
+        $table = "{local_entities }";
+        
+        foreach ($values as $record) {
+            
+            return $DB->update_record($table, $record, true);
+        }
+    }
 
     /**
      *
@@ -67,13 +86,14 @@ class entities {
      *
      * @return array - returns array of Objects
      */
-    public static function list_all_subentities(int $parentid): array {
+    public static function list_all_subentities(int $parentid): array
+    {
         global $DB;
-        $stmt = "SELECT * FROM {local_entities} WHERE " .
-        "parentid=? ORDER BY sortorder";
-        return $DB->get_records_sql($stmt, array($parentid));
+        $stmt = "SELECT * FROM {local_entities} WHERE " . "parentid=? ORDER BY sortorder";
+        return $DB->get_records_sql($stmt, array(
+            $parentid
+        ));
     }
-
 
     /**
      *
@@ -81,8 +101,9 @@ class entities {
      *
      * @return Object
      */
-    public function get_categories() {
-        $categories = new stdClass;
+    public function get_categories()
+    {
+        $categories = new stdClass();
         return $categories;
     }
 
@@ -92,8 +113,9 @@ class entities {
      *
      * @return Object
      */
-    public function set_categories() {
-        $categories = new stdClass;
+    public function set_categories()
+    {
+        $categories = new stdClass();
         return $categories;
     }
 }
