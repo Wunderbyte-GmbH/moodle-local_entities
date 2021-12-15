@@ -71,8 +71,9 @@ if ($mform->is_cancelled()) {
 } else if ($data = $mform->get_data()) {
     require_once($CFG->libdir . '/formslib.php');
     $context = context_system::instance();
+
     $data->description['text'] = file_save_draft_area_files($data->description['itemid'], $context->id,
-        'local_entities', 'entitycontent',
+        'local_entities', 'description',
         0, array('subdirs' => true), $data->description['text']);
 
     $data->entitydata = '';
