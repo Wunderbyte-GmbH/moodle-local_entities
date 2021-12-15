@@ -115,7 +115,4 @@ class viewpage implements renderable, templatable {
         $data = $this->data;
         return $data;
     }
-
-
-
 }
