@@ -81,6 +81,7 @@ class settings_manager {
         }
     }
 
+
     /**
      *
      * This is to create a new entity in the database
@@ -439,6 +440,11 @@ class settings_manager {
         $DB->delete_records('local_entities_contacts', array('id' => $id));
     }
 
+    public static function get_children($id) {
+        global $DB;
+        $sql = "SELECT id, name, parentid FROM {local_entities} Where parentid = {$id}";
+        return $DB->get_records_sql($sql);
+    }
 
     /**
      *

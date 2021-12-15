@@ -26,7 +26,6 @@
 require_once(dirname(__FILE__) . '/../../config.php');
 require_once($CFG->dirroot . '/local/entities/lib.php');
 require_once($CFG->dirroot . '/local/entities/forms/edit_form.php');
-use core_customfield\api;
 
 $entityid = optional_param('id', 0, PARAM_INT);
 $copy = optional_param('copy', 0, PARAM_INT);
@@ -47,9 +46,6 @@ $PAGE->set_pagelayout('standard');
 
 // Get the renderer for this page.
 //$renderer = $PAGE->get_renderer('local_entities');
-
-
-
 
 if ($entityid) {
     // Add record exists.
@@ -95,9 +91,9 @@ if ($mform->is_cancelled()) {
         redirect(new moodle_url($CFG->wwwroot . '/local/entities/entities.php'));
     }
 }
+
 $PAGE->set_title($title);
 $PAGE->set_heading($heading);
-
 $PAGE->requires->js_call_amd('local_entities/customfield', 'init');
 
 echo $OUTPUT->header();

@@ -44,12 +44,10 @@ $PAGE->set_heading($title);
 
 
 echo $OUTPUT->header();
+$childrenid = local_entities\settings_manager::get_children(4);
 
-$output = $PAGE->get_renderer('local_entities');
-$viewpage = new viewpage(4);
-$out = $output->render_viewpage($viewpage);
-
-echo $out;
+$json_pretty = json_encode($childrenid, JSON_PRETTY_PRINT);
+echo "<pre>".$json_pretty."<pre/>";
 
 
 /*

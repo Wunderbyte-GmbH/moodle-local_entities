@@ -48,7 +48,6 @@ function addEvents() {
     let form  = document.querySelector('.mform');
     form.addEventListener('submit', () => {
         removeInputs();
-        alert("remove");
     });
 }
 
@@ -62,11 +61,11 @@ function removeInputs() {
         } 
     }
 }
-
+// Todo
 function addAddress() {
 
 }
-
+// Todo
 function addContacts() {
     
 }

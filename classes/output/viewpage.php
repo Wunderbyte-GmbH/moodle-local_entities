@@ -73,7 +73,7 @@ class viewpage implements renderable, templatable {
             $customdata .= '<span><b>' . $metakey . '</b>: ' . $customfield->get_value() .'</span></br>';
         }
         $data->customdata = $customdata;
-        $data->url = $url;
+        $data->url = isset($url) ? $url : null;
         $data->description = file_rewrite_pluginfile_urls($data->description, 'pluginfile.php',
         $context->id, 'local_entities', 'description', null);
 
@@ -90,11 +90,18 @@ class viewpage implements renderable, templatable {
         }
         if (isset($data->type)) {
             $type = explode('_', $data->type, 2);
-            $data->type = $type[1];
+            $data->type = isset($type[1]) ? $type[1] : $type[0];
         }
         $data->editurl = new moodle_url('/local/entities/edit.php', array( 'id' => $data->id));
         $data->delurl = new moodle_url('/local/entities/entities.php', array( 'del' => $data->id , 'sesskey' => $USER->sesskey));
         $data->description = format_text($data->description, FORMAT_HTML);
+
+        $children = settings_manager::get_children($id);
+        $data->children = "";
+        foreach ($children as $child) {
+            $childurl = new moodle_url('/local/entities/view.php', array( 'id' => $child->id));
+            $data->children .= '<span><b><a href="'.$childurl.' "><i class="fa fa-child fa-2x pr-2"></i>' . $child->name . '</a></b> </span></br>';
+        }
         $this->data = $data;
     }
 

@@ -55,7 +55,7 @@ if ($id) {
 
 // Output the header.
 echo $OUTPUT->header();
-
+$PAGE->requires->js_call_amd('local_entities/view', 'init');
 $output = $PAGE->get_renderer('local_entities');
 $viewpage = new viewpage($id);
 $out = $output->render_viewpage($viewpage);
