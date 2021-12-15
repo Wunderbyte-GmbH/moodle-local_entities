@@ -53,6 +53,18 @@ class entities
      *
      * @return array Object
      */
+    public static function list_all_entities(): array
+    {
+        global $DB;
+        $stmt = "SELECT * FROM {local_entities}  ORDER BY sortorder, timecreated";
+        return $DB->get_records_sql($stmt);
+    }
+    /**
+     *
+     * This is to return all parent entities from the database
+     *
+     * @return array Object
+     */
     public static function list_all_parent_entities(): array
     {
         global $DB;

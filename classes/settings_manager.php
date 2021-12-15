@@ -87,7 +87,7 @@ class settings_manager {
      * This is to create a new entity in the database
      *
      * @param stdClass $data
-     *
+     * @return int $id
      */
     private function create_entity(stdClass $data): int {
         global $DB;
@@ -159,10 +159,11 @@ class settings_manager {
 
     /**
      *
-     * This is to update the entity based on the data object
+     * This is to update or create one address of an entity based on the index and based on existence
      *
-     * @param mixed $data
-     * @return mixed
+     * @param stdClass $data
+     * @param int $index of form address fieldset
+     * @return int
      */
     private function update_address(stdClass $data, int $index): int {
         global $DB;
@@ -183,10 +184,11 @@ class settings_manager {
 
     /**
      *
-     * This is to update the entity based on the data object
+     * This is to create an address for an entity based on the data object
      *
-     * @param mixed $data
-     * @return mixed
+     * @param stdClass $data
+     * @param int $index of form for multiple addresses
+     * @return id
      */
     private function create_address(stdClass $data, int $index): int {
         global $DB;
@@ -198,6 +200,15 @@ class settings_manager {
         return 0;
     }
 
+    /**
+     *
+     * This is to update or create one contact of an entity based on the index and based on existence
+     * 
+     *
+     * @param stdClass $data
+     * @param int $index of form contactfieldset
+     * @return int
+     */
     private function update_contacts(stdClass $data, int $index): int {
         global $DB;
         $recordcontacts = $this->prepare_contacts($data, $index);
@@ -211,10 +222,11 @@ class settings_manager {
 
     /**
      *
-     * This is to update the entity based on the data object
+     * This is to create one contact for an entity based on the data object
      *
-     * @param mixed $data
-     * @return mixed
+     * @param stdClass $data
+     * @param int $index of contact form fieldset
+     * @return int
      */
     private function create_contacts(stdClass $data, int $index): int {
         global $DB;
@@ -228,7 +240,7 @@ class settings_manager {
 
     /**
      *
-     * This is to update the entity based on the data object
+     * Prepares the image for the database
      *
      * @param stdClass $data
      * @param int $result
@@ -246,9 +258,10 @@ class settings_manager {
 
     /**
      *
-     * This is to update the entity based on the data object
+     * Prepares the address and deletes the postfixes from form "e.g. city_11 becomes city"
      *
      * @param stdClass $data
+     * @param stdClass $i index from form fieldset
      * @return stdClass $addressdata
      * @return null
      */
@@ -348,9 +361,10 @@ class settings_manager {
      * Prepare contactdata object for DB (remove postfixes)
      *
      * @param stdClass $data
+     * @param int $i
      * @return stdClass $contactdata
      */
-    public function prepare_contacts($data, $i) {
+    public function prepare_contacts($data, $i): stdClass {
         $contactdata = new stdClass();
         $contactdata->id = isset($data->{'contactsid_' . $i}) ? $data->{'contactsid_' . $i} : 0;
         $contactdata->givenname = $data->{'givenname_' . $i};
@@ -391,7 +405,7 @@ class settings_manager {
 
     /**
      *
-     * This is to delete an entity
+     * This is to delete an entity and all data in different tables
      *
      */
     public function delete() {
@@ -407,7 +421,7 @@ class settings_manager {
      *
      * This is to delete an entity via webservice
      *
-     * @param int $id of entitiy
+     * @param int $id of entity
      */
     public static function deletews($id) {
         global $DB;
@@ -440,6 +454,12 @@ class settings_manager {
         $DB->delete_records('local_entities_contacts', array('id' => $id));
     }
 
+    /**
+     *
+     * Get the children of an entity if they exist
+     *
+     * @param int $id of parententity
+     */
     public static function get_children($id) {
         global $DB;
         $sql = "SELECT id, name, parentid FROM {local_entities} Where parentid = {$id}";

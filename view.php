@@ -37,12 +37,9 @@ require_once("{$CFG->dirroot}/local/entities/lib.php");
 
 // Set the page layout.
 
-
 require_login();
 
 $PAGE->set_pagelayout('standard');
-
-
 
 // Add a class to the body that identifies this page.
 if ($id) {
@@ -54,9 +51,14 @@ if ($id) {
 }
 
 // Output the header.
+
 echo $OUTPUT->header();
+printf('<a class="btn btn-primary" style="float:right; font-size:15px" href="' .
+new moodle_url($CFG->wwwroot . '/local/entities/entities.php') . '"> '.
+get_string('backtolist', 'local_entities') .'</a>');
 $PAGE->requires->js_call_amd('local_entities/view', 'init');
 $output = $PAGE->get_renderer('local_entities');
+
 $viewpage = new viewpage($id);
 $out = $output->render_viewpage($viewpage);
 echo $out;
