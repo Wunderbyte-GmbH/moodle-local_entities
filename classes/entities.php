@@ -89,10 +89,8 @@ class entities
     }
 
     /**
-     *
      * This is to return all children from parententity the database.
-     *
-     * @param integer $parentid
+     * @param int $parentid
      * @return array
      */
     public static function list_all_subentities(int $parentid): array {

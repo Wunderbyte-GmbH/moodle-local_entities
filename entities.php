@@ -15,6 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Display entites.
  * @package    local_entities
  * @copyright  2021 Wunderbyte GmbH
  * @author     Thomas Winkler

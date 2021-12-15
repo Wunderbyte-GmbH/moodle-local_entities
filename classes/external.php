@@ -104,8 +104,8 @@ class local_entities_external extends external_api {
 
     /**
      * Updates a number of fields in table local_entities from oldvalue to newvalue.
-     *
-     * @return array of booleans
+     * @param array $values
+     * @return void
      */
     public static function update_entities($values) {
         global $DB;
