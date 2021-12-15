@@ -36,17 +36,20 @@ use moodle_url;
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * viewpage class to display view.php
- * @package mod_mooduell
+ * Viewpage class to display view.php.
+ * @package local_entities
  *
  */
 class viewpage implements renderable, templatable {
 
-
+    /**
+     * @var stdClass
+     */
     private $data;
     /**
      * Constructor.
-     * @param settings_manager $data
+     *
+     * @param integer $id
      */
     public function __construct(int $id) {
         global $USER;

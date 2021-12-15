@@ -45,7 +45,6 @@ require_login();
 $PAGE->set_pagelayout('standard');
 
 // Get the renderer for this page.
-//$renderer = $PAGE->get_renderer('local_entities');
 
 if ($entityid) {
     // Add record exists.

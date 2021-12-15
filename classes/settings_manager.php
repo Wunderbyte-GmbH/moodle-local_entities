@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- *
+ * Settings Manager class for local entities.
  * @package     local_entities
  * @author      Thomas Winkler
  * @copyright   2021 Wunderbyte GmbH
@@ -35,34 +35,67 @@ defined('MOODLE_INTERNAL') || die;
  * @copyright   2021 Wunderbyte GmbH
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 class settings_manager {
 
+    /**
+     * @var int
+     */
     private $id;
 
+    /**
+     * @var string
+     */
     private $name;
 
+    /**
+     * @var string
+     */
     private $description;
 
+    /**
+     * @var string
+     */
     private $type;
 
+    /**
+     * @var string
+     */
     private $picture;
 
+    /**
+     * @var int
+     */
     private $parentid;
 
+    /**
+     * @var int
+     */
     private $sortorder;
 
+    /**
+     * @var bool
+     */
     private $open;
 
+    /**
+     * @var array
+     */
     private $addresses = array();
 
+    /**
+     * @var array
+     */
     private $contacts = array();
 
+    /**
+     * @var stdClass
+     */
     private $data;
 
     /**
-     * entity constructor.
+     * Entity constructor.
      *
+     * @param integer|null $id
      */
     public function __construct(int $id = null) {
         if (isset($id) && $id > 0) {
@@ -242,9 +275,8 @@ class settings_manager {
      * Prepares the image for the database.
      *
      * @param stdClass $data
-     * @param int $result
-     * @return stdClass $addressdata
-     * @return null
+     * @param int $i
+     * @return stdClass
      */
     public function prepare_image($data, $i): stdClass {
         if (isset($data->ogimage_filemanager)) {
@@ -301,7 +333,7 @@ class settings_manager {
     /**
      * Given a db record make it ready for the form.
      *
-     * @param stdClass $record
+     * @param integer $copy
      * @return stdClass
      */
     public function db_to_form(int $copy = 0): stdClass {
@@ -387,9 +419,8 @@ class settings_manager {
     /**
      * Given the entitiy id, get data from db formatted for moodle form.
      *
-     * @param int $entity
+     * @param int $entityid
      * @return stdClass
-     * @throws dml_exception
      */
     public static function get_settings(int $entityid): stdClass {
         global $DB;

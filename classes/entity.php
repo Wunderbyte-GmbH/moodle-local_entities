@@ -35,12 +35,10 @@ defined('MOODLE_INTERNAL') || die;
  * @copyright   2021 Wunderbyte GmbH
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-
 class entity {
 
     /**
-     * @var $_data
+     * @var stdClass
      */
     private $_data;
 
@@ -52,6 +50,12 @@ class entity {
         $this->_data = $data;
     }
 
+    /**
+     * Is open function.
+     *
+     * @param stdClass $data
+     * @return void
+     */
     public function isopen($data) {
 
     }
@@ -73,7 +77,8 @@ class entity {
      *
      * This is to load the entity based on the enitity id
      *
-     * @param integer $id
+     * @param int $id
+     * @param boolean $editor
      * @return object
      */
     public static function load($id, $editor = false) {

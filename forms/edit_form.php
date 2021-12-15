@@ -36,12 +36,13 @@ require_once(dirname(__FILE__) . '/../lib.php');
  */
 class entities_form extends moodleform {
 
-
+    /**
+     * @var stdClass
+     */
     public $entity;
 
-
     /**
-     * @var $callingentity
+     * @var int
      */
     public $callingentity;
 
@@ -64,8 +65,7 @@ class entities_form extends moodleform {
      *
      * Set the entity data.
      *
-     * @param mixed $defaults
-     * @return mixed
+     * @return void
      */
     public function set_data_for_dynamic_submission() {
         global $DB;
@@ -171,7 +171,6 @@ class entities_form extends moodleform {
 
         // FORM BUTTONS.
         $this->add_action_buttons();
-        // ...$handler->instance_form_before_set_data($course);
         $mform->addElement('hidden', 'id', null);
         $mform->setType('id', PARAM_INT);
     }
@@ -189,7 +188,11 @@ class entities_form extends moodleform {
         return $errors;
     }
 
-
+    /**
+     * Add contacts.
+     *
+     * @return void
+     */
     public function add_contacts() {
         $mform = $this->_form;
         $j = 1;

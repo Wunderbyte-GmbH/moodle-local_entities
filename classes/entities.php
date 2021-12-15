@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * local pages
+ * Entities Class to display list of entity records.
  *
  * @package local_entities
  * @author Thomas Winkler
@@ -73,11 +73,10 @@ class entities
 
     /**
      *
-     * This is to update values in the database
+     * This is to update values in the database.
      *
-     * @param array of objects with information on what to update: (field) name, oldvalue, newvalue
-     * @return true in case of success, false otherwise.
-     * @throws \invalid_parameter_exception in case oldvalue was not found.
+     * @param array $values of objects with information on what to update: (field) name, oldvalue, newvalue.
+     * @return boolean
      */
     public static function update_entities(array $values): bool {
         global $DB;
@@ -94,7 +93,8 @@ class entities
      *
      * This is to return all children from parententity the database
      *
-     * @return array - returns array of Objects
+     * @param integer $parentid
+     * @return array returns array of Objects
      */
     public static function list_all_subentities(int $parentid): array {
         global $DB;

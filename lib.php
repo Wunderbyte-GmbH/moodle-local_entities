@@ -15,6 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Library functions for entities.
+ *
  * @package    local_entities
  * @copyright  2021 Wunderbyte GmbH
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -23,13 +25,10 @@
 defined('MOODLE_INTERNAL') || die;
 
 /**
- * Adds module specific settings to the settings block
+ * Adds module specific settings to the settings block.
  *
- * @param settings_navigation $settings The settings navigation object
- * @param navigation_node $modnode The node to add module settings to
- *
- * $settings is unused, but API requires it. Suppress PHPMD warning.
- *
+ * @param navigation_node $navigation
+ * @return void
  */
 function local_entities_extend_navigation($navigation) {
     $nodehome = $navigation->get('home');
