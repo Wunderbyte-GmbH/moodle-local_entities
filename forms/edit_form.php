@@ -104,7 +104,7 @@ class entities_form extends moodleform {
         $mform->addElement('text', 'name', get_string('entity_name', 'local_entities'));
         $mform->setType('name', PARAM_TEXT);
         $mform->addElement('checkbox', 'active', get_string('open', 'local_entities'));
-        $mform->setType('open', PARAM_BOOL);
+        $mform->setType('active', PARAM_BOOL);
         // IMAGE CONTENT.
         $options['subdirs'] = 0;
         $options['maxbytes'] = 204800;

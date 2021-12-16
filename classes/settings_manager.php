@@ -350,7 +350,7 @@ class settings_manager {
         $formdata->parentid = $this->data->parentid;
         $formdata->sortorder  = $this->data->sortorder;
         $formdata->type  = $this->data->type;
-        $formdata->active  = $this->data->active;
+        $formdata->active  = isset($this->data->active) ? $this->data->active : 1;
         // Address.
         $i = 0;
         if ($this->data->address) {
