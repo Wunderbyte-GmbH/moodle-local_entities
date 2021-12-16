@@ -33,7 +33,7 @@ function reloadCats() {
     let selectsplit = select.split('_');
     let catid = selectsplit[0];
     for (var i = 0, len = catfieldsets.length + 0; i < len; i++) {
-        if (i + 1 == catid) {
+        if (catfieldsets[i].id == "id_category_" + catid) {
             catfieldsets[i].hidden = false;
             catfieldsets[i].disabled = false;
         } else {

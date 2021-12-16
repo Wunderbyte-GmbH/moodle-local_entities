@@ -75,7 +75,7 @@ class settings_manager {
     /**
      * @var bool
      */
-    private $open;
+    private $active;
 
     /**
      * @var array
@@ -105,7 +105,7 @@ class settings_manager {
             $this->name = $this->data->name;
             $this->description = $this->data->description;
             $this->parentid = $this->data->parentid;
-            $this->open = $this->data->open;
+            $this->active = $this->data->active;
             $this->type = $this->data->type;
             $this->addresses = $this->data->address;
             $this->contacts = $this->data->contacts;
@@ -350,7 +350,7 @@ class settings_manager {
         $formdata->parentid = $this->data->parentid;
         $formdata->sortorder  = $this->data->sortorder;
         $formdata->type  = $this->data->type;
-        $formdata->open  = $this->data->open;
+        $formdata->active  = $this->data->active;
         // Address.
         $i = 0;
         if ($this->data->address) {
