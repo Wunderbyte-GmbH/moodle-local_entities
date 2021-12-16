@@ -492,7 +492,10 @@ class settings_manager {
     public static function get_children($id) {
         global $DB;
         $sql = "SELECT id, name, parentid FROM {local_entities} Where parentid = {$id}";
-        return $DB->get_records_sql($sql);
+        if ($DB->record_exists_sql($sql)) {
+            return $DB->get_records_sql($sql);
+        }
+        return false;
     }
 
     /**
