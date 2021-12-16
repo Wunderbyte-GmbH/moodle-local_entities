@@ -265,7 +265,7 @@ class settings_manager {
         $recordcontacts = $this->prepare_contacts($data, $index);
         if (isset($recordcontacts->id)) {
             $recordcontacts->entityidto = $data->id;
-            return $DB->insert_record('local_entities_address', $recordcontacts);
+            return $DB->insert_record('local_entities_contacts', $recordcontacts);
         }
         return 0;
     }
