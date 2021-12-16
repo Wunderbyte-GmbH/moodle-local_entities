@@ -53,8 +53,7 @@ class entities
      *
      * @return array Object
      */
-    public static function list_all_parent_entities(): array
-    {
+    public static function list_all_parent_entities(): array {
         global $DB;
         $stmt = "SELECT * FROM {local_entities} WHERE parentid = '0' ORDER BY sortorder, timecreated";
         return $DB->get_records_sql($stmt);
@@ -64,20 +63,15 @@ class entities
      *
      * This is to update values in the database
      * 
-     * @param array of objects with information on what to update: (field) name, oldvalue, newvalue
+     * @param array of objects with information on what to update: 
+     *      field name, id of the record, newvalue
      * @return true in case of success, false otherwise.
      * @throws \invalid_parameter_exception in case oldvalue was not found.
      */
-    public static function update_entities(array $values): bool
-    {
+    public static function update_entities(object $record, string $table): bool {
         global $DB;
         
-        $table = "{local_entities }";
-        
-        foreach ($values as $record) {
-            
-            return $DB->update_record($table, $record, true);
-        }
+        return $DB->update_record($table, $record, true);
     }
 
     /**

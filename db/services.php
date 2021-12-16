@@ -26,29 +26,42 @@
 defined('MOODLE_INTERNAL') || die();
 
 $functions = array(
-        'local_entities_list_all_entities' => array(
-                'classname'   => 'local_entities_external',
-                'methodname'  => 'list_all_entities',
-                'classpath'   => 'local/entities/classes/entities.php',
-                'description' => 'fetches all entities',
-                'type'        => 'read',
-                'ajax'        => true,
-                'services' => array(),
-                'capabilities' => ''
-        ),
+    'local_entities_list_all_parent_entities' => array(
+            'classname'   => 'local_entities_external',
+            'methodname'  => 'list_all_parent_entities',
+            'classpath'   => 'local/entities/classes/entities.php',
+            'description' => 'fetches all top-level entities',
+            'type'        => 'read',
+            'ajax'        => true,
+            'services' => array(),
+            'capabilities' => ''
+    ),
+    'local_entities_update_entities' => array(
+        'classname'   => 'local_entities_external',
+        'methodname'  => 'update_entities',
+        'classpath'   => 'local/entities/classes/entities.php',
+        'description' => 'updates the given records with the new values passed to this function',
+        'type'        => 'write',
+        'ajax'        => true,
+        'services' => array(),
+        'capabilities' => ''
+    ),
 );
 
 $services = array(
         'Wunderbyte entities external' => array(
                 'functions' => array (
-                        'local_entities_list_all_entities'
+                        'local_entities_list_all_parent_entities',
+                        'local_entities_update_entities',
                 ),
                 'restrictedusers' => 0,
                 'shortname' => 'local_entities_external',
                 'enabled' => 1
         )
 );
-/*$services = array(
+
+        
+        /*$services = array(
         'Wunderbyte entities external' => array(
                 'functions' => array (
                         'local_entities_copy_module'

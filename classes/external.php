@@ -28,7 +28,6 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 require_once("$CFG->libdir/externallib.php");
-require_once("entities.php");
 
 use local_entities\entities;
 
@@ -38,23 +37,30 @@ use local_entities\entities;
 class local_entities_external extends external_api {
 
     /**
-     * Describes the parameters for list_all_parameters.
+     * Describes the parameters for list_all_parent_entities.
+     * This query doesn't need any parameters, so the array is empty.
      *
      * @return external_function_parameters
      */
-    public static function list_all_entities_parameters() {
+    public static function list_all_parent_entities_parameters() {
         return new external_function_parameters(
-            array( )
-            );
+            array(
+                // no parameters in this query
+            )
+        );
     }
 
     /**
-     * returns id, name and description of all local entities
+     * returns id, name and description of all top-level 
+     * local entities
      *
      * @return array of entities
      */
     public static function list_all_parent_entities() {
         $returnedentities = array();
+        
+        self::validate_parameters(self::list_all_parent_entities_parameters(), (array()));
+        
         $entities = entities::list_all_parent_entities();
         foreach ($entities as $entity) {
             $entityrecord = array();
@@ -70,11 +76,11 @@ class local_entities_external extends external_api {
     }
 
     /**
-     * Describes the list_all_entities return value.
+     * Describes the expected return values of list_all_parent_entities.
      *
      * @return external_single_structure
      */
-    public static function list_all_entities_returns() {
+    public static function list_all_parent_entities_returns() {
         return new external_multiple_structure(
             new external_single_structure(
                 array(
@@ -96,7 +102,7 @@ class local_entities_external extends external_api {
         return new external_function_parameters(
             array(
                 'field' => new external_value(PARAM_TEXT, VALUE_REQUIRED),
-                'oldvalue' => new external_value(PARAM_RAW, VALUE_REQUIRED),
+                'id' => new external_value(PARAM_INT, VALUE_REQUIRED),
                 'newvalue' => new external_value(PARAM_RAW, VALUE_REQUIRED),
             )
         );
@@ -107,31 +113,31 @@ class local_entities_external extends external_api {
      *
      * @return array of booleans
      */
-    public static function update_entities($values) {
+    public static function update_entities($records) {
         global $DB;
-        $params = self::validate_parameters(self::update_entities_parameters(), (array('values' => $values)));
+        $params = self::validate_parameters(self::update_entities_parameters(), (array('records' => $records)));
         $transaction = $DB->start_delegated_transaction();
+        
+        // TODO: auch andere Tabellen sollen upgedated werden - wenn feldname nicht in tabelle, join auf andere.
+        // TODO: lookup, welches Feld in welcher Tabelle ist.
         $table = '{local_entities}';
+
         $allupdated = array();
         
-        foreach ($params['values'] as $value) {
-            $value = (object)$value;
+        
+        foreach ($params['records'] as $record) {
+            $record = (object)$record;
             
-            if($value->name == '' or $value->oldvalue == '' or $value->newvalue == ''){
+            if($record->name == '' or $record->id == '' or $record->newvalue == ''){
                 throw new invalid_parameter_exception('Invalid values.');
             }
             
-            $conditions = array($value->name=>$value->oldvalue);
-            $id = $DB->get_record($table, $conditions, 'id');
-            if(!$id) {
-                throw new invalid_parameter_exception('Invalid values');
-            }
-            $value->id = $id;
             // TODO security checks -> after capabilities are implemented.
             
-            $updated = entities::update_entities($value);
+            $updated = entities::update_entities($record, $table);
             $allupdated[] = $updated;
         }
+        // TODO was soll im Fehlerfall passieren?
         $transaction->allow_commit();
         
         return $allupdated;
