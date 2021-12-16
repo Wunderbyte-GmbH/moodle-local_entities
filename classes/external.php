@@ -85,7 +85,7 @@ class local_entities_external extends external_api {
             new external_single_structure(
                 array(
                     'id' => new external_value(PARAM_INT, 'id of the entity', VALUE_REQUIRED),
-                    'name' => new external_value(PARAM_RAW, 'name of the entity', VALUE_REQUIRED),
+                    'field' => new external_value(PARAM_RAW, 'name of the entity', VALUE_REQUIRED),
                     'description' => new external_value(PARAM_RAW, 'description of the entity', VALUE_OPTIONAL),
                     'type' => new external_value(PARAM_RAW, 'type of the entity', VALUE_OPTIONAL),
                 )
@@ -101,48 +101,73 @@ class local_entities_external extends external_api {
     public static function update_entities_parameters() {
         return new external_function_parameters(
             array(
-                'field' => new external_value(PARAM_TEXT, VALUE_REQUIRED),
                 'id' => new external_value(PARAM_INT, VALUE_REQUIRED),
+                'field' => new external_value(PARAM_TEXT, VALUE_REQUIRED),
                 'newvalue' => new external_value(PARAM_RAW, VALUE_REQUIRED),
             )
         );
     }
     
     /**
-     * updates a number of fields in table local_entities from oldvalue to newvalue
-     *
-     * @return array of booleans
+     * updates a number of fields in table local_entities to newvalue
+     * @param records of values to be updated, including record id, field name, and new value
+     * @return boolean
      */
     public static function update_entities($records) {
         global $DB;
         $params = self::validate_parameters(self::update_entities_parameters(), (array('records' => $records)));
+        
         $transaction = $DB->start_delegated_transaction();
-        
-        // TODO: auch andere Tabellen sollen upgedated werden - wenn feldname nicht in tabelle, join auf andere.
-        // TODO: lookup, welches Feld in welcher Tabelle ist.
-        $table = '{local_entities}';
-
-        $allupdated = array();
-        
-        
         foreach ($params['records'] as $record) {
             $record = (object)$record;
+
+            $fieldname = $record->field;
+            $table = self::find_table($fieldname);
             
-            if($record->name == '' or $record->id == '' or $record->newvalue == ''){
-                throw new invalid_parameter_exception('Invalid values.');
+            try {
+                self::validate_input($record);
+            } catch (invalid_parameter_exception $e) {
+                // TODO what to do in case of error?
             }
+            $dataobject = new stdClass();
+            $dataobject->id = $record->id;
+            $dataobject->$fieldname = $record->newvalue;
             
             // TODO security checks -> after capabilities are implemented.
-            
-            $updated = entities::update_entities($record, $table);
-            $allupdated[] = $updated;
+            error_log('hello error!');
+            error_log('dataobject is ' . var_export($dataobject, true));
+            if(!entities::update_entities($table, $dataobject)) {
+                $transaction->rollback();
+                return false;
+            }
         }
-        // TODO was soll im Fehlerfall passieren?
         $transaction->allow_commit();
         
-        return $allupdated;
-        
+        return true;
     }
+    /**
+     * makes sure we have non-empty inputs
+     * @param the record to check
+     * @throws invalid_parameter_exception
+     */private static function validate_input(array $record) {
+        if (trim($record->field) == '') {
+            throw new invalid_parameter_exception('no field name given.');
+        }
+        if(trim($record->id) == '') {
+            throw new invalid_parameter_exception('no id given.');
+        }
+        
+        if(trim($record->newvalue) == '') {
+            throw new invalid_parameter_exception('no new value given');
+        }
+    }
+
+    
+     private static function find_tables(string $name):string {
+            // TODO find matching table
+            return '{local_entities}';
+    }
+
     
     /**
      * all return values should be booleans

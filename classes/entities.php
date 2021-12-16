@@ -68,10 +68,9 @@ class entities
      * @return true in case of success, false otherwise.
      * @throws \invalid_parameter_exception in case oldvalue was not found.
      */
-    public static function update_entities(object $record, string $table): bool {
+    public static function update_entities(string $table, object $change): bool {
         global $DB;
-        
-        return $DB->update_record($table, $record, true);
+        return $DB->update_record($table, $change);
     }
 
     /**
