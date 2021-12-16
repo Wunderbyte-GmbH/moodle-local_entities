@@ -49,7 +49,8 @@ $PAGE->set_heading($title);
 $renderer = $PAGE->get_renderer('local_entities');
 
 echo $OUTPUT->header();
-
+printf('<div class="d-block text-right mb-4"><a class="btn btn-primary" style="font-size:15px" href="' .
+new moodle_url($CFG->wwwroot . '/local/entities/customfield.php') . '">Add Categories</a></div>');
 echo $renderer->list_entities();
 
 echo $OUTPUT->footer();
