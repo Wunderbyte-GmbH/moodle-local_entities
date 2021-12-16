@@ -226,7 +226,7 @@ class settings_manager {
     private function create_address(stdClass $data, int $index): int {
         global $DB;
         $recordaddress = $this->prepare_address($data, $index);
-        if (isset($recordaddress->id)) {
+        if (isset($recordaddress->id) && $recordaddress->id !=-2) {
             $recordaddress->entityidto = $data->id;
             return $DB->insert_record('local_entities_address', $recordaddress);
         }
@@ -307,7 +307,7 @@ class settings_manager {
             $addressdata->streetnumber = $data->{'streetnumber_' . $i};
             $addressdata->del = 0;
         } else {
-            $addressdata->id = isset($data->{'addressid_' . $i}) ? $data->{'addressid_' . $i} : 0;
+            $addressdata->id = isset($data->{'addressid_' . $i}) ? $data->{'addressid_' . $i} : -2;
             $addressdata->del = isset($data->{'addressid_' . $i}) ? 1 : 0;
         }
         return $addressdata;
