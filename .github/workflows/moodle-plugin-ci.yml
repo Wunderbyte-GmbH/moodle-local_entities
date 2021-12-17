@@ -1,6 +1,16 @@
 name: Moodle Plugin CI
 
-on: [push, pull_request]
+on: 
+  push:
+    branches:
+    - master
+    - main
+    - 'testme**'
+  pull_request:
+    branches:
+    - master
+    - main
+    - 'testme**'
 
 jobs:
   test:
