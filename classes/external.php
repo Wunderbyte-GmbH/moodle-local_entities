@@ -51,16 +51,15 @@ class local_entities_external extends external_api {
     }
 
     /**
-     * returns id, name and description of all top-level 
-     * local entities
+     * Returns id, name and description of all top-level local entities.
      *
      * @return array of entities
      */
     public static function list_all_parent_entities() {
         $returnedentities = array();
-        
+
         self::validate_parameters(self::list_all_parent_entities_parameters(), (array()));
-        
+
         $entities = entities::list_all_parent_entities();
         foreach ($entities as $entity) {
             $entityrecord = array();
@@ -92,9 +91,9 @@ class local_entities_external extends external_api {
             )
         );
     }
-    
+
     /**
-     * Describes the parameters for list_all_parameters.
+     * Describes the parameters for update_entities.
      *
      * @return external_function_parameters
      */
@@ -102,75 +101,51 @@ class local_entities_external extends external_api {
         return new external_function_parameters(
             array(
                 'id' => new external_value(PARAM_INT, VALUE_REQUIRED),
-                'field' => new external_value(PARAM_TEXT, VALUE_REQUIRED),
-                'newvalue' => new external_value(PARAM_RAW, VALUE_REQUIRED),
+                'data' => new external_multiple_structure(
+                    new external_single_structure(
+                        array(
+                            'name' => new external_value(PARAM_ALPHANUMEXT, 'data name'),
+                            'value' => new external_value(PARAM_RAW, 'data value'),
+                        )
+                    ), 'Name of the column where to pass to the new value.', VALUE_DEFAULT, array()
+                )
             )
         );
     }
-    
-    /**
-     * updates a number of fields in table local_entities to newvalue
-     * @param records of values to be updated, including record id, field name, and new value
-     * @return boolean
-     */
-    public static function update_entities($records) {
-        global $DB;
-        $params = self::validate_parameters(self::update_entities_parameters(), (array('records' => $records)));
-        
-        $transaction = $DB->start_delegated_transaction();
-        foreach ($params['records'] as $record) {
-            $record = (object)$record;
 
-            $fieldname = $record->field;
-            $table = self::find_table($fieldname);
-            
-            try {
-                self::validate_input($record);
-            } catch (invalid_parameter_exception $e) {
-                // TODO what to do in case of error?
-            }
-            $dataobject = new stdClass();
-            $dataobject->id = $record->id;
-            $dataobject->$fieldname = $record->newvalue;
-            
-            // TODO security checks -> after capabilities are implemented.
-            error_log('hello error!');
-            error_log('dataobject is ' . var_export($dataobject, true));
-            if(!entities::update_entities($table, $dataobject)) {
-                $transaction->rollback();
-                return false;
+    /**
+     * Updates a number of fields in table local_entities to newvalue.
+     * @param int $id
+     * @param array $data
+     * @return void
+     */
+    public static function update_entities($id, $data) {
+        global $DB;
+
+        $params = [
+            'id' => $id,
+            'data' => $data
+        ];
+
+        $params = self::validate_parameters(self::update_entities_parameters(), $params);
+
+        if (count($params['data']) < 1) {
+            new moodle_exception('noparams', 'local_entities', null, null, 'No params found');
+        }
+
+        foreach ($data as $item) {
+            if (!isset($item['name']) || !isset($item['value'])) {
+                new moodle_exception('noparams', 'local_entities', null, null, 'No params found');
             }
         }
-        $transaction->allow_commit();
-        
+
+        // Do something.
+
         return true;
     }
-    /**
-     * makes sure we have non-empty inputs
-     * @param the record to check
-     * @throws invalid_parameter_exception
-     */private static function validate_input(array $record) {
-        if (trim($record->field) == '') {
-            throw new invalid_parameter_exception('no field name given.');
-        }
-        if(trim($record->id) == '') {
-            throw new invalid_parameter_exception('no id given.');
-        }
-        
-        if(trim($record->newvalue) == '') {
-            throw new invalid_parameter_exception('no new value given');
-        }
-    }
 
-    
-     private static function find_tables(string $name):string {
-            // TODO find matching table
-            return '{local_entities}';
-    }
-
-    
     /**
-     * all return values should be booleans
+     * All return values should be booleans.
      *
      * @return external_value (boolean)
      */
