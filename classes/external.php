@@ -121,6 +121,7 @@ class local_entities_external extends external_api {
      */
     public static function update_entities($id, $data) {
         global $DB;
+        $success = false;
 
         $params = [
             'id' => $id,
@@ -139,19 +140,35 @@ class local_entities_external extends external_api {
             }
         }
 
-        // Do something.
+        $dataobject = new stdClass();
+        $table = self::find_table($data);
 
-        return true;
+        $dataobject->id = $id;
+
+        // TODO security checks -> after capabilities are implemented.
+
+        $transaction = $DB->start_delegated_transaction();
+        $success = entities::update_entities($table, $dataobject);
+        if ($success) {
+            $transaction->allow_commit();
+        } else {
+            $transaction->rollback();
+        }
+
+        return $success;
     }
 
     /**
-     * All return values should be booleans.
+     * all return values should be booleans
      *
      * @return external_value (boolean)
      */
     public static function update_entities_returns() {
-        return new external_value(
-            PARAM_BOOL, 'indicates success of update', VALUE_REQUIRED
-        );
+        return new external_value(PARAM_BOOL, 'status: true for success');
+    }
+
+    private static function find_table(array $data):string {
+            // TODO find matching table.
+            return 'local_entities';
     }
 }
