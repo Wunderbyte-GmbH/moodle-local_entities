@@ -97,7 +97,7 @@ class local_entities_external extends external_api {
      *
      * @return external_function_parameters
      */
-    public static function update_entities_parameters() {
+    public static function update_entity_parameters() {
         return new external_function_parameters(
             array(
                 'id' => new external_value(PARAM_INT, VALUE_REQUIRED),
@@ -119,18 +119,61 @@ class local_entities_external extends external_api {
      * @param array $data
      * @return void
      */
-    public static function update_entities($id, $data) {
+    public static function update_entity($id, $data) {
         global $DB;
-        $success = false;
 
         $params = [
             'id' => $id,
             'data' => $data
         ];
 
-        $params = self::validate_parameters(self::update_entities_parameters(), $params);
+        $params = self::validate_parameters(self::update_entity_parameters(), $params);
 
-        if (count($params['data']) < 1) {
+        self::verify_param_contents($data);
+
+        // TODO security checks -> after capabilities are implemented.
+
+        $transaction = $DB->start_delegated_transaction();
+        $table = self::find_table($data);
+        $success = array();
+        $dataobject = new stdClass();
+        $dataobject->id = $id;
+        foreach ($data as $item) {
+            $dataobject->name = $item['name'];
+            $dataobject->value = $item['value'];
+            $success[] = entities::update_entity($table, $dataobject);
+        }
+
+        if (in_array(false, $success)) {
+            $transaction->rollback();
+            return false;
+        } else {
+            $transaction->allow_commit();
+            return true;
+        }
+    }
+
+    /**
+     * all return values should be booleans
+     *
+     * @return external_value (boolean)
+     */
+    public static function update_entity_returns() {
+        return new external_value(PARAM_BOOL, 'status: true for success');
+    }
+
+    private static function find_table(array $data):string {
+            // TODO find matching table.
+            return 'local_entities';
+    }
+
+    /**
+     * checks if all parameters are valid
+     *
+     * @throws moodle_exception
+     */
+    private static function verify_param_contents(array $data) {
+        if (count($data) < 1) {
             new moodle_exception('noparams', 'local_entities', null, null, 'No params found');
         }
 
@@ -139,36 +182,5 @@ class local_entities_external extends external_api {
                 new moodle_exception('noparams', 'local_entities', null, null, 'No params found');
             }
         }
-
-        $dataobject = new stdClass();
-        $table = self::find_table($data);
-
-        $dataobject->id = $id;
-
-        // TODO security checks -> after capabilities are implemented.
-
-        $transaction = $DB->start_delegated_transaction();
-        $success = entities::update_entities($table, $dataobject);
-        if ($success) {
-            $transaction->allow_commit();
-        } else {
-            $transaction->rollback();
-        }
-
-        return $success;
-    }
-
-    /**
-     * all return values should be booleans
-     *
-     * @return external_value (boolean)
-     */
-    public static function update_entities_returns() {
-        return new external_value(PARAM_BOOL, 'status: true for success');
-    }
-
-    private static function find_table(array $data):string {
-            // TODO find matching table.
-            return 'local_entities';
     }
 }
