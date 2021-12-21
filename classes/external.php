@@ -45,7 +45,7 @@ class local_entities_external extends external_api {
     public static function list_all_parent_entities_parameters() {
         return new external_function_parameters(
             array(
-                // no parameters in this query
+                // No parameters in this query.
             )
         );
     }

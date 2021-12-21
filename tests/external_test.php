@@ -41,11 +41,6 @@ class external_test extends advanced_testcase
         $this->assertEquals(entities::list_all_parent_entities(), array());
     }
 
-    public function test_list_all_entities_returns_given_entities() {
-        $this->assertEquals(true, true);
-        // TODO $this->assertEquals(entities::list_all_entities(), $result).
-    }
-
     public function test_correct_update_parameters_are_verified() {
         $id = 1;
         $data1 = array(
@@ -76,13 +71,11 @@ class external_test extends advanced_testcase
                 'value' => 'Bad'
             )
         );
-
         $this->expectException(moodle_exception::class);
-
         external_api::validate_parameters(local_entities_external::update_entity_parameters(), array($id, $data));
     }
 
-    /*public function test_unavailable_id_is_not_updated() {
+    public function test_unavailable_id_is_not_updated() {
         $id = 1000;
         $pair1 = array(
             'name' => 'name',
@@ -92,13 +85,11 @@ class external_test extends advanced_testcase
             $pair1
         );
 
-       // $this->expectError();
-
+        $this->expectException(moodle_exception::class);
         local_entities_external::update_entity($id, $data);
     }
-    */
-    /* function test_empty_fieldname_is_not_updated()
-    {
+
+    public function test_empty_fieldname_is_not_updated() {
         $id = 1;
         $pair1 = array(
             'name' => ' ',
@@ -108,11 +99,11 @@ class external_test extends advanced_testcase
             $pair1
         );
 
-        $this->expectError();
+        $this->expectException(moodle_exception::class);
         local_entities_external::update_entity($id, $data);
-    } */
+    }
 
-    /*public function test_empty_value_is_not_updated() {
+    public function test_empty_value_is_not_updated() {
         $id = 1;
         $pair1 = array(
             'name' => 'description',
@@ -124,7 +115,7 @@ class external_test extends advanced_testcase
 
         $this->expectException(moodle_exception::class);
         local_entities_external::update_entity($id, $data);
-    }*/
+    }
 
     public function test_correct_input_is_updated() {
         $this->resetAfterTest(true);

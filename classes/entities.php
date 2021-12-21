@@ -67,7 +67,7 @@ class entities
      * @param array of objects with information on what to update:
      *      field name, id of the record, newvalue
      * @return true in case of success, false otherwise.
-     * @throws \invalid_parameter_exception in case oldvalue was not found.
+     * @throws \invalid_parameter_exception in case parameters were invalid.
      */
     public static function update_entity(string $table, object $change): bool {
         global $DB;
