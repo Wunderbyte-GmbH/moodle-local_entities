@@ -93,7 +93,7 @@ class local_entities_external extends external_api {
     }
 
     /**
-     * Describes the parameters for update_entities.
+     * Describes the parameters for update_entity.
      *
      * @return external_function_parameters
      */

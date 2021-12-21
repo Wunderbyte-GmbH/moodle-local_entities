@@ -94,7 +94,7 @@ class external_test extends advanced_testcase
 
        // $this->expectError();
 
-        local_entities_external::update_entities($id, $data);
+        local_entities_external::update_entity($id, $data);
     }
     */
     /* function test_empty_fieldname_is_not_updated()
@@ -109,7 +109,7 @@ class external_test extends advanced_testcase
         );
 
         $this->expectError();
-        local_entities_external::update_entities($id, $data);
+        local_entities_external::update_entity($id, $data);
     } */
 
     /*public function test_empty_value_is_not_updated() {
