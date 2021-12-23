@@ -29,6 +29,9 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot . '/webservice/tests/helpers.php');
 
+/**
+ *
+ */
 class external_test extends advanced_testcase
 {
 
@@ -37,10 +40,17 @@ class external_test extends advanced_testcase
         require_once($CFG->dirroot . '/local/entities/classes/external.php');
     }
 
+    /**
+     * @return void
+     */
     public function test_list_all_entities_returns_empty_array() {
         $this->assertEquals(entities::list_all_parent_entities(), array());
     }
 
+    /**
+     * @return void
+     * @throws invalid_parameter_exception
+     */
     public function test_correct_update_parameters_are_verified() {
         $id = 1;
         $data1 = array(
@@ -62,6 +72,10 @@ class external_test extends advanced_testcase
         $this->assertEquals($expected, $actual, $msg);
     }
 
+    /**
+     * @return void
+     * @throws invalid_parameter_exception
+     */
     public function test_invalid_update_parameters_not_verified() {
         $id = 1;
         $data = array(
@@ -75,20 +89,28 @@ class external_test extends advanced_testcase
         external_api::validate_parameters(local_entities_external::update_entity_parameters(), array($id, $data));
     }
 
+    /**
+     * @return void
+     * @throws moodle_exception
+     */
     public function test_unavailable_id_is_not_updated() {
         $id = 1000;
-        $pair1 = array(
+        $data1 = array(
             'name' => 'name',
             'value' => 'Bad'
         );
         $data = array(
-            $pair1
+            $data1
         );
 
-        $this->expectException(moodle_exception::class);
+        $this->expectException(\moodle_exception::class);
         local_entities_external::update_entity($id, $data);
     }
 
+    /**
+     * @return void
+     * @throws moodle_exception
+     */
     public function test_empty_fieldname_is_not_updated() {
         $id = 1;
         $pair1 = array(
@@ -103,6 +125,10 @@ class external_test extends advanced_testcase
         local_entities_external::update_entity($id, $data);
     }
 
+    /**
+     * @return void
+     * @throws moodle_exception
+     */
     public function test_empty_value_is_not_updated() {
         $id = 1;
         $pair1 = array(
@@ -113,10 +139,15 @@ class external_test extends advanced_testcase
             $pair1
         );
 
-        $this->expectException(moodle_exception::class);
+        $this->expectException(\moodle_exception::class);
         local_entities_external::update_entity($id, $data);
     }
 
+    /**
+     * @return void
+     * @throws invalid_response_exception
+     * @throws moodle_exception
+     */
     public function test_correct_input_is_updated() {
         $this->resetAfterTest(true);
         $id = 1;

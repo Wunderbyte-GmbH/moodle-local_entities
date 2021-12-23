@@ -115,42 +115,32 @@ class local_entities_external extends external_api {
 
     /**
      * Updates a number of fields in table local_entities to newvalue.
+     *
      * @param int $id
      * @param array $data
-     * @return void
+     * @return boolean true for success
+     * @throws moodle_exception
      */
-    public static function update_entity($id, $data) {
-        global $DB;
-
+    public static function update_entity($id, $data):bool {
         $params = [
             'id' => $id,
             'data' => $data
         ];
-
         $params = self::validate_parameters(self::update_entity_parameters(), $params);
 
         self::verify_param_contents($data);
 
         // TODO security checks -> after capabilities are implemented.
 
-        $transaction = $DB->start_delegated_transaction();
         $table = self::find_table($data);
-        $success = array();
         $dataobject = new stdClass();
         $dataobject->id = $id;
         foreach ($data as $item) {
-            $dataobject->name = $item['name'];
-            $dataobject->value = $item['value'];
-            $success[] = entities::update_entity($table, $dataobject);
+            $name = $item['name'];
+            $value = $item['value'];
+            $dataobject->$name = $value;
         }
-
-        if (in_array(false, $success)) {
-            $transaction->rollback();
-            return false;
-        } else {
-            $transaction->allow_commit();
-            return true;
-        }
+        return self::update_entity_in_db($table, $dataobject);
     }
 
     /**
@@ -164,6 +154,7 @@ class local_entities_external extends external_api {
 
     private static function find_table(array $data):string {
             // TODO find matching table.
+
             return 'local_entities';
     }
 
@@ -182,5 +173,24 @@ class local_entities_external extends external_api {
                 new moodle_exception('noparams', 'local_entities', null, null, 'No params found');
             }
         }
+    }
+
+    /**
+     * @param string $table
+     * @param stdClass $dataobject
+     * @return bool|true
+     * @throws dml_transaction_exception
+     * @throws invalid_parameter_exception
+     */
+    public static function update_entity_in_db(string $table, stdClass $dataobject): bool {
+        global $DB;
+        $transaction = $DB->start_delegated_transaction();
+        $success = entities::update_entity($table, $dataobject);
+        if ($success) {
+            $transaction->allow_commit();
+        } else {
+            $transaction->rollback(new moodle_exception());
+        }
+        return $success;
     }
 }
