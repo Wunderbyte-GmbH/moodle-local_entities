@@ -42,11 +42,10 @@ class local_entities_external extends external_api {
      *
      * @return external_function_parameters
      */
-    public static function list_all_parent_entities_parameters() {
+    public static function list_all_parent_entities_parameters(): external_function_parameters {
         return new external_function_parameters(
-            array(
-                // No parameters in this query.
-            )
+                array(// No parameters in this query.
+                )
         );
     }
 
@@ -54,41 +53,32 @@ class local_entities_external extends external_api {
      * Returns id, name and description of all top-level local entities.
      *
      * @return array of entities
+     * @throws invalid_parameter_exception
      */
-    public static function list_all_parent_entities() {
+    public static function list_all_parent_entities(): array {
         $returnedentities = array();
 
         self::validate_parameters(self::list_all_parent_entities_parameters(), (array()));
 
         $entities = entities::list_all_parent_entities();
-        foreach ($entities as $entity) {
-            $entityrecord = array();
-            $entityrecord['id'] = $entity->id;
-            $entityrecord['name'] = $entity->name;
-            $entityrecord['description'] = $entity->description;
-            $entityrecord['type'] = $entity->type;
-            $returnedentities[] = $entityrecord;
-        }
-
-        return $returnedentities;
-
+        return self::extract_returnvalues($entities, $returnedentities);
     }
 
     /**
      * Describes the expected return values of list_all_parent_entities.
      *
-     * @return external_single_structure
+     * @return external_multiple_structure
      */
-    public static function list_all_parent_entities_returns() {
+    public static function list_all_parent_entities_returns(): external_multiple_structure {
         return new external_multiple_structure(
-            new external_single_structure(
-                array(
-                    'id' => new external_value(PARAM_INT, 'id of the entity', VALUE_REQUIRED),
-                    'name' => new external_value(PARAM_RAW, 'name of the entity', VALUE_REQUIRED),
-                    'description' => new external_value(PARAM_RAW, 'description of the entity', VALUE_OPTIONAL),
-                    'type' => new external_value(PARAM_RAW, 'type of the entity', VALUE_OPTIONAL),
+                new external_single_structure(
+                        array(
+                                'id' => new external_value(PARAM_INT, 'id of the entity', VALUE_REQUIRED),
+                                'name' => new external_value(PARAM_RAW, 'name of the entity', VALUE_REQUIRED),
+                                'description' => new external_value(PARAM_RAW, 'description of the entity', VALUE_OPTIONAL),
+                                'type' => new external_value(PARAM_RAW, 'type of the entity', VALUE_OPTIONAL),
+                        )
                 )
-            )
         );
     }
 
@@ -97,19 +87,19 @@ class local_entities_external extends external_api {
      *
      * @return external_function_parameters
      */
-    public static function update_entity_parameters() {
+    public static function update_entity_parameters(): external_function_parameters {
         return new external_function_parameters(
-            array(
-                'id' => new external_value(PARAM_INT, VALUE_REQUIRED),
-                'data' => new external_multiple_structure(
-                    new external_single_structure(
-                        array(
-                            'name' => new external_value(PARAM_ALPHANUMEXT, 'data name'),
-                            'value' => new external_value(PARAM_RAW, 'data value'),
+                array(
+                        'id' => new external_value(PARAM_INT, VALUE_REQUIRED),
+                        'data' => new external_multiple_structure(
+                                new external_single_structure(
+                                        array(
+                                                'name' => new external_value(PARAM_ALPHANUMEXT, 'data name'),
+                                                'value' => new external_value(PARAM_RAW, 'data value'),
+                                        )
+                                ), 'Name of the column where to pass to the new value.', VALUE_DEFAULT, array()
                         )
-                    ), 'Name of the column where to pass to the new value.', VALUE_DEFAULT, array()
                 )
-            )
         );
     }
 
@@ -148,7 +138,7 @@ class local_entities_external extends external_api {
      *
      * @return external_value (boolean)
      */
-    public static function update_entity_returns() {
+    public static function update_entity_returns(): external_value {
         return new external_value(PARAM_BOOL, 'status: true for success');
     }
 

@@ -27,68 +27,43 @@ defined('MOODLE_INTERNAL') || die();
 
 $functions = array(
         'local_entities_list_all_parent_entities' => array(
-                'classname'   => 'local_entities_external',
-                'methodname'  => 'list_all_parent_entities',
-                'classpath'   => 'local/entities/classes/external.php',
+                'classname' => 'local_entities_external',
+                'methodname' => 'list_all_parent_entities',
+                'classpath' => 'local/entities/classes/external.php',
                 'description' => 'fetches all top-level entities',
-                'type'        => 'read',
-                'ajax'        => true,
+                'type' => 'read',
+                'ajax' => true,
                 'services' => array(),
                 'capabilities' => ''
         ),
         'local_entities_update_entity' => array(
-                'classname'   => 'local_entities_external',
-                'methodname'  => 'update_entity',
-                'classpath'   => 'local/entities/classes/external.php',
+                'classname' => 'local_entities_external',
+                'methodname' => 'update_entity',
+                'classpath' => 'local/entities/classes/external.php',
                 'description' => 'updates the given record with the new values.',
-                'type'        => 'write',
-                'ajax'        => true,
+                'type' => 'write',
+                'ajax' => true,
                 'services' => array(),
                 'capabilities' => ''
-                ),
-/*        'local_entities_update_module' => array(
-                'classname' => 'local_entities_external',
-                'methodname' => 'update_module',
-                'classpath' => 'local/entities/classes/external.php',
-                'description' => 'Update a module with new information',
-                'type' => 'write',
-                'ajax' => true,
-                'capabilities' => 'local/entities:copymodule',
-                'services' => array(
-                        'local_entities_external'
-                )
         ),
-        'local_entities_delete_module' => array(
+        'local_entities_list_all_subentities' => array(
                 'classname' => 'local_entities_external',
-                'methodname' => 'delete_module',
+                'methodname' => 'list_all_subentities',
                 'classpath' => 'local/entities/classes/external.php',
-                'description' => 'Deletes a module from a certain place.',
-                'type' => 'write',
+                'description' => 'fetches all subentities of a given parent',
+                'type' => 'read',
                 'ajax' => true,
-                'capabilities' => 'local/entities:copymodule',
-                'services' => array(
-                        'local_entities_external'
-                )
-        ),
-        'local_entities_create_course' => array(
-                'classname' => 'local_entities_external',
-                'methodname' => 'create_course',
-                'classpath' => 'local/entities/classes/external.php',
-                'description' => 'Copies a course by id.',
-                'type' => 'write',
-                'ajax' => true,
-                'capabilities' => 'local/entities:copymodule',
-                'services' => array(
-                        'local_entities_external'
-                )
-        )*/
+                'services' => array(),
+                'capabilities' => ''
+        )
 );
 
 $services = array(
         'Wunderbyte entities external' => array(
-                'functions' => array (
+                'functions' => array(
                         'local_entities_list_all_parent_entities',
                         'local_entities_update_entity',
+                        'local_entities_list_all_subentities'
                 ),
                 'restrictedusers' => 0,
                 'shortname' => 'local_entities_external',
