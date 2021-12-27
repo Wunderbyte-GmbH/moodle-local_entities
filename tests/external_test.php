@@ -23,151 +23,139 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use local_entities\entities;
+//use local_entities\external;
 
 defined('MOODLE_INTERNAL') || die();
-global $CFG;
-require_once($CFG->dirroot . '/webservice/tests/helpers.php');
 
 /**
+ * Tests for the external class of local_entities.
  *
+ * Tests the following webservices of plugin local_entities
+ *      - list_all_parent_entities,
+ *      - update_entity
+ *      - list_all_subentries
+ * Tests are parameterised, i.e. there's a data provider for each
  */
-class external_test extends advanced_testcase
-{
+class external_test extends \advanced_testcase {
 
-    protected function setUp(): void {
-        global $CFG;
-        require_once($CFG->dirroot . '/local/entities/classes/external.php');
+    /**
+     * class to provide data for parameterised unit tests
+     *
+     * this class provides data for parameterised testing of the update_entity webservice.
+     */
+    public function update_data_provider(): array {
+        return [
+                'valid data' => $this->get_valid_data(),
+                'unavailable id' => $this->get_unavailable_id(),
+                'empty field name' => $this->get_data_with_empty_field_name(),
+                'empty value' => $this->get_data_with_whitespace_value(),
+                'invalid format' => $this->get_data_with_invalid_format()
+        ];
     }
+
 
     /**
      * @return void
+     * @dataProvider update_data_provider
      */
-    public function test_list_all_entities_returns_empty_array() {
-        $this->assertEquals(entities::list_all_parent_entities(), array());
+    public function test_local_entities_update_entity($id, $data, $expected) {
+        $this->resetAfterTest(true);
+        // generate test data
+        $result_raw = local_entities_external::update_entity($id, $data);
+        $result = external_api::clean_returnvalue(local_entities_external::update_entity_returns(), $result_raw);
+        $this->assertEquals($expected, $result);
     }
 
-    /**
-     * @return void
-     * @throws invalid_parameter_exception
-     */
-    public function test_correct_update_parameters_are_verified() {
+    private function get_valid_data(): array {
         $id = 1;
-        $data1 = array(
-            'name' => 'name',
-            'value' => 'Bad'
-        );
-        $data2 = array(
-            'name' => 'type',
-            'value' => '2_freibad'
-        );
-        $data = array(
-            $data1,
-            $data2
-        );
-        $expected = array('id' => $id, 'data' => $data);
-        $actual = external_api::validate_parameters(local_entities_external::update_entity_parameters(),
-            array('id' => $id, 'data' => $data));
-        $msg = "expected : " . json_encode($expected) . "\n  actual: " . json_encode($actual);
-        $this->assertEquals($expected, $actual, $msg);
-    }
-
-    /**
-     * @return void
-     * @throws invalid_parameter_exception
-     */
-    public function test_invalid_update_parameters_not_verified() {
-        $id = 1;
-        $data = array(
-            'id' => $id,
-            'data' => array(
+        $field1 = array(
                 'name' => 'name',
                 'value' => 'Bad'
-            )
         );
-        $this->expectException(moodle_exception::class);
-        external_api::validate_parameters(local_entities_external::update_entity_parameters(), array($id, $data));
-    }
-
-    /**
-     * @return void
-     * @throws moodle_exception
-     */
-    public function test_unavailable_id_is_not_updated() {
-        $this->resetAfterTest(true);
-        $id = 1000;
-        $data1 = array(
-            'name' => 'name',
-            'value' => 'Bad'
+        $field2 = array(
+                'name' => 'description',
+                'value' => '2_freibad'
         );
         $data = array(
-            $data1
+                $field1,
+                $field2
         );
-// todo: no exception thrown!
-//        $this->expectException(\moodle_exception::class);
-        local_entities_external::update_entity($id, $data);
+        $expected = true;
+        return [$id, $data, $expected];
     }
 
-    /**
-     * @return void
-     * @throws moodle_exception
-     */
-    public function test_empty_fieldname_is_not_updated() {
+    private function get_unavailable_id(): array {
+        $id = 100;
+        $field1 = array(
+                'name' => 'name',
+                'value' => 'Bad'
+        );
+        $field2 = array(
+                'name' => 'description',
+                'value' => '2_freibad'
+        );
+        $data = array(
+                $field1,
+                $field2
+        );
+        $expected = false;
+        return [$id, $data, $expected];
+    }
+
+    private function get_data_with_empty_field_name(): array {
         $id = 1;
-        $pair1 = array(
-            'name' => ' ',
-            'value' => 'Bad'
+        $field1 = array(
+                'name' => 'name',
+                'value' => 'Bad'
+        );
+        $field2 = array(
+                'name' => '',
+                'value' => '2_freibad'
         );
         $data = array(
-            $pair1
+                $field1,
+                $field2
         );
-
-        $this->expectException(moodle_exception::class);
-        local_entities_external::update_entity($id, $data);
+        $expected = false;
+        return [$id, $data, $expected];
     }
 
-    /**
-     * @return void
-     * @throws moodle_exception
-     */
-    public function test_empty_value_is_not_updated() {
-        $this->resetAfterTest(true);
+    private function get_data_with_whitespace_value(): array {
         $id = 1;
-        $pair1 = array(
-            'name' => 'description',
-            'value' => '    '
+        $field1 = array(
+                'name' => 'name',
+                'value' => ' '
+        );
+        $field2 = array(
+                'name' => 'type',
+                'value' => '2_freibad'
         );
         $data = array(
-            $pair1
+                $field1,
+                $field2
         );
-// Todo: no exception thrown!
- //       $this->expectException(\moodle_exception::class);
-        local_entities_external::update_entity($id, $data);
+        $expected = false;
+        return [$id, $data, $expected];
     }
 
-    /**
-     * @return void
-     * @throws invalid_response_exception
-     * @throws moodle_exception
-     */
-    public function test_correct_input_is_updated() {
-        $this->resetAfterTest(true);
+    private function get_data_with_invalid_format(): array {
         $id = 1;
-        $data1 = array(
-            'name' => 'name',
-            'value' => 'Bad'
+        $field1 = array(
+                'name' => 'name',
+                'value' => 'Bad'
         );
-        $data2 = array(
-            'name' => 'description',
-            'value' => '2_freibad'
+        $field2 = array(
+                'name' => '',
+                'value' => '2_freibad'
         );
         $data = array(
-            $data1,
-            $data2
-        );
+                $id => [
+                        $field1,
+                        $field2
+                ]
 
-        $result = local_entities_external::update_entity($id, $data);
-        $cleanresult = external_api::clean_returnvalue(local_entities_external::update_entity_returns(), $result);
-        $this->assertTrue($cleanresult);
+        );
+        $expected = false;
+        return [$id, $data, $expected];
     }
 }
