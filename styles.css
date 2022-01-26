@@ -1,0 +1,84 @@
+#page-local-entities-index #page-header {
+    display:none;
+}
+#page-local-entities-index #page-content {
+    margin-top: 30px;
+}
+#page-local-entities-index .addresslist, .contactlist,#page-local-entities-index .card-body .fa {
+font-style:italic;
+color: #333
+}
+.card-header h3 {
+letter-spacing: 3px;
+}
+.headerpill {
+position: absolute;
+top: 10px;
+left: 10px;
+font-size: 22px;
+color: white;
+}
+
+.switch {
+position: absolute;
+display: inline-block;
+width: 60px;
+height: 20px;
+right: 5px;
+top: 5px;
+}
+
+
+.switch input {
+opacity: 0;
+width: 0;
+height: 0;
+}
+
+
+.slider {
+position: absolute;
+cursor: pointer;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+background-color: #ccc;
+-webkit-transition: .4s;
+transition: .4s;
+}
+
+.slider:before {
+position: absolute;
+content: "";
+height: 12px;
+width: 12px;
+left: 4px;
+bottom: 4px;
+background-color: white;
+-webkit-transition: .4s;
+transition: .4s;
+}
+
+input:checked + .slider {
+background-color: green;
+}
+
+input:focus + .slider {
+box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+-webkit-transform: translateX(39px);
+-ms-transform: translateX(39px);
+transform: translateX(39px);
+}
+
+/* Rounded sliders */
+.slider.round {
+border-radius: 34px;
+}
+
+.slider.round:before {
+border-radius: 50%;
+}
