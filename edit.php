@@ -89,7 +89,7 @@ if ($mform->is_cancelled()) {
         if (isset($data->image_filemanager)) {
             file_postupdate_standard_filemanager($data, 'image', $options, $context, 'local_entities', 'image', $result);
         }
-        redirect(new moodle_url($CFG->wwwroot . '/local/entities/entites.php', array()));
+        redirect(new moodle_url($CFG->wwwroot . '/local/entities/entities.php', array()));
     }
 }
 $PAGE->set_title($title);
