@@ -54,3 +54,6 @@ $string['view'] = "View";
 $string['edit'] = "Edit";
 $string['delete'] = "Delete";
 $string['entities:copymodule'] = "entities: copy module";
+$string['categories'] = "Standardcategories";
+$string['categories:description'] = "Set the Standardcategory from the list of the customfieldcategories visibile on ever edit page";
+
