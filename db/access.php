@@ -26,8 +26,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $capabilities = [
-
-    'local/entities:copymodule' => [
+    'local/entities:canedit' => [
         'riskbitmask' => RISK_DATALOSS,
         'captype' => 'write',
         'contextlevel' => CONTEXT_SYSTEM,

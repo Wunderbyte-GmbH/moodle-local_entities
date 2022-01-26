@@ -167,9 +167,10 @@ class entities_form extends moodleform {
             $mform->addElement('text', 'mail_'.$j, get_string('contacts_mail', 'local_entities'));
             $mform->setType('mail_'.$j, PARAM_TEXT);
         }
-
+        $mform->addElement('header', 'Standard', 'Standard');
+        $handler->get_standard_categories($mform, $this->entity->id);
         $mform->addElement('header', 'meta', 'Meta Infos');
-        $handler->instance_form_definition($mform, $this->entity->id);
+        $handler->get_alternative_categories($mform, $this->entity->id);
 
         // FORM BUTTONS.
         $this->add_action_buttons();
@@ -238,7 +239,16 @@ class entities_form extends moodleform {
      * @return array $categorynames
      */
     public function get_customfieldcategories(local_entities\customfield\entities_handler $handler): array {
-        $categories = $handler->get_categories_with_fields();
+        $allcategories = $handler->get_categories_with_fields();
+        $lastcategoryid = null;
+        $categorycfg = get_config('local_entities', 'categories');
+        $categorycfgids = array_flip(explode(",", $categorycfg));
+        if(isset($categorycfg)) {
+            $categories = array_diff_key($allcategories , $categorycfgids);
+
+        } else {
+            $categories = $allcategories;
+        }
         $categorynames['0_none'] = get_string("none", "local_entities");
         foreach ($categories as $category) {
             $name = $category->get('name');

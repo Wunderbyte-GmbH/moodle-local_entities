@@ -231,13 +231,15 @@ class settings_manager {
      */
     public function prepare_address($data, $i): stdClass {
         $addressdata = new stdClass();
-        if (!empty($data->city) && $data->postcode > 0) {
+        if (!empty($data->{'city_' . $i}) && $data->{'postcode_' . $i} > 0) {
             $addressdata->id = isset($data->{'addressid_' . $i}) ? $data->{'addressid_' . $i} : 0;
             $addressdata->country = $data->{'country_' . $i};
             $addressdata->city = $data->{'city_' . $i};
             $addressdata->postcode = $data->{'postcode_' . $i};
             $addressdata->streetname = $data->{'streetname_' . $i};
             $addressdata->streetnumber = $data->{'streetnumber_' . $i};
+        } elseif (!empty($data->{'addressid_' . $i})) {
+            $this->delete_address($data->{'addressid_' . $i});
         } else {
             $addressdata->id = null;
         }
@@ -318,7 +320,7 @@ class settings_manager {
      * Prepare contactdata object for DB (remove postfixes)
      *
      * @param stdClass $data
-     * @return stdClass $contactdata
+     * @return stdClass $contactdatalocal_entities_address
      */
     public function prepare_contacts($data, $i) {
         $contactdata = new stdClass();
@@ -374,8 +376,13 @@ class settings_manager {
     public function delete() {
         global $DB;
         $DB->delete_records('local_entities', array('id' => $this->id));
-        $DB->delete_records('local_addresses', array('enityto' => $this->id));
-        $DB->delete_records('local_contacts', array('enityto' => $this->id));
+        $DB->delete_records('local_entities_address', array('entityidto' => $this->id));
+        $DB->delete_records('local_entities_contacts', array('entityidto' => $this->id));
+    }
+
+    public function delete_address($id) {
+        global $DB;
+        $DB->delete_records('local_entities_address', array('id' => $id));
     }
 
     /**

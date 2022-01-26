@@ -169,6 +169,41 @@ class entities_handler extends \core_customfield\handler {
         return \context_system::instance();
     }
 
+    public function instance_form_definition(\MoodleQuickForm $mform, int $instanceid = 0,
+    ?string $headerlangidentifier = null, ?string $headerlangcomponent = null) {
+        $editablefields = $this->get_editable_fields($instanceid);
+        $fieldswithdata = api::get_instance_fields_data($editablefields, $instanceid);
+        $lastcategoryid = null;
+        foreach ($fieldswithdata as $data) {
+            $categoryid = $data->get_field()->get_category()->get('id');
+            if ($categoryid != $lastcategoryid) {
+                $categoryname = format_string($data->get_field()->get_category()->get('name'));
+
+                // Load category header lang string if specified.
+                if (!empty($headerlangidentifier)) {
+                    $categoryname = get_string($headerlangidentifier, $headerlangcomponent, $categoryname);
+                }
+                $mform->addElement('header', 'test');
+                $renderer =& $mform->defaultRenderer();
+                $highlightheadertemplate = str_replace('ftoggler', 'ftoggler customfields disabled', $renderer->_headerTemplate);
+                $renderer->setElementTemplate($highlightheadertemplate , 'category_' . $categoryid);
+                $lastcategoryid = $categoryid;
+            }
+
+            $data->instance_form_definition($mform);
+            $field = $data->get_field()->to_record();
+
+            if (strlen($field->description)) {
+                // Add field description.
+                $context = $this->get_configuration_context();
+                $value = file_rewrite_pluginfile_urls($field->description, 'pluginfile.php',
+                    $context->id, 'core_customfield', 'description', $field->id);
+                $value = format_text($value, $field->descriptionformat, ['context' => $context]);
+            }
+        }
+    }
+
+
     /**
      * Context that should be used for new categories created by this handler
      *
@@ -226,6 +261,145 @@ class entities_handler extends \core_customfield\handler {
      * @param array $data
      */
     public function restore_instance_data_from_backup(\restore_task $task, array $data) {
-        
+
     }
+
+    /**
+     * Gets a list of all the categorynames.
+     *
+     * @return array
+     */
+    public function get_customfieldcategory_names(): array {
+        $categories = $this->get_categories_with_fields();
+        foreach ($categories as $category) {
+            $name = $category->get('name');
+            $name = $category->get('name');
+            $id = $category->get('id');
+            $categorynames[$id] = $name;
+        }
+        return $categorynames;
+    }
+
+    /**
+     * Gets a list of all the categorynames.
+     *
+     * @return array
+     */
+    public function get_standard_categories(\MoodleQuickForm $mform, int $instanceid = 0,
+    ?string $headerlangidentifier = null, ?string $headerlangcomponent = null) {
+
+        $allcategories = $this->get_categories_with_fields();
+        $lastcategoryid = null;
+        $categorycfg = get_config('local_entities', 'categories');
+        $categorycfgids = array_flip(explode(",", $categorycfg));
+
+        if (isset($categorycfg)) {
+            $standardcategories = array_intersect_key($allcategories , $categorycfgids);
+            $editablefields = $this->get_editable_specific_category_fields($instanceid, $standardcategories);
+        } else {
+            return;
+        }
+        $fieldswithdata = api::get_instance_fields_data($editablefields, $instanceid);
+        foreach ($fieldswithdata as $data) {
+            $categoryid = $data->get_field()->get_category()->get('id');
+            if ($categoryid != $lastcategoryid) {
+                $categoryname = format_string($data->get_field()->get_category()->get('name'));
+
+                // Load category header lang string if specified.
+                if (!empty($headerlangidentifier)) {
+                    $categoryname = get_string($headerlangidentifier, $headerlangcomponent, $categoryname);
+                }
+
+                $mform->addElement('header', 'categorystandard_' . $categoryid, $categoryname);
+                $lastcategoryid = $categoryid;
+            }
+            $data->instance_form_definition($mform);
+            $field = $data->get_field()->to_record();
+            if (strlen($field->description)) {
+                // Add field description.
+                $context = $this->get_configuration_context();
+                $value = file_rewrite_pluginfile_urls($field->description, 'pluginfile.php',
+                    $context->id, 'core_customfield', 'description', $field->id);
+                $value = format_text($value, $field->descriptionformat, ['context' => $context]);
+                $mform->addElement('static', 'customfield_' . $field->shortname . '_static', '', $value);
+            }
+        }
+    }
+
+
+    public function get_alternative_categories(\MoodleQuickForm $mform, int $instanceid = 0,
+    ?string $headerlangidentifier = null, ?string $headerlangcomponent = null) {
+        $allcategories = $this->get_categories_with_fields();
+        $lastcategoryid = null;
+        $categorycfg = get_config('local_entities', 'categories');
+        $categorycfgids = array_flip(explode(",", $categorycfg));
+
+        if (isset($categorycfg)) {
+            $nonestandardcategories = array_diff_key($allcategories , $categorycfgids);
+            $editablefields = $this->get_editable_specific_category_fields($instanceid, $nonestandardcategories);
+        } else {
+            return;
+        }
+        $fieldswithdata = api::get_instance_fields_data($editablefields, $instanceid);
+        foreach ($fieldswithdata as $data) {
+            $categoryid = $data->get_field()->get_category()->get('id');
+            if ($categoryid != $lastcategoryid) {
+                $categoryname = format_string($data->get_field()->get_category()->get('name'));
+
+                // Load category header lang string if specified.
+                if (!empty($headerlangidentifier)) {
+                    $categoryname = get_string($headerlangidentifier, $headerlangcomponent, $categoryname);
+                }
+
+                $mform->addElement('header', 'categorymeta_' . $categoryid, $categoryname);
+                $lastcategoryid = $categoryid;
+            }
+            $data->instance_form_definition($mform);
+            $field = $data->get_field()->to_record();
+            if (strlen($field->description)) {
+                // Add field description.
+                $context = $this->get_configuration_context();
+                $value = file_rewrite_pluginfile_urls($field->description, 'pluginfile.php',
+                    $context->id, 'core_customfield', 'description', $field->id);
+                $value = format_text($value, $field->descriptionformat, ['context' => $context]);
+                $mform->addElement('static', 'customfield_' . $field->shortname . '_static', '', $value);
+            }
+        }
+    }
+
+    /**
+     * Get editable fields
+     *
+     * @param int $instanceid
+     * @return field_controller[]
+     */
+    public function get_editable_specific_category_fields(int $instanceid, array $categories) : array {
+        $handler = $this;
+        return array_filter($this->get_specific_category_fields($categories),
+            function($field) use($handler, $instanceid) {
+                return $handler->can_edit($field, $instanceid);
+            }
+        );
+    }
+
+    /**
+     * Returns list of fields defined for this instance as an array (not groupped by categories)
+     *
+     * Fields are sorted in the same order they would appear on the instance edit form
+     *
+     * Note that this function returns all fields in all categories regardless of whether the current user
+     * can view or edit data associated with them
+     *
+     * @return field_controller[]
+     */
+    public function get_specific_category_fields(array $categories) : array {
+        $fields = [];
+        foreach ($categories as $category) {
+            foreach ($category->get_fields() as $field) {
+                $fields[$field->get('id')] = $field;
+            }
+        }
+        return $fields;
+    }
+
 }

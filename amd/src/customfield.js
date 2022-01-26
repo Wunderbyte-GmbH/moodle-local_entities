@@ -1,35 +1,4 @@
-Skip to content
-Search or jump to…
-Pull requests
-Issues
-Marketplace
-Explore
- 
-@winnidat 
-Wunderbyte-GmbH
-/
-moodle-local_wunderbyte_table
-Public
-2
-0
-0
-Code
-Issues
-Pull requests
-Actions
-Projects
-Wiki
-Security
-Insights
-Settings
-moodle-local_wunderbyte_table/amd/src/init.js /
 
-georgmaisser Include js call inside (to make it work also with Ajax)
-Latest commit 7869ef3 on 26 Oct
- History
- 1 contributor
-262 lines (237 sloc)  8.71 KB
-   
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -62,37 +31,23 @@ export const init = () => {
 };
 
 function reloadCats() {
-    catfieldsets = document.querySelectorAll('[id^=id_category]');
-    select = document.getElementById('id_type').value;
+    let catfieldsets = document.querySelectorAll('[id^=id_categorymeta]');
+    let selectvalue = document.getElementById('id_type').value;
+    let id = selectvalue.split("_")[0];
     for (var i = 0, len = catfieldsets.length + 0; i < len; i++) {
-        if (i + 1 == select) { 
-            catfieldsets[i].hidden = false;
-            catfieldsets[i].disabled = false;
-        } else {         
         catfieldsets[i].hidden = true;
         catfieldsets[i].disabled = true;
+        let cat = document.getElementById("id_categorymeta_" + id);
+        if (typeof(cat) != 'undefined' && cat !== null) {
+            cat.hidden = false;
+            cat.disabled = false;
         }
     }
 }
 
 function addEvents() {
-    select = document.getElementById('id_type');
+    let select = document.getElementById('id_type');
     select.addEventListener('change', () => {
-        loadCategories();
+        reloadCats();
     });
-}
-
-function fillform() {
-    length = 6;
-    digits = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    
-    let str = '';
-    for( i = 0; i < length; i++ ) str += digits.charAt( Math.floor( Math.random() * digits.length ) );
-  
-    let fields = document.querySelectorAll('form input:not([type="submit"]');
-
-    for (i = 0; i<fields.length-2;i++) {
-        fields[i].value = str;
-    }
-    document.querySelector('#id_descriptioneditable').innerHTML  = str;
 }
