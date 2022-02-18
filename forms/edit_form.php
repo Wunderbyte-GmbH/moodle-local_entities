@@ -127,7 +127,12 @@ class entities_form extends moodleform {
         $mform->addElement('select', 'parentid', get_string('entity_parent', 'local_entities'), $entities);
         $mform->addElement('text', 'sortorder', get_string('entity_order', 'local_entities'));
         $mform->setType('sortorder', PARAM_INT);
-
+        $options = array(
+            'ajax' => 'enrol_manual/form-potential-user-selector',
+            'multiple' => true,
+            'userfields' => implode(',', \core_user\fields::get_identity_fields($context, true))
+        );
+        $mform->addElement('autocomplete', 'userlist', get_string('selectusers', 'enrol_manual'), array(), $options);
         // ADDRESS BLOCK.
         // Later Iteration Add more than one address.
         $this->entity->addresscount = isset($this->entity->addresscount) && $this->entity->addresscount > 0
@@ -243,7 +248,7 @@ class entities_form extends moodleform {
         $lastcategoryid = null;
         $categorycfg = get_config('local_entities', 'categories');
         $categorycfgids = array_flip(explode(",", $categorycfg));
-        if(isset($categorycfg)) {
+        if (isset($categorycfg)) {
             $categories = array_diff_key($allcategories , $categorycfgids);
 
         } else {

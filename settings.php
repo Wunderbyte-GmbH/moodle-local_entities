@@ -38,13 +38,15 @@ if ($hassiteconfig) {
     // Select Standard Categories from custom categories.
     $handler = local_entities\customfield\entities_handler::create();
     $categories = $handler->get_customfieldcategory_names();
-    $settings->add(
-        new admin_setting_configmultiselect(
+    if (isset($categories)) {
+        $settings->add(
+            new admin_setting_configmultiselect(
             $componentname .'/categories',
             get_string('categories', $componentname),
             get_string('categories:description', $componentname),
             array(),
             $categories
-        )
-    );
+            )
+        );
+    }
 }
