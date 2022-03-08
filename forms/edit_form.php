@@ -80,6 +80,8 @@ class entities_form extends moodleform {
         }
     }
 
+    
+
     /**
      * Get a list of all entities
      */
@@ -207,6 +209,8 @@ class entities_form extends moodleform {
         $mform->addElement('text', 'mailaddress_'.$j, get_string('contacts_mailaddress', 'local_entities'));
     }
 
+
+    
 
     /**
      *

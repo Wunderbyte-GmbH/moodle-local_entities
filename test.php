@@ -47,8 +47,9 @@ $test = $DB->get_record('local_entities', ['id' => 1]);
 /* test input */
 
 $enitymanager = new settings_manager();
-$out = $enitymanager->get_settings('5');
+//$out = $enitymanager->get_settings('5');
 
+$out = entities::list_all_entities();
 $jsonpretty = json_encode($out, JSON_PRETTY_PRINT);
 echo "<pre>".$jsonpretty."<pre/>";
 

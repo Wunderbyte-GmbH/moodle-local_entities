@@ -55,7 +55,18 @@ $functions = array(
                 'ajax' => true,
                 'services' => array(),
                 'capabilities' => ''
+        ),
+        'local_entities_list_all_entities' => array(
+                'classname' => 'local_entities_external',
+                'methodname' => 'list_all_entities',
+                'classpath' => 'local/entities/classes/external.php',
+                'description' => 'fetches all entities',
+                'type' => 'read',
+                'ajax' => true,
+                'services' => array(),
+                'capabilities' => ''
         )
+
 );
 
 $services = array(

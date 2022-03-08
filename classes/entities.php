@@ -48,6 +48,34 @@ class entities
         // Empty?
     }
 
+
+     /**
+     * Get all Objects
+     * 
+     * @return array Object
+     */
+    public function prepare_for_select(): array {
+        
+    }
+    /**
+     * Get all Objects
+     * 
+     * @return array Object
+     */
+    public static function list_all_entities(): array {
+        global $DB;
+        $sql = "SELECT id, 
+            CASE 
+                WHEN parentid = '0' THEN name
+                ELSE concat('-', name)
+            END title
+            FROM {local_entities}
+            order by coalesce(parentid, id), parentid <> '0', id";
+
+        //$sql = "SELECT id FROM {local_entities}";
+        return $DB->get_records_sql($sql);
+    }
+
     /**
      *
      * This is to return all parent entities from the database
