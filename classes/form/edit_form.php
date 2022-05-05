@@ -22,11 +22,16 @@
  * @copyright   2021 Wunderbyte
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+namespace local_entities\form;
 
 defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->libdir . '/formslib.php');
-require_once(dirname(__FILE__) . '/../lib.php');
+
+use moodleform;
+use local_entities\entities;
+use local_entities\customfield\entities_handler;
+use stdClass;
 
 /**
  * Class entities_form
@@ -34,11 +39,9 @@ require_once(dirname(__FILE__) . '/../lib.php');
  * @copyright   2021 Wunderbyte
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class entities_form extends moodleform {
-
+class edit_form extends moodleform {
 
     public $entity;
-
 
     /**
      * @var $callingentity
@@ -60,9 +63,6 @@ class entities_form extends moodleform {
         parent::__construct();
     }
 
-
-
-
     /**
      *
      * Set the entity data.
@@ -74,13 +74,11 @@ class entities_form extends moodleform {
         global $DB;
         if ($id = $this->optional_param('id', 0, PARAM_INT)) {
             $entity = $DB->get_record('local_entities', ['id' => $id]);
-            $handler = local_entities\customfield\entities_handler::create();
+            $handler = entities_handler::create();
             $handler->instance_form_before_set_data($this->entity);
             $this->set_data($this->entity);
         }
     }
-
-    
 
     /**
      * Get a list of all entities
@@ -91,7 +89,7 @@ class entities_form extends moodleform {
         // Get a list of all entities.
         $none = get_string("none", "local_entities");
         $entities = array(0 => $none);
-        $allentities = local_entities\entities::list_all_parent_entities();
+        $allentities = entities::list_all_entities();
         foreach ($allentities as $entity) {
             if ($entity->id != $this->callingentity) {
                 $entities[$entity->id] = $entity->name;
@@ -113,12 +111,12 @@ class entities_form extends moodleform {
         $options['maxbytes'] = 204800;
         $options['maxfiles'] = 1;
         $options['accepted_types'] = ['jpg', 'jpeg', 'png', 'svg', 'webp'];
-        $handler = local_entities\customfield\entities_handler::create();
+        $handler = entities_handler::create();
         $categorynames = $this->get_customfieldcategories($handler);
         $mform->addElement('filemanager', 'image_filemanager', get_string('edit_image', 'local_entities'), null, $options);
         $mform->addElement('select', 'type', get_string('entity_category', 'local_entities'), $categorynames);
 
-        $context = context_system::instance();
+        $context = \context_system::instance();
         $editoroptions = array('maxfiles' => EDITOR_UNLIMITED_FILES, 'noclean' => true, 'context' => $context);
 
         $mform->addElement('editor', 'description', get_string('entity_description', 'local_entities'),
@@ -129,12 +127,7 @@ class entities_form extends moodleform {
         $mform->addElement('select', 'parentid', get_string('entity_parent', 'local_entities'), $entities);
         $mform->addElement('text', 'sortorder', get_string('entity_order', 'local_entities'));
         $mform->setType('sortorder', PARAM_INT);
-        $options = array(
-            'ajax' => 'enrol_manual/form-potential-user-selector',
-            'multiple' => true,
-            'userfields' => implode(',', \core_user\fields::get_identity_fields($context, true))
-        );
-        $mform->addElement('autocomplete', 'userlist', get_string('selectusers', 'enrol_manual'), array(), $options);
+
         // ADDRESS BLOCK.
         // Later Iteration Add more than one address.
         $this->entity->addresscount = isset($this->entity->addresscount) && $this->entity->addresscount > 0
@@ -181,7 +174,6 @@ class entities_form extends moodleform {
 
         // FORM BUTTONS.
         $this->add_action_buttons();
-        // ...$handler->instance_form_before_set_data($course);
         $mform->addElement('hidden', 'id', null);
         $mform->setType('id', PARAM_INT);
     }
@@ -209,9 +201,6 @@ class entities_form extends moodleform {
         $mform->addElement('text', 'mailaddress_'.$j, get_string('contacts_mailaddress', 'local_entities'));
     }
 
-
-    
-
     /**
      *
      * Set the page data.
@@ -220,7 +209,7 @@ class entities_form extends moodleform {
      * @return mixed
      */
     public function set_data($defaults) {
-        $context = context_system::instance();
+        $context = \context_system::instance();
         $draftideditor = file_get_submitted_draft_itemid('description');
         $defaults->description['text'] = file_prepare_draft_area($draftideditor, $context->id,
             'local_entities', 'description', 0, array('subdirs' => true), $defaults->description['text']);
@@ -247,7 +236,7 @@ class entities_form extends moodleform {
      * @param bool $entity
      * @return array $categorynames
      */
-    public function get_customfieldcategories(local_entities\customfield\entities_handler $handler): array {
+    public function get_customfieldcategories(entities_handler $handler): array {
         $allcategories = $handler->get_categories_with_fields();
         $lastcategoryid = null;
         $categorycfg = get_config('local_entities', 'categories');
