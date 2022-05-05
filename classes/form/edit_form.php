@@ -92,7 +92,7 @@ class edit_form extends moodleform {
         $allentities = entities::list_all_entities();
         foreach ($allentities as $entity) {
             if ($entity->id != $this->callingentity) {
-                $entities[$entity->id] = $entity->name;
+                $entities[$entity->id] = $entity->newname;
             }
         }
 

@@ -68,7 +68,7 @@ class entities
             CASE
                 WHEN parentid = '0' THEN name
                 ELSE concat('-', name)
-            END name
+            END newname
             FROM {local_entities}
             order by coalesce(parentid, id), parentid <> '0', id";
 
