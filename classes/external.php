@@ -122,15 +122,16 @@ class local_entities_external extends external_api {
         self::validate_parameters(self::update_entity_parameters(), $params);
 
         $table = self::find_table($params['data']);
-        // todo tests do not find entity in db, because the table doesn't exist. need to find out how to add relevant tables in tests.
-        //$messages[] = self::does_entity_exist($table, $params['id']);
+        // Todo tests do not find entity in db, because the table doesn't exist.
+        // Need to find out how to add relevant tables in tests.
+        // Todo $messages[] = self::does_entity_exist($table, $params['id']);
         $returnvalue = self::are_params_set($params);
         $messages[] = self::has_params($params);
 
         $data = $returnvalue['data'];
         $messages[] = $returnvalue['warning'];
         foreach ($messages as $message) {
-            if(!empty($message)) {
+            if (!empty($message)) {
                 $warnings[] = $message;
                 if ($message['warningcode'] === 'nosuchid' || $message['warningcode'] === 'noparams') {
                     return [
@@ -140,7 +141,7 @@ class local_entities_external extends external_api {
                 }
             }
         }
-        $dataobject = self::buildDataobject($id, $data);
+        $dataobject = self::builddataobject($id, $data);
         $updated = self::update_entity_in_db($table, $dataobject);
         return [
                 'updated' => $updated,
@@ -158,7 +159,7 @@ class local_entities_external extends external_api {
                 array(
                         'updated' => new external_value(PARAM_BOOL, 'did things get updated?'),
                         'warnings' => new external_warnings(),
-                ),
+                )
         );
     }
 
@@ -338,7 +339,7 @@ class local_entities_external extends external_api {
      * @param array $data
      * @return stdClass
      */
-    private static function buildDataobject(int $id, array $data): stdClass {
+    private static function builddataobject(int $id, array $data): stdClass {
         $dataobject = new stdClass();
         $dataobject->id = $id;
         foreach ($data as $item) {
@@ -348,4 +349,7 @@ class local_entities_external extends external_api {
         }
         return $dataobject;
     }
+
+
+
 }

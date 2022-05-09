@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * local pages
+ * local entities
  *
  * @package     local_entities
  * @author      Thomas Winkler
@@ -78,7 +78,22 @@ class settings_manager {
         $id = $DB->insert_record('local_entities', $data);
         // Custom fields save needs id.
         $data->id  = $id;
+        // Unset empty hidden customfields (otherwise persistence error is thrown)
+        foreach ($data as $key => $property) {
+            if (strpos( $key , 'customfield' ) === 0) {
+                if (!$property) {
+                    unset($data->{$key});
+                }
+                if (is_array($property)) {
+                    if (!$property['text']) {
+                        unset($data->{$key});
+                    }
+                }
+            }
+        }
+        $a = $data;
         $handler->instance_form_save($data);
+
         return $id;
     }
 
@@ -238,7 +253,7 @@ class settings_manager {
             $addressdata->postcode = $data->{'postcode_' . $i};
             $addressdata->streetname = $data->{'streetname_' . $i};
             $addressdata->streetnumber = $data->{'streetnumber_' . $i};
-        } elseif (!empty($data->{'addressid_' . $i})) {
+        } else if (!empty($data->{'addressid_' . $i})) {
             $this->delete_address($data->{'addressid_' . $i});
         } else {
             $addressdata->id = null;
@@ -378,6 +393,8 @@ class settings_manager {
         $DB->delete_records('local_entities', array('id' => $this->id));
         $DB->delete_records('local_entities_address', array('entityidto' => $this->id));
         $DB->delete_records('local_entities_contacts', array('entityidto' => $this->id));
+        $handler = \local_entities\customfield\entities_handler::create();
+        $handler->delete_instance($this->id);
     }
 
     public function delete_address($id) {

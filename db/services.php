@@ -63,11 +63,10 @@ $services = array(
                 'functions' => array(
                         'local_entities_list_all_parent_entities',
                         'local_entities_update_entity',
-                        'local_entities_list_all_subentities'
+                        'local_entities_list_all_subentities',
                 ),
                 'restrictedusers' => 0,
                 'shortname' => 'local_entities_external',
                 'enabled' => 1
         )
 );
-

@@ -60,7 +60,7 @@ class entities_handler extends \core_customfield\handler {
      * Returns a singleton
      *
      * @param int $itemid
-     * @return \local_entites\customfield\entities_handler
+     * @return \core_customfield\handler
      */
     public static function create(int $itemid = 0) : \core_customfield\handler {
         if (static::$singleton === null) {
@@ -100,15 +100,15 @@ class entities_handler extends \core_customfield\handler {
         if ($instanceid) {
             $context = $this->get_instance_context($instanceid);
             return (!$field->get_configdata_property('locked') ||
-                    has_capability('moodle/course:changelockedcustomfields', $context));
+                    has_capability('local/entities:canedit', $context));
         } else {
             $context = $this->get_parent_context();
             if ($context->contextlevel == CONTEXT_SYSTEM) {
                 return (!$field->get_configdata_property('locked') ||
-                    has_capability('moodle/course:changelockedcustomfields', $context));
+                    has_capability('local/entities:canedit', $context));
             } else {
                 return (!$field->get_configdata_property('locked') ||
-                    guess_if_creator_will_have_course_capability('moodle/course:changelockedcustomfields', $context));
+                    guess_if_creator_will_have_course_capability('local/entities:canedit', $context));
             }
         }
     }
@@ -139,9 +139,6 @@ class entities_handler extends \core_customfield\handler {
     public function uses_categories() : bool {
         return true;
     }
-
-
-
 
     /**
      * Sets parent context for the course
@@ -233,28 +230,6 @@ class entities_handler extends \core_customfield\handler {
     }
 
     /**
-     * Allows to add custom controls to the field configuration form that will be saved in configdata
-     *
-     * @param \MoodleQuickForm $mform
-     */
-    public function config_form_definition(\MoodleQuickForm $mform) {
-        $mform->addElement('header', 'course_handler_header', get_string('customfieldsettings', 'core_course'));
-        $mform->setExpanded('course_handler_header', true);
-
-        // If field is locked.
-        $mform->addElement('selectyesno', 'configdata[locked]', get_string('customfield_islocked', 'core_course'));
-        $mform->addHelpButton('configdata[locked]', 'customfield_islocked', 'core_course');
-
-        // Field data visibility.
-        $visibilityoptions = [self::VISIBLETOALL => get_string('customfield_visibletoall', 'core_course'),
-            self::VISIBLETOTEACHERS => get_string('customfield_visibletoteachers', 'core_course'),
-            self::NOTVISIBLE => get_string('customfield_notvisible', 'core_course')];
-        $mform->addElement('select', 'configdata[visibility]', get_string('customfield_visibility', 'core_course'),
-            $visibilityoptions);
-        $mform->addHelpButton('configdata[visibility]', 'customfield_visibility', 'core_course');
-    }
-
-    /**
      * Creates or updates custom field data.
      *
      * @param \restore_task $task
@@ -281,7 +256,7 @@ class entities_handler extends \core_customfield\handler {
             }
             return $categorynames;
         }
-        return NULL;
+        return null;
     }
 
     /**

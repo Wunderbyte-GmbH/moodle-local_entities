@@ -50,29 +50,29 @@ class entities
 
 
      /**
-     * Get all Objects
-     * 
-     * @return array Object
-     */
+      * Get all Objects
+      *
+      * @return array Object
+      */
     public function prepare_for_select(): array {
-        
+        return [];
     }
     /**
      * Get all Objects
-     * 
+     *
      * @return array Object
      */
     public static function list_all_entities(): array {
         global $DB;
-        $sql = "SELECT id, 
-            CASE 
+        $sql = "SELECT id,
+            CASE
                 WHEN parentid = '0' THEN name
                 ELSE concat('-', name)
-            END title
+            END newname
             FROM {local_entities}
             order by coalesce(parentid, id), parentid <> '0', id";
 
-        //$sql = "SELECT id FROM {local_entities}";
+        // $sql = "SELECT id FROM {local_entities}";
         return $DB->get_records_sql($sql);
     }
 
@@ -86,6 +86,19 @@ class entities
         global $DB;
         $stmt = "SELECT * FROM {local_entities} WHERE parentid = '0' ORDER BY sortorder, timecreated";
         return $DB->get_records_sql($stmt);
+    }
+
+
+    /**
+     *
+     * This is to return all parent entities from the database
+     *
+     * @return array Object
+     */
+    public static function list_all_parent_entities_select(): array {
+        global $DB;
+        $sql = "SELECT id, name FROM {local_entities} WHERE parentid = '0' ORDER BY sortorder, timecreated";
+        return $DB->get_records_sql_menu($sql);
     }
 
     /**
@@ -112,6 +125,20 @@ class entities
         global $DB;
         $stmt = "SELECT * FROM {local_entities} WHERE " . "parentid=? ORDER BY sortorder";
         return $DB->get_records_sql($stmt, array(
+            $parentid
+        ));
+    }
+
+    /**
+     *
+     * This is to return all children from parententity the database
+     *
+     * @return array - returns array of Objects
+     */
+    public static function list_all_subentities_select(int $parentid): array {
+        global $DB;
+        $sql = "SELECT id, name FROM {local_entities} WHERE " . "parentid=? ORDER BY sortorder";
+        return $DB->get_records_sql_menu($sql, array(
             $parentid
         ));
     }

@@ -33,7 +33,7 @@ $context = \context_system::instance();
 $PAGE->set_context($context);
 require_login();
 
-//add capability
+// Add capability.
 if ($delid !== 0) {
     if (confirm_sesskey()) {
         $entity = new settings_manager($delid);
@@ -49,10 +49,8 @@ $PAGE->set_heading($title);
 
 $renderer = $PAGE->get_renderer('local_entities');
 
-
 echo $OUTPUT->header();
 
 echo $renderer->list_entities();
-
 
 echo $OUTPUT->footer();

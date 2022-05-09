@@ -25,7 +25,7 @@
 
 require_once(dirname(__FILE__) . '/../../config.php');
 require_once($CFG->dirroot . '/local/entities/lib.php');
-require_once($CFG->dirroot . '/local/entities/forms/edit_form.php');
+use local_entities\form\edit_form;
 use core_customfield\api;
 
 $entityid = optional_param('id', 0, PARAM_INT);
@@ -46,20 +46,16 @@ $PAGE->requires->jquery();
 
 $PAGE->set_pagelayout('standard');
 
-// Get the renderer for this page.
-//$renderer = $PAGE->get_renderer('local_entities');
-
 $settingsmanager = new \local_entities\settings_manager();
-
 
 if ($entityid) {
     $data = \local_entities\settings_manager::get_settings_forform($entityid);
-    $mform = new entities_form($data);
+    $mform = new edit_form($data);
     $handler = local_entities\customfield\entities_handler::create();
     $handler->instance_form_before_set_data($data);
     $mform->set_data($data);
 } else {
-    $mform = new entities_form();
+    $mform = new edit_form();
 }
 
 // Print the page header.
@@ -100,14 +96,7 @@ printf('<h1 class="page__title">%s<a style="float:right;font-size:15px" href="' 
     get_string('backtolist', 'local_entities') .'</a></h1>',
     $title);
 
-
 $mform->display();
 $PAGE->requires->js_call_amd('local_entities/customfield', 'init');
 
-
-
 echo $OUTPUT->footer();
-
-
-
-

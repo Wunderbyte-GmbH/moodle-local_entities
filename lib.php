@@ -32,15 +32,18 @@ defined('MOODLE_INTERNAL') || die;
  *
  */
 function local_entities_extend_navigation($navigation) {
-    $nodehome = $navigation->get('home');
-    if (empty($nodehome)) {
-        $nodehome = $navigation;
+    $context = \context_system::instance();
+    if (has_capability('local/entities:canedit', $context)) {
+        $nodehome = $navigation->get('home');
+        if (empty($nodehome)) {
+            $nodehome = $navigation;
+        }
+        $pluginname = get_string('pluginname', 'local_entities');
+        $link = new moodle_url('/local/entities/entities.php', array());
+        $icon = new pix_icon('tennis-ball', $pluginname, 'local_entities');
+        $nodecreatecourse = $nodehome->add($pluginname, $link, navigation_node::NODETYPE_LEAF, $pluginname, 'entities', $icon);
+        $nodecreatecourse->showinflatnavigation = true;
     }
-    $pluginname = get_string('pluginname', 'local_entities');
-    $link = new moodle_url('/local/entities/entities.php', array());
-    $icon = new pix_icon('tennis-ball', $pluginname, 'local_entities');
-    $nodecreatecourse = $nodehome->add($pluginname, $link, navigation_node::NODETYPE_LEAF, $pluginname, 'entities', $icon);
-    $nodecreatecourse->showinflatnavigation = true;
 }
 
 /**

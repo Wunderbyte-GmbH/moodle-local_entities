@@ -11,8 +11,8 @@
 				<FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="false" DEFAULT="0" SEQUENCE="false" />
 				<FIELD NAME="openentity" TYPE="int" LENGTH="10" NOTNULL="false" DEFAULT="0" SEQUENCE="false" />
 				<FIELD NAME="createdby" TYPE="int" LENGTH="10" NOTNULL="false" DEFAULT="0" SEQUENCE="false" />
-                <FIELD NAME="picture" TYPE="text" NOTNULL="false" SEQUENCE="false" />
-				<FIELD NAME="parentid" TYPE="text" NOTNULL="false" SEQUENCE="false" />
+                <FIELD NAME="picture" TYPE="char" LENGTH="50" NOTNULL="false" SEQUENCE="false" />
+				<FIELD NAME="parentid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" />
                 <FIELD NAME="sortorder" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" />
             </FIELDS>
             <KEYS>
@@ -22,12 +22,12 @@
         <TABLE NAME="local_entities_address" COMMENT="Address connected to entities">
             <FIELDS>
                 <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" />
-                <FIELD NAME="entityidto" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" /> 
-                <FIELD NAME="country" TYPE="text" NOTNULL="false" SEQUENCE="false" />
-                <FIELD NAME="city" TYPE="text" LENGTH="10" NOTNULL="false" SEQUENCE="false" />
+                <FIELD NAME="entityidto" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" />
+                <FIELD NAME="country" TYPE="char" LENGTH="32" NOTNULL="false" SEQUENCE="false" />
+                <FIELD NAME="city" TYPE="char" LENGTH="32" NOTNULL="false" SEQUENCE="false" />
                 <FIELD NAME="postcode" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" />
-                <FIELD NAME="streetname" TYPE="text" NOTNULL="false" SEQUENCE="false" />
-				<FIELD NAME="streetnumber" TYPE="text" NOTNULL="false" SEQUENCE="false" />
+                <FIELD NAME="streetname" TYPE="char" LENGTH="32" NOTNULL="false" SEQUENCE="false" />
+				<FIELD NAME="streetnumber" TYPE="char" LENGTH="32" NOTNULL="false" SEQUENCE="false" />
             </FIELDS>
             <KEYS>
                 <KEY NAME="primary" TYPE="primary" FIELDS="id" />
@@ -37,14 +37,26 @@
         <TABLE NAME="local_entities_contacts" COMMENT="Contacts connected to entities">
             <FIELDS>
                 <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" />
-                <FIELD NAME="entityidto" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" /> 
-                <FIELD NAME="givenname" TYPE="text" NOTNULL="false" SEQUENCE="false" />
-                <FIELD NAME="surname" TYPE="text" LENGTH="10" NOTNULL="false" SEQUENCE="false" />
-                <FIELD NAME="mail" TYPE="text" LENGTH="10" NOTNULL="false" SEQUENCE="false" />
+                <FIELD NAME="entityidto" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" />
+                <FIELD NAME="givenname" TYPE="char" LENGTH="30" NOTNULL="false" SEQUENCE="false" />
+                <FIELD NAME="surname" TYPE="char" LENGTH="30" NOTNULL="false" SEQUENCE="false" />
+                <FIELD NAME="mail" TYPE="char" LENGTH="30" NOTNULL="false" SEQUENCE="false" />
             </FIELDS>
             <KEYS>
                 <KEY NAME="primary" TYPE="primary" FIELDS="id" />
                 <KEY NAME="entityidto" TYPE="foreign" FIELDS="entityidto" REFTABLE="local_entities" REFFIELDS="id"/>
+            </KEYS>
+        </TABLE>
+        <TABLE NAME="local_entities_relations" COMMENT="Entities realtions used in other plugins">
+            <FIELDS>
+                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" />
+                <FIELD NAME="entityid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" />
+                <FIELD NAME="modulename" TYPE="char" LENGTH="30" NOTNULL="false" SEQUENCE="false" />
+                <FIELD NAME="instanceid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" />
+                <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" />
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="id" />
             </KEYS>
         </TABLE>
     </TABLES>
