@@ -80,7 +80,7 @@ class entities_form extends moodleform {
         }
     }
 
-    
+
 
     /**
      * Get a list of all entities
@@ -210,7 +210,7 @@ class entities_form extends moodleform {
     }
 
 
-    
+
 
     /**
      *
