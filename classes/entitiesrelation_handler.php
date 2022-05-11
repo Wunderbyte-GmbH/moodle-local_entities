@@ -77,7 +77,8 @@ class entitiesrelation_handler {
         $mform->addElement('html', '<div id="entitiesrelation-form">');
         $PAGE->requires->js_call_amd('local_entities/dynamicform', 'init');
         $renderer = $PAGE->get_renderer('local_entities');
-        $searchbar = "<input class='m-2' type='text' id='entitysearch' value='search entity'>";
+        $placeholder = get_string('er_placeholder', 'local_entities');
+        $searchbar = "<input class='m-2' type='text' id='entitysearch' placeholder='search entity'>";
         $mform->addElement('html', $searchbar);
         $html = $renderer->list_entities_select();
         $mform->addElement('html', $html);
@@ -164,7 +165,7 @@ class entitiesrelation_handler {
             return;
         }
         if (empty($instance->local_entities_entityid)) {
-            throw new \coding_exception('No entitiy set');
+            return;
         }
         $data = new stdClass();
         if (isset($instance->local_entities_relationid)) {

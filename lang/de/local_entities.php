@@ -58,4 +58,5 @@ $string['categories'] = "Standardcategories";
 $string['categories:description'] = "Set the Standardcategory from the list of the customfieldcategories visibile on ever edit page";
 $string['er_entitiesname'] = "Ausgewählte Entität";
 $string['addcategory'] = "Kategorie hinzufügen";
+$string['er_placeholder'] = "... suche";
 
