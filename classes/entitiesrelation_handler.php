@@ -111,7 +111,7 @@ class entitiesrelation_handler {
      */
     public function get_instance_data(int $instanceid): stdClass {
         global $DB;
-        $sql = "SELECT r.*, e.name
+        $sql = "SELECT r.entityid as id, r.id as relationid, r.modulename, r.instanceid, e.name, r.timecreated
                  FROM {local_entities_relations} r
                  JOIN {local_entities} e
                  ON e.id = r.entityid
@@ -135,9 +135,9 @@ class entitiesrelation_handler {
     public function instance_form_before_set_data(MoodleQuickForm &$mform, stdClass $instance, $instanceid = 0) {
         $instanceid = !empty($instanceid) ? $instanceid : 0;
         $fromdb = $this->get_instance_data($instanceid);
-        $entityid = isset($fromdb->entityid) ? $fromdb->entityid : 0;
+        $entityid = isset($fromdb->id) ? $fromdb->id : 0;
         $entityname = isset($fromdb->name) ? $fromdb->name : "";
-        $erid = isset($fromdb->id) ? $fromdb->id : 0;
+        $erid = isset($fromdb->relationid) ? $fromdb->relationid : 0;
         $mform->setDefaults(array('local_entities_relationid' => $erid));
         $mform->setDefaults(array('local_entities_entityid' => $entityid));
         $mform->setDefaults(array('local_entities_entityname' => $entityname));
