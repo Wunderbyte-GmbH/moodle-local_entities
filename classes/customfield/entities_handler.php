@@ -57,12 +57,12 @@ class entities_handler extends \core_customfield\handler {
     const NOTVISIBLE = 0;
 
     /**
-     * Returns a singleton
+     * Undocumented function
      *
-     * @param int $itemid
-     * @return \core_customfield\handler
+     * @param integer $itemid
+     * @return entities_handler
      */
-    public static function create(int $itemid = 0) : \core_customfield\handler {
+    public static function create(int $itemid = 0):entities_handler {
         if (static::$singleton === null) {
             self::$singleton = new static(0);
         }

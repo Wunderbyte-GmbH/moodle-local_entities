@@ -23,10 +23,19 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+
+namespace local_entities\form;
+
+use context_system;
+use local_entities\entities;
+use local_entities\customfield\entities_handler;
+use moodleform;
+use stdClass;
+
 defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->libdir . '/formslib.php');
-require_once(dirname(__FILE__) . '/../lib.php');
+// require_once(dirname(__FILE__) . '/../lib.php');
 
 /**
  * Class entities_form
@@ -34,7 +43,7 @@ require_once(dirname(__FILE__) . '/../lib.php');
  * @copyright   2021 Wunderbyte
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class entities_form extends moodleform {
+class edit_form extends moodleform {
 
 
     public $entity;
@@ -74,7 +83,7 @@ class entities_form extends moodleform {
         global $DB;
         if ($id = $this->optional_param('id', 0, PARAM_INT)) {
             $entity = $DB->get_record('local_entities', ['id' => $id]);
-            $handler = local_entities\customfield\entities_handler::create();
+            $handler = entities_handler::create();
             $handler->instance_form_before_set_data($this->entity);
             $this->set_data($this->entity);
         }
@@ -91,7 +100,7 @@ class entities_form extends moodleform {
         // Get a list of all entities.
         $none = get_string("none", "local_entities");
         $entities = array(0 => $none);
-        $allentities = local_entities\entities::list_all_parent_entities();
+        $allentities = entities::list_all_parent_entities();
         foreach ($allentities as $entity) {
             if ($entity->id != $this->callingentity) {
                 $entities[$entity->id] = $entity->name;
@@ -113,7 +122,8 @@ class entities_form extends moodleform {
         $options['maxbytes'] = 204800;
         $options['maxfiles'] = 1;
         $options['accepted_types'] = ['jpg', 'jpeg', 'png', 'svg', 'webp'];
-        $handler = local_entities\customfield\entities_handler::create();
+        $handler = entities_handler::create();
+
         $categorynames = $this->get_customfieldcategories($handler);
         $mform->addElement('filemanager', 'image_filemanager', get_string('edit_image', 'local_entities'), null, $options);
         $mform->addElement('select', 'type', get_string('entity_category', 'local_entities'), $categorynames);
@@ -247,7 +257,7 @@ class entities_form extends moodleform {
      * @param bool $entity
      * @return array $categorynames
      */
-    public function get_customfieldcategories(local_entities\customfield\entities_handler $handler): array {
+    public function get_customfieldcategories(entities_handler $handler): array {
         $allcategories = $handler->get_categories_with_fields();
         $lastcategoryid = null;
         $categorycfg = get_config('local_entities', 'categories');
