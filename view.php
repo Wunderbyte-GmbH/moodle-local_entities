@@ -67,9 +67,9 @@ echo $OUTPUT->header();
 //echo $renderer->showpage($custompage);
 $context = \context_system::instance();
 
-// Rendere Func       
+// Rendere Func
 $fs = get_file_storage();
-$files = $fs->get_area_files($context->id, 'local_entities', 'image', $id);     
+$files = $fs->get_area_files($context->id, 'local_entities', 'image', $id);
 foreach ($files as $file) {
     $filename = $file->get_filename();
     if ($file->get_filesize() > 0) {
