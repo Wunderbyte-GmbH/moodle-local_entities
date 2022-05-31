@@ -76,7 +76,7 @@ class test_form extends moodleform {
         global $DB;
         if ($id = $this->optional_param('id', 0, PARAM_INT)) {
             $entity = $DB->get_record('local_entities', ['id' => $id]);
-            $handler = local_entities\customfield\entities_handler::create();
+            $handler = \local_entities\customfield\entities_handler::create();
             $handler->instance_form_before_set_data($this->entity);
             $this->set_data($this->entity);
         }
@@ -120,7 +120,7 @@ class test_form extends moodleform {
      * @return mixed
      */
     public function set_data($defaults) {
-        $context = context_system::instance();
+        $context = \context_system::instance();
         $draftideditor = file_get_submitted_draft_itemid('description');
         $defaults->description['text'] = file_prepare_draft_area($draftideditor, $context->id,
             'local_entities', 'description', 0, array('subdirs' => true), $defaults->description['text']);
