@@ -149,6 +149,8 @@ class local_entities_renderer extends plugin_renderer_base
     public function list_entities_select() {
         global $DB, $CFG;
         $html = '<ul class="list-group group-root my-4">';
+        $html .= "<li  class='list-group-item p-0 pl-2'><span class='btn btn-primary py-0' data-action='addentity'
+        data-entityname='none'  data-entityid='-1'>No entity</span></li>";
         $records = \local_entities\entities::list_all_parent_entities();
         foreach ($records as $entity) {
             $html .= $this->get_submenuitem_select($entity->id, $entity->name);

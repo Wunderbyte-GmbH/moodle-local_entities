@@ -41,8 +41,8 @@ $PAGE->set_heading($title);
 
 
 
-
 echo $OUTPUT->header();
+echo $renderer->list_entities_select();
 $test = $DB->get_record('local_entities', ['id' => 1]);
 /* test input */
 
@@ -73,6 +73,8 @@ $out = $enity_manager->prepareaddress($data, $id);
 $json_pretty = json_encode($out,  JSON_PRETTY_PRINT);
 echo "<pre>".$json_pretty."<pre/>";
 */
+
+/*
 $input = 0;
 $update = 0;
 $list = 0;
@@ -107,7 +109,7 @@ if ($list) {
     $entities = new entities();
     $list = $entities->list_all_entities();
 }
-
+*/
 
 
 

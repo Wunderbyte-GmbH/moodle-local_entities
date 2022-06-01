@@ -175,6 +175,11 @@ class entitiesrelation_handler {
         $data->modulename = $this->modulename;
         $data->entityid = $instance->local_entities_entityid;
         $data->timecreated = time();
+        // Delete er if entitiyid is set to -1.
+        if ($data->entitiyid == -1) {
+            $this->delete_relation($data->instanceid);
+            return;
+        }
         if ($this->er_record_exists($data)) {
             $this->update_db($data);
         } else {

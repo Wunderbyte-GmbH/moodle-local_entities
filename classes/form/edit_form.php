@@ -69,9 +69,6 @@ class edit_form extends moodleform {
         parent::__construct();
     }
 
-
-
-
     /**
      *
      * Set the entity data.
@@ -88,8 +85,6 @@ class edit_form extends moodleform {
             $this->set_data($this->entity);
         }
     }
-
-
 
     /**
      * Get a list of all entities
@@ -218,9 +213,6 @@ class edit_form extends moodleform {
         $mform->addElement('text', 'surname_'.$j, get_string('contacts_surname', 'local_entities'));
         $mform->addElement('text', 'mailaddress_'.$j, get_string('contacts_mailaddress', 'local_entities'));
     }
-
-
-
 
     /**
      *
