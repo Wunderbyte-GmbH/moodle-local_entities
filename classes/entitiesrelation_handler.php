@@ -188,6 +188,22 @@ class entitiesrelation_handler {
     }
 
     /**
+     * This saves a new relation and creates a "fake" form to use the form_save method.
+     *
+     * @param int $instanceid
+     * @param int $entityid
+     * @return void
+     */
+    public function save_entity_relation($instanceid, $entityid) {
+
+        $instance = new stdClass();
+
+        $instance->local_entities_entityid = $entityid;
+
+        $this->instance_form_save($instance, $instanceid);
+    }
+
+    /**
      * Saves relation data to DB
      *
      * @param stdClass $data
@@ -232,5 +248,22 @@ class entitiesrelation_handler {
      */
     public static function get_entities_list(int $semesterid, string $reoccurringdatestring): array {
         return array();
+    }
+
+    /**
+     * Get an array of all the entities with exactly this name.
+     * @param string $entityname
+     * @return array
+     */
+    public function get_entities_by_name(string $entityname) {
+
+        global $DB;
+
+        // We see if there are more than one entities with the same name.
+        if ($entities = $DB->get_records('local_entities', ['name' => $entityname])) {
+            return $entities;
+        } else {
+            return [];
+        }
     }
 }
