@@ -40,7 +40,7 @@ if ($hassiteconfig) {
     $categories = $handler->get_customfieldcategory_names();
 
     if (isset($categories)) {
-        array_unshift($categories, 'none');
+        array_unshift($categories, get_string('none', 'local_entities'));
         $settings->add(
             new admin_setting_configmultiselect(
             $componentname .'/categories',
