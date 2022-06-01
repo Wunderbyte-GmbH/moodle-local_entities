@@ -176,7 +176,7 @@ class entitiesrelation_handler {
         $data->entityid = $instance->local_entities_entityid;
         $data->timecreated = time();
         // Delete er if entitiyid is set to -1.
-        if ($data->entitiyid == -1) {
+        if ($data->entityid == -1) {
             $this->delete_relation($data->instanceid);
             return;
         }
