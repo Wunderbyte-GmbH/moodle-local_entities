@@ -22,6 +22,7 @@ global $CFG;
 require_once("$CFG->libdir/formslib.php");
 
 use core_form\external\dynamic_form;
+use moodle_exception;
 use moodle_recordset;
 use MoodleQuickForm;
 use stdClass;
@@ -101,7 +102,8 @@ class entitiesrelation_handler {
     public function delete_relation(int $instanceid) {
         global $DB;
         $select = sprintf("modulename = :modulename AND %s = :instanceid", $DB->sql_compare_text('instanceid'));
-        $DB->delete_records_select('local_entities_relations', $select, array('modulename' => $this->modulename, 'instanceid' => $instanceid));
+        $DB->delete_records_select('local_entities_relations', $select, array('modulename' => $this->modulename,
+            'instanceid' => $instanceid));
     }
     /**
      * Returns the data for the form
@@ -233,7 +235,8 @@ class entitiesrelation_handler {
     public function er_record_exists(stdClass $data) {
         global $DB;
         $select = sprintf("modulename = :modulename AND %s = :instanceid", $DB->sql_compare_text('instanceid'));
-        if ($DB->record_exists_select('local_entities_relations', $select, array('modulename' => $this->modulename, 'instanceid' => $data->instanceid))) {
+        if ($DB->record_exists_select('local_entities_relations', $select, array('modulename' => $this->modulename,
+            'instanceid' => $data->instanceid))) {
             return true;
         }
         return false;
@@ -265,5 +268,34 @@ class entitiesrelation_handler {
         } else {
             return [];
         }
+    }
+
+    /**
+     * Helper function to remove all entries in local_entities_relations
+     * for a specific booking instance (by bookingid).
+     * @param int $bookingid the id of the booking instance
+     * @return bool $success - true if successful, false if not
+     */
+    public static function delete_entities_relations_by_bookingid(int $bookingid): bool {
+        global $DB;
+
+        if (empty($bookingid)) {
+            throw new moodle_exception('Could not clear entries from local_entities_relations because of missing booking id.');
+        }
+
+        // Initialize return value.
+        $success = true;
+
+        // Get all currently existing entities relations of the booking instance.
+        $existingoptions = $DB->get_records('booking_options', ['bookingid' => $bookingid], '', 'id');
+        if (!empty($existingoptions)) {
+            foreach ($existingoptions as $existingoption) {
+                if (!$DB->delete_records('local_entities_relations', ['instanceid' => $existingoption->id])) {
+                    $success = false;
+                }
+            }
+        }
+
+        return $success;
     }
 }
