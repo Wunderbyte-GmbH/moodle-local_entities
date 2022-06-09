@@ -148,7 +148,7 @@ class entitiesrelation_handler {
 
     /**
      * Saves the given data for entitiesrelations, must be called after the instance is saved and id is present
-     *
+     * Function returns id of newly created or updated entity, if present.
      * Example:
      *   if ($data = $form->get_data()) {
      *     // ... save main instance, set $data->id if instance was created.
@@ -156,7 +156,9 @@ class entitiesrelation_handler {
      *     redirect(...);
      *   }
      *
-     * @param stdClass $instance data received from a form
+     * @param stdClass $instance
+     * @param integer $instanceid
+     * @return
      */
     public function instance_form_save(stdClass $instance, int $instanceid) {
         if (empty($instanceid)) {
@@ -183,9 +185,9 @@ class entitiesrelation_handler {
             return;
         }
         if ($this->er_record_exists($data)) {
-            $this->update_db($data);
+            return $this->update_db($data);
         } else {
-            $this->save_to_db($data);
+            return $this->save_to_db($data);
         }
     }
 
@@ -220,7 +222,7 @@ class entitiesrelation_handler {
      * Update relation DB
      *
      * @param stdClass $data
-     * @return void
+     * @return int
      */
     public function update_db(stdClass $data) {
         global $DB;
@@ -264,6 +266,33 @@ class entitiesrelation_handler {
 
         // We see if there are more than one entities with the same name.
         if ($entities = $DB->get_records('local_entities', ['name' => $entityname])) {
+            return $entities;
+        } else {
+            return [];
+        }
+    }
+
+    /**
+     * Return entity by id.
+     *
+     * @param integer $entityid
+     * @return bool|array
+     */
+    public static function get_entity_by_id(int $entityid) {
+        global $DB;
+
+        $sql = "SELECT  ea.id as addressid, e.id as id, e.name, e.description,
+                        e.type, e.timecreated, e.timemodified, e.openentity, e.createdby,
+                        e.picture, e.parentid, e.sortorder, ea.country, ea.city, ea.postcode,
+                        ea.streetname, ea.streetnumber
+                FROM {local_entities} e
+                LEFT JOIN {local_entities_address} ea
+                ON e.id=ea.entityidto
+                WHERE e.id = :entityid";
+        $params = ['entityid' => $entityid];
+
+        // We might hnave more than one record, as there might be more than one address.
+        if ($entities = $DB->get_records_sql($sql, $params)) {
             return $entities;
         } else {
             return [];
