@@ -59,3 +59,7 @@ $string['categories:description'] = "Set the default category from the list of t
 $string['er_entitiesname'] = "Selected entitiy";
 $string['er_placeholder'] = "... search";
 $string['addcategory'] = "add category";
+
+// access.php
+$string['entities:canedit'] = 'User is allowed to edit';
+$string['entities:canview'] = 'User is allowed to see entities';

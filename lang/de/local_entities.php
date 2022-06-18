@@ -60,3 +60,6 @@ $string['er_entitiesname'] = "Ausgewählte Entity";
 $string['addcategory'] = "Kategorie hinzufügen";
 $string['er_placeholder'] = "... suche";
 
+// access.php
+$string['entities:canedit'] = 'NutzerIn darf editieren.';
+$string['entities:canview'] = 'Nutzerin darf sehen.';
