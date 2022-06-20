@@ -22,14 +22,15 @@
 
 /**
  * Gets called from mustache template.
- * @param {string} catid
- * @param {string} encodedtable
  */
 export const init = () => {
     reloadCats();
     addEvents();
 };
 
+/**
+ * Reload categories.
+ */
 function reloadCats() {
     let catfieldsets = document.querySelectorAll('[id^=id_categorymeta]');
     let selectvalue = document.getElementById('id_type').value;
@@ -38,13 +39,16 @@ function reloadCats() {
         catfieldsets[i].hidden = true;
         catfieldsets[i].disabled = true;
         let cat = document.getElementById("id_categorymeta_" + id);
-        if (typeof(cat) != 'undefined' && cat !== null) {
+        if ((typeof (cat) != 'undefined') && (cat !== null)) {
             cat.hidden = false;
             cat.disabled = false;
         }
     }
 }
 
+/**
+ * Add events.
+ */
 function addEvents() {
     let select = document.getElementById('id_type');
     select.addEventListener('change', () => {

@@ -28,6 +28,7 @@ export const searchInput = () => {
     for (i = 0; i < li.length; i++) {
         a = li[i].querySelector('span');
         txtValue = a.textContent || a.innerText;
+        // eslint-disable-next-line no-console
         console.log(txtValue);
         if (txtValue.toUpperCase().indexOf(filter) > -1) {
             li[i].style.display = "";
@@ -37,6 +38,9 @@ export const searchInput = () => {
     }
 };
 
+/**
+ * Add events.
+ */
 function addEvents() {
     document.querySelector("#entitiesrelation-form").addEventListener('click', function(e) {
         if (e.target.dataset.action == "addentity") {
@@ -48,9 +52,12 @@ function addEvents() {
             entitynamefield.value = e.target.dataset.entityname;
         }
     });
-    document.getElementById("entitysearch").addEventListener('keyup', function () {searchInput();});
+    document.getElementById("entitysearch").addEventListener('keyup', function() {
+        searchInput();
+    });
 }
 
-export const init = (cmid, module, optionid) => {
+export const init = () => {
+    // Currently not used: cmid, module, optionid.
     addEvents();
 };
