@@ -104,11 +104,11 @@ class edit_form extends moodleform {
 
         $mform = $this->_form;
 
-        // Entity DETAILS.
+        // // Entity DETAILS.
         $mform->addElement('header', 'details', get_string('edit_details', 'local_entities'));
-        $renderer =& $this->_form->defaultRenderer();
-        $highlightheadertemplate = str_replace('ftoggler', 'ftoggler highlight', $renderer->_headerTemplate);
-        $renderer->setElementTemplate($highlightheadertemplate , 'details');
+        // $renderer =& $this->_form->defaultRenderer();
+        // $highlightheadertemplate = str_replace('ftoggler', 'ftoggler highlight', $renderer->_headerTemplate);
+        // $renderer->setElementTemplate($highlightheadertemplate , 'details');
 
         $mform->addElement('text', 'name', get_string('entity_name', 'local_entities'));
         $mform->setType('name', PARAM_TEXT);
@@ -134,12 +134,7 @@ class edit_form extends moodleform {
         $mform->addElement('select', 'parentid', get_string('entity_parent', 'local_entities'), $entities);
         $mform->addElement('text', 'sortorder', get_string('entity_order', 'local_entities'));
         $mform->setType('sortorder', PARAM_INT);
-        $options = array(
-            'ajax' => 'enrol_manual/form-potential-user-selector',
-            'multiple' => true,
-            'userfields' => implode(',', \core_user\fields::get_identity_fields($context, true))
-        );
-        $mform->addElement('autocomplete', 'userlist', get_string('selectusers', 'enrol_manual'), array(), $options);
+
         // ADDRESS BLOCK.
         // Later Iteration Add more than one address.
         $this->entity->addresscount = isset($this->entity->addresscount) && $this->entity->addresscount > 0
@@ -184,11 +179,12 @@ class edit_form extends moodleform {
         $mform->addElement('header', 'meta', 'Meta Infos');
         $handler->get_alternative_categories($mform, $this->entity->id);
 
-        // FORM BUTTONS.
-        $this->add_action_buttons();
         // ...$handler->instance_form_before_set_data($course);
         $mform->addElement('hidden', 'id', null);
         $mform->setType('id', PARAM_INT);
+
+        // FORM BUTTONS.
+        $this->add_action_buttons();
     }
 
     /**

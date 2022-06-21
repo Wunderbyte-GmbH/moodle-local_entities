@@ -38,11 +38,16 @@ function reloadCats() {
     for (var i = 0, len = catfieldsets.length + 0; i < len; i++) {
         catfieldsets[i].hidden = true;
         catfieldsets[i].disabled = true;
-        let cat = document.getElementById("id_categorymeta_" + id);
-        if ((typeof (cat) != 'undefined') && (cat !== null)) {
-            cat.hidden = false;
-            cat.disabled = false;
-        }
+        let cats = document.querySelectorAll('[id^=id_categorymeta_' + id + ']');
+
+        cats.forEach(cat => {
+            // eslint-disable-next-line no-console
+            console.log(cat, id);
+            if (typeof(cat) != 'undefined' && cat !== null) {
+                cat.hidden = false;
+                cat.disabled = false;
+            }
+        });
     }
 }
 
