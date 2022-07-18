@@ -60,9 +60,9 @@ $string['er_entitiesname'] = "Ausgewählte Entity";
 $string['addcategory'] = "Kategorie hinzufügen";
 $string['er_placeholder'] = "... suche";
 
-$string['pricefactor'] = "relativer Preisfaktor";
-$string['pricefactor_help'] = "relativer Preisfaktor: Kann z.B. für booking verwendete werden";
+$string['pricefactor'] = "Relativer Preisfaktor";
+$string['pricefactor_help'] = "Relativer Preisfaktor: Kann für automatische Preisberechnung (z.B. mit dem Booking-Plugin) verwendet werden";
 
-// access.php
-$string['entities:canedit'] = 'NutzerIn darf editieren.';
-$string['entities:canview'] = 'Nutzerin darf sehen.';
+// Access.php.
+$string['entities:canedit'] = 'Nutzer*in darf editieren.';
+$string['entities:canview'] = 'Nutzer*in darf sehen.';

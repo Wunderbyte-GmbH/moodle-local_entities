@@ -45,24 +45,24 @@ $string['contacts_givenname'] = 'Given name';
 $string['contacts_surname'] = 'Surname';
 $string['contacts_mail'] = 'E-Mail';
 $string['addentity'] = 'Add Entity';
-$string['entitysetup_heading'] = 'Edit or Create Entity';
+$string['entitysetup_heading'] = 'Edit or create Entity';
 $string['entity_title'] = 'Entity';
-$string['backtolist'] = 'Back to Entity Manager';
-$string['new_entity'] = 'New Entity';
-$string['edit_entity'] = 'Edit Entity';
+$string['backtolist'] = 'Back to entity Manager';
+$string['new_entity'] = 'New entity';
+$string['edit_entity'] = 'Edit entity';
 $string['view'] = "View";
 $string['edit'] = "Edit";
 $string['delete'] = "Delete";
-$string['entities:copymodule'] = "entities: copy module";
+$string['entities:copymodule'] = "Entities: copy module";
 $string['categories'] = "Default categories";
 $string['categories:description'] = "Set the default category from the list of the customfieldcategories visible on edit page";
 $string['er_entitiesname'] = "Selected entitiy";
 $string['er_placeholder'] = "... search";
-$string['addcategory'] = "add category";
+$string['addcategory'] = "Add category";
 
-$string['pricefactor'] = "relative pricafactor";
-$string['pricefactor_help'] = "relative pricafactor: Can be used for automatic price calculations e.g. in booking plugin";
+$string['pricefactor'] = "Relative price factor";
+$string['pricefactor_help'] = "Relative price factor: Can be used for automatic price calculations, e.g. in booking plugin";
 
-// access.php
+// Access.php.
 $string['entities:canedit'] = 'User is allowed to edit';
 $string['entities:canview'] = 'User is allowed to see entities';
