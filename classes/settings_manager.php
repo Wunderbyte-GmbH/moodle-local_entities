@@ -291,6 +291,7 @@ class settings_manager {
         $formdata->description['text'] = $record->description;
         $formdata->name = $record->name;
         $formdata->id = $record->id;
+        $formdata->pricefactor = $record->pricefactor;
         $formdata->parentid = $record->parentid;
         $formdata->sortorder  = $record->sortorder;
         $formdata->type  = $record->type;

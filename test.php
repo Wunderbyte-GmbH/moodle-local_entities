@@ -25,6 +25,8 @@ use local_entities\entities;
 use local_entities\entity;
 use local_entities\entity_manager;
 use local_entities\settings_manager;
+use local_entities\entitiesrelation_handler;
+
 
 require_once('../../config.php');
 
@@ -42,14 +44,8 @@ $PAGE->set_heading($title);
 
 
 echo $OUTPUT->header();
-echo $renderer->list_entities_select();
-$test = $DB->get_record('local_entities', ['id' => 1]);
-/* test input */
 
-$enitymanager = new settings_manager();
-//$out = $enitymanager->get_settings('5');
-
-$out = entities::list_all_entities();
+$out = entitiesrelation_handler::get_pricefactor_by_entityid(1);
 $jsonpretty = json_encode($out, JSON_PRETTY_PRINT);
 echo "<pre>".$jsonpretty."<pre/>";
 

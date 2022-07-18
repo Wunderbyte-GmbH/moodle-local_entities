@@ -79,6 +79,7 @@ if ($mform->is_cancelled()) {
     $recordentity->type = $data->type;
     $recordentity->parentid = intval($data->parentid);
     $recordentity->description = $data->description['text'];
+    $recordentity->pricefactor = $data->pricefactor;
     $result = $settingsmanager->update_or_createentity($recordentity);
     if ($result && $result > 0) {
         $options = array('subdirs' => 0, 'maxbytes' => 204800, 'maxfiles' => 1, 'accepted_types' => '*');

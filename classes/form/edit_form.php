@@ -82,7 +82,7 @@ class edit_form extends moodleform {
             $entity = $DB->get_record('local_entities', ['id' => $id]);
             $handler = entities_handler::create();
             $handler->instance_form_before_set_data($this->entity);
-            $this->set_data($this->entity);
+            $this->set_data($entity);
         }
     }
 
@@ -134,6 +134,10 @@ class edit_form extends moodleform {
         $mform->addElement('select', 'parentid', get_string('entity_parent', 'local_entities'), $entities);
         $mform->addElement('text', 'sortorder', get_string('entity_order', 'local_entities'));
         $mform->setType('sortorder', PARAM_INT);
+
+        $mform->addElement('float', 'pricefactor', get_string('pricefactor', 'local_entities'), null);
+        $mform->setDefault('pricefactor', 1);
+        $mform->addHelpButton('pricefactor', 'pricefactor', 'local_entities');
 
         // ADDRESS BLOCK.
         // Later Iteration Add more than one address.

@@ -327,4 +327,18 @@ class entitiesrelation_handler {
 
         return $success;
     }
+
+
+    /**
+     * Returns pricefactor set in DB. Can be used for automatic pricecalculation used in booking.
+     *
+     * @param integer $id
+     * @return float $pricefactor
+     */
+    public static function get_pricefactor_by_entityid(int $id) {
+        global $DB;
+        $params = array('id' => $id);
+        $pricefactor = $DB->get_field_select('local_entities', 'pricefactor', 'id = :id', $params, IGNORE_MISSING);
+        return $pricefactor;
+    }
 }

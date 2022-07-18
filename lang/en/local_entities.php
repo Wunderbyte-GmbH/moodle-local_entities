@@ -60,6 +60,9 @@ $string['er_entitiesname'] = "Selected entitiy";
 $string['er_placeholder'] = "... search";
 $string['addcategory'] = "add category";
 
+$string['pricefactor'] = "relative pricafactor";
+$string['pricefactor_help'] = "relative pricafactor: Can be used for automatic price calculations e.g. in booking plugin";
+
 // access.php
 $string['entities:canedit'] = 'User is allowed to edit';
 $string['entities:canview'] = 'User is allowed to see entities';
