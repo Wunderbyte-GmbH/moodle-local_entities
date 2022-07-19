@@ -78,7 +78,7 @@ class settings_manager {
         $id = $DB->insert_record('local_entities', $data);
         // Custom fields save needs id.
         $data->id  = $id;
-        // Unset empty hidden customfields (otherwise persistence error is thrown)
+        // Unset empty hidden customfields (otherwise persistence error is thrown).
         foreach ($data as $key => $property) {
             if (strpos( $key , 'customfield' ) === 0) {
                 if (!$property) {
@@ -166,7 +166,7 @@ class settings_manager {
         global $DB;
         $recordaddress = $this->prepare_address($data, $index);
         $recordaddress->entityidto = $data->id;
-        if ($recordaddress->id == 0) {
+        if (empty($recordaddress->id)) {
             $result = $DB->insert_record('local_entities_address', $recordaddress);
         } else {
             $result = $DB->update_record('local_entities_address', $recordaddress);
