@@ -24,10 +24,10 @@
             <FIELDS>
                 <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" />
                 <FIELD NAME="entityidto" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" />
-                <FIELD NAME="country" TYPE="char" LENGTH="32" NOTNULL="false" SEQUENCE="false" />
-                <FIELD NAME="city" TYPE="char" LENGTH="32" NOTNULL="false" SEQUENCE="false" />
-                <FIELD NAME="postcode" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" />
-                <FIELD NAME="streetname" TYPE="char" LENGTH="32" NOTNULL="false" SEQUENCE="false" />
+                <FIELD NAME="country" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false"/>
+                <FIELD NAME="city" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false"/>
+                <FIELD NAME="postcode" TYPE="char" LENGTH="30" NOTNULL="false" SEQUENCE="false"/>
+                <FIELD NAME="streetname" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false"/>
 				<FIELD NAME="streetnumber" TYPE="char" LENGTH="32" NOTNULL="false" SEQUENCE="false" />
             </FIELDS>
             <KEYS>
@@ -39,9 +39,9 @@
             <FIELDS>
                 <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" />
                 <FIELD NAME="entityidto" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" />
-                <FIELD NAME="givenname" TYPE="char" LENGTH="30" NOTNULL="false" SEQUENCE="false" />
-                <FIELD NAME="surname" TYPE="char" LENGTH="30" NOTNULL="false" SEQUENCE="false" />
-                <FIELD NAME="mail" TYPE="char" LENGTH="30" NOTNULL="false" SEQUENCE="false" />
+                <FIELD NAME="givenname" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" />
+                <FIELD NAME="surname" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" />
+                <FIELD NAME="mail" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" />
             </FIELDS>
             <KEYS>
                 <KEY NAME="primary" TYPE="primary" FIELDS="id" />

@@ -33,5 +33,35 @@ function xmldb_local_entities_upgrade($oldversion) {
         // Booking savepoint reached.
         upgrade_plugin_savepoint(true, 2022071800, 'local', 'entities');
     }
+
+    if ($oldversion < 2022072200) {
+
+        $localentitiesaddress = new xmldb_table('local_entities_address');
+
+        $country = new xmldb_field('country', XMLDB_TYPE_CHAR, '255', null, null, null, null, 'entityidto');
+        $city = new xmldb_field('city', XMLDB_TYPE_CHAR, '255', null, null, null, null, 'country');
+        $postcode = new xmldb_field('postcode', XMLDB_TYPE_CHAR, '30', null, null, null, null, 'city');
+        $streetname = new xmldb_field('streetname', XMLDB_TYPE_CHAR, '255', null, null, null, null, 'postcode');
+
+        $dbman->change_field_precision($localentitiesaddress, $country);
+        $dbman->change_field_precision($localentitiesaddress, $city);
+        $dbman->change_field_type($localentitiesaddress, $postcode);
+        $dbman->change_field_precision($localentitiesaddress, $postcode);
+        $dbman->change_field_precision($localentitiesaddress, $streetname);
+
+        $localentitiescontacts = new xmldb_table('local_entities_contacts');
+
+        $givenname = new xmldb_field('givenname', XMLDB_TYPE_CHAR, '255', null, null, null, null, 'entityidto');
+        $surname = new xmldb_field('surname', XMLDB_TYPE_CHAR, '255', null, null, null, null, 'givenname');
+        $mail = new xmldb_field('mail', XMLDB_TYPE_CHAR, '255', null, null, null, null, 'surname');
+
+        $dbman->change_field_precision($localentitiescontacts, $givenname);
+        $dbman->change_field_precision($localentitiescontacts, $surname);
+        $dbman->change_field_precision($localentitiescontacts, $mail);
+
+        // Entities savepoint reached.
+        upgrade_plugin_savepoint(true, 2022072200, 'local', 'entities');
+    }
+
     return true;
 }
