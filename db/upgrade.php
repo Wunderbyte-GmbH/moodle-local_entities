@@ -63,5 +63,20 @@ function xmldb_local_entities_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2022072200, 'local', 'entities');
     }
 
+    if ($oldversion < 2022072800) {
+
+        // Changing type of field name on table local_entities to char.
+        $table = new xmldb_table('local_entities');
+        $field = new xmldb_field('name', XMLDB_TYPE_CHAR, '255', null, null, null, null, 'id');
+
+        // Launch change of type for field name.
+        $dbman->change_field_type($table, $field);
+        // Launch change of precision for field name.
+        $dbman->change_field_precision($table, $field);
+
+        // Entities savepoint reached.
+        upgrade_plugin_savepoint(true, 2022072800, 'local', 'entities');
+    }
+
     return true;
 }
