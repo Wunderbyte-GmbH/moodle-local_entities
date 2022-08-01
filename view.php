@@ -35,23 +35,17 @@ $PAGE->set_url("{$CFG->wwwroot}/local/entities/index.php", ['id' => $id]);
 require_once("{$CFG->dirroot}/local/entities/lib.php");
 
 // Set the page layout.
-
-
 require_login();
 
 $PAGE->set_pagelayout('standard');
-
-
 
 // Add a class to the body that identifies this page.
 if ($id) {
         // Make the page name lowercase.
     $entity = \local_entities\settings_manager::get_settings($id);
 
-
     // More page setup.
     $PAGE->set_title($entity->name);
-    //$PAGE->set_heading($entity->name);
 
     // Generate the class name with the following naming convention {pagetype}-local-pages-{pagename}-{pageid}.
     $classname = "{$entity->type}-local-pages-{$entity->name}-{$id}";
@@ -64,10 +58,8 @@ if ($id) {
 echo $OUTPUT->header();
 
 // Output the page content.
-//echo $renderer->showpage($custompage);
 $context = \context_system::instance();
 
-// Rendere Func
 $fs = get_file_storage();
 $files = $fs->get_area_files($context->id, 'local_entities', 'image', $id);
 foreach ($files as $file) {
@@ -93,7 +85,6 @@ $entity->metadata = $metadata;
 $entity->description = file_rewrite_pluginfile_urls($entity->description, 'pluginfile.php',
 $context->id, 'local_entity', 'description', null);
 
-
 $entity->picture = isset($url) ? $url : null;
 $entity->hasaddress = isset($entity->address);
 $entity->hascontacts = isset($entity->contacts);
@@ -110,14 +101,8 @@ if (isset($entity->type)) {
 }
 $entity->editurl = new moodle_url('/local/entities/edit.php', array( 'id' => $id));
 $entity->delurl = new moodle_url('/local/entities/entities.php', array( 'del' => $id , 'sesskey' => $USER->sesskey));
-$entity->description = format_text($entity->description, FORMAT_HTML);
-
-
 
 echo $OUTPUT->render_from_template('local_entities/view', $entity);
-
-
-
 
 // Now output the footer.
 echo $OUTPUT->footer();
