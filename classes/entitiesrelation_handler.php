@@ -62,13 +62,15 @@ class entitiesrelation_handler {
      * Add form fields to be passed on mform.
      *
      * @param MoodleQuickForm $mform
-     * @param bool $loadexistingdates Only if this param is set to true, we'll load the already existing dates.
+     * @param int $instanceid
+     * @param string $formmode 'simple' or 'expert' mode
+     * @param string $headerlangidentifier
+     * @param string $headerlangcomponent
      * @return void
      */
-    public function instance_form_definition(MoodleQuickForm &$mform, int $instanceid = 0,
-    ?string $headerlangidentifier = null, ?string $headerlangcomponent = null) {
-        global $PAGE;
-        global $DB;
+    public function instance_form_definition(MoodleQuickForm &$mform, int $instanceid = 0, string $formmode = 'expert',
+        ?string $headerlangidentifier = null, ?string $headerlangcomponent = null) {
+        global $DB, $PAGE;
 
         // Workaround: Only show, if it is not turned off in the option form config.
         // We currently need this, because hideIf does not work with headers.
@@ -77,15 +79,18 @@ class entitiesrelation_handler {
 
         if (!empty($headerlangidentifier)) {
             $header = get_string($headerlangidentifier, $headerlangcomponent);
+        } else {
+            $header = get_string('addentity', 'local_entities');
         }
-        $formmode = get_user_preferences('optionform_mode');
+
         if ($formmode !== 'expert') {
             $cfgentityheader = $DB->get_field('booking_optionformconfig', 'active',
                 ['elementname' => 'entitiesrelation']);
-            if ($cfgentityheader === "0") {
+            if ($cfgentityheader == 0) {
                 $showheader = false;
             }
         }
+
         if ($showheader) {
             $header = get_string('addentity', 'local_entities');
             $mform->addElement('header', 'entitiesrelation', $header);
@@ -105,9 +110,9 @@ class entitiesrelation_handler {
             $mform->addElement('text', 'local_entities_entityname', get_string('er_entitiesname', 'local_entities'), $options);
             $mform->setType('local_entities_entityname', PARAM_TEXT);
             $mform->addElement('html', '</div>');
-            return $mform;
         }
 
+        return $mform;
     }
     /**
      * Function to delete relation between module and entities
