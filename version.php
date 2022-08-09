@@ -29,5 +29,4 @@ $plugin->component = 'local_entities';
 $plugin->release = '0.0.44';
 $plugin->version = 2022080900;
 $plugin->requires = 2020061500;
-$plugin->supported = [39, 400];
 $plugin->maturity = MATURITY_ALPHA;
