@@ -50,18 +50,21 @@ $string['entity_title'] = 'Entity';
 $string['backtolist'] = 'Back to entity Manager';
 $string['new_entity'] = 'New entity';
 $string['edit_entity'] = 'Edit entity';
-$string['view'] = "View";
-$string['edit'] = "Edit";
-$string['delete'] = "Delete";
-$string['entities:copymodule'] = "Entities: copy module";
-$string['categories'] = "Default categories";
-$string['categories:description'] = "Set the default category from the list of the customfieldcategories visible on edit page";
-$string['er_entitiesname'] = "Selected entitiy";
-$string['er_placeholder'] = "... search";
-$string['addcategory'] = "Add category";
+$string['view'] = 'View';
+$string['edit'] = 'Edit';
+$string['delete'] = 'Delete';
+$string['entities:copymodule'] = 'Entities: copy module';
+$string['categories'] = 'Kategorien';
 
-$string['pricefactor'] = "Relative price factor";
-$string['pricefactor_help'] = "Relative price factor: Can be used for automatic price calculations, e.g. in booking plugin";
+$string['stdcategories'] = 'Default categories';
+$string['categories:description'] = 'Set the default category from the list of the customfieldcategories visible on edit page';
+$string['er_entitiesname'] = 'Selected entitiy';
+$string['er_placeholder'] = '... search';
+$string['addcategory'] = 'Add category';
+$string['entitieslist'] = 'List entities';
+
+$string['pricefactor'] = 'Relative price factor';
+$string['pricefactor_help'] = 'Relative price factor: Can be used for automatic price calculations, e.g. in booking plugin';
 
 // Access.php.
 $string['entities:canedit'] = 'User is allowed to edit';

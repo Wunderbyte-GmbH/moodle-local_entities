@@ -26,6 +26,7 @@
 require_once(dirname(__FILE__) . '/../../config.php');
 require_once($CFG->dirroot . '/local/entities/lib.php');
 use local_entities\form\edit_form;
+use local_entities\local\views\secondary;
 use core_customfield\api;
 
 $entityid = optional_param('id', 0, PARAM_INT);
@@ -41,18 +42,21 @@ $PAGE->set_url($CFG->wwwroot . '/local/entities/edit.php', array("id" => $entity
 // Force the user to login/create an account to access this page.
 require_login();
 
+$secondarynav = new secondary($PAGE);
+$secondarynav->initialise();
+$PAGE->set_secondarynav($secondarynav);
+$PAGE->set_secondary_navigation(true);
+
 // Add chosen Javascript to list.
 $PAGE->requires->jquery();
-
-$PAGE->set_pagelayout('standard');
 
 $settingsmanager = new \local_entities\settings_manager();
 
 if ($entityid) {
     $data = \local_entities\settings_manager::get_settings_forform($entityid);
     $mform = new edit_form($data);
-    $handler = local_entities\customfield\entities_handler::create();
-    $handler->instance_form_before_set_data($data);
+    //$handler = local_entities\customfield\entities_handler::create();
+   // $handler->instance_form_before_set_data($data);
     $mform->set_data($data);
 } else {
     $mform = new edit_form();
@@ -92,12 +96,7 @@ if ($mform->is_cancelled()) {
 $PAGE->set_title($title);
 $PAGE->set_heading($heading);
 echo $OUTPUT->header();
-printf('<h1 class="page__title">%s<a style="float:right;font-size:15px" href="' .
-    new moodle_url($CFG->wwwroot . '/local/entities/entities.php') . '"> '.
-    get_string('backtolist', 'local_entities') .'</a></h1>',
-    $title);
 
 $mform->display();
-$PAGE->requires->js_call_amd('local_entities/customfield', 'init');
 
 echo $OUTPUT->footer();

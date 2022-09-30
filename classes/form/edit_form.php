@@ -45,10 +45,9 @@ require_once($CFG->libdir . '/formslib.php');
  */
 class edit_form extends moodleform {
 
-
     public $entity;
 
-
+    public $handler;
     /**
      * @var $callingentity
      */
@@ -117,9 +116,8 @@ class edit_form extends moodleform {
         $options['maxbytes'] = 204800;
         $options['maxfiles'] = 1;
         $options['accepted_types'] = ['jpg', 'jpeg', 'png', 'svg', 'webp'];
-        $handler = entities_handler::create();
 
-        $categorynames = $this->get_customfieldcategories($handler);
+        $categorynames = \local_entities\customfield\entities_cf_helper::get_alternative_cf_categories();
         $mform->addElement('filemanager', 'image_filemanager', get_string('edit_image', 'local_entities'), null, $options);
         $mform->addElement('select', 'type', get_string('entity_category', 'local_entities'), $categorynames);
 
@@ -179,10 +177,13 @@ class edit_form extends moodleform {
             $mform->setType('mail_'.$j, PARAM_TEXT);
         }
         $mform->addElement('header', 'Standard', 'Standard');
-        $handler->get_standard_categories($mform, $this->entity->id);
+        //$handler->get_standard_categories($mform, $this->entity->id);
         $mform->addElement('header', 'meta', 'Meta Infos');
-        $handler->get_alternative_categories($mform, $this->entity->id);
-
+        //$handler->get_alternative_categories($mform, $this->entity->id);
+        $handlers = $this->get_all_standard_handler();
+        foreach($handlers as $handler) {
+            $handler->instance_form_definition($mform, $this->entity->id);
+        }
         // ...$handler->instance_form_before_set_data($course);
         $mform->addElement('hidden', 'id', null);
         $mform->setType('id', PARAM_INT);
@@ -267,5 +268,13 @@ class edit_form extends moodleform {
             $categorynames[$id . '_' . $name] = $name;
         }
         return $categorynames;
+    }
+
+    public function get_all_standard_handler() {
+        $itemids = [0, 1, 20]; //\local_entities\customfield\entities_cf_helper::get_standard_cf_category_handlerids();
+        foreach ($itemids as $itemid) {
+            $handler[$itemid] = entities_handler::create($itemid);
+        }
+        return $handler;
     }
 }

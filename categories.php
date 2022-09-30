@@ -22,20 +22,14 @@
  */
 
 use local_entities\entity;
-use local_entities\local\views\secondary;
 require_once('../../config.php');
-
-$id = optional_param('id', -1, PARAM_INT);
+use local_entities\local\views\secondary;
 
 $context = \context_system::instance();
 $PAGE->set_context($context);
 require_login();
 
-if ($id == -1) {
-    $id = \local_entities\customfield\entities_cf_helper::get_next_itemid();
-}
-
-$PAGE->set_url(new moodle_url('/local/entities/customfield.php', array('id' => $id)));
+$PAGE->set_url(new moodle_url('/local/entities/categories.php'));
 
 $secondarynav = new secondary($PAGE);
 $secondarynav->initialise();
@@ -49,9 +43,18 @@ $PAGE->set_heading($title);
 $renderer = $PAGE->get_renderer('local_entities');
 
 echo $OUTPUT->header();
+
 $output = $PAGE->get_renderer('core_customfield');
-$handler = local_entities\customfield\entities_handler::create($id);
-$outputpage = new \core_customfield\output\management($handler);
-echo $output->render($outputpage);
+$categories = \local_entities\customfield\entities_cf_helper::get_all_cf_categories();
+$templatedata['categories'] = array();
+
+foreach ($categories as $key => $category) {
+    $cat = new stdClass();
+    $cat->key = $key;
+    $cat->categoryname = $category;
+    $cat->url = new moodle_url('/local/entities/customfield.php', array('id' => $key));
+    $templatedata['categories'][] = $cat;
+}
+echo $OUTPUT->render_from_template('local_entities/cfcategories', $templatedata);
 
 echo $OUTPUT->footer();

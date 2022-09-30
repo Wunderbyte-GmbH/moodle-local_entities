@@ -34,12 +34,10 @@ if ($hassiteconfig) {
     $ADMIN->add('localplugins', new admin_category($componentname, get_string('pluginname', $componentname)));
     $ADMIN->add($componentname, $settings);
 
-
     // Select Standard Categories from custom categories.
-    $handler = local_entities\customfield\entities_handler::create();
-    $categories = $handler->get_customfieldcategory_names();
 
-    if (isset($categories)) {
+    $categories = \local_entities\customfield\entities_cf_helper::get_all_cf_categories();
+    if (!empty($categories)) {
         array_unshift($categories, get_string('none', 'local_entities'));
         $settings->add(
             new admin_setting_configmultiselect(

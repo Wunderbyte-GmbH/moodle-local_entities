@@ -64,7 +64,10 @@ class entities_handler extends \core_customfield\handler {
      */
     public static function create(int $itemid = 0): \core_customfield\handler {
         if (static::$singleton === null) {
-            self::$singleton = new static(0);
+            self::$singleton = new static($itemid);
+        }
+        if (self::$singleton->get_itemid() != $itemid) {
+            self::$singleton = new static($itemid);
         }
         return self::$singleton;
     }
@@ -166,7 +169,7 @@ class entities_handler extends \core_customfield\handler {
         return \context_system::instance();
     }
 
-    public function instance_form_definition(\MoodleQuickForm $mform, int $instanceid = 0,
+   /* public function instance_form_definition(\MoodleQuickForm $mform, int $instanceid = 0,
     ?string $headerlangidentifier = null, ?string $headerlangcomponent = null) {
         $editablefields = $this->get_editable_fields($instanceid);
         $fieldswithdata = api::get_instance_fields_data($editablefields, $instanceid);
@@ -198,7 +201,7 @@ class entities_handler extends \core_customfield\handler {
                 $value = format_text($value, $field->descriptionformat, ['context' => $context]);
             }
         }
-    }
+    } */
 
 
     /**

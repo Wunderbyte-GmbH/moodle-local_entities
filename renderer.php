@@ -32,8 +32,8 @@ defined('MOODLE_INTERNAL') || die;
  * @copyright   2021 Wunderbyte GmbH
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class local_entities_renderer extends plugin_renderer_base
-{   public $records = [];
+class local_entities_renderer extends plugin_renderer_base {
+    public $records = [];
 
     public function get_submenuitem($parent, $name) {
         global $DB, $CFG, $USER;

@@ -86,18 +86,6 @@ class entitiesrelation_form extends dynamic_form {
     public function process_dynamic_submission() {
 
         $data = $this->get_data();
-        // if (empty($data->entitiesid) || empty($data->foreignid) || empty($data->module)) {
-        //     return false;
-        // }
-
-        // Only submit if we have a correct string.
-        /*if (!entitiesrealation_handler::reoccurring_datestring_is_correct($data->reoccurringdatestring)) {
-            return false;
-        }
-
-        $optiondateshandler = new entitiesrealation_handler();
-        $dates = $optiondateshandler->get_optiondate_series($data->chooseperiod, $data->reoccurringdatestring);
-        */
         $data['cmid'] = $this->_ajaxformdata['cmid'];
         $data['optionid'] = $this->_ajaxformdata['optionid'];
         $data['cmid'] = $this->_ajaxformdata['cmid'];
@@ -161,11 +149,6 @@ class entitiesrelation_form extends dynamic_form {
     public function validation($data, $files) {
 
         $errors = array();
-
-        // Check something.
-        if (!false) {
-            $errors['bla'] = 'dummdumm';
-        }
 
         return $errors;
     }

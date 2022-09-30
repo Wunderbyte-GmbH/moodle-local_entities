@@ -50,18 +50,21 @@ $string['entity_title'] = 'Entity';
 $string['backtolist'] = 'Zurück zum Entity-Manager';
 $string['new_entity'] = 'Neue Entity';
 $string['edit_entity'] = 'Entity bearbeiten';
-$string['view'] = "Ansehen";
-$string['edit'] = "Bearbeiten";
-$string['delete'] = "Löschen";
-$string['entities:copymodule'] = "Entities: Modul kopieren";
-$string['categories'] = "Standard-Kategorien";
-$string['categories:description'] = "Standard-Kategorien aus der Liste der Customfield-Kategorien auswählen, die auf allen Bearbeitungsseiten sichtbar sein sollen.";
-$string['er_entitiesname'] = "Ausgewählte Entity";
-$string['addcategory'] = "Kategorie hinzufügen";
-$string['er_placeholder'] = "... suche";
+$string['view'] = 'Ansehen';
+$string['edit'] = 'Bearbeiten';
+$string['delete'] = 'Löschen';
+$string['entities:copymodule'] = 'Entities: Modul kopieren';
+$string['categories'] = 'Entity Kategorien';
 
-$string['pricefactor'] = "Relativer Preisfaktor";
-$string['pricefactor_help'] = "Relativer Preisfaktor: Kann für automatische Preisberechnung (z.B. mit dem Booking-Plugin) verwendet werden";
+$string['stdcategories'] = 'Standard-Kategorien';
+$string['stdcategories:description'] = 'Standard-Kategorien aus der Liste der Customfield-Kategorien auswählen, die auf allen Bearbeitungsseiten sichtbar sein sollen.';
+$string['entitieslist'] = 'Entity Liste';
+$string['er_entitiesname'] = 'Ausgewählte Entity';
+$string['addcategory'] = 'Kategorie hinzufügen';
+$string['er_placeholder'] = '... suche';
+
+$string['pricefactor'] = 'Relativer Preisfaktor';
+$string['pricefactor_help'] = 'Relativer Preisfaktor: Kann für automatische Preisberechnung (z.B. mit dem Booking-Plugin) verwendet werden';
 
 // Access.php.
 $string['entities:canedit'] = 'Nutzer*in darf editieren.';
