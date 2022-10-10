@@ -42,69 +42,72 @@
 }}
 
 <div class="card" style="max-width: 900px">
-<div class="card-header p-0 m-0" style="min-height:60px; background: #fff">
-    <div class="headerpill badge badge-info">{{type}}</div>
-    <label class="switch headerswitch">
-        <input type="checkbox">
-        <span class="slider round"></span>
-    </label>
-    {{#haspicture}}
-        <img src="{{picture}}" class="w-100" alt="{{name}}-picture">
-    {{/haspicture}}
-</div>
-<div class="card-header">
-    <h3>{{name}}</h3>
-</div>
-<div class="card-body">
-    {{{description}}}
-    <hr>
-    {{#hasaddress}}
-    <div class="container-fluid">
+    <div class="card-header p-0 m-0" style="min-height:60px; background: #fff">
+        <div class="headerpill badge badge-info">{{type}}</div>
+        {{#canedit}}
+        <label class="switch headerswitch">
+            <input type="checkbox">
+            <span class="slider round"></span>
+        </label>
+        {{/canedit}}
+        {{#haspicture}}
+            <img src="{{picture}}" class="w-100" alt="{{name}}-picture">
+        {{/haspicture}}
+    </div>
+    <div class="card-header">
+        <h3>{{name}}</h3>
+    </div>
+    <div class="card-body">
+        {{{description}}}
+        <hr>
+        {{#hasaddress}}
+        <div class="container-fluid">
 
-    <div class="row">
-        <div class="col-md-6">
-        <i class="fa fa-map-marker fa-2x" aria-hidden="true"></i>
-            <ul class="addresslist list-unstyled pl-4 py-4">
-                {{#addresscleaned}}
-                <li>{{city}}, {{postcode}}</li>
-                <li>{{streetname}} {{streetnumber}}</li>
-                {{/addresscleaned}}
-            </ul>
+        <div class="row">
+            <div class="col-md-6">
+            <i class="fa fa-map-marker fa-2x" aria-hidden="true"></i>
+                <ul class="addresslist list-unstyled pl-4 py-4">
+                    {{#addresscleaned}}
+                    <li>{{city}}, {{postcode}}</li>
+                    <li>{{streetname}} {{streetnumber}}</li>
+                    {{/addresscleaned}}
+                </ul>
+            </div>
+            <div class="col-md-6">
+            <i class="fa fa-id-card-o fa-2x" aria-hidden="true"></i>
+                <ul class="contactlist list-unstyled pl-4 py-4">
+                    {{#contactscleaned}}
+                    <li>{{givenname}} {{surname}}</li>
+                    <li>{{mail}}</li>
+                    {{/contactscleaned}}
+                </ul>
+            </div>
+
         </div>
-        <div class="col-md-6">
-        <i class="fa fa-id-card-o fa-2x" aria-hidden="true"></i>
-            <ul class="contactlist list-unstyled pl-4 py-4">
-                {{#contactscleaned}}
-                <li>{{givenname}} {{surname}}</li>
-                <li>{{mail}}</li>
-                {{/contactscleaned}}
-            </ul>
         </div>
-        
-    </div>
-    </div>
-    <hr>
-    {{/hasaddress}}
-    <div class="container-fluid">
-        
-    {{#metadata}}   
-    <h5>Additonal Info</h5>
-    <div class="row">
-        <div class="col">
-            {{{metadata}}}
+        <hr>
+        {{/hasaddress}}
+        <div class="container-fluid">
+
+        {{#metadata}}
+        <h5>Additonal Info</h5>
+        <div class="row">
+            <div class="col">
+                {{{metadata}}}
+            </div>
         </div>
-    </div>
-    {{/metadata}}   
-    </div>
+        {{/metadata}}
+        </div>
 
 </div>
 
 <div class="card-footer d-flex">
+    {{#canedit}}
     <a class="btn" title="Ressource bearbeiten" href="{{editurl}}"><i class="fa fa-edit" aria-hidden="true"></i> Bearbeiten</a>
-      <div class="d-block ml-auto">
-
-        <a data-confirm="Diese Ressource wirklich löschen?" class="btn" title="Ressource löschen" rel="nofollow" data-method="delete" href="{{delurl}}"><i class="fa fa-trash"></i> Löschen</a>
-      </div>
+    <div class="d-block ml-auto">
+    <a data-confirm="Diese Ressource wirklich löschen?" class="btn" title="Ressource löschen" rel="nofollow" data-method="delete" href="{{delurl}}"><i class="fa fa-trash"></i> Löschen</a>
+    </div>
+    {{/canedit}}
   </div>
 </div>
 

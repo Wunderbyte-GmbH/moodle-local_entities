@@ -56,6 +56,20 @@ class entities_cf_helper {
     }
 
     /**
+     * Gets categoryname for cfitemid
+     *
+     * @param integer $instanceid
+     * @return string
+     */
+    public static function get_categoryname($cfitemid) {
+        global $DB;
+        $sql = 'SELECT name FROM {customfield_category}
+        WHERE area = ? AND component = ? AND itemid = ? AND sortorder = 0';
+
+        return $DB->get_field_sql($sql, [self::CFAREA, self::CFCOMPONENT, $cfitemid]);
+    }
+
+    /**
      * Gets all customfield categories + subcategories for entities
      *
      * @return array

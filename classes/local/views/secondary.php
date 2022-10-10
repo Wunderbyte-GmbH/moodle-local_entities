@@ -36,18 +36,25 @@ class secondary extends core_secondary {
      */
 
     public function initialise(): void {
-        $this->add(get_string('entitieslist', 'local_entities') , '/local/entities/entities.php', \navigation_node::TYPE_CUSTOM,
-         'entitieslist', 'entitieslist');
-        $this->add(get_string('categories', 'local_entities') , '/local/entities/categories.php', \navigation_node::TYPE_CUSTOM,
-         'categories', 'categories');
-        $this->add(get_string('new_entity', 'local_entities') , '/local/entities/edit.php', \navigation_node::TYPE_CUSTOM,
-        'new_entity', 'new_entity', new \pix_icon('t/add', get_string('new_entity', 'local_entities')));
-        $this->add(get_string('addcategory', 'local_entities') ,
-         new \moodle_url('/local/entities/customfield.php', array('id' => -1)),
-         \navigation_node::TYPE_CUSTOM, 'addcategory', 'addcategory',
-          new \pix_icon('t/add', get_string('addcategory', 'local_entities')));
-        $this->add(get_string('settings'), '/admin/category.php?category=local_entities ', \navigation_node::TYPE_CUSTOM,
-         'settings', 'settings');
+        $context = \context_system::instance();
+        $canview = has_capability('local/entities:canview', $context);
+        $canedit = has_capability('local/entities:canview', $context);
+        if ($canview) {
+            $this->add(get_string('entitieslist', 'local_entities') , '/local/entities/entities.php', \navigation_node::TYPE_CUSTOM,
+            'entitieslist', 'entitieslist');
+        }
+        if ($canedit) {
+            $this->add(get_string('categories', 'local_entities') , '/local/entities/categories.php', \navigation_node::TYPE_CUSTOM,
+            'categories', 'categories');
+            $this->add(get_string('new_entity', 'local_entities') , '/local/entities/edit.php', \navigation_node::TYPE_CUSTOM,
+            'new_entity', 'new_entity', new \pix_icon('t/add', get_string('new_entity', 'local_entities')));
+            $this->add(get_string('addcategory', 'local_entities') ,
+            new \moodle_url('/local/entities/customfield.php', array('id' => -1)),
+            \navigation_node::TYPE_CUSTOM, 'addcategory', 'addcategory',
+            new \pix_icon('t/add', get_string('addcategory', 'local_entities')));
+            $this->add(get_string('settings'), '/admin/category.php?category=local_entities ', \navigation_node::TYPE_CUSTOM,
+            'settings', 'settings');
+        }
         $this->initialised = true;
     }
 }

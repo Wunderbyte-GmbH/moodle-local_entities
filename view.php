@@ -23,6 +23,7 @@
  * @license         http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later.
  */
 
+use local_entities\local\views\secondary;
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 
 // Get the id of the page to be displayed.
@@ -38,6 +39,11 @@ require_once("{$CFG->dirroot}/local/entities/lib.php");
 require_login();
 require_capability('local/entities:canview', \context_system::instance());
 $PAGE->set_pagelayout('standard');
+
+$secondarynav = new secondary($PAGE);
+$secondarynav->initialise();
+$PAGE->set_secondarynav($secondarynav);
+$PAGE->set_secondary_navigation(true);
 
 // Add a class to the body that identifies this page.
 
@@ -71,6 +77,7 @@ foreach ($files as $file) {
 
 $handlers = local_entities\customfield\entities_cf_helper::create_std_handlers();
 if (isset($entity->cfitemid)) {
+    $entity->type = local_entities\customfield\entities_cf_helper::get_categoryname($entity->cfitemid);
     $handlers[] = local_entities\customfield\entities_handler::create($entity->cfitemid);
 }
 $metadata = '';
@@ -99,10 +106,8 @@ if ($entity->hasaddress) {
 if ($entity->hascontacts) {
     $entity->contactscleaned = array_values($entity->contacts);
 }
-if (isset($entity->type)) {
-    $type = explode('_', $entity->type, 2);
-    $entity->type = $type[1];
-}
+
+$entity->canedit = has_capability('local/entities:canedit', \context_system::instance());
 $entity->editurl = new moodle_url('/local/entities/edit.php', array( 'id' => $id));
 $entity->delurl = new moodle_url('/local/entities/entities.php', array( 'del' => $id , 'sesskey' => $USER->sesskey));
 
