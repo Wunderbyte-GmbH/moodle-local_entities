@@ -36,23 +36,23 @@ require_once("{$CFG->dirroot}/local/entities/lib.php");
 
 // Set the page layout.
 require_login();
-
+require_capability('local/entities:canview', \context_system::instance());
 $PAGE->set_pagelayout('standard');
 
 // Add a class to the body that identifies this page.
-if ($id) {
-        // Make the page name lowercase.
-    $entity = \local_entities\settings_manager::get_settings($id);
 
-    // More page setup.
-    $PAGE->set_title($entity->name);
+// Make the page name lowercase.
+$entity = \local_entities\settings_manager::get_settings($id);
 
-    // Generate the class name with the following naming convention {pagetype}-local-pages-{pagename}-{pageid}.
-    $classname = "{$entity->type}-local-pages-{$entity->name}-{$id}";
+// More page setup.
+$PAGE->set_title($entity->name);
 
-    // Now add that class name to the body of this page :).
-    $PAGE->add_body_class($classname);
-}
+// Generate the class name with the following naming convention {pagetype}-local-pages-{pagename}-{pageid}.
+$classname = "{$entity->type}-local-pages-{$entity->name}-{$id}";
+
+// Now add that class name to the body of this page :).
+$PAGE->add_body_class($classname);
+
 
 // Output the header.
 echo $OUTPUT->header();
@@ -69,16 +69,21 @@ foreach ($files as $file) {
     }
 }
 
-$handler = local_entities\customfield\entities_handler::create();
-$datas = $handler->get_instance_data($id);
+$handlers = local_entities\customfield\entities_cf_helper::create_std_handlers();
+if (isset($entity->cfitemid)) {
+    $handlers[] = local_entities\customfield\entities_handler::create($entity->cfitemid);
+}
 $metadata = '';
-foreach ($datas as $data) {
-    if (empty($data->get_value())) {
-        continue;
+foreach ($handlers as $handler) {
+    $datas = $handler->get_instance_data($id, true);
+    foreach ($datas as $data) {
+        if (empty($data->get_value())) {
+            continue;
+        }
+        $cat = $data->get_field()->get_category()->get('name');
+        $metakey = $data->get_field()->get('name');
+        $metadata .= '<span><b>' . $metakey . '</b>: ' . $data->get_value() .'</span></br>';
     }
-    $cat = $data->get_field()->get_category()->get('name');
-    $metakey = $data->get_field()->get('name');
-    $metadata .= '<span><b>' . $metakey . '</b>: ' . $data->get_value() .'</span></br>';
 }
 $entity->metadata = $metadata;
 $entity->description = file_rewrite_pluginfile_urls($entity->description, 'pluginfile.php',
