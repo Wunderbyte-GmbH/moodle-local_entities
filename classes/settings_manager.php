@@ -74,7 +74,6 @@ class settings_manager {
      */
     private function create_entity(stdClass $data): int {
         global $DB;
-        //$handlers = \local_entities\customfield\entities_cf_helper::create_std_handlers();
         $id = $DB->insert_record('local_entities', $data);
         // Custom fields save needs id.
         $data->id  = $id;
@@ -91,7 +90,6 @@ class settings_manager {
                 }
             }
         }
-
         return $id;
     }
 
@@ -104,7 +102,6 @@ class settings_manager {
      */
     private function update_entity(stdClass $data): int {
         global $DB;
-        //$handlers = \local_entities\customfield\entities_cf_helper::create_std_handlers();
         return $DB->update_record('local_entities', $data);
     }
 
@@ -211,13 +208,6 @@ class settings_manager {
         if ($recordcontacts->id == 0) {
             return $DB->insert_record('local_entities_contacts', $recordcontacts);
         }
-    }
-
-    public static function get_categoryid($id) {
-        global $DB;
-        // get field $categoryid = $DB->get_record_sql("SELECT * FROM {local_entities} WHERE id=? LIMIT 1", array(intval($id)));
-
-        return 20;
     }
 
     /**

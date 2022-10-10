@@ -25,7 +25,7 @@
 
 require_once(dirname(__FILE__) . '/../../config.php');
 require_once($CFG->dirroot . '/local/entities/lib.php');
-use local_entities\form\edit_form;
+use local_entities\form\edit_dynamic_form;
 use local_entities\local\views\secondary;
 
 $entityid = optional_param('id', 0, PARAM_INT);
@@ -33,12 +33,11 @@ $categoryid = optional_param('catid', 0, PARAM_INT);
 $context = context_system::instance();
 require_capability('local/entities:canedit', $context);
 
-
 global $USER, $PAGE;
 
 // Set PAGE variables.
 $PAGE->set_context($context);
-$PAGE->set_url($CFG->wwwroot . '/local/entities/edit.php', array("id" => $entityid));
+$PAGE->set_url($CFG->wwwroot . '/local/entities/edit2.php', array("id" => $entityid));
 
 // Force the user to login/create an account to access this page.
 require_login();
@@ -51,50 +50,22 @@ $PAGE->set_secondary_navigation(true);
 $settingsmanager = new \local_entities\settings_manager();
 
 if ($entityid) {
-    $data = \local_entities\settings_manager::get_settings_forform($entityid);
-    $mform = new edit_form($data);
-    // $handler = local_entities\customfield\entities_handler::create();
-    // $handler->instance_form_before_set_data($data);
-    $mform->set_data($data);
+    $mform = new edit_dynamic_form('null', ['entityid' => $entityid]);
 } else {
-    $mform = new edit_form();
+    $mform = new edit_dynamic_form('null', ['entityid' => 0]);
 }
 
 // Print the page header.
 $title = isset($data) ? $data->name : get_string('new_entity', 'local_entities');
 $heading = isset($data->id) ? $data->name : get_string('new_entity', 'local_entities');
-if ($mform->is_cancelled()) {
-    redirect(new moodle_url($CFG->wwwroot . '/local/entities/entities.php'));
-} else if ($data = $mform->get_data()) {
-    require_once($CFG->libdir . '/formslib.php');
-    $context = context_system::instance();
-    $data->description['text'] = file_save_draft_area_files($data->description['itemid'], $context->id,
-        'local_entities', 'entitycontent',
-        0, array('subdirs' => true), $data->description['text']);
 
-    $data->entitydata = '';
-    $recordentity = new stdClass();
-    $recordentity = $data;
-    $recordentity->id = $data->id;
-    $recordentity->name = $data->name;
-    $recordentity->sortorder = intval($data->sortorder);
-    $recordentity->type = $data->type;
-    $recordentity->parentid = intval($data->parentid);
-    $recordentity->description = $data->description['text'];
-    $recordentity->pricefactor = $data->pricefactor;
-    $result = $settingsmanager->update_or_createentity($recordentity);
-    if ($result && $result > 0) {
-        $options = array('subdirs' => 0, 'maxbytes' => 204800, 'maxfiles' => 1, 'accepted_types' => '*');
-        if (isset($data->image_filemanager)) {
-            file_postupdate_standard_filemanager($data, 'image', $options, $context, 'local_entities', 'image', $result);
-        }
-        redirect(new moodle_url($CFG->wwwroot . '/local/entities/entities.php', array()));
-    }
-}
 $PAGE->set_title($title);
 $PAGE->set_heading($heading);
 echo $OUTPUT->header();
 
-$mform->display();
-
+$PAGE->requires->js_call_amd(
+    'local_entities/dynamiceditform',
+    'init',
+    ['#local_entities_formcontainer', edit_dynamic_form::class], $entityid);
+echo html_writer::div($mform->render(), '', ['id' => 'local_entities_formcontainer']);
 echo $OUTPUT->footer();

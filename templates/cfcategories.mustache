@@ -41,14 +41,12 @@
   {{#categories}}
   {{^sub}}
   <li class="list-group-item list-group-item-action">
-    <a href="{{url}}" >{{categoryname}}</a><span class="pull-right">
-        <a href="#" data-action="local_entities_deletecfcategory" data-id="{{id}}"><i class="fa fa-trash-o mr-3"></i></a></span>
+    <a href="{{url}}" >{{categoryname}}</a>
   </li>
   {{/sub}}
   {{#sub}}
   <li class="list-group-item list-group-item-action">
-    <a href="{{url}}"> - {{categoryname}}</a><span class="pull-right">
-        <a href="#" data-action="local_entities_deletecfcategory" data-id="{{id}}"><i class="fa fa-trash-o mr-3"></i></a></span>
+    <a href="{{url}}"> - {{categoryname}}</a>
     </span>
   </li>
   {{/sub}}
