@@ -36,9 +36,11 @@ if ($hassiteconfig) {
 
     // Select Standard Categories from custom categories.
 
+    $array = ['2' => 'test3', '4' => 'test3'];
     $categories = \local_entities\customfield\entities_cf_helper::get_all_cf_categories();
+
     if (!empty($categories)) {
-        array_unshift($categories, get_string('none', 'local_entities'));
+        //array_unshift($categories, get_string('none', 'local_entities'));
         $settings->add(
             new admin_setting_configmultiselect(
             $componentname .'/categories',

@@ -28,11 +28,13 @@ require_once('../../config.php');
 $id = optional_param('id', -1, PARAM_INT);
 
 $context = \context_system::instance();
+require_capability('local/entities:canedit', $context);
 $PAGE->set_context($context);
 require_login();
 
 if ($id == -1) {
     $id = \local_entities\customfield\entities_cf_helper::get_next_itemid();
+    redirect(new moodle_url('/local/entities/customfield.php', array('id' => $id)));
 }
 
 $PAGE->set_url(new moodle_url('/local/entities/customfield.php', array('id' => $id)));

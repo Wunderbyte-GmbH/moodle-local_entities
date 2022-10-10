@@ -24,8 +24,6 @@
 
 namespace local_entities\customfield;
 
-defined('MOODLE_INTERNAL') || die;
-
 use core_customfield\api;
 use core_customfield\field_controller;
 
@@ -63,12 +61,7 @@ class entities_handler extends \core_customfield\handler {
      * @return entities_handler
      */
     public static function create(int $itemid = 0): \core_customfield\handler {
-        if (static::$singleton === null) {
-            self::$singleton = new static($itemid);
-        }
-        if (self::$singleton->get_itemid() != $itemid) {
-            self::$singleton = new static($itemid);
-        }
+        self::$singleton = new static($itemid);
         return self::$singleton;
     }
 
@@ -169,39 +162,7 @@ class entities_handler extends \core_customfield\handler {
         return \context_system::instance();
     }
 
-   /* public function instance_form_definition(\MoodleQuickForm $mform, int $instanceid = 0,
-    ?string $headerlangidentifier = null, ?string $headerlangcomponent = null) {
-        $editablefields = $this->get_editable_fields($instanceid);
-        $fieldswithdata = api::get_instance_fields_data($editablefields, $instanceid);
-        $lastcategoryid = null;
-        foreach ($fieldswithdata as $data) {
-            $categoryid = $data->get_field()->get_category()->get('id');
-            if ($categoryid != $lastcategoryid) {
-                $categoryname = format_string($data->get_field()->get_category()->get('name'));
 
-                // Load category header lang string if specified.
-                if (!empty($headerlangidentifier)) {
-                    $categoryname = get_string($headerlangidentifier, $headerlangcomponent, $categoryname);
-                }
-                $mform->addElement('header', 'test');
-                $renderer =& $mform->defaultRenderer();
-                $highlightheadertemplate = str_replace('ftoggler', 'ftoggler customfields disabled', $renderer->_headerTemplate);
-                $renderer->setElementTemplate($highlightheadertemplate , 'category_' . $categoryid);
-                $lastcategoryid = $categoryid;
-            }
-
-            $data->instance_form_definition($mform);
-            $field = $data->get_field()->to_record();
-
-            if (strlen($field->description)) {
-                // Add field description.
-                $context = $this->get_configuration_context();
-                $value = file_rewrite_pluginfile_urls($field->description, 'pluginfile.php',
-                    $context->id, 'core_customfield', 'description', $field->id);
-                $value = format_text($value, $field->descriptionformat, ['context' => $context]);
-            }
-        }
-    } */
 
 
     /**

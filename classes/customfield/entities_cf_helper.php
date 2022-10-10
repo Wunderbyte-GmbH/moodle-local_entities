@@ -23,8 +23,7 @@
  */
 
 namespace local_entities\customfield;
-
-defined('MOODLE_INTERNAL') || die;
+use local_entities\customfield\entities_handler;
 
 /**
  * Course handler for custom fields
@@ -40,30 +39,72 @@ class entities_cf_helper {
 
     const CFCOMPONENT = 'local_entities';
 
-    // TODO function descriptons
+    // TODO function descriptons.
+
     /**
-     * Run reset code after unit tests to reset the singleton usage.
+     * Gets all customfield categories for entities
+     *
+     * @return array
      */
     public static function get_all_cf_categories(): array {
         global $DB;
-        $sql = 'SELECT itemid, name FROM {customfield_category} WHERE area = ? AND component = ? AND sortorder = 0 GROUP BY itemid';
-        return $DB->get_records_sql_menu($sql, [self::CFAREA, self::CFCOMPONENT]);
-    }
-
-    public static function get_standard_cf_category(): array {
-        global $DB;
-        $itemids = get_config('local_entities', 'categories');
-        $sql = 'SELECT itemid, name FROM {customfield_category} WHERE area = ? AND component = ? AND sortorder = 0 GROUP BY itemid';
+        $sql = 'SELECT itemid, name FROM {customfield_category}
+        WHERE area = ? AND component = ? AND sortorder = 0
+        GROUP BY itemid, name';
         $records = $DB->get_records_sql_menu($sql, [self::CFAREA, self::CFCOMPONENT]);
         return $records;
     }
 
-    public static function get_alternative_cf_categories(): array {
+    /**
+     * Gets all customfield categories + subcategories for entities
+     *
+     * @return array
+     */
+    public static function get_all_cf_categories_with_subcategories(): array {
         global $DB;
-        $sql = 'SELECT itemid, name FROM {customfield_category} WHERE area = ? AND component = ? AND sortorder = 0 GROUP BY itemid';
-        return $DB->get_records_sql_menu($sql, [self::CFAREA, self::CFCOMPONENT]);
+        $sql = 'SELECT id, itemid, name
+        FROM {customfield_category}
+        WHERE area = ? AND component = ?
+        ORDER BY itemid, sortorder';
+        return $DB->get_records_sql($sql, [self::CFAREA, self::CFCOMPONENT]);
     }
 
+    /**
+     * Gets all standard categories for this plugin configured in admin settings
+     *
+     * @return array
+     */
+    public static function get_standard_cf_category(): array {
+        global $DB;
+        $itemids = get_config('local_entities', 'categories');
+        $sql = 'SELECT itemid, name FROM {customfield_category}
+        WHERE area = ? AND component = ? AND sortorder = 0
+        GROUP BY itemid, name';
+        $records = $DB->get_records_sql_menu($sql, [self::CFAREA, self::CFCOMPONENT]);
+        return $records;
+    }
+
+    /**
+     * Gets all categories not defined as standard in admin settings.
+     *
+     * @return array
+     */
+    public static function get_alternative_cf_categories(): array {
+        global $DB;
+        $sql = 'SELECT itemid, name FROM {customfield_category}
+        WHERE area = ? AND component = ? AND sortorder = 0
+        GROUP BY itemid, name';
+        $stdcategories = array_flip(\local_entities\settings_manager::get_standardcategories());
+        $categories = $DB->get_records_sql_menu($sql, [self::CFAREA, self::CFCOMPONENT]);
+        $altcategories = array_diff_key($categories , $stdcategories);
+        return $altcategories;
+    }
+
+    /**
+     * Finds last saved category and increments the category identifer itemid.
+     *
+     * @return integer
+     */
     public static function get_next_itemid(): int {
         global $DB;
         $sql = 'SELECT max(itemid) as count FROM {customfield_category}';
@@ -71,8 +112,44 @@ class entities_cf_helper {
         if ($record) {
             return $record->count + 1;
         }
-        return 0;
+        return 1;
     }
 
+    /**
+     * Get itemid () function
+     *
+     * @param integer $instanceid
+     * @return integer
+     */
+    public static function get_categoryid_from_instanceid(int $instanceid): int {
+        global $DB;
+        $sql = 'SELECT itemid FROM {customfield_category} WHERE ';
+        $record = $DB->get_record_sql($sql);
+        if ($record) {
+            return $record->count + 1;
+        }
+        return 1;
+    }
 
+    /**
+     * Creates all the customfieldhandlers from all defined standardcategories
+     *
+     * @return \local_entities\customfield\entities_handler|void
+     */
+    public static function create_std_handlers() {
+        $categories = \local_entities\settings_manager::get_standardcategories();
+        $handlers = array();
+        foreach($categories as $category) {
+            $handlers[] = entities_handler::create($category);
+        }
+        if (empty($handlers)) {
+            return array();
+        }
+        return $handlers;
+    }
+
+    public static function create_categoryhandler(int $itemid) {
+        $handler = entities_handler::create($itemid);
+        return $handler;
+    }
 }

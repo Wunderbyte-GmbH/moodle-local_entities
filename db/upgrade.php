@@ -78,5 +78,20 @@ function xmldb_local_entities_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2022072800, 'local', 'entities');
     }
 
+    if ($oldversion < 2022100700) {
+
+        // Changing type of field name on table local_entities to char.
+        $table = new xmldb_table('local_entities');
+        $field = new xmldb_field('cfitemid', XMLDB_TYPE_INTEGER, '10', null, null, null, null, 'sortorder');
+
+        // Conditionally launch add field cfitiemid (Customfielditemid).
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Entities savepoint reached.
+        upgrade_plugin_savepoint(true, 2022100700, 'local', 'entities');
+    }
+
     return true;
 }

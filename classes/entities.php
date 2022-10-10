@@ -38,8 +38,7 @@ require_once("$CFG->libdir/externallib.php");
  * @copyright 2021 Wunderbyte GmbH
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class entities
-{
+class entities {
 
     /**
      * entities constructor.
@@ -57,6 +56,34 @@ class entities
     public function prepare_for_select(): array {
         return [];
     }
+
+    /**
+     * Either returns one tree or treearray for every parentnode
+     *
+     * @param int $fulltree
+     * @param boolean $allowedit
+     * @return array
+     */
+    public static function build_whole_entitytree(int $fulltree = 0, $allowedit = true): array {
+        global $DB;
+        $items = $DB->get_records('local_entities');
+        $childs = array();
+        foreach ($items as $item) {
+                $item->allowedit = $allowedit;
+                $childs[$item->parentid][] = $item;
+        }
+        foreach ($items as $item) {
+            if (isset($childs[$item->id])) {
+                    $item->childs = $childs[$item->id];
+            } else {
+                $item->childs = false;
+                $item->leaf = true;
+            }
+        }
+        $itemtree = $fulltree ? $childs : $childs[0];
+        return $itemtree;
+    }
+
     /**
      * Get all Objects
      *
@@ -71,8 +98,6 @@ class entities
             END newname
             FROM {local_entities}
             order by coalesce(parentid, id), parentid <> '0', id";
-
-        // $sql = "SELECT id FROM {local_entities}";
         return $DB->get_records_sql($sql);
     }
 

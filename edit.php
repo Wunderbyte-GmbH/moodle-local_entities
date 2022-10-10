@@ -27,11 +27,12 @@ require_once(dirname(__FILE__) . '/../../config.php');
 require_once($CFG->dirroot . '/local/entities/lib.php');
 use local_entities\form\edit_form;
 use local_entities\local\views\secondary;
-use core_customfield\api;
 
 $entityid = optional_param('id', 0, PARAM_INT);
 $categoryid = optional_param('catid', 0, PARAM_INT);
 $context = context_system::instance();
+require_capability('local/entities:canedit', $context);
+
 
 global $USER, $PAGE;
 
@@ -47,16 +48,13 @@ $secondarynav->initialise();
 $PAGE->set_secondarynav($secondarynav);
 $PAGE->set_secondary_navigation(true);
 
-// Add chosen Javascript to list.
-$PAGE->requires->jquery();
-
 $settingsmanager = new \local_entities\settings_manager();
 
 if ($entityid) {
     $data = \local_entities\settings_manager::get_settings_forform($entityid);
     $mform = new edit_form($data);
-    //$handler = local_entities\customfield\entities_handler::create();
-   // $handler->instance_form_before_set_data($data);
+    // $handler = local_entities\customfield\entities_handler::create();
+    // $handler->instance_form_before_set_data($data);
     $mform->set_data($data);
 } else {
     $mform = new edit_form();

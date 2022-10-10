@@ -69,7 +69,6 @@ foreach ($files as $file) {
     }
 }
 
-
 $handler = local_entities\customfield\entities_handler::create();
 $datas = $handler->get_instance_data($id);
 $metadata = '';

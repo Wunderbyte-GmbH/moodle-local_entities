@@ -34,8 +34,27 @@
     }
 }}
 
+<div>
+    <a href="{{WWWROOT}}/local/entities/customfield.php?id=-1" class="btn btn-primary p-2 mb-2">{{#str}} addcategory, local_entities {{/str}}</a>
+</div>
 <ul class="list-group">
   {{#categories}}
-  <a href="{{url}}" class="list-group-item list-group-item-action">{{categoryname}}</a>
+  {{^sub}}
+  <li class="list-group-item list-group-item-action">
+    <a href="{{url}}" >{{categoryname}}</a><span class="pull-right">
+        <a href="#" data-action="local_entities_deletecfcategory" data-id="{{id}}"><i class="fa fa-trash-o mr-3"></i></a></span>
+  </li>
+  {{/sub}}
+  {{#sub}}
+  <li class="list-group-item list-group-item-action">
+    <a href="{{url}}"> - {{categoryname}}</a><span class="pull-right">
+        <a href="#" data-action="local_entities_deletecfcategory" data-id="{{id}}"><i class="fa fa-trash-o mr-3"></i></a></span>
+    </span>
+  </li>
+  {{/sub}}
   {{/categories}}
 </ul>
+
+{{#js}}
+
+{{/js}}

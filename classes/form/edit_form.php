@@ -47,7 +47,7 @@ class edit_form extends moodleform {
 
     public $entity;
 
-    public $handler;
+    public $handlers;
     /**
      * @var $callingentity
      */
@@ -94,10 +94,11 @@ class edit_form extends moodleform {
         // Get a list of all entities.
         $none = get_string("none", "local_entities");
         $entities = array(0 => $none);
-        $allentities = entities::list_all_parent_entities();
+        //TODO getconfig allow more than one child?
+        $allentities = entities::list_all_entities();
         foreach ($allentities as $entity) {
             if ($entity->id != $this->callingentity) {
-                $entities[$entity->id] = $entity->name;
+                $entities[$entity->id] = $entity->newname;
             }
         }
 
@@ -117,9 +118,9 @@ class edit_form extends moodleform {
         $options['maxfiles'] = 1;
         $options['accepted_types'] = ['jpg', 'jpeg', 'png', 'svg', 'webp'];
 
-        $categorynames = \local_entities\customfield\entities_cf_helper::get_alternative_cf_categories();
         $mform->addElement('filemanager', 'image_filemanager', get_string('edit_image', 'local_entities'), null, $options);
-        $mform->addElement('select', 'type', get_string('entity_category', 'local_entities'), $categorynames);
+        //getalternative
+        //$mform->addElement('select', 'type', get_string('entity_category', 'local_entities'), $categorynames);
 
         $context = context_system::instance();
         $editoroptions = array('maxfiles' => EDITOR_UNLIMITED_FILES, 'noclean' => true, 'context' => $context);
@@ -176,15 +177,19 @@ class edit_form extends moodleform {
             $mform->addElement('text', 'mail_'.$j, get_string('contacts_mail', 'local_entities'));
             $mform->setType('mail_'.$j, PARAM_TEXT);
         }
-        $mform->addElement('header', 'Standard', 'Standard');
-        //$handler->get_standard_categories($mform, $this->entity->id);
-        $mform->addElement('header', 'meta', 'Meta Infos');
         //$handler->get_alternative_categories($mform, $this->entity->id);
-        $handlers = $this->get_all_standard_handler();
-        foreach($handlers as $handler) {
-            $handler->instance_form_definition($mform, $this->entity->id);
+
+        $this->handlers = \local_entities\customfield\entities_cf_helper::create_std_handlers();
+        $this->handlers[] = \local_entities\customfield\entities_cf_helper::create_categoryhandler();
+        if (!empty($this->handlers)) {
+            // $mform->addElement('html', '<h2>' . get_string('standard') . '</h2>');
+            foreach($this->handlers as $handler) {
+                $handler->instance_form_definition($mform, $this->entity->id);
+            }
         }
-        // ...$handler->instance_form_before_set_data($course);
+        $mform->addElement('header', 'details', get_string('edit_details', 'local_entities'));
+        $mform->closeHeaderBefore('id');
+
         $mform->addElement('hidden', 'id', null);
         $mform->setType('id', PARAM_INT);
 

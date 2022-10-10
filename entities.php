@@ -32,6 +32,7 @@ $delid = optional_param('del', 0, PARAM_INT);
 $context = \context_system::instance();
 $PAGE->set_context($context);
 require_login();
+require_admin();
 
 $secondarynav = new secondary($PAGE);
 $secondarynav->initialise();
@@ -39,11 +40,9 @@ $PAGE->set_secondarynav($secondarynav);
 $PAGE->set_secondary_navigation(true);
 
 // Add capability.
-if ($delid !== 0) {
-    if (confirm_sesskey()) {
-        $entity = new settings_manager($delid);
-        $entity->delete();
-    }
+if ($delid !== 0 && (is_siteadmin() || has_capability('local_entities/canedit', $context))) {
+    $entity = new settings_manager($delid);
+    $entity->delete();
 }
 
 $PAGE->set_url(new moodle_url('/local/entities/entities.php', array()));

@@ -103,6 +103,8 @@ class local_entities_external extends external_api {
         );
     }
 
+
+
     /**
      * Updates a number of fields in table local_entities to newvalue.
      *
@@ -112,7 +114,8 @@ class local_entities_external extends external_api {
      * @throws moodle_exception
      */
     public static function update_entity(int $id, array $data): array {
-
+        $context = \context_system::instance();
+        require_capability('local/entities:canedit', $context);
         $messages = array();
         $warnings = array();
         $params = [
@@ -124,7 +127,7 @@ class local_entities_external extends external_api {
         $table = self::find_table($params['data']);
         // Todo tests do not find entity in db, because the table doesn't exist.
         // Need to find out how to add relevant tables in tests.
-        // Todo $messages[] = self::does_entity_exist($table, $params['id']);
+        // Todo $messages[] = self::does_entity_exist($table, $params['id']);.
         $returnvalue = self::are_params_set($params);
         $messages[] = self::has_params($params);
 
@@ -159,6 +162,56 @@ class local_entities_external extends external_api {
                 array(
                         'updated' => new external_value(PARAM_BOOL, 'did things get updated?'),
                         'warnings' => new external_warnings(),
+                )
+        );
+    }
+
+    /**
+     * Describes the parameters for update_entity.
+     *
+     * @return external_function_parameters
+     */
+    public static function delete_entity_parameters(): external_function_parameters {
+        return new external_function_parameters(
+                array(
+                        'id' => new external_value(PARAM_INT, VALUE_REQUIRED),
+                )
+        );
+    }
+
+    /**
+     * Delete an entity.
+     *
+     * @param int $id
+     * @return array true for success
+     * @throws moodle_exception
+     */
+    public static function delete_entity(int $id): array {
+        global $DB;
+        $context = \context_system::instance();
+        require_capability('local/entities:canedit', $context);
+        $messages = array();
+        $warnings = array();
+        $params = self::validate_parameters(self::delete_entity_parameters(),
+        array(
+            'id' => $id,
+        ));
+        $DB->delete_records('local_entities', ['id' => $params['id']]);
+
+        return [
+                'deleted' => $DB->record_exists('local_entities', ['id' => $params['id']])
+        ];
+    }
+
+    /**
+     * all return values should be booleans
+     *
+     * @return external_single_structure
+     */
+    public static function delete_entity_returns(): external_single_structure {
+        return new external_single_structure(
+                array(
+                        'deleted' => new external_value(PARAM_BOOL, 'did things got deleted?')
                 )
         );
     }

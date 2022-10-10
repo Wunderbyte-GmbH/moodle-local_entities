@@ -33,8 +33,10 @@ require_once('../../config.php');
 global $USER, $DB;
 
 $context = \context_system::instance();
+
 $PAGE->set_context($context);
 require_login();
+require_admin();
 $PAGE->set_url(new moodle_url('/local/entities/test.php', array()));
 
 $title = "Test cases";
@@ -47,7 +49,12 @@ echo $OUTPUT->header();
 
 $out = entitiesrelation_handler::get_pricefactor_by_entityid(1);
 $jsonpretty = json_encode($out, JSON_PRETTY_PRINT);
-echo "<pre>".$jsonpretty."<pre/>";
+
+$tree = \local_entities\entities::build_whole_entitytree();
+
+echo $OUTPUT->render_from_template('local_entities/entitiestree', $tree);
+
+
 
 /*
 $data = new stdClass();
@@ -106,6 +113,7 @@ if ($list) {
     $list = $entities->list_all_entities();
 }
 */
+
 
 
 

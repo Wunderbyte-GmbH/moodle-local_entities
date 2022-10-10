@@ -34,7 +34,7 @@ $functions = array(
                 'type' => 'read',
                 'ajax' => true,
                 'services' => array(),
-                'capabilities' => ''
+                'capabilities' => 'local/entities:canedit'
         ),
         'local_entities_update_entity' => array(
                 'classname' => 'local_entities_external',
@@ -44,7 +44,7 @@ $functions = array(
                 'type' => 'write',
                 'ajax' => true,
                 'services' => array(),
-                'capabilities' => ''
+                'capabilities' => 'local/entities:canedit'
         ),
         'local_entities_list_all_subentities' => array(
                 'classname' => 'local_entities_external',
@@ -55,7 +55,17 @@ $functions = array(
                 'ajax' => true,
                 'services' => array(),
                 'capabilities' => ''
-        )
+        ),
+        'local_entities_delete_entity' => array(
+                'classname' => 'local_entities_external',
+                'methodname' => 'delete_entity',
+                'classpath' => 'local/entities/classes/external.php',
+                'description' => 'deletes an entity',
+                'type' => 'read',
+                'ajax' => true,
+                'services' => array(),
+                'capabilities' => 'local/entities:canedit'
+        ),
 );
 
 $services = array(

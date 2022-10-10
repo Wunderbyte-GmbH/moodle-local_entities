@@ -74,7 +74,7 @@ class settings_manager {
      */
     private function create_entity(stdClass $data): int {
         global $DB;
-        $handler = \local_entities\customfield\entities_handler::create();
+        //$handlers = \local_entities\customfield\entities_cf_helper::create_std_handlers();
         $id = $DB->insert_record('local_entities', $data);
         // Custom fields save needs id.
         $data->id  = $id;
@@ -91,8 +91,6 @@ class settings_manager {
                 }
             }
         }
-        $a = $data;
-        $handler->instance_form_save($data);
 
         return $id;
     }
@@ -106,8 +104,7 @@ class settings_manager {
      */
     private function update_entity(stdClass $data): int {
         global $DB;
-        $handler = \local_entities\customfield\entities_handler::create();
-        $handler->instance_form_save($data);
+        //$handlers = \local_entities\customfield\entities_cf_helper::create_std_handlers();
         return $DB->update_record('local_entities', $data);
     }
 
@@ -150,8 +147,6 @@ class settings_manager {
         if (!isset($data->image_filemanager)) {
             $data = $this->prepare_image($data, $result);
         }
-
-        $data->picture = "test";
         return $result;
     }
 
@@ -216,6 +211,13 @@ class settings_manager {
         if ($recordcontacts->id == 0) {
             return $DB->insert_record('local_entities_contacts', $recordcontacts);
         }
+    }
+
+    public static function get_categoryid($id) {
+        global $DB;
+        // get field $categoryid = $DB->get_record_sql("SELECT * FROM {local_entities} WHERE id=? LIMIT 1", array(intval($id)));
+
+        return 20;
     }
 
     /**
@@ -295,6 +297,7 @@ class settings_manager {
         $formdata->parentid = $record->parentid;
         $formdata->sortorder  = $record->sortorder;
         $formdata->type  = $record->type;
+        $formdata->cfitemid = $record->cfitemid;
         // Address.
         $i = 0;
         if ($record->address[0]) {
@@ -345,6 +348,17 @@ class settings_manager {
         $contactdata->surname = $data->{'surname_' . $i};
         $contactdata->mail = $data->{'mail_' . $i};
         return $contactdata;
+    }
+
+    /**
+     * Gets array of categories out of categoriy setting
+     *
+     * @return array
+     */
+    public static function get_standardcategories(): array {
+        $categorycfg = get_config('local_entities', 'categories');
+        $categories = explode(',', $categorycfg);
+        return $categories;
     }
 
 
