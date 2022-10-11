@@ -156,17 +156,18 @@ class entities {
 
     /**
      *
-     * This is to return all children from parententity the database
+     * This is to return all children from parententity as select from the database
      *
      * @return array - returns array of Objects
      */
     public static function list_all_subentities_select(int $parentid): array {
         global $DB;
-        $sql = "SELECT id, name FROM {local_entities} WHERE " . "parentid=? ORDER BY sortorder";
-        return $DB->get_records_sql_menu($sql, array(
+        $stmt = "SELECT id, name FROM {local_entities} WHERE " . "parentid=? ORDER BY sortorder";
+        return $DB->get_records_sql_menu($stmt, array(
             $parentid
         ));
     }
+
 
     /**
      *
