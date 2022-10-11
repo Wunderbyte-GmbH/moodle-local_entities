@@ -35,6 +35,8 @@
                 <FIELD NAME="postcode" TYPE="char" LENGTH="30" NOTNULL="false" SEQUENCE="false"/>
                 <FIELD NAME="streetname" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false"/>
 				<FIELD NAME="streetnumber" TYPE="char" LENGTH="32" NOTNULL="false" SEQUENCE="false" />
+                <FIELD NAME="maplink" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" COMMENT="Link to a map (e.g. Google Maps or OpenStreetMap)"/>
+                <FIELD NAME="mapembed" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Embed-code (HTML) to embed a map of the address."/>
             </FIELDS>
             <KEYS>
                 <KEY NAME="primary" TYPE="primary" FIELDS="id" />

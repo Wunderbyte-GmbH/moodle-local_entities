@@ -40,6 +40,8 @@ $string['address_country'] = 'Land';
 $string['address_postcode'] = 'Postleitzahl';
 $string['address_streetname'] = 'Straßenname';
 $string['address_streetnumber'] = 'Haus-Nr.';
+$string['address_map_link'] = 'Karten-Link';
+$string['address_map_embed'] = 'Karte einbetten (HTML)';
 $string['contacts'] = 'Kontakte';
 $string['contacts_givenname'] = 'Vorname';
 $string['contacts_surname'] = 'Nachname';
@@ -55,6 +57,7 @@ $string['edit'] = 'Bearbeiten';
 $string['delete'] = 'Löschen';
 $string['entities:copymodule'] = 'Entities: Modul kopieren';
 $string['categories'] = 'Entity Kategorien';
+$string['map'] = 'Karte';
 
 $string['stdcategories'] = 'Standard-Kategorien';
 $string['stdcategories:description'] = 'Standard-Kategorien aus der Liste der Customfield-Kategorien auswählen, die auf allen Bearbeitungsseiten sichtbar sein sollen.';

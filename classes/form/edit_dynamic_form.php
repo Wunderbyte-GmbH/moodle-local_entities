@@ -129,6 +129,10 @@ class edit_dynamic_form extends dynamic_form {
             $mform->setType('streetname_'.$i, PARAM_TEXT);
             $mform->addElement('text', 'streetnumber_'.$i, get_string('address_streetnumber', 'local_entities'));
             $mform->setType('streetnumber_'.$i, PARAM_TEXT);
+            $mform->addElement('text', 'map_link_'.$i, get_string('address_map_link', 'local_entities'));
+            $mform->setType('map_link_'.$i, PARAM_TEXT);
+            $mform->addElement('textarea', 'map_embed_'.$i, get_string('address_map_embed', 'local_entities'));
+            $mform->setType('map_embed_'.$i, PARAM_TEXT);
         }
 
         // Contact BLOCK.
@@ -152,7 +156,7 @@ class edit_dynamic_form extends dynamic_form {
         // Adds all Standard categories defined in settings to the form.
         $this->handlers = \local_entities\customfield\entities_cf_helper::create_std_handlers();
         if (!empty($this->handlers)) {
-            foreach($this->handlers as $handler) {
+            foreach ($this->handlers as $handler) {
                 $handler->instance_form_definition($mform, $entityid);
                 $handler->instance_form_before_set_data($data);
             }
@@ -228,7 +232,7 @@ class edit_dynamic_form extends dynamic_form {
             }
         }
         if (!empty($this->handlers) && !empty($data->id)) {
-            foreach($this->handlers as $handler) {
+            foreach ($this->handlers as $handler) {
                 $handler->instance_form_save($data);
             }
         }
@@ -338,7 +342,7 @@ class edit_dynamic_form extends dynamic_form {
 
         $this->handlers = \local_entities\customfield\entities_cf_helper::create_std_handlers();
         if (!empty($this->handlers)) {
-            foreach($this->handlers as $handler) {
+            foreach ($this->handlers as $handler) {
                 $handler->instance_form_before_set_data($defaults);
             }
         }

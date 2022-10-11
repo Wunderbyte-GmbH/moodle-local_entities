@@ -121,7 +121,7 @@ class settings_manager {
         }
         if (isset($data->id) && $data->id > 0) {
             $this->update_entity($data);
-            // TODO Check if address id exists -> than update else create new address.
+            // TODO: Check if address id exists -> then update, else create new address.
             for ($i = 0; $i < $data->addresscount; $i++) {
                 $this->update_address($data, $i);
             }
@@ -151,7 +151,7 @@ class settings_manager {
      *
      * This is to update the entity based on the data object
      *
-     * @param mixed $data
+     * @param stdClass $data
      * @return mixed
      */
     private function update_address(stdClass $data, int $index): int {
@@ -237,19 +237,17 @@ class settings_manager {
      * @return null
      */
     public function prepare_address($data, $i): stdClass {
+
         $addressdata = new stdClass();
-        if (!empty($data->{'city_' . $i}) && $data->{'postcode_' . $i} > 0) {
-            $addressdata->id = isset($data->{'addressid_' . $i}) ? $data->{'addressid_' . $i} : 0;
-            $addressdata->country = $data->{'country_' . $i};
-            $addressdata->city = $data->{'city_' . $i};
-            $addressdata->postcode = $data->{'postcode_' . $i};
-            $addressdata->streetname = $data->{'streetname_' . $i};
-            $addressdata->streetnumber = $data->{'streetnumber_' . $i};
-        } else if (!empty($data->{'addressid_' . $i})) {
-            $this->delete_address($data->{'addressid_' . $i});
-        } else {
-            $addressdata->id = null;
-        }
+        $addressdata->id = isset($data->{'addressid_' . $i}) ? $data->{'addressid_' . $i} : 0;
+        $addressdata->country = $data->{'country_' . $i};
+        $addressdata->city = $data->{'city_' . $i};
+        $addressdata->postcode = $data->{'postcode_' . $i};
+        $addressdata->streetname = $data->{'streetname_' . $i};
+        $addressdata->streetnumber = $data->{'streetnumber_' . $i};
+        $addressdata->maplink = $data->{'map_link_' . $i};
+        $addressdata->mapembed = $data->{'map_embed_' . $i};
+
         return $addressdata;
     }
 
@@ -298,6 +296,8 @@ class settings_manager {
                 $formdata->{'postcode_' . $i} = $address->postcode;
                 $formdata->{'streetname_' . $i} = $address->streetname;
                 $formdata->{'streetnumber_' . $i} = $address->streetnumber;
+                $formdata->{'map_link_' . $i} = $address->maplink;
+                $formdata->{'map_embed_' . $i} = $address->mapembed;
                 $i++;
             }
         } else {
@@ -364,8 +364,8 @@ class settings_manager {
         $record = $DB->get_record('local_entities', array('id' => $entityid));
         $address = $DB->get_records('local_entities_address', array('entityidto' => $entityid));
         $contacts = $DB->get_records('local_entities_contacts', array('entityidto' => $entityid));
-        $record->address[] = $address ? $address : null;
-        $record->contacts[] = $contacts ? $contacts : null;
+        $record->address[] = $address ?? null;
+        $record->contacts[] = $contacts ?? null;
         return self::db_to_form($record);
     }
 
@@ -381,8 +381,8 @@ class settings_manager {
         $record = $DB->get_record('local_entities', array('id' => $entityid));
         $address = $DB->get_records('local_entities_address', array('entityidto' => $entityid));
         $contacts = $DB->get_records('local_entities_contacts', array('entityidto' => $entityid));
-        $record->address = $address ? $address : null;
-        $record->contacts = $contacts ? $contacts : null;
+        $record->address = $address ?? null;
+        $record->contacts = $contacts ?? null;
         return $record;
     }
 

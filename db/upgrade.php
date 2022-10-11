@@ -93,5 +93,29 @@ function xmldb_local_entities_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2022100700, 'local', 'entities');
     }
 
+    if ($oldversion < 2022101100) {
+
+        $table = new xmldb_table('local_entities_address');
+
+        // Define field maplink to be added to local_entities_address.
+        $maplinkfield = new xmldb_field('maplink', XMLDB_TYPE_CHAR, '255', null, null, null, null, 'streetnumber');
+
+        // Define field mapembed to be added to local_entities_address.
+        $mapembedfield = new xmldb_field('mapembed', XMLDB_TYPE_TEXT, null, null, null, null, null, 'maplink');
+
+        // Conditionally launch add field maplink.
+        if (!$dbman->field_exists($table, $maplinkfield)) {
+            $dbman->add_field($table, $maplinkfield);
+        }
+
+        // Conditionally launch add field mapembed.
+        if (!$dbman->field_exists($table, $mapembedfield)) {
+            $dbman->add_field($table, $mapembedfield);
+        }
+
+        // Entities savepoint reached.
+        upgrade_plugin_savepoint(true, 2022101100, 'local', 'entities');
+    }
+
     return true;
 }

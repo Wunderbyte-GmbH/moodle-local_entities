@@ -70,6 +70,16 @@
                     {{#addresscleaned}}
                     <li>{{city}}, {{postcode}}</li>
                     <li>{{streetname}} {{streetnumber}}</li>
+                    {{#maplink}}
+                    <li>
+                        {{#str}}address_map_link , local_entities{{/str}}: 
+                        <a href="{{maplink}}" target="_blank">
+                            {{maplink}}
+                        </a>
+                    </li>
+                    {{/maplink}}
+                    {{#mapembed}}<li>{{#str}}map, local_entities{{/str}}:<br/>{{{.}}}</li>{{/mapembed}}
+                    <li>{{streetname}} {{streetnumber}}</li>
                     {{/addresscleaned}}
                 </ul>
             </div>

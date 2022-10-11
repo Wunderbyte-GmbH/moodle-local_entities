@@ -305,14 +305,14 @@ class entitiesrelation_handler {
         $sql = "SELECT  ea.id as addressid, e.id as id, e.name, e.description,
                         e.type, e.timecreated, e.timemodified, e.openentity, e.createdby,
                         e.picture, e.parentid, e.sortorder, ea.country, ea.city, ea.postcode,
-                        ea.streetname, ea.streetnumber
+                        ea.streetname, ea.streetnumber, ea.maplink, ea.mapembed
                 FROM {local_entities} e
                 LEFT JOIN {local_entities_address} ea
-                ON e.id=ea.entityidto
+                ON e.id = ea.entityidto
                 WHERE e.id = :entityid";
         $params = ['entityid' => $entityid];
 
-        // We might hnave more than one record, as there might be more than one address.
+        // We might have more than one record, as there might be more than one address.
         if ($entities = $DB->get_records_sql($sql, $params)) {
             return $entities;
         } else {
