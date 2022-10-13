@@ -215,6 +215,7 @@ class edit_dynamic_form extends dynamic_form {
         $recordentity = $data;
         $recordentity->id = $data->id;
         $recordentity->name = $data->name;
+        $recordentity->shortname = $data->shortname;
         $recordentity->sortorder = intval($data->sortorder);
         $recordentity->type = $data->cfitemid;
         $recordentity->parentid = intval($data->parentid);

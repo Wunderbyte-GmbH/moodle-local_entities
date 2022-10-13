@@ -134,7 +134,8 @@ class entitiesrelation_handler {
      */
     public function get_instance_data(int $instanceid): stdClass {
         global $DB;
-        $sql = "SELECT r.entityid as id, r.id as relationid, r.modulename, r.instanceid, e.name, r.timecreated
+        $sql = "SELECT r.entityid as id, r.id as relationid, r.modulename, r.instanceid,
+                    e.name, e.shortname, r.timecreated
                  FROM {local_entities_relations} r
                  JOIN {local_entities} e
                  ON e.id = r.entityid
@@ -302,7 +303,7 @@ class entitiesrelation_handler {
     public static function get_entity_by_id(int $entityid) {
         global $DB;
 
-        $sql = "SELECT  ea.id as addressid, e.id as id, e.name, e.description,
+        $sql = "SELECT  ea.id as addressid, e.id as id, e.name, e.shortname, e.description,
                         e.type, e.timecreated, e.timemodified, e.openentity, e.createdby,
                         e.picture, e.parentid, e.sortorder, ea.country, ea.city, ea.postcode,
                         ea.streetname, ea.streetnumber, ea.maplink, ea.mapembed

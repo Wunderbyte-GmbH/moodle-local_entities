@@ -39,24 +39,14 @@ defined('MOODLE_INTERNAL') || die;
 
 class settings_manager {
 
+    /** @var int $id */
     private $id;
 
-    private $name;
-
-    private $description;
-
-    private $type;
-
-    private $picture;
-
-    private $parentid;
-
-    private $sortorder;
-
+    /** @var stdClass $data */
     private $data;
 
     /**
-     * entity constructor.
+     * Entity constructor.
      *
      */
     public function __construct(int $id = null) {
@@ -66,11 +56,8 @@ class settings_manager {
     }
 
     /**
-     *
      * This is to create a new entity in the database
-     *
      * @param stdClass $data
-     *
      */
     private function create_entity(stdClass $data): int {
         global $DB;
@@ -262,6 +249,7 @@ class settings_manager {
         $record->id = isset($formdata->id) ? $formdata->id : 0;
         $record->dataid = $formdata->d;
         $record->name = $formdata->name;
+        $record->shortname = $formdata->shortname;
         $record->description = $formdata->description;
         $record->required = $formdata->required;
 
@@ -275,12 +263,12 @@ class settings_manager {
      * @return stdClass
      */
     public static function db_to_form(stdClass $record): stdClass {
+
         $formdata = new stdClass();
-        $formdata->id = isset($record->id) ? $record->id : 0;
+        $formdata->id = $record->id ?? 0;
         $formdata->name = $record->name;
+        $formdata->shortname = $record->shortname;
         $formdata->description['text'] = $record->description;
-        $formdata->name = $record->name;
-        $formdata->id = $record->id;
         $formdata->pricefactor = floatval(str_replace(',', '.', $record->pricefactor));
         $formdata->parentid = $record->parentid;
         $formdata->sortorder  = $record->sortorder;
