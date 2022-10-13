@@ -52,7 +52,6 @@ class edit_dynamic_form extends dynamic_form {
      * @see moodleform::definition()
      */
     public function definition() {
-        global $DB;
 
         // Get a list of all entities.
         $none = get_string("none", "local_entities");
@@ -220,7 +219,7 @@ class edit_dynamic_form extends dynamic_form {
         $recordentity->type = $data->cfitemid;
         $recordentity->parentid = intval($data->parentid);
         $recordentity->description = $data->description['text'];
-        $recordentity->pricefactor = $data->pricefactor;
+        $recordentity->pricefactor = floatval(str_replace(',', '.', $data->pricefactor));
         $recordentity->cfitemid = intval($data->cfitemid);
         $settingsmanager = new \local_entities\settings_manager();
         $result = $settingsmanager->update_or_createentity($recordentity);
