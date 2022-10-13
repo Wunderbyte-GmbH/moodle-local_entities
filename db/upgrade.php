@@ -117,5 +117,21 @@ function xmldb_local_entities_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2022101100, 'local', 'entities');
     }
 
+    if ($oldversion < 2022101300) {
+
+        $table = new xmldb_table('local_entities');
+
+        // Define field shortname to be added to local_entities.
+        $field = new xmldb_field('shortname', XMLDB_TYPE_CHAR, '255', null, null, null, null, 'name');
+
+        // Conditionally launch add field shortname.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Entities savepoint reached.
+        upgrade_plugin_savepoint(true, 2022101300, 'local', 'entities');
+    }
+
     return true;
 }
