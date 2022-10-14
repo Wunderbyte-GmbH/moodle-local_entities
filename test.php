@@ -21,12 +21,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use local_entities\entities;
-use local_entities\entity;
-use local_entities\entity_manager;
-use local_entities\settings_manager;
 use local_entities\entitiesrelation_handler;
-
 
 require_once('../../config.php');
 

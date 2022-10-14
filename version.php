@@ -19,7 +19,7 @@
  *
  * @package     local_entities
  * @copyright   2021-2022 Wunderbyte GmbH <info@wunderbyte.at>
- * @author      Thomas Winkler
+ * @author      Thomas Winkler, Bernhard Fischer
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -27,6 +27,6 @@ defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'local_entities';
 $plugin->release = '0.0.45';
-$plugin->version = 2022101300;
+$plugin->version = 2022101403;
 $plugin->requires = 2020061500;
 $plugin->maturity = MATURITY_ALPHA;

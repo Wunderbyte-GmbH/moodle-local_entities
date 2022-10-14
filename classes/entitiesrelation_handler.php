@@ -36,26 +36,25 @@ use stdClass;
  */
 class entitiesrelation_handler {
 
-    /** @var int $entityid */
-    public $entityid = 0;
+    /** @var string $component */
+    public $component = '';
+
+    /** @var string $area */
+    public $area = '';
 
     /** @var int $instanceid */
     public $instanceid = 0;
 
-    /** @var string $modulename */
-    public $modulename = "";
-
-
-
     /**
      * Constructor.
-     * @param int $entityid
+     * @param string $component
+     * @param string $area
      * @param int $instanceid
-     * @param string $modulename
      */
-    public function __construct(string $modulename, int $instanceid = 0) {
+    public function __construct(string $component, string $area, int $instanceid = 0) {
+        $this->component = $component;
+        $this->area = $area;
         $this->instanceid = $instanceid;
-        $this->modulename = $modulename;
     }
 
     /**
@@ -114,32 +113,37 @@ class entitiesrelation_handler {
 
         return $mform;
     }
+
     /**
-     * Function to delete relation between module and entities
-     *
-     * @param integer $instanceid
+     * Function to delete relation between module and entities.
+     * @param int $instanceid
      * @return void
      */
-    public function delete_relation(int $instanceid) {
+    public function delete_relation(int $instanceid): void {
         global $DB;
-        $select = sprintf("modulename = :modulename AND %s = :instanceid", $DB->sql_compare_text('instanceid'));
-        $DB->delete_records_select('local_entities_relations', $select, array('modulename' => $this->modulename,
-            'instanceid' => $instanceid));
+        $select = sprintf("component = :component AND area = :area AND %s = :instanceid", $DB->sql_compare_text('instanceid'));
+        $DB->delete_records_select('local_entities_relations', $select, [
+            'component' => $this->component,
+            'area' => $this->area,
+            'instanceid' => $instanceid
+        ]);
     }
+
     /**
-     * Returns the data for the form
-     *
-     * @param integer $instanceid
+     * Returns the data for the form.
+     * @param int $instanceid
      * @return stdClass
      */
     public function get_instance_data(int $instanceid): stdClass {
         global $DB;
-        $sql = "SELECT r.entityid as id, r.id as relationid, r.modulename, r.instanceid,
+        $sql = "SELECT r.entityid as id, r.id as relationid, r.component, r.area, r.instanceid,
                     e.name, e.shortname, r.timecreated
                  FROM {local_entities_relations} r
                  JOIN {local_entities} e
                  ON e.id = r.entityid
-                 WHERE r.modulename = '{$this->modulename}' AND r.instanceid = {$instanceid}";
+                 WHERE r.component = '{$this->component}'
+                 AND r.area = '{$this->area}'
+                 AND r.instanceid = {$instanceid}";
         $fieldsdata = $DB->get_record_sql($sql);
         if (!$fieldsdata) {
             $stdclass = new stdClass();
@@ -198,7 +202,8 @@ class entitiesrelation_handler {
             $data->id = $instance->local_entities_relationid;
         }
         $data->instanceid = $instanceid;
-        $data->modulename = $this->modulename;
+        $data->component = $this->component;
+        $data->area = $this->area;
         $data->entityid = $instance->local_entities_entityid;
         $data->timecreated = time();
         // Delete er if entitiyid is set to -1.
@@ -258,9 +263,12 @@ class entitiesrelation_handler {
      */
     public function er_record_exists(stdClass $data) {
         global $DB;
-        $select = sprintf("modulename = :modulename AND %s = :instanceid", $DB->sql_compare_text('instanceid'));
-        if ($DB->record_exists_select('local_entities_relations', $select, array('modulename' => $this->modulename,
-            'instanceid' => $data->instanceid))) {
+        $select = sprintf("component = :component AND area = :area AND %s = :instanceid", $DB->sql_compare_text('instanceid'));
+        if ($DB->record_exists_select('local_entities_relations', $select, [
+                'component' => $this->component,
+                'area' => $this->area,
+                'instanceid' => $data->instanceid
+            ])) {
             return true;
         }
         return false;
@@ -283,11 +291,24 @@ class entitiesrelation_handler {
      * @return array
      */
     public function get_entities_by_name(string $entityname) {
-
         global $DB;
-
         // We see if there are more than one entities with the same name.
         if ($entities = $DB->get_records('local_entities', ['name' => $entityname])) {
+            return $entities;
+        } else {
+            return [];
+        }
+    }
+
+    /**
+     * Get an array of all the entities with exactly this shortname.
+     * @param string $shortname
+     * @return array
+     */
+    public function get_entities_by_shortname(string $shortname) {
+        global $DB;
+        // We see if there are more than one entities with the same shortname.
+        if ($entities = $DB->get_records('local_entities', ['shortname' => $shortname])) {
             return $entities;
         } else {
             return [];
@@ -337,11 +358,17 @@ class entitiesrelation_handler {
         // Initialize return value.
         $success = true;
 
+        // TODO: In the future, we'll also need to delete relations for optiondates.
+
         // Get all currently existing entities relations of the booking instance.
         $existingoptions = $DB->get_records('booking_options', ['bookingid' => $bookingid], '', 'id');
         if (!empty($existingoptions)) {
             foreach ($existingoptions as $existingoption) {
-                if (!$DB->delete_records('local_entities_relations', ['instanceid' => $existingoption->id])) {
+                if (!$DB->delete_records('local_entities_relations', [
+                    'component' => 'mod_booking',
+                    'area' => 'option',
+                    'instanceid' => $existingoption->id
+                ])) {
                     $success = false;
                 }
             }
@@ -350,11 +377,10 @@ class entitiesrelation_handler {
         return $success;
     }
 
-
     /**
      * Returns pricefactor set in DB. Can be used for automatic pricecalculation used in booking.
      *
-     * @param integer $id
+     * @param int $id entity id
      * @return float $pricefactor
      */
     public static function get_pricefactor_by_entityid(int $id) {

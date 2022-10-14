@@ -60,7 +60,8 @@
             <FIELDS>
                 <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" />
                 <FIELD NAME="entityid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" />
-                <FIELD NAME="modulename" TYPE="char" LENGTH="30" NOTNULL="false" SEQUENCE="false" />
+                <FIELD NAME="component" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" COMMENT="Full name of moodle component, e.g. mod_booking"/>
+                <FIELD NAME="area" TYPE="char" LENGTH="30" NOTNULL="false" SEQUENCE="false" />
                 <FIELD NAME="instanceid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" />
                 <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" />
             </FIELDS>
@@ -68,7 +69,7 @@
                 <KEY NAME="primary" TYPE="primary" FIELDS="id" />
             </KEYS>
             <INDEXES>
-                <INDEX NAME="modinstance" UNIQUE="false" FIELDS="modulename, instanceid"/>
+                <INDEX NAME="idx_componentareainstanceid" UNIQUE="false" FIELDS="component, area, instanceid"/>
             </INDEXES>
         </TABLE>
     </TABLES>

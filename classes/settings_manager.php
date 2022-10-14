@@ -98,7 +98,8 @@ class settings_manager {
         for all options associated with the entity. */
         $affectedoptionids = $DB->get_fieldset_sql(
             "SELECT DISTINCT instanceid FROM {local_entities_relations}
-             WHERE modulename = 'bookingoption'
+             WHERE component = 'mod_booking'
+             AND area = 'option'
              AND entityid = :entityid",
             ['entityid' => $data->id]
             // TODO: Needs to be updated when table is changed!

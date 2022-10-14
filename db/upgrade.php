@@ -15,7 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 function xmldb_local_entities_upgrade($oldversion) {
-    global $DB;
+    global $DB, $CFG;
+
+    require_once($CFG->dirroot . '/local/entities/db/upgradelib.php');
 
     $dbman = $DB->get_manager();
 
@@ -131,6 +133,62 @@ function xmldb_local_entities_upgrade($oldversion) {
 
         // Entities savepoint reached.
         upgrade_plugin_savepoint(true, 2022101300, 'local', 'entities');
+    }
+
+    if ($oldversion < 2022101400) {
+
+        // Define field component to be added to local_entities_relations.
+        $table = new xmldb_table('local_entities_relations');
+        $field = new xmldb_field('component', XMLDB_TYPE_CHAR, '255', null, null, null, null, 'entityid');
+
+        // Conditionally launch add field component.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Write "mod_booking" into all newly created fields for existing rows.
+        fix_entities_relations_2022101400();
+
+        // Entities savepoint reached.
+        upgrade_plugin_savepoint(true, 2022101400, 'local', 'entities');
+    }
+
+    if ($oldversion < 2022101401) {
+
+        // Rename field modulename on table local_entities_relations to area.
+        $table = new xmldb_table('local_entities_relations');
+        $field = new xmldb_field('modulename', XMLDB_TYPE_CHAR, '30', null, null, null, null, 'component');
+
+        // Launch rename field modulename.
+        $dbman->rename_field($table, $field, 'area');
+
+        // Change value "bookingoption" to just "option" for values of column "area".
+        fix_entities_relations_2022101401();
+
+        // Entities savepoint reached.
+        upgrade_plugin_savepoint(true, 2022101401, 'local', 'entities');
+    }
+
+    if ($oldversion < 2022101403) {
+
+        // Define index modinstance (not unique) to be added to local_entities_relations.
+        $table = new xmldb_table('local_entities_relations');
+        $index = new xmldb_index('idx_componentareainstanceid', XMLDB_INDEX_NOTUNIQUE, ['component', 'area', 'instanceid']);
+
+        // Conditionally launch add index modinstance.
+        if (!$dbman->index_exists($table, $index)) {
+            $dbman->add_index($table, $index);
+        }
+
+        // Define index modinstance (not unique) to be dropped from local_entities_relations.
+        $indextodelete = new xmldb_index('modinstance', XMLDB_INDEX_NOTUNIQUE, ['modulename', 'instanceid']);
+        // Conditionally launch drop index modinstance.
+        if ($dbman->index_exists($table, $indextodelete)) {
+            $dbman->drop_index($table, $indextodelete);
+        }
+
+        // Entities savepoint reached.
+        upgrade_plugin_savepoint(true, 2022101403, 'local', 'entities');
     }
 
     return true;

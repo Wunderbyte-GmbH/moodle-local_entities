@@ -61,7 +61,7 @@ class entitiesrelation_form extends dynamic_form {
         if (!$entityid) {
             $entityid = 0;
         }
-        $entitiesrelationhandler = new entitiesrelation_handler($entityid);
+        $entitiesrelationhandler = new entitiesrelation_handler('mod_booking', 'option', $entityid);
         $entitiesrelationhandler->instance_form_definition($mform, $loadexistingdates);
     }
 
