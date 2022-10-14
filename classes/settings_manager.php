@@ -25,6 +25,7 @@
 
 namespace local_entities;
 
+use cache_helper;
 use local_entities_external;
 use stdClass;
 
@@ -89,6 +90,21 @@ class settings_manager {
      */
     private function update_entity(stdClass $data): int {
         global $DB;
+
+        // Purge cache for options table.
+        cache_helper::purge_by_event('setbackoptionstable');
+
+        /* When we update an entity, we need to purge caches
+        for all options associated with the entity. */
+        $affectedoptionids = $DB->get_fieldset_sql(
+            "SELECT DISTINCT instanceid FROM {local_entities_relations}
+             WHERE modulename = 'bookingoption'
+             AND entityid = :entityid",
+            ['entityid' => $data->id]
+            // TODO: Needs to be updated when table is changed!
+        );
+        cache_helper::invalidate_by_event('setbackoptionsettings', $affectedoptionids);
+
         return $DB->update_record('local_entities', $data);
     }
 
