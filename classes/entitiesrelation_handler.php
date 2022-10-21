@@ -153,6 +153,25 @@ class entitiesrelation_handler {
     }
 
     /**
+     * Returns entityid for a given instanceid.
+     * @param int $instanceid
+     * @return int entityid
+     */
+    public function get_entityid_by_instanceid(int $instanceid): int {
+        global $DB;
+        $sql = "SELECT r.entityid
+                 FROM {local_entities_relations} r
+                 WHERE r.component = '{$this->component}'
+                 AND r.area = '{$this->area}'
+                 AND r.instanceid = {$instanceid}";
+        $entityid = $DB->get_field_sql($sql);
+        if (empty($entityid)) {
+            return 0;
+        }
+        return (int) $entityid;
+    }
+
+    /**
      * Sets the fields from entitiesrelations to the given form if entry is found in DB
      *
      * @param MoodleQuickForm $mform
