@@ -28,7 +28,7 @@ use stdClass;
 use local_entities\entitiesrelation_handler;
 
 /**
- * Add price categories form.
+ * Entities relation form.
  * @copyright Wunderbyte GmbH <info@wunderbyte.at>
  * @author Thomas Winkler
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
