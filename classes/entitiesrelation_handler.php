@@ -92,23 +92,21 @@ class entitiesrelation_handler {
 
         if ($showheader) {
             $header = get_string('addentity', 'local_entities');
+
             $mform->addElement('header', 'entitiesrelation', $header);
-            $mform->addElement('html', '<div id="entitiesrelation-form">');
-            $PAGE->requires->js_call_amd('local_entities/dynamicform', 'init');
-            $renderer = $PAGE->get_renderer('local_entities');
-            $placeholder = get_string('er_placeholder', 'local_entities');
-            $searchbar = "<input class='m-2' type='text' id='entitysearch' placeholder='search entity'>";
-            $mform->addElement('html', $searchbar);
-            $html = $renderer->list_entities_select();
-            $mform->addElement('html', $html);
-            $mform->addElement('hidden', 'local_entities_entityid');
-            $mform->setType('local_entities_entityid', PARAM_INT);
-            $mform->addElement('hidden', 'local_entities_relationid');
-            $mform->setType('local_entities_relationid', PARAM_INT);
-            $options = array('disabled' => true);
-            $mform->addElement('text', 'local_entities_entityname', get_string('er_entitiesname', 'local_entities'), $options);
-            $mform->setType('local_entities_entityname', PARAM_TEXT);
-            $mform->addElement('html', '</div>');
+
+            $records = \local_entities\entities::list_all_parent_entities();
+
+            $select = [0 => get_string('none', 'local_entities')];
+            foreach ($records as $record) {
+                $select[$record->id] = $record->name;
+            }
+            $options = [
+                'multiple' => false,
+                'noselectionstring' => get_string('none', 'local_entities')
+            ];
+
+            $mform->addElement('autocomplete', 'local_entities_entityid', get_string('er_entitiesname', 'local_entities'), $select, $options);
         }
 
         return $mform;
@@ -210,12 +208,15 @@ class entitiesrelation_handler {
             throw new \coding_exception('Caller must ensure that id is already set in data before calling this method');
         }
         if (!preg_grep('/^local_entities/', array_keys((array)$instance))) {
-            // For performance.
+            // If this is called with no result, we must delete the handler.
+            $this->delete_relation($instanceid);
             return;
         }
         if (empty($instance->local_entities_entityid)) {
+            $this->delete_relation($instanceid);
             return;
         }
+
         $data = new stdClass();
         if (isset($instance->local_entities_relationid)) {
             $data->id = $instance->local_entities_relationid;
