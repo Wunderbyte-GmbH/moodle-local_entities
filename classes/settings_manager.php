@@ -29,8 +29,6 @@ use cache_helper;
 use local_entities_external;
 use stdClass;
 
-defined('MOODLE_INTERNAL') || die;
-
 /**
  * Class settings_manager
  * @author      Thomas Winkler
