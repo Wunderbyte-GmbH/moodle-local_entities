@@ -69,6 +69,8 @@ $string['entitieslist'] = 'List entities';
 $string['pricefactor'] = 'Relative price factor';
 $string['pricefactor_help'] = 'Relative price factor: Can be used for automatic price calculations, e.g. in booking plugin';
 
+$string['errorwiththefollowingdates'] = 'There is a conflict with the following bookings:';
+
 // Access.php.
 $string['entities:canedit'] = 'User is allowed to edit';
 $string['entities:canview'] = 'User is allowed to see entities';

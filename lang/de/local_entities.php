@@ -69,6 +69,8 @@ $string['er_placeholder'] = '... suche';
 $string['pricefactor'] = 'Relativer Preisfaktor';
 $string['pricefactor_help'] = 'Relativer Preisfaktor: Kann für automatische Preisberechnung (z.B. mit dem Booking-Plugin) verwendet werden';
 
+$string['errorwiththefollowingdates'] = 'Es gibt einen Konflikt mit den folgenden Buchungen:';
+
 // Access.php.
 $string['entities:canedit'] = 'Nutzer*in darf editieren.';
 $string['entities:canview'] = 'Nutzer*in darf sehen.';

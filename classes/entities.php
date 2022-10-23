@@ -241,16 +241,25 @@ class entities {
      * @param array $datestobook
      * @param integer $noconflictid
      * @param string $noconflictarea
-     * @return boolean
+     * @return array
      */
-    public static function is_available(int $entityid,
+    public static function return_conflicts(int $entityid,
         array $datestobook = [],
         $noconflictid = 0,
         $noconflictarea = '') {
 
-        // First we retrieve all the times already booked on this option.
+        // First, if there is nothing to compare, we have no conflict.
+        if (count($datestobook) < 1) {
+            return [];
+        }
 
+        // Second we retrieve all the times already booked on this option.
         $bookeddates = self::get_all_dates_for_entity($entityid);
+
+        // Third, if there is nothing to compare, we have no conflict.
+        if (count($bookeddates) < 1) {
+            return [];
+        }
 
         // Now we check every date one by one, if there is an overlapping with the existing timestamps.
         // We might have a function to do just that, so we don't write it now.
@@ -259,23 +268,19 @@ class entities {
         foreach ($datestobook as $datetobook) {
             foreach ($bookeddates as $bookeddate) {
 
-                if ($datetobook->itemid === $bookeddate->itemid
-                    && $datetobook->area === $bookeddate->area) {
+                if ($datetobook->link->out() === $bookeddate->link->out()) {
                         continue;
                 }
 
-                if (($datetobook->starttime > $bookeddate->starttime && $datetobook->starttime < $bookeddate->endtime)
+                if (($datetobook->starttime >= $bookeddate->starttime && $datetobook->starttime < $bookeddate->endtime)
                     || ($datetobook->endtime > $bookeddate->starttime && $datetobook->endtime < $bookeddate->endtime)
-                    || ($datetobook->starttime < $bookeddate->starttime && $datetobook->endtime > $bookeddate->endtime)) {
-                        $conflicts[] = [$bookeddate, $datetobook];
+                    || ($datetobook->starttime <= $bookeddate->starttime && $datetobook->endtime >= $bookeddate->endtime)) {
+                        $conflicts[] = $datetobook;
                 }
             }
         }
 
-        if (count($conflicts) > 0) {
-            return false;
-        }
-        return true;
+        return $conflicts;
     }
 
     /**

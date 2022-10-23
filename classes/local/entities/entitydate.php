@@ -24,6 +24,8 @@
 
 namespace local_entities\local\entities;
 
+use moodle_url;
+
 /**
  * The entitydate class.
  *
@@ -82,6 +84,13 @@ class entitydate {
     public $status;
 
     /**
+     * Link to booking item
+     *
+     * @var moodle_url
+     */
+    public $link;
+
+    /**
      * Cunstructor.
      *
      * @param int $itemid
@@ -91,6 +100,7 @@ class entitydate {
      * @param int $starttime
      * @param int $endtime
      * @param int $status
+     * @param moodle_url $link
      */
     public function __construct(int $itemid,
                                 string $component,
@@ -98,7 +108,8 @@ class entitydate {
                                 string $name,
                                 int $starttime,
                                 int $endtime,
-                                int $status) {
+                                int $status,
+                                moodle_url $link) {
         $this->itemid = $itemid;
         $this->component = $component;
         $this->area = $area;
@@ -106,6 +117,7 @@ class entitydate {
         $this->starttime = $starttime;
         $this->endtime = $endtime;
         $this->status = $status;
+        $this->link = $link;
     }
 
     /**
@@ -122,6 +134,7 @@ class entitydate {
         $item['starttime'] = $this->starttime;
         $item['endtime'] = $this->endtime;
         $item['status'] = $this->status;
+        $item['link'] = $this->link;
         return $item;
     }
 

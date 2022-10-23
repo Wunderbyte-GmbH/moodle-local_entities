@@ -135,11 +135,19 @@ class entitiesrelation_handler {
 
         // Now determine if there is a conflict.
 
-        if (!entities::is_available($data['local_entities_entityid'],
-            $data['datestobook'],
-            $data['optionid'] ?? 0,
-            'optiondate')) {
-            $errors['local_entities_entityid'] = "The entitiy is not available at the time you specified.";
+        $conflicts = entities::return_conflicts($data['local_entities_entityid'],
+        $data['datestobook'],
+        $data['optionid'] ?? 0,
+        'optiondate');
+
+        if (!empty($conflicts)) {
+
+            $errors['local_entities_entityid'] = get_string('errorwiththefollowingdates', 'local_entities');
+
+            foreach ($conflicts as $conflict) {
+                $link = $conflict->link->out();
+                $errors['local_entities_entityid'] .= "<br><a href='$link'>$conflict->name</a>";
+            }
         }
     }
 
