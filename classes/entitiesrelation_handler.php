@@ -113,6 +113,37 @@ class entitiesrelation_handler {
     }
 
     /**
+     * Function to validate the correct input of entity and mainly it's availability.
+     * In order to work, the key "datestobook" has to be present as an array of entitydates.
+     * If there is an itemid, then the dates are already booked. If itemid is 0, they are new.
+     * This distinction is important to no falsly identify conflict with itself.
+     *
+     * @param array $data
+     * @return void
+     */
+    public function instance_form_validation(array $data, array &$errors) {
+
+        // First, see if an entitiyid is set. If not, we can proceed right away.
+        if (!preg_grep('/^local_entities/', array_keys($data))) {
+            // For performance.
+            return;
+        }
+
+        if (!$data['local_entities_entityid']) {
+            return;
+        }
+
+        // Now determine if there is a conflict.
+
+        if (!entities::is_available($data['local_entities_entityid'],
+            $data['datestobook'],
+            $data['optionid'] ?? 0,
+            'optiondate')) {
+            $errors['local_entities_entityid'] = "The entitiy is not available at the time you specified.";
+        }
+    }
+
+    /**
      * Function to delete relation between module and entities.
      * @param int $instanceid
      * @return void

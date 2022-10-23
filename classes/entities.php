@@ -190,4 +190,111 @@ class entities {
         $categories = new stdClass();
         return $categories;
     }
+
+    /**
+     * Function to use callback in connected modules to retrieve all dates...
+     * ... connected to this entity.
+     *
+     * @param integer $entityid
+     * @return array
+     */
+    public static function get_all_dates_for_entity(int $entityid):array {
+
+        global $DB;
+
+        // First we retrieve all the ids and components connected to this entitiy.
+
+        $records = $DB->get_records('local_entities_relations', ['entityid' => $entityid], 'component, area ASC');
+
+        // Create an array for the calls we'll execute afterwards.
+        $calls = [];
+        foreach ($records as $record) {
+
+            // We want to have one call per component
+            if (!isset($calls[$record->component])) {
+
+                $calls[$record->component][$record->area] = [$record->instanceid];
+            } else if (isset($calls[$record->component][$record->area])) {
+                $calls[$record->component][$record->area][] = $record->instanceid;
+            } else {
+                $calls[$record->component][$record->area] = [$record->instanceid];
+            }
+        }
+
+        $datearray = [];
+        foreach ($calls as $component => $areas) {
+
+            // Finally, we assemble the array and return it.
+            $providerclass = static::get_service_provider_classname($component);
+
+            $newdates = component_class_callback($providerclass, 'return_array_of_dates', [$areas]);
+
+            $datearray = array_merge($datearray, $newdates);
+        }
+
+        return $datearray;
+    }
+
+    /**
+     * Function to check if the function entitiy is available.
+     * @param integer $entityid
+     * @param array $datestobook
+     * @param integer $noconflictid
+     * @param string $noconflictarea
+     * @return boolean
+     */
+    public static function is_available(int $entityid,
+        array $datestobook = [],
+        $noconflictid = 0,
+        $noconflictarea = '') {
+
+        // First we retrieve all the times already booked on this option.
+
+        $bookeddates = self::get_all_dates_for_entity($entityid);
+
+        // Now we check every date one by one, if there is an overlapping with the existing timestamps.
+        // We might have a function to do just that, so we don't write it now.
+
+        $conflicts = [];
+        foreach ($datestobook as $datetobook) {
+            foreach ($bookeddates as $bookeddate) {
+
+                if ($datetobook->itemid === $bookeddate->itemid
+                    && $datetobook->area === $bookeddate->area) {
+                        continue;
+                }
+
+                if (($datetobook->starttime > $bookeddate->starttime && $datetobook->starttime < $bookeddate->endtime)
+                    || ($datetobook->endtime > $bookeddate->starttime && $datetobook->endtime < $bookeddate->endtime)
+                    || ($datetobook->starttime < $bookeddate->starttime && $datetobook->endtime > $bookeddate->endtime)) {
+                        $conflicts[] = [$bookeddate, $datetobook];
+                }
+            }
+        }
+
+        if (count($conflicts) > 0) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Get the name of the service provider class
+     *
+     * @param string $component The component
+     * @return string
+     * @throws \coding_exception
+     */
+    private static function get_service_provider_classname(string $component) {
+        $providerclass = "$component\\entities\\service_provider";
+
+        if (class_exists($providerclass)) {
+            $rc = new \ReflectionClass($providerclass);
+            if ($rc->implementsInterface(local\callback\service_provider::class)) {
+                return $providerclass;
+            }
+        }
+        throw new \coding_exception("$component does not have an eligible implementation of entities service_provider.");
+    }
+
 }
