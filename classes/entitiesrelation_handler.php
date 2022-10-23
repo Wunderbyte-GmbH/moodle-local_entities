@@ -312,14 +312,15 @@ class entitiesrelation_handler {
      * @param stdClass $data
      * @return void
      */
-    public function er_record_exists(stdClass $data) {
+    public function er_record_exists(stdClass &$data) {
         global $DB;
         $select = sprintf("component = :component AND area = :area AND %s = :instanceid", $DB->sql_compare_text('instanceid'));
-        if ($DB->record_exists_select('local_entities_relations', $select, [
+        if ($id = $DB->get_field_select('local_entities_relations', 'id', $select, [
                 'component' => $this->component,
                 'area' => $this->area,
                 'instanceid' => $data->instanceid
-            ])) {
+        ])) {
+            $data->id = $id;
             return true;
         }
         return false;
