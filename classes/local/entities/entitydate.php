@@ -37,49 +37,49 @@ class entitydate {
      *
      * @var int
      */
-    private $id;
+    public $itemid;
 
     /**
      * Component
      *
      * @var string
      */
-    private $component;
+    public $component;
 
     /**
      * Area
      *
      * @var string
      */
-    private $area;
+    public $area;
 
     /**
      * Name
      *
      * @var string
      */
-    private $name;
+    public $name;
 
     /**
      * Starttime as timestamp
      *
      * @var int
      */
-    private $starttime;
+    public $starttime;
 
     /**
      * Endtime as timestamp
      *
      * @var int
      */
-    private $endtime;
+    public $endtime;
 
     /**
      * Status
      *
      * @var int
      */
-    private $status;
+    public $status;
 
     /**
      * Cunstructor.
@@ -123,5 +123,14 @@ class entitydate {
         $item['endtime'] = $this->endtime;
         $item['status'] = $this->status;
         return $item;
+    }
+
+    /**
+     * To acces private property area.
+     *
+     * @return string
+     */
+    public function return_area():string {
+        return $this->area;
     }
 }
