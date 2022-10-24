@@ -154,9 +154,6 @@ class entities_cf_helper {
         $categories = \local_entities\settings_manager::get_standardcategories();
         $handlers = array();
         foreach ($categories as $category) {
-            if (empty($category)) {
-                $category = 0; // Postgres fix.
-            }
             $handlers[] = entities_handler::create($category);
         }
         if (empty($handlers)) {
