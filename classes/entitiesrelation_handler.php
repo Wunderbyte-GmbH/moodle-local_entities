@@ -108,6 +108,9 @@ class entitiesrelation_handler {
 
             $mform->addElement('autocomplete', 'local_entities_entityid', get_string('er_entitiesname', 'local_entities'),
                 $select, $options);
+
+            $mform->addElement('advcheckbox', 'er_saverelationsforoptiondates',
+                get_string('er_saverelationsforoptiondates', 'local_entities'));
         }
 
         return $mform;
