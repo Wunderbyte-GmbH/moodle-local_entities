@@ -106,7 +106,8 @@ class entitiesrelation_handler {
                 'noselectionstring' => get_string('none', 'local_entities')
             ];
 
-            $mform->addElement('autocomplete', 'local_entities_entityid', get_string('er_entitiesname', 'local_entities'), $select, $options);
+            $mform->addElement('autocomplete', 'local_entities_entityid', get_string('er_entitiesname', 'local_entities'),
+                $select, $options);
         }
 
         return $mform;

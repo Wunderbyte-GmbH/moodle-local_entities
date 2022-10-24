@@ -153,7 +153,10 @@ class entities_cf_helper {
     public static function create_std_handlers() {
         $categories = \local_entities\settings_manager::get_standardcategories();
         $handlers = array();
-        foreach($categories as $category) {
+        foreach ($categories as $category) {
+            if (empty($category)) {
+                $category = 0; // Postgres fix.
+            }
             $handlers[] = entities_handler::create($category);
         }
         if (empty($handlers)) {
