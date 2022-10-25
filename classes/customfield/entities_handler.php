@@ -49,10 +49,10 @@ class entities_handler extends \core_customfield\handler {
     /**
      * Undocumented function
      *
-     * @param integer $itemid
+     * @param int $itemid
      * @return entities_handler
      */
-    public static function create(int $itemid = 0): \core_customfield\handler {
+    public static function create($itemid = 0): \core_customfield\handler {
         if (empty($itemid)) {
             $itemid = 0; // Postgres fix.
         }
