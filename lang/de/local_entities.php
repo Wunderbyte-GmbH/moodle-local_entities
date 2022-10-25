@@ -75,3 +75,5 @@ $string['errorwiththefollowingdates'] = 'Es gibt einen Konflikt mit den folgende
 // Access.php.
 $string['entities:canedit'] = 'Nutzer*in darf editieren.';
 $string['entities:canview'] = 'Nutzer*in darf sehen.';
+
+$string['calendar'] = 'Kalendar';

@@ -66,6 +66,14 @@ $functions = array(
                 'services' => array(),
                 'capabilities' => 'local/entities:canedit'
         ),
+        'local_entities_get_entity_calendardata' => array(
+                'classname' => 'local_entities\external\get_entity_calendardata',
+                'classpath' => '',
+                'description' => 'Get calendardata from specific entity',
+                'type' => 'read',
+                'capabilities' => '',
+                'ajax' => true,
+        ),
 );
 
 $services = array(

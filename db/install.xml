@@ -17,6 +17,7 @@
                 <FIELD NAME="pricefactor" TYPE="number" LENGTH="10" NOTNULL="false" DEFAULT="1" SEQUENCE="false" DECIMALS="2"/>
                 <FIELD NAME="sortorder" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" />
                 <FIELD NAME="cfitemid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" />
+                <FIELD NAME="openinghours" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Openinghours for this entitiy, in JSON format. Null if no restrictions."/>
             </FIELDS>
             <KEYS>
                 <KEY NAME="primary" TYPE="primary" FIELDS="id" />

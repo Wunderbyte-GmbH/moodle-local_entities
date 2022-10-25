@@ -25,17 +25,12 @@
 
 namespace local_entities;
 
-use local_entities_external;
-
-defined('MOODLE_INTERNAL') || die;
-
 /**
  * Class entity
  * @author      Thomas Winkler
  * @copyright   2021 Wunderbyte GmbH
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 
 class entity {
 
