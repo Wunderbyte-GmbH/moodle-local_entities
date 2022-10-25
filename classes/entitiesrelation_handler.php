@@ -69,7 +69,7 @@ class entitiesrelation_handler {
      */
     public function instance_form_definition(MoodleQuickForm &$mform, int $instanceid = 0, string $formmode = 'expert',
         ?string $headerlangidentifier = null, ?string $headerlangcomponent = null) {
-        global $DB, $PAGE;
+        global $DB;
 
         // Workaround: Only show, if it is not turned off in the option form config.
         // We currently need this, because hideIf does not work with headers.
@@ -108,9 +108,6 @@ class entitiesrelation_handler {
 
             $mform->addElement('autocomplete', 'local_entities_entityid', get_string('er_entitiesname', 'local_entities'),
                 $select, $options);
-
-            $mform->addElement('advcheckbox', 'er_saverelationsforoptiondates',
-                get_string('er_saverelationsforoptiondates', 'local_entities'));
         }
 
         return $mform;

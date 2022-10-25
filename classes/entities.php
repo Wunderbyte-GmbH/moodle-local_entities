@@ -210,7 +210,7 @@ class entities {
         $calls = [];
         foreach ($records as $record) {
 
-            // We want to have one call per component
+            // We want to have one call per component.
             if (!isset($calls[$record->component])) {
 
                 $calls[$record->component][$record->area] = [$record->instanceid];
