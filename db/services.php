@@ -71,8 +71,7 @@ $functions = array(
                 'classpath' => '',
                 'description' => 'Get calendardata from specific entity',
                 'type' => 'read',
-                'capabilities' => '',
-                'ajax' => true,
+                'ajax' => true
         ),
 );
 

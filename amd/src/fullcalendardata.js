@@ -39,8 +39,6 @@ export const init = (entityid, locale, jsondata = null) => {
     } else {
         renderCalendar(jsondata);
     }
-
-
 };
 
 const renderCalendar = (events) => {
