@@ -69,7 +69,6 @@ $functions = array(
         'local_entities_get_entity_calendardata' => array(
                 'classname' => 'local_entities\external\get_entity_calendardata',
                 'classpath' => '',
-                'methodname' => 'get_entity_calendardata',
                 'description' => 'Get calendardata from specific entity',
                 'type' => 'read',
                 'ajax' => true
