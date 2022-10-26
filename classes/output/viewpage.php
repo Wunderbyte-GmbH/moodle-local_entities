@@ -18,8 +18,8 @@
  * Contains class mod_questionnaire\output\indexpage
  *
  * @package    local_entities
- * @copyright  2021 Wunderbyte Gmbh <info@wunderbyte.at>
- * @author     Thomas Winkler
+ * @copyright  2022 Wunderbyte Gmbh <info@wunderbyte.at>
+ * @author     Georg Maißer
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  **/
 
@@ -29,12 +29,9 @@ use renderable;
 use renderer_base;
 use templatable;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * viewpage class to display view.php
- * @package mod_mooduell
- *
+ * @package local_entities
  */
 class viewpage implements renderable, templatable {
 
@@ -43,14 +40,7 @@ class viewpage implements renderable, templatable {
      *
      * @var array
      */
-    protected $headings;
-
-    /**
-     * An array of rows
-     *
-     * @var array
-     */
-    protected $rows;
+    protected $data;
 
     /**
      * Constructor.
@@ -68,12 +58,6 @@ class viewpage implements renderable, templatable {
      */
     public function export_for_template(renderer_base $output) {
         $data = $this->data;
-
-        /*if (isset($data[''questions'])) {
-            foreach ($data['questions'] as $question) {
-                $question->replace_category_id_by_name();
-            }
-        }*/
 
         return $data;
     }

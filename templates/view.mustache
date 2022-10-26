@@ -12,8 +12,8 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template mod_mooduell/viewpage
-    Template which defines a mooduell view page.
+    @template local_entities
+    Template which defines a entities view page.
     Classes required for JS:
     * none
     Data attributes required for JS:
@@ -21,23 +21,7 @@
     Context variables required for this template:
     Example context (json):
     {
-        "id": "5",
-        "name": "asdasfd",
-        "description": "asd",
-        "type": "category",
-        "timecreated": "1638390631",
-        "timemodified": "1638390629",
-        "openentity": "0",
-        "createdby": "2",
-        "picture": null,
-        "parentid": "0",
-        "sortorder": null,
-        "address": [
-            null
-        ],
-        "contacts": [
-            null
-        ]
+
     }
 }}
 
@@ -74,7 +58,7 @@
                     <li>{{streetname}} {{streetnumber}}</li>
                     {{#maplink}}
                     <li>
-                        {{#str}}address_map_link , local_entities{{/str}}: 
+                        {{#str}}address_map_link , local_entities{{/str}}:
                         <a href="{{maplink}}" target="_blank">
                             {{maplink}}
                         </a>

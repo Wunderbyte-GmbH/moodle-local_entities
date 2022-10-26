@@ -12,8 +12,8 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template mod_mooduell/viewpage
-    Template which defines a mooduell view page.
+    @template local_entities
+    Template which defines a entities view page.
     Classes required for JS:
     * none
     Data attributes required for JS:
@@ -21,16 +21,7 @@
     Context variables required for this template:
     Example context (json):
     {
-        "categories" : [
-            [
-               {
-                  "catid":"7",
-                  "contextid":"1",
-                  "catname":"MooDuell Pr\u00e4sentation",
-                  "courseid":"50"
-               }
-            ]
-        ]
+
     }
 }}
 
@@ -48,7 +39,7 @@ margin-bottom: 20px;
       <a class="btn btn-primary" href="#"><i class="fa fa-plus px-2"></i>Add entitiy-Admin</a>
       <a class="btn btn-primary" href="#"><i class="fa fa-plus px-2"></i>List entitiy-Admins</a>
     </div>
-  </div>  
+  </div>
   <div class="card">
     <div class="card-header">
       New Entitiy
@@ -57,7 +48,7 @@ margin-bottom: 20px;
       <a class="btn btn-primary" href="#"><i class="fa fa-plus px-2" aria-hidden="true"></i>Add new entity</a>
       <a class="btn btn-primary" href="#"><i class="fa fa-plus px-2" aria-hidden="true"></i>List entities</a>
     </div>
-  </div>  
+  </div>
     <div class="card">
       <div class="card-header">
         List all resource
@@ -65,7 +56,7 @@ margin-bottom: 20px;
       <div class="card-body">
         <a class="btn btn-primary" href="#"><i class="fa fa-plus px-2" aria-hidden="true"></i>List all entities</a>
       </div>
-    </div>  
+    </div>
       <div class="card">
         <div class="card-header">
           add Category
@@ -81,5 +72,5 @@ margin-bottom: 20px;
         <div class="card-body">
           <a class="btn btn-primary" href="#"><i class="fa fa-plus px-2" aria-hidden="true"></i>Documentation</a>
         </div>
-      </div>    
+      </div>
   </div>

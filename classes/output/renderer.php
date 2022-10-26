@@ -27,44 +27,10 @@ namespace local_entites\output;
 use plugin_renderer_base;
 use templatable;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Renderer class.
- * @package mod_mooduell
+ * @package local_entities
  */
 class renderer extends plugin_renderer_base {
 
-    /**
-     * Render a mooduell view page.
-     *
-     * @param templatable $viewpage
-     * @return string|boolean
-     */
-    public function render_viewpage(templatable $viewpage) {
-        $data = $viewpage->export_for_template($this);
-        return $this->render_from_template('mod_mooduell/viewpage', $data);
-    }
-
-    /**
-     * Render viewpage students.
-     * @param templatable $viewpage
-     * @return bool|string
-     * @throws \moodle_exception
-     */
-    public function render_viewpagestudents(templatable $viewpage) {
-        $data = $viewpage->export_for_template($this);
-        return $this->render_from_template('mod_mooduell/viewpagestudents', $data);
-    }
-
-    /**
-     * Render a mooduell list of questions
-     * @param templatable $viewpage
-     * @return bool|string
-     * @throws \moodle_exception
-     */
-    public function render_viewquestions(templatable $viewpage) {
-        $data = $viewpage->export_for_template($this);
-        return $this->render_from_template('mod_mooduell/viewquestions', $data);
-    }
 }
