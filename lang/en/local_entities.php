@@ -77,3 +77,8 @@ $string['entities:canedit'] = 'User is allowed to edit';
 $string['entities:canview'] = 'User is allowed to see entities';
 
 $string['calendar'] = 'Calendar';
+
+// Entities handler.
+$string['opentimetable'] = "Open timetable";
+$string['timetablemodaltitle'] = "Entity Timetable";
+$string['timetablemodalbutton'] = "OK";

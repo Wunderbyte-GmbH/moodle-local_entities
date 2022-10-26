@@ -77,3 +77,6 @@ $string['entities:canedit'] = 'Nutzer*in darf editieren.';
 $string['entities:canview'] = 'Nutzer*in darf sehen.';
 
 $string['calendar'] = 'Kalendar';
+
+// Entities handler.
+$string['opentimetable'] = "Öffne Stundenplan";

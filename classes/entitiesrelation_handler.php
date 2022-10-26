@@ -69,7 +69,7 @@ class entitiesrelation_handler {
      */
     public function instance_form_definition(MoodleQuickForm &$mform, int $instanceid = 0, string $formmode = 'expert',
         ?string $headerlangidentifier = null, ?string $headerlangcomponent = null) {
-        global $DB;
+        global $DB, $OUTPUT, $PAGE;
 
         // Workaround: Only show, if it is not turned off in the option form config.
         // We currently need this, because hideIf does not work with headers.
@@ -109,6 +109,9 @@ class entitiesrelation_handler {
             $mform->addElement('autocomplete', 'local_entities_entityid', get_string('er_entitiesname', 'local_entities'),
                 $select, $options);
         }
+
+        $mform->addElement('button', 'openmodal', get_string('opentimetable', 'local_entities'));
+        $PAGE->requires->js_call_amd('local_entities/handler', 'init');
 
         return $mform;
     }
@@ -449,5 +452,21 @@ class entitiesrelation_handler {
         $params = array('id' => $id);
         $pricefactor = $DB->get_field_select('local_entities', 'pricefactor', 'id = :id', $params, IGNORE_MISSING);
         return $pricefactor;
+    }
+
+    /**
+     * Return a modal
+     *
+     * @return string
+     */
+    private static function render_modal() {
+        return '<button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg">Large modal</button>
+        <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+                ...
+                </div>
+            </div>
+            </div>';
     }
 }
