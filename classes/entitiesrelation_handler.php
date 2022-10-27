@@ -112,6 +112,7 @@ class entitiesrelation_handler {
 
         $mform->addElement('button', 'openmodal', get_string('opentimetable', 'local_entities'));
         $PAGE->requires->js_call_amd('local_entities/handler', 'init');
+        $PAGE->requires->css('/local/entities/js/main.css');
 
         return $mform;
     }
