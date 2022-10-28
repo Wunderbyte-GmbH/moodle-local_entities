@@ -27,6 +27,7 @@ require_once(dirname(__FILE__) . '/../../config.php');
 require_once($CFG->dirroot . '/local/entities/lib.php');
 use local_entities\form\edit_dynamic_form;
 use local_entities\local\views\secondary;
+use local_entities\entity;
 
 $entityid = optional_param('id', 0, PARAM_INT);
 $categoryid = optional_param('catid', 0, PARAM_INT);
@@ -55,9 +56,11 @@ if ($entityid) {
     $mform = new edit_dynamic_form('null', ['entityid' => 0]);
 }
 
+$data = entity::load($entityid);
+
 // Print the page header.
-$title = isset($data) ? $data->name : get_string('new_entity', 'local_entities');
-$heading = isset($data->id) ? $data->name : get_string('new_entity', 'local_entities');
+$title = $data->name ?? get_string('new_entity', 'local_entities');
+$heading = $data->name ?? get_string('new_entity', 'local_entities');
 
 $PAGE->set_title($title);
 $PAGE->set_heading($heading);

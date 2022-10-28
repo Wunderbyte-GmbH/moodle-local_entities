@@ -102,8 +102,6 @@ const renderCalendar = (events) => {
         timeHint: "Uhrzeit",
         eventHint: "Ereignis"
       });
-      console.log("test");
-
       calendar.render();
 };
 

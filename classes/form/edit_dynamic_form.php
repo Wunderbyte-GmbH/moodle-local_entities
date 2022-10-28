@@ -105,7 +105,7 @@ class edit_dynamic_form extends dynamic_form {
         $mform->addElement('text', 'sortorder', get_string('entity_order', 'local_entities'));
         $mform->setType('sortorder', PARAM_INT);
 
-        $mform->addElement('text', 'openinghours', get_string('entity_order', 'local_entities'));
+        $mform->addElement('textarea', 'openinghours', get_string('entity_openinghours', 'local_entities'), 'wrap="virtual" rows="10" cols="50"');
         $mform->setType('openinghours', PARAM_TEXT);
 
         $mform->addElement('float', 'pricefactor', get_string('pricefactor', 'local_entities'), null);
