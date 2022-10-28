@@ -31,6 +31,7 @@ use external_function_parameters;
 use external_value;
 use external_single_structure;
 use local_entities\entity;
+use local_entities\entities;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -48,7 +49,6 @@ class get_entity_calendardata extends external_api {
             'id' => new external_value(PARAM_INT, 'entity id', VALUE_REQUIRED),
         ]);
     }
-
     /**
      * Webservice to get entity calendardata.
      *
@@ -57,28 +57,14 @@ class get_entity_calendardata extends external_api {
     public static function execute(int $id): array {
         $calendardata['error'] = "";
         $entity = entity::load($id);
-        // $calendardata['json'] = $entity->get_calendardata();
-        $calendardata['json'] = '[
-            {
-              "title": "Offen",
-              "startTime": "10:45:00",
-              "endTime": "12:45:00",
-              "backgroundColor" : "#64a44e",
-              "daysOfWeek": [1,2,3,4],
-              "allDay": false
-            },
-            {
-              "title": "Offen",
-              "start": "2022-10-24T08:00:00",
-              "end": "2022-10-24T13:00:00",
-              "backgroundColor" : "#64a44e"
-            },
-            {
-              "title": "Gebucht - title",
-              "start": "2022-10-24T08:00:00",
-              "end": "2022-10-24T13:00:00"
-            }
-          ]';
+        $openinghours = $entity->__get('openinghours') ?? '[]';
+        $openinghours = json_decode($openinghours, false);
+
+        $openinghours = entities::prepare_datearray_for_calendar($openinghours, '#64a44e');
+        $relationdata = entities::get_all_dates_for_entity($id);
+        $relationdata = entities::prepare_datearray_for_calendar($relationdata, 'red');
+        $calendardata['json'] = json_encode([...$openinghours, ...$relationdata]);
+
         return $calendardata;
     }
 

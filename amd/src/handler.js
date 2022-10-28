@@ -14,7 +14,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /*
- * @package    mod_booking
+ * @package    local_entities
  * @copyright  Wunderbyte GmbH <info@wunderbyte.at>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -22,22 +22,16 @@
 import ModalFactory from 'core/modal_factory';
 import ModalEvents from 'core/modal_events';
 import Templates from 'core/templates';
-
-import {
-    get_strings as getStrings
-        }
-        from 'core/str';
+import {get_strings as getStrings} from 'core/str';
 
 export const init = () => {
     const element = document.querySelector('#id_openmodal');
 
     // eslint-disable-next-line no-console
     console.log(element);
-
     element.addEventListener('click', event => {
         // eslint-disable-next-line no-console
         console.log(event);
-
         timeTableModal(1);
     });
 };
@@ -47,7 +41,6 @@ export const init = () => {
  * @param {entityid} entityid
  */
  function timeTableModal(entityid) {
-
     getStrings([
         {key: 'timetablemodaltitle', component: 'local_entities'},
         {key: 'timetablemodalbutton', component: 'local_entities'}
@@ -57,27 +50,27 @@ export const init = () => {
         const id = entityid;
         const json = {'id': id, 'locale': 'de'};
         Templates.renderForPromise('local_entities/entitiescalendar', json).then(({html, js}) => {
-
-        ModalFactory.create({type: ModalFactory.types.SAVE_CANCEL, large: 'true'}).then(modal => {
-
-            modal.setTitle(strings[0]);
-            modal.setBody(html);
-            modal.setSaveButtonText(strings[1]);
-            modal.getRoot().on(ModalEvents.save, function() {
-
+            ModalFactory.create({
+                type: ModalFactory.types.SAVE_CANCEL,
+                large: 'true'
+            }).then(modal => {
+                modal.setTitle(strings[0]);
+                modal.setBody(html);
+                modal.setSaveButtonText(strings[1]);
+                modal.getRoot().on(ModalEvents.save + " "
+                + ModalEvents.outsideClick + " "
+                + ModalEvents.hidden, function() {
+                    /* Destroy the modal so calendar gets reloaded on further openings. */
+                    modal.destroy();
+                });
+                modal.setRemoveOnClose(true);
+                modal.show();
+                Templates.runTemplateJS(js);
+                return modal;
+            }).catch(e => {
                 // eslint-disable-next-line no-console
-                console.log(html);
-
+                console.log(e);
             });
-
-            modal.show();
-
-            Templates.runTemplateJS(js);
-            return modal;
-        }).catch(e => {
-            // eslint-disable-next-line no-console
-            console.log(e);
-        });
         return true;
         }).catch(e => {
             // eslint-disable-next-line no-console

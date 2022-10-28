@@ -198,7 +198,7 @@ class entities {
      * @param integer $entityid
      * @return array
      */
-    public static function get_all_dates_for_entity(int $entityid):array {
+    public static function get_all_dates_for_entity(int $entityid): array {
 
         global $DB;
 
@@ -210,7 +210,7 @@ class entities {
         $calls = [];
         foreach ($records as $record) {
 
-            // We want to have one call per component.
+            // We want to have one call per component
             if (!isset($calls[$record->component])) {
 
                 $calls[$record->component][$record->area] = [$record->instanceid];
@@ -233,6 +233,25 @@ class entities {
         }
 
         return $datearray;
+    }
+
+    /**
+     * Prepares given datearray for fullcalendar js.
+     *
+     * @param array $datearray
+     * @return array
+     */
+    public static function prepare_datearray_for_calendar(array $datearray, string $bgcolor = null): array {
+        $bgcolor = $bgcolor ?? get_config('local_entities', 'calendarcolor');
+        foreach($datearray as $event) {
+            $calendarevent = $event;
+            $calendarevent->allDay = false;
+            // $calendarevent->start = ;
+            // $calendarevent->end = ;
+            $calendarevent->backgroundColor = $bgcolor;
+            $calendarevents[] = $calendarevent;
+        }
+        return $calendarevents;
     }
 
     /**

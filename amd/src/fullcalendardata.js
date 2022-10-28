@@ -44,6 +44,7 @@ export const init = (entityid, locale, jsondata = null) => {
 const renderCalendar = (events) => {
     var calendar = new Calendar(calendarEl, {
         timeZone: 'UTC',
+        eventStartEditable: false,
         displayEventEnd: true,
         headerToolbar: {
           left: 'prev,next today',
@@ -101,6 +102,7 @@ const renderCalendar = (events) => {
         timeHint: "Uhrzeit",
         eventHint: "Ereignis"
       });
+      console.log("test");
 
       calendar.render();
 };

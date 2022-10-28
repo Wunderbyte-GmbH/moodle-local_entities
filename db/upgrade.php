@@ -191,5 +191,18 @@ function xmldb_local_entities_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2022101403, 'local', 'entities');
     }
 
+    if ($oldversion < 2022102800) {
+
+        // Define field component to be added to local_entities_relations.
+        $table = new xmldb_table('local_entities');
+        $field = new xmldb_field('openinghours', XMLDB_TYPE_TEXT, null, null, null, null, null, null);
+
+        // Conditionally launch add field component.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        upgrade_plugin_savepoint(true, 2022102800, 'local', 'entities');
+    }
+
     return true;
 }
