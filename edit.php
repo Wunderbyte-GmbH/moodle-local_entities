@@ -38,7 +38,7 @@ global $USER, $PAGE, $DB;
 
 // Set PAGE variables.
 $PAGE->set_context($context);
-$PAGE->set_url($CFG->wwwroot . '/local/entities/edit2.php', array("id" => $entityid));
+$PAGE->set_url($CFG->wwwroot . '/local/entities/edit.php', array("id" => $entityid));
 
 // Force the user to login/create an account to access this page.
 require_login();
