@@ -191,18 +191,53 @@ function xmldb_local_entities_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2022101403, 'local', 'entities');
     }
 
-    if ($oldversion < 2022102800) {
+    if ($oldversion < 2022103001) {
 
-        // Define field component to be added to local_entities_relations.
+        // Define field openinghours to be added to local_entities.
         $table = new xmldb_table('local_entities');
-        $field = new xmldb_field('openinghours', XMLDB_TYPE_TEXT, null, null, null, null, null, null);
 
-        // Conditionally launch add field component.
+        // First, drop field pictue.
+        $field = new xmldb_field('picture');
+
+        // Conditionally launch drop field picture.
+        if ($dbman->field_exists($table, $field)) {
+            $dbman->drop_field($table, $field);
+        }
+
+        // Second, drop field type.
+        $field = new xmldb_field('type');
+
+        // Conditionally launch drop field type.
+        if ($dbman->field_exists($table, $field)) {
+            $dbman->drop_field($table, $field);
+        }
+
+        // Third, rename openentitiy to status.
+        $field = new xmldb_field('openentity', XMLDB_TYPE_INTEGER, '10', null, null, null, '0', 'timemodified');
+
+        // Launch rename field openentity.
+        $dbman->rename_field($table, $field, 'status');
+
+        // Add field openinghours.
+        $field = new xmldb_field('openinghours', XMLDB_TYPE_TEXT, null, null, null, null, null, 'cfitemid');
+
+        // Conditionally launch add field openinghours.
         if (!$dbman->field_exists($table, $field)) {
             $dbman->add_field($table, $field);
         }
-        upgrade_plugin_savepoint(true, 2022102800, 'local', 'entities');
+
+        // Finally, add field max allocation.
+        $field = new xmldb_field('maxallocation', XMLDB_TYPE_INTEGER, '10', null, null, null, '0', 'openinghours');
+
+        // Conditionally launch add field maxallocation.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Entities savepoint reached.
+        upgrade_plugin_savepoint(true, 2022103001, 'local', 'entities');
     }
+
 
     return true;
 }

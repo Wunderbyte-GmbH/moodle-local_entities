@@ -7,17 +7,16 @@
                 <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" />
                 <FIELD NAME="shortname" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" />
                 <FIELD NAME="description" TYPE="text" NOTNULL="false" SEQUENCE="false" />
-                <FIELD NAME="type" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" />
                 <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="false" DEFAULT="0" SEQUENCE="false" />
 				<FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="false" DEFAULT="0" SEQUENCE="false" />
-				<FIELD NAME="openentity" TYPE="int" LENGTH="10" NOTNULL="false" DEFAULT="0" SEQUENCE="false" />
+				<FIELD NAME="status" TYPE="int" LENGTH="10" NOTNULL="false" DEFAULT="0" SEQUENCE="false" />
 				<FIELD NAME="createdby" TYPE="int" LENGTH="10" NOTNULL="false" DEFAULT="0" SEQUENCE="false" />
-                <FIELD NAME="picture" TYPE="char" LENGTH="50" NOTNULL="false" SEQUENCE="false" />
 				<FIELD NAME="parentid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" />
                 <FIELD NAME="pricefactor" TYPE="number" LENGTH="10" NOTNULL="false" DEFAULT="1" SEQUENCE="false" DECIMALS="2"/>
                 <FIELD NAME="sortorder" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" />
                 <FIELD NAME="cfitemid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" />
                 <FIELD NAME="openinghours" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Openinghours for this entitiy, in JSON format. Null if no restrictions."/>
+                <FIELD NAME="maxallocation" TYPE="int" LENGTH="10" NOTNULL="false" DEFAULT="0" SEQUENCE="false" COMMENT="How many bookings on one entity? 0 is no limit."/>
             </FIELDS>
             <KEYS>
                 <KEY NAME="primary" TYPE="primary" FIELDS="id" />
