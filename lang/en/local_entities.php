@@ -74,6 +74,9 @@ $string['pricefactor_help'] = 'Relative price factor: Can be used for automatic 
 
 $string['errorwiththefollowingdates'] = 'There is a conflict with the following bookings:';
 
+$string['maxallocation'] = 'Max number of bookings on this entity';
+$string['maxallocation_help'] = '0 for no limit, -1 for not bookable.';
+
 // Access.php.
 $string['entities:canedit'] = 'User is allowed to edit';
 $string['entities:canview'] = 'User is allowed to see entities';
@@ -84,3 +87,6 @@ $string['calendar'] = 'Calendar';
 $string['opentimetable'] = "Open timetable";
 $string['timetablemodaltitle'] = "Entity Timetable";
 $string['timetablemodalbutton'] = "OK";
+
+// Import.
+$string['import'] = "Import";

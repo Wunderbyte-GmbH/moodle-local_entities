@@ -27,14 +27,14 @@ require_once(dirname(__FILE__) . '/../../config.php');
 require_once($CFG->dirroot . '/local/entities/lib.php');
 use local_entities\form\edit_dynamic_form;
 use local_entities\local\views\secondary;
-use local_entities\entity;
+use local_entities\settings_manager;
 
 $entityid = optional_param('id', 0, PARAM_INT);
 $categoryid = optional_param('catid', 0, PARAM_INT);
 $context = context_system::instance();
 require_capability('local/entities:canedit', $context);
 
-global $USER, $PAGE;
+global $USER, $PAGE, $DB;
 
 // Set PAGE variables.
 $PAGE->set_context($context);
@@ -50,17 +50,23 @@ $PAGE->set_secondary_navigation(true);
 
 $settingsmanager = new \local_entities\settings_manager();
 
-if ($entityid) {
-    $mform = new edit_dynamic_form('null', ['entityid' => $entityid]);
+if (!empty($entityid)) {
+
+    // Here, we need to preload the form, because of the handler loading in definition.
+    $entity = settings_manager::get_settings_forform($entityid);
+
+    $data = (array)$entity;
+    $mform = new edit_dynamic_form(null, null, 'post', '', [], true, $data);
+
+    $mform->set_data($entity);
+
 } else {
-    $mform = new edit_dynamic_form('null', ['entityid' => 0]);
+    $mform = new edit_dynamic_form(null, null, 'post', '', [], true, ['entityid' => 0]);
 }
 
-$data = entity::load($entityid);
-
 // Print the page header.
-$title = $data->name ?? get_string('new_entity', 'local_entities');
-$heading = $data->name ?? get_string('new_entity', 'local_entities');
+$title = isset($data) ? $data['name'] : get_string('new_entity', 'local_entities');
+$heading = isset($data['entityid']) ? $data['name'] : get_string('new_entity', 'local_entities');
 
 $PAGE->set_title($title);
 $PAGE->set_heading($heading);

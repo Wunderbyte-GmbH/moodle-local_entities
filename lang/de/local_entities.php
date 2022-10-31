@@ -74,6 +74,9 @@ $string['pricefactor_help'] = 'Relativer Preisfaktor: Kann für automatische Pre
 
 $string['errorwiththefollowingdates'] = 'Es gibt einen Konflikt mit den folgenden Buchungen:';
 
+$string['maxallocation'] = 'Maximale Anzahl möglicher Buchungen.';
+$string['maxallocation_help'] = '0 für kein Limit, -1 bedeutet nicht buchbar';
+
 // Access.php.
 $string['entities:canedit'] = 'Nutzer*in darf editieren.';
 $string['entities:canview'] = 'Nutzer*in darf sehen.';
@@ -82,3 +85,8 @@ $string['calendar'] = 'Kalendar';
 
 // Entities handler.
 $string['opentimetable'] = "Öffne Stundenplan";
+$string['timetablemodaltitle'] = "Entity Timetable";
+$string['timetablemodalbutton'] = "OK";
+
+// Import.
+$string['import'] = "Importiere";

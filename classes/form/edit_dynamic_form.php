@@ -55,16 +55,16 @@ class edit_dynamic_form extends dynamic_form {
 
         // Get a list of all entities.
         $none = get_string("none", "local_entities");
-        $entityid = $this->_customdata['entityid'] ?? 0;
-        $entities = array(0 => $none);
-        $allentities = entities::list_all_entities();
-        foreach ($allentities as $entity) {
-            if ($entity->id != $this->_customdata['entityid']) {
-                $entities[$entity->id] = $entity->newname;
-            }
-        }
+
         $mform = $this->_form;
         $data = (Object)$this->_ajaxformdata;
+
+        $entityid = $this->_customdata['entityid'] ?? $data->entityid ?? 0;
+
+        $entities = array(0 => $none);
+        $allentities = entities::list_all_entities();
+
+        unset($allentities[$entityid]);
 
         // Entity DETAILS.
         $mform->addElement('header', 'details', get_string('edit_details', 'local_entities'));
@@ -81,6 +81,29 @@ class edit_dynamic_form extends dynamic_form {
 
         $mform->addElement('filemanager', 'image_filemanager', get_string('edit_image', 'local_entities'), null, $options);
 
+        $context = context_system::instance();
+        $editoroptions = array('maxfiles' => EDITOR_UNLIMITED_FILES, 'noclean' => true, 'context' => $context);
+
+        $mform->addElement('editor', 'description', get_string('entity_description', 'local_entities'),
+            '', $editoroptions);
+
+        $mform->addRule('description', null, 'required', null, 'client');
+        $mform->setType('description', PARAM_RAW);
+
+        $mform->addElement('text', 'maxallocation', get_string('maxallocation', 'local_entities'));
+        $mform->setType('maxallocation', PARAM_INT);
+        $mform->addHelpButton('maxallocation', 'maxallocation', 'local_entities');
+
+        $mform->addElement('select', 'parentid', get_string('entity_parent', 'local_entities'), $entities);
+
+        $mform->addElement('text', 'sortorder', get_string('entity_order', 'local_entities'));
+        $mform->setType('sortorder', PARAM_INT);
+
+        $mform->addElement('float', 'pricefactor', get_string('pricefactor', 'local_entities'), null);
+        $mform->setDefault('pricefactor', 1);
+        $mform->addHelpButton('pricefactor', 'pricefactor', 'local_entities');
+
+        // Type selection.
         $categories = \local_entities\customfield\entities_cf_helper::get_alternative_cf_categories();
         if (!empty($categories)) {
             $mform->registerNoSubmitButton('btn_cfcategoryid');
@@ -92,25 +115,6 @@ class edit_dynamic_form extends dynamic_form {
             $mform->addGroup($categoryselect, 'tagsgroup', get_string('categories'), [' '], false);
             $mform->setType('btn_cfcategoryid', PARAM_NOTAGS);
         }
-
-        $context = context_system::instance();
-        $editoroptions = array('maxfiles' => EDITOR_UNLIMITED_FILES, 'noclean' => true, 'context' => $context);
-
-        $mform->addElement('editor', 'description', get_string('entity_description', 'local_entities'),
-            '', $editoroptions);
-
-        $mform->addRule('description', null, 'required', null, 'client');
-        $mform->setType('description', PARAM_RAW);
-        $mform->addElement('select', 'parentid', get_string('entity_parent', 'local_entities'), $entities);
-        $mform->addElement('text', 'sortorder', get_string('entity_order', 'local_entities'));
-        $mform->setType('sortorder', PARAM_INT);
-
-        $mform->addElement('textarea', 'openinghours', get_string('entity_openinghours', 'local_entities'), 'wrap="virtual" rows="10" cols="50"');
-        $mform->setType('openinghours', PARAM_TEXT);
-
-        $mform->addElement('float', 'pricefactor', get_string('pricefactor', 'local_entities'), null);
-        $mform->setDefault('pricefactor', 1);
-        $mform->addHelpButton('pricefactor', 'pricefactor', 'local_entities');
 
         // ADDRESS BLOCK.
         // Later Iteration Add more than one address.
@@ -183,8 +187,6 @@ class edit_dynamic_form extends dynamic_form {
         }
 
         // FORM BUTTONS.
-
-        $this->set_data_for_dynamic_submission($data);
         $this->add_action_buttons();
     }
 
@@ -210,7 +212,12 @@ class edit_dynamic_form extends dynamic_form {
         global $CFG;
         $data = (object)$this->_ajaxformdata;
         $context = context_system::instance();
-        $data->description['text'] = file_save_draft_area_files($data->description['itemid'], $context->id,
+        if (!isset($data->description['itemid'])) {
+            $description = $data->description;
+            $data->description = [];
+            $data->description['text'] = $description;
+        }
+        $data->description['text'] = file_save_draft_area_files($data->entityid, $context->id,
         'local_entities', 'entitycontent',
         0, array('subdirs' => true), $data->description['text']);
         $data->entitydata = '';

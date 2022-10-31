@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Pages main view page.
+ * Entities main view page.
  *
  * @package         local_entities
  * @author          Thomas Winkler
@@ -53,8 +53,8 @@ $entity = \local_entities\settings_manager::get_settings($id);
 // More page setup.
 $PAGE->set_title($entity->name);
 
-// Generate the class name with the following naming convention {pagetype}-local-pages-{pagename}-{pageid}.
-$classname = "{$entity->type}-local-pages-{$entity->name}-{$id}";
+// Generate the class name with the following naming convention {pagetype}-local-entities-{entityname}-{entityid}.
+$classname = "{$entity->type}-local-entities-{$entity->name}-{$id}";
 
 // Now add that class name to the body of this page :).
 $PAGE->add_body_class($classname);

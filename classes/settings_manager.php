@@ -287,7 +287,8 @@ class settings_manager {
         $formdata->pricefactor = floatval(str_replace(',', '.', $record->pricefactor));
         $formdata->parentid = $record->parentid;
         $formdata->sortorder  = $record->sortorder;
-        $formdata->type  = $record->type;
+        $formdata->status  = $record->status;
+        $formdata->openinghours  = $record->openinghours;
         $formdata->cfitemid = $record->cfitemid;
         // Address.
         $i = 0;

@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Plugin administration pages are defined here.
+ * Plugin administration entities are defined here.
  *
  * @package     local_entities
  * @category    admin
@@ -35,11 +35,9 @@ if ($hassiteconfig) {
     $ADMIN->add($componentname, $settings);
 
     // Select Standard Categories from custom categories.
-
     $categories = \local_entities\customfield\entities_cf_helper::get_all_cf_categories();
 
     if (!empty($categories)) {
-        // Maybe readd none ?array_unshift($categories, get_string('none', 'local_entities'));.
         $settings->add(
             new admin_setting_configmultiselect(
             $componentname .'/categories',

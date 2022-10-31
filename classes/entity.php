@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * local pages
+ * local entities
  *
  * @package     local_entities
  * @author      Thomas Winkler
