@@ -27,6 +27,7 @@ use context_system;
 use context;
 use core_text;
 use csv_import_reader;
+use html_writer;
 use local_entities\csv_import;
 use moodle_url;
 use moodleform;
@@ -98,14 +99,27 @@ class import_form extends dynamic_form {
      * @return mixed
      */
     public function process_dynamic_submission() {
-        global $CFG;
-        $data = (object)$this->_ajaxformdata;
+        global $CFG, $OUTPUT;
+        // We don't need the data of the form.
+        // $data = (object)$this->_ajaxformdata;
 
         $importer = new csv_import();
-
         $csvfile = $this->get_file_content('csvfile');
 
-        $importer->process_data($csvfile, $data);
+        // $importer->process_data($csvfile, $data);
+
+        $data = new stdClass();
+
+        if ($importer->process_data($csvfile, $data)) {
+            $data->success = true;
+            if (!empty($importer->get_line_errors())) {
+                $data->lineerrors = $importer->get_line_errors();
+            }
+        } else {
+            // Not ok, write error.
+            $data->success = false;
+            $data->error = $importer->get_error();
+        }
 
         return $data;
     }

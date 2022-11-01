@@ -39,9 +39,9 @@ use stdClass;
  */
 class edit_dynamic_form extends dynamic_form {
 
-    public $handlers;
+    public $standardhandlers; // These handlers add customfields to all the entities.
 
-    public $handler2;
+    public $customhandler; // This handler specifies the type of an entitiy and only the category-specific fields.
 
     public $entity;
 
@@ -160,9 +160,9 @@ class edit_dynamic_form extends dynamic_form {
         }
 
         // Adds all Standard categories defined in settings to the form.
-        $this->handlers = \local_entities\customfield\entities_cf_helper::create_std_handlers();
-        if (!empty($this->handlers)) {
-            foreach ($this->handlers as $handler) {
+        $this->standardhandlers = \local_entities\customfield\entities_cf_helper::create_std_handlers();
+        if (!empty($this->standardhandlers)) {
+            foreach ($this->standardhandlers as $handler) {
                 $handler->instance_form_definition($mform, $entityid);
                 $handler->instance_form_before_set_data($data);
             }
@@ -181,9 +181,9 @@ class edit_dynamic_form extends dynamic_form {
                 $cfitemid = $this->_customdata['cfitemid'];
             }
 
-            $this->handler2 = entities_handler::create($cfitemid);
-            $this->handler2->instance_form_definition($mform, $entityid);
-            $this->handler2->instance_form_before_set_data($data);
+            $this->customhandler = entities_handler::create($cfitemid);
+            $this->customhandler->instance_form_definition($mform, $entityid);
+            $this->customhandler->instance_form_before_set_data($data);
         }
 
         // FORM BUTTONS.
@@ -212,27 +212,24 @@ class edit_dynamic_form extends dynamic_form {
         global $CFG;
         $data = (object)$this->_ajaxformdata;
         $context = context_system::instance();
-        if (!isset($data->description['itemid'])) {
-            $description = $data->description;
-            $data->description = [];
-            $data->description['text'] = $description;
-        }
-        $data->description['text'] = file_save_draft_area_files($data->entityid, $context->id,
-        'local_entities', 'entitycontent',
-        0, array('subdirs' => true), $data->description['text']);
+
         $data->entitydata = '';
         $recordentity = new stdClass();
+        // We copy the whole element.
         $recordentity = $data;
+        // But need to override a few values.
         $recordentity->id = $data->id;
         $recordentity->name = $data->name;
         $recordentity->shortname = $data->shortname;
         $recordentity->sortorder = intval($data->sortorder);
-        $recordentity->type = $data->cfitemid;
         $recordentity->parentid = intval($data->parentid);
-        $recordentity->description = $data->description['text'];
+        $recordentity->description = $data->description['text'] ?? $data->description ?? '';
+        $recordentity->openinghours = $data->openinghours ?? '';
+        $recordentity->status = $data->status ?? 0;
         $recordentity->pricefactor = floatval(str_replace(',', '.', $data->pricefactor));
         $recordentity->cfitemid = intval($data->cfitemid);
         $settingsmanager = new \local_entities\settings_manager();
+
         $result = $settingsmanager->update_or_createentity($recordentity);
         if ($result && $result > 0) {
             $data->id = $result;
@@ -241,13 +238,13 @@ class edit_dynamic_form extends dynamic_form {
                 file_postupdate_standard_filemanager($data, 'image', $options, $context, 'local_entities', 'image', $result);
             }
         }
-        if (!empty($this->handlers) && !empty($data->id)) {
-            foreach ($this->handlers as $handler) {
+        if (!empty($this->standardhandlers) && !empty($data->id)) {
+            foreach ($this->standardhandlers as $handler) {
                 $handler->instance_form_save($data);
             }
         }
-        if (!empty($this->handler2) && !empty($data->id)) {
-            $this->handler2->instance_form_save($data);
+        if (!empty($this->customhandler) && !empty($data->id)) {
+            $this->customhandler->instance_form_save($data);
         }
         $returnurl = new moodle_url('/local/entities/entities.php');
         $recordentity->returnurl = $returnurl->out(false);
@@ -350,14 +347,14 @@ class edit_dynamic_form extends dynamic_form {
                 $defaults->id);
         }
 
-        $this->handlers = \local_entities\customfield\entities_cf_helper::create_std_handlers();
-        if (!empty($this->handlers)) {
-            foreach ($this->handlers as $handler) {
+        $this->standardhandlers = \local_entities\customfield\entities_cf_helper::create_std_handlers();
+        if (!empty($this->standardhandlers)) {
+            foreach ($this->standardhandlers as $handler) {
                 $handler->instance_form_before_set_data($defaults);
             }
         }
-        if (!empty($this->handler2)) {
-            $this->handler2->instance_form_before_set_data($defaults);
+        if (!empty($this->customhandler)) {
+            $this->customhandler->instance_form_before_set_data($defaults);
         }
         $this->entityid = $defaults->id ?? 0;
         return parent::set_data($defaults);

@@ -28,6 +28,7 @@ use csv_import_reader;
 use html_writer;
 use local_entities\customfield\entities_cf_helper;
 use local_entities\form\edit_dynamic_form;
+use moodle_exception;
 use stdClass;
 defined('MOODLE_INTERNAL') || die();
 
@@ -65,6 +66,11 @@ class csv_import {
     protected $columns = [];
 
     /**
+     * @var array of additionalcolumn names
+     */
+    protected $additionalcolumns = [];
+
+    /**
      * @var array of fieldnames imported from csv
      */
     protected $fieldnames = [];
@@ -89,7 +95,16 @@ class csv_import {
      */
     public function __construct() {
         global $DB;
+
+        // We get the relevant columns from DB for matching with the csv.
+
         $this->columns = $DB->get_columns('local_entities');
+        $addresses = $DB->get_columns('local_entities_address');
+        unset($addresses['id']);
+        $contacts = $DB->get_columns('local_entities_contacts');
+        unset($contacts['id']);
+
+        $this->additionalcolumns = array_merge($addresses, $contacts);
     }
 
 
@@ -137,6 +152,8 @@ class csv_import {
 
             $csvrecord = array_combine($fieldnames, $line);
 
+            $this->validate_data($csvrecord, $i);
+
             // At this point, we need to unset a few fields a user just can't fill out.
             self::unset_protected_fields($csvrecord);
 
@@ -175,14 +192,6 @@ class csv_import {
                 $entity[$key] = $value;
             }
 
-            // Validate data.
-            // if (!$this->validate_data($csvrecord, $i)) {
-            //     // Save validated data to db.
-
-            //     $this->add_csverror("This error", $i);
-            //                 continue;
-            // }
-
             $formdata = \core_customfield\field_config_form::mock_ajax_submit($entity);
             $entitiesform = new edit_dynamic_form(null, null, 'post', '', [], true, $formdata);
 
@@ -208,28 +217,17 @@ class csv_import {
     protected function validate_data(array &$csvrecord, $linenumber) {
 
         // Set to false if error occured in csv-line.
-        if (empty($csvrecord['text'])) {
-            $this->add_csverror('There seems to be an empty line.', $linenumber);
+        if (empty($csvrecord['name'])) {
+            $this->add_csverror('There is no data for the column "namex".', $linenumber);
+                    return false;
+        }
+
+        // Set to false if error occured in csv-line.
+        if (empty($csvrecord['shortname'])) {
+            $this->add_csverror('There is no data for the column "shortname".', $linenumber);
                     return false;
         }
         return true;
-    }
-
-    /**
-     * Map csv fieldnames with table column names.
-     *
-     */
-    protected function map_fieldnames() {
-        foreach ($this->fieldnames as $key => $fieldname) {
-            switch ($fieldname) {
-                case 'startdate':
-                    $this->fieldnames[$key] = 'coursestarttime';
-                    break;
-                case 'enddate':
-                    $this->fieldnames[$key] = 'courseendtime';
-                    break;
-            }
-        }
     }
 
     /**
@@ -266,23 +264,76 @@ class csv_import {
      */
     protected function identify_fieldtypes(array &$csvrecord) {
 
+        global $DB;
+
         $keys = array_keys($this->columns);
+        $additionalkeys = array_keys($this->additionalcolumns);
 
         foreach ($csvrecord as $key => $value) {
 
             if (empty($value)) {
+                unset($csvrecord[$key]);
+            } else if (in_array($key, $additionalkeys)) {
+                // If these are additional fields, we always have to add the counter.
+                // At the time, we only support one of these elements.
+                $csvrecord[$key . '_0'] = $value;
                 unset($csvrecord[$key]);
             } else if (!in_array($key, $keys)) {
                 // If there is already the prefix, we just skip.
                 if (strpos($key, 'customfield_') !== false) {
                     continue;
                 }
-                // Else, we set the prefix and obmit the old record.
-                $csvrecord['customfield_' . $key] = $value;
+
+                // Now we have to check if this value is a text area. This has to be treated differently.
+                if ($DB->get_field('customfield_field', 'type', ['shortname' => $key, 'type' => 'textarea'])) {
+
+                    $csvrecord['customfield_' . $key . '_editor'] = ['text' => $value, 'format' => FORMAT_HTML];
+                } else {
+                    // Else, we set the prefix and obmit the old record.
+                    $csvrecord['customfield_' . $key] = $value;
+                }
+
                 unset($csvrecord[$key]);
             }
         }
     }
 
+    /**
+     * This function throws an error if we have customfields with the same names as columns.
+     *
+     * @return void
+     */
+    public function check_for_import_conflicts() {
 
+        global $DB;
+
+        $sql = "SELECT cff.id, cff.shortname, cfc.component, cfc.area
+            FROM {customfield_field} cff
+            JOIN {customfield_category} cfc ON cff.categoryid=cfc.id";
+
+        $records = $DB->get_records_sql($sql);
+
+        $columns = array_keys($this->columns);
+        $additionalcolumns = array_keys($this->additionalcolumns);
+
+        foreach ($records as $record) {
+            if (in_array($record->shortname, $columns) || in_array($record->shortname, $additionalcolumns)) {
+                throw new moodle_exception('conflictingshortnames', 'local_entities', '', $record->shortname);
+            }
+        }
+    }
+
+    /**
+     * @return string line errors
+     */
+    public function get_line_errors() {
+        return $this->csverrors;
+    }
+
+    /**
+     * @return string line errors
+     */
+    public function get_error() {
+        return $this->error;
+    }
 }

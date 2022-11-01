@@ -28,7 +28,6 @@ require_once("lib.php");
 require_once($CFG->libdir . '/completionlib.php');
 require_once($CFG->libdir . "/csvlib.class.php");
 
-use local_entites\csv_import;
 use local_entities\form\import_form;
 use moodle_url;
 use context_module;
@@ -62,6 +61,9 @@ $importform = new import_form(null, null, 'post', '', [], true);
 
 $importform->set_data_for_dynamic_submission();
 echo html_writer::div($importform->render(), '', ['id' => 'importformcontainer']);
+
+$csvimporter = new csv_import();
+$csvimporter->check_for_import_conflicts();
 
 $PAGE->requires->js_call_amd(
     'local_entities/import',

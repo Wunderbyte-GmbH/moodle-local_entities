@@ -121,12 +121,33 @@ class settings_manager {
         if (!isset($data->parentid)) {
             $data->parentid = 0;
         }
+
+        // Addresscount is unrelyable...
+        if (isset($data->country_0)
+            || isset($data->city_0)
+            || isset($data->postcode_0)
+            || isset($data->streetname)
+            || isset($data->streetnumber_0)
+            || isset($data->maplink_0)
+            || isset($data->mapembed_0)) {
+                $data->addresscount = 1;
+        }
+
+        // Addresscount is unrelyable...
+        if (isset($data->givenname_0)
+            || isset($data->surname_0)
+            || isset($data->mail_0)) {
+                $data->contactscount = 1;
+    }
+
         if (isset($data->id) && $data->id > 0) {
             $this->update_entity($data);
             // TODO: Check if address id exists -> then update, else create new address.
+
             for ($i = 0; $i < $data->addresscount; $i++) {
                 $this->update_address($data, $i);
             }
+
             for ($i = 0; $i < $data->contactscount; $i++) {
                 $this->update_contacts($data, $i);
             }

@@ -21,6 +21,11 @@
 
 
 import DynamicForm from 'core_form/dynamicform';
+import Notification from 'core/notification';
+import {
+    get_string as getString
+        }
+        from 'core/str';
 // ...
 
 
@@ -36,6 +41,44 @@ export const init = () => {
         const response = e.detail;
         // eslint-disable-next-line no-console
         console.log(response);
+
+        let message = 'successfullimport';
+        let type = 'success';
+        if (e.detail.success != true) {
+            message = 'failedimport';
+            type = 'error';
+        }
+
+        getString(message, 'local_entities').then((localizedmessage) => {
+
+            // We add information about lineerrors.
+            if (e.detail.lineerrors) {
+                Notification.addNotification({
+                    message: e.detail.lineerrors,
+                    type: 'info'
+                });
+            }
+
+            if (e.detail.error) {
+                Notification.addNotification({
+                    message: e.detail.error,
+                    type
+                });
+            }
+
+            // Success or failure message.
+            Notification.addNotification({
+                message: localizedmessage,
+                type
+            });
+
+            return;
+        }).catch(e => {
+            // eslint-disable-next-line no-console
+            console.log(e);
+        });
+
+
         // It is recommended to reload the form after submission because the elements may change.
         // This will also remove previous submission errors. You will need to pass the same arguments to the form
         // that you passed when you rendered the form on the page.
