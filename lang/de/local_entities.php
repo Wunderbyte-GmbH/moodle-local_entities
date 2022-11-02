@@ -58,6 +58,8 @@ $string['delete'] = 'Löschen';
 $string['entities:copymodule'] = 'Entities: Modul kopieren';
 $string['categories'] = 'Entity Kategorien';
 $string['map'] = 'Karte';
+$string['entity_openinghours'] = "Öffnungszeiten";
+
 
 $string['stdcategories'] = 'Standard-Kategorien';
 $string['stdcategories:description'] = 'Standard-Kategorien aus der Liste der Customfield-Kategorien auswählen, die auf allen Bearbeitungsseiten sichtbar sein sollen.';

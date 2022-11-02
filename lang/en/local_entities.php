@@ -58,6 +58,8 @@ $string['delete'] = 'Delete';
 $string['entities:copymodule'] = 'Entities: Copy module';
 $string['categories'] = 'Categories';
 $string['map'] = 'Map';
+$string['entity_openinghours'] = "Opening hours";
+
 
 $string['stdcategories'] = 'Default categories';
 $string['categories:description'] = 'Set the default category from the list of the customfieldcategories visible on the edit page';

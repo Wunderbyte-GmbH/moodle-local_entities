@@ -24,6 +24,7 @@
  */
 namespace local_entities;
 
+use DateTime;
 use stdClass;
 defined('MOODLE_INTERNAL') || die();
 
@@ -243,11 +244,22 @@ class entities {
      */
     public static function prepare_datearray_for_calendar(array $datearray, string $bgcolor = null): array {
         $bgcolor = $bgcolor ?? get_config('local_entities', 'calendarcolor');
+        date_default_timezone_set('UTC');
         foreach($datearray as $event) {
             $calendarevent = $event;
             $calendarevent->allDay = false;
-            // $calendarevent->start = ;
-            // $calendarevent->end = ;
+            if ($event->starttime) {
+                $calendarevent->title = $event->name;
+                $start = new DateTime();
+                $start->setTimestamp($event->starttime);
+                $calendarevent->start = $start->format('Y-m-d'). 'T' .$start->format('H:i:s');
+            }
+            if ($event->endtime) {
+                $calendarevent->title = $event->name;
+                $end = new DateTime();
+                $end->setTimestamp($event->endtime);
+                $calendarevent->end = $end->format('Y-m-d'). 'T' .$end->format('H:i:s');
+            }
             $calendarevent->backgroundColor = $bgcolor;
             $calendarevents[] = $calendarevent;
         }
