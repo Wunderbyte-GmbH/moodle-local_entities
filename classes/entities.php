@@ -300,7 +300,12 @@ class entities {
             foreach ($bookeddates as $bookeddate) {
 
                 if ($datetobook->link->out() === $bookeddate->link->out()) {
-                        continue;
+                    continue;
+                }
+
+                // Avoid conflicts with itself.
+                if ($noconflictarea == $datetobook->area && $noconflictid == $datetobook->itemid) {
+                    continue;
                 }
 
                 if (($datetobook->starttime >= $bookeddate->starttime && $datetobook->starttime < $bookeddate->endtime)
