@@ -70,43 +70,4 @@ $PAGE->requires->js_call_amd(
     'init'
 );
 
-
-// $importer = new csv_import();
-// $mform = new import_form($url, ['importer' => $importer]);
-
-// // Form processing and displaying is done here.
-// if ($mform->is_cancelled()) {
-//     // Handle form cancel operation, if cancel button is present on form.
-//     redirect($urlredirect, '', 0);
-//     die();
-// } else if ($fromform = $mform->get_data()) {
-
-//     echo $OUTPUT->header();
-//     echo $OUTPUT->heading(get_string("importcsvtitle", "mod_booking"), 3, 'helptitle', 'uniqueid');
-//     $continue = $OUTPUT->single_button($urlredirect, get_string("continue"), 'get');
-//     $csvfile = $mform->get_file_content('csvfile');
-
-//     if ($importer->process_data($csvfile, $fromform)) {
-//         echo $OUTPUT->notification(get_string('importfinished', 'booking'), 'notifysuccess');
-//         if (!empty($importer->get_line_errors())) {
-//             $output = get_string('import_partial', 'mod_booking');
-//             $output .= html_writer::div($importer->get_line_errors());
-//             echo $OUTPUT->notification($output);
-//         }
-//         echo $continue;
-//     } else {
-//         // Not ok, write error.
-//         $output = get_string('import_failed', 'booking');
-//         $output .= $importer->get_error() . '<br>';
-//         echo $OUTPUT->notification($output);
-//         echo $continue;
-//     }
-
-//     // In this case you process validated data. $mform->get_data() returns data posted in form.
-// } else {
-//     echo $OUTPUT->header();
-//     echo $OUTPUT->heading(get_string("importcsvtitle", "booking"), 3, 'helptitle', 'uniqueid');
-//     $mform->display();
-// }
-
 echo $OUTPUT->footer();

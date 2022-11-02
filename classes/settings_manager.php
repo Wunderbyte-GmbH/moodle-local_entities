@@ -138,7 +138,7 @@ class settings_manager {
             || isset($data->surname_0)
             || isset($data->mail_0)) {
                 $data->contactscount = 1;
-    }
+        }
 
         if (isset($data->id) && $data->id > 0) {
             $this->update_entity($data);
