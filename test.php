@@ -22,6 +22,7 @@
  */
 
 use local_entities\entitiesrelation_handler;
+use local_entities\calendar\reoccuringevent;
 
 require_once('../../config.php');
 
@@ -110,6 +111,6 @@ if ($list) {
 */
 
 
-
+$b = reoccuringevent::json_to_form('[{"title":"openinghours","daysOfWeek":"1,2,3","startTime":"10:00","endTime":"19:00"},{"title":"openinghours","daysOfWeek":"1,2,3,4","startTime":"21:00","endTime":"21:00"}]');
 
 echo $OUTPUT->footer();

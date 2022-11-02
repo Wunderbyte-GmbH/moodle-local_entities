@@ -60,6 +60,15 @@ $string['categories'] = 'Entity Kategorien';
 $string['map'] = 'Karte';
 $string['entity_openinghours'] = "Öffnungszeiten";
 
+// Kalender.
+$string['openinghours'] = 'Öffnungszeiten';
+$string['daysofweek'] = 'Wochentage';
+$string['starthours'] = 'Start hh';
+$string['startminutes'] = 'Start mm';
+$string['endhours'] = 'Ende hh';
+$string['endminutes'] = 'Ende mm';
+$string['deleteopeninghours'] = 'Öffnungszeiten löschen';
+$string['addopeninghours'] = 'Öffnungszeiten hinzufügen';
 
 $string['stdcategories'] = 'Standard-Kategorien';
 $string['stdcategories:description'] = 'Standard-Kategorien aus der Liste der Customfield-Kategorien auswählen, die auf allen Bearbeitungsseiten sichtbar sein sollen.';

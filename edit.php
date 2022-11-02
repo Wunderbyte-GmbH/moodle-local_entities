@@ -65,8 +65,8 @@ if (!empty($entityid)) {
 }
 
 // Print the page header.
-$title = isset($data) ? $data['name'] : get_string('new_entity', 'local_entities');
-$heading = isset($data['entityid']) ? $data['name'] : get_string('new_entity', 'local_entities');
+$title = isset($data['id']) ? $data['name'] : get_string('new_entity', 'local_entities');
+$heading = isset($data['id']) ? $data['name'] : get_string('new_entity', 'local_entities');
 
 $PAGE->set_title($title);
 $PAGE->set_heading($heading);

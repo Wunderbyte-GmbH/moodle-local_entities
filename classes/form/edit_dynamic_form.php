@@ -27,6 +27,8 @@ use context;
 use moodle_url;
 use local_entities\entities;
 use local_entities\customfield\entities_handler;
+use local_entities\calendar\fullcalendar_helper;
+use local_entities\calendar\reoccuringevent;
 use moodleform;
 use stdClass;
 
@@ -93,6 +95,45 @@ class edit_dynamic_form extends dynamic_form {
 
         $mform->addRule('description', null, 'required', null, 'client');
         $mform->setType('description', PARAM_RAW);
+
+        // Repeated elements.
+        $repeatedopeninghours = [];
+
+        // Options to store help button texts etc.
+        $repeateoptions = [];
+
+        $openinghourslabel = \html_writer::tag('b', get_string('openinghours', 'local_entities') . ' {no}',
+            array('class' => 'openinghourslabel'));
+        $repeatedopeninghours[] = $mform->createElement('static', 'openinghourslabel', $openinghourslabel);
+        $dayofweekoptions = [
+            'tags' => false,
+            'multiple' => true
+        ];
+        $repeatedopeninghours[] = $mform->createElement('select', 'daysofweek', get_string('daysofweek', 'local_entities'),
+        fullcalendar_helper::get_weekdays(),
+        $dayofweekoptions);
+
+        $hours = fullcalendar_helper::get_hours_select();
+        $minutes = fullcalendar_helper::get_minutes_select();
+
+        $repeatedopeninghours[] = $mform->createElement('select', 'starthours', get_string('starthours', 'local_entities'),
+        $hours);
+        $repeatedopeninghours[] = $mform->createElement('select', 'startminutes', get_string('startminutes', 'local_entities'),
+        $minutes);
+
+        $repeatedopeninghours[] = $mform->createElement('select', 'endhours', get_string('endhours', 'local_entities'),
+        $hours);
+        $repeatedopeninghours[] = $mform->createElement('select', 'endminutes', get_string('endminutes', 'local_entities'),
+        $minutes);
+
+        $numberofopeninghours = $data->openinghours ? count(json_decode($data->openinghours)) : 1;
+
+        $repeatedopeninghours[] = $mform->createElement('submit', 'deleteopeninghours',
+        get_string('deleteopeninghours', 'local_entities'));
+
+        $this->repeat_elements($repeatedopeninghours, $numberofopeninghours,
+            $repeateoptions, 'openinghour', 'addopeninghours', 1,
+            get_string('addopeninghours', 'local_entities'), true, 'deleteopeninghours');
 
         $mform->addElement('text', 'maxallocation', get_string('maxallocation', 'local_entities'));
         $mform->setType('maxallocation', PARAM_INT);
@@ -232,6 +273,20 @@ class edit_dynamic_form extends dynamic_form {
         $recordentity->status = $data->status ?? 0;
         $recordentity->pricefactor = floatval(str_replace(',', '.', $data->pricefactor));
         $recordentity->cfitemid = intval($data->cfitemid);
+
+        $events = [];
+        $eventarray = [];
+        for ($i = 0; $i < count($data->daysofweek); $i++) {
+            $eventarray['title'] = 'openinghours';
+            $eventarray['daysofweek'] = implode(',', $data->daysofweek[$i]);
+            $eventarray['starthours'] = sprintf("%02d", $data->starthours[$i]);
+            $eventarray['startminutes'] = sprintf("%02d", $data->startminutes[$i]);
+            $eventarray['endhours'] = sprintf("%02d", $data->endhours[$i]);
+            $eventarray['endminutes'] = sprintf("%02d", $data->endminutes[$i]);
+            $events[] = new reoccuringevent($eventarray);
+        }
+        $recordentity->openinghours = reoccuringevent::events_to_json($events);
+
         $settingsmanager = new \local_entities\settings_manager();
 
         $result = $settingsmanager->update_or_createentity($recordentity);
@@ -272,6 +327,7 @@ class edit_dynamic_form extends dynamic_form {
         } else {
             $data = (Object)$this->_ajaxformdata;
         }
+
         $data->addresscount = 1;
         $data->contactscount = 1;
 
@@ -349,6 +405,14 @@ class edit_dynamic_form extends dynamic_form {
                 'local_entities',
                 'image',
                 $defaults->id);
+        }
+        if (!empty($defaults->openinghours)) {
+            $openinghours = reoccuringevent::json_to_form($defaults->openinghours);
+            $defaults->daysofweek = $openinghours->daysofweek;
+            $defaults->starthours = $openinghours->starthours;
+            $defaults->startminutes = $openinghours->startminutes;
+            $defaults->endhours = $openinghours->endhours;
+            $defaults->endminutes = $openinghours->endminutes;
         }
 
         $this->standardhandlers = \local_entities\customfield\entities_cf_helper::create_std_handlers();

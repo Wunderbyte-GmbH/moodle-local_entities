@@ -60,6 +60,15 @@ $string['categories'] = 'Categories';
 $string['map'] = 'Map';
 $string['entity_openinghours'] = "Opening hours";
 
+// Kalender.
+$string['openinghours'] = 'Opening hours';
+$string['daysofweek'] = 'Weekdays';
+$string['starthours'] = 'Start hh';
+$string['startminutes'] = 'Start mm';
+$string['endhours'] = 'End hh';
+$string['endminutes'] = 'End mm';
+$string['deleteopeninghours'] = 'Delete opening hours';
+$string['addopeninghours'] = 'Add opening hours';
 
 $string['stdcategories'] = 'Default categories';
 $string['categories:description'] = 'Set the default category from the list of the customfieldcategories visible on the edit page';
