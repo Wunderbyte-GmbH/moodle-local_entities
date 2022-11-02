@@ -62,9 +62,13 @@ class edit_dynamic_form extends dynamic_form {
         $entityid = $this->_customdata['entityid'] ?? $data->entityid ?? 0;
 
         $entities = array(0 => $none);
-        $allentities = entities::list_all_entities();
 
-        unset($allentities[$entityid]);
+        $allentities = entities::list_all_entities();
+        foreach ($allentities as $entity) {
+            if ($entity->id != $this->_customdata['entityid']) {
+                $entities[$entity->id] = $entity->newname;
+            }
+        }
 
         // Entity DETAILS.
         $mform->addElement('header', 'details', get_string('edit_details', 'local_entities'));
