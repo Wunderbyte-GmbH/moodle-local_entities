@@ -53,8 +53,8 @@ $entity = \local_entities\settings_manager::get_settings($id);
 // More page setup.
 $PAGE->set_title($entity->name);
 
-// Generate the class name with the following naming convention {pagetype}-local-entities-{entityname}-{entityid}.
-$classname = "{$entity->type}-local-entities-{$entity->name}-{$id}";
+// Generate the class name with the following naming convention local-entities-{entityname}-{entityid}.
+$classname = "local-entities-{$entity->name}-{$id}";
 
 // Now add that class name to the body of this page :).
 $PAGE->add_body_class($classname);
@@ -77,7 +77,6 @@ foreach ($files as $file) {
 
 $handlers = local_entities\customfield\entities_cf_helper::create_std_handlers();
 if (isset($entity->cfitemid)) {
-    $entity->type = local_entities\customfield\entities_cf_helper::get_categoryname($entity->cfitemid);
     $handlers[] = local_entities\customfield\entities_handler::create($entity->cfitemid);
 }
 $metadata = '';
