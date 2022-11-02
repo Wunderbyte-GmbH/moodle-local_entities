@@ -390,8 +390,10 @@ class entitiesrelation_handler {
         global $DB;
 
         $sql = "SELECT  ea.id as addressid, e.id as id, e.name, e.shortname, e.description,
-                        e.type, e.timecreated, e.timemodified, e.openentity, e.createdby,
-                        e.picture, e.parentid, e.sortorder, ea.country, ea.city, ea.postcode,
+                        e.timecreated, e.timemodified, e.status, e.createdby,
+                        e.parentid, e.sortorder, e.cfitemid, e.openinghours,
+                        e.maxallocation, e.pricefactor,
+                        ea.country, ea.city, ea.postcode,
                         ea.streetname, ea.streetnumber, ea.maplink, ea.mapembed
                 FROM {local_entities} e
                 LEFT JOIN {local_entities_address} ea
