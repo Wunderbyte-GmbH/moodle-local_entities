@@ -27,12 +27,17 @@ import {get_strings as getStrings} from 'core/str';
 export const init = () => {
     const element = document.querySelector('#id_openmodal');
 
-    // eslint-disable-next-line no-console
-    console.log(element);
-    element.addEventListener('click', event => {
-        // eslint-disable-next-line no-console
-        console.log(event);
-        timeTableModal(1);
+    element.addEventListener('click', () => {
+
+        const selectedelement = document.querySelector('#id_entitiesrelationcontainer div.form-autocomplete-selection span');
+
+        if (selectedelement) {
+            const entityid = selectedelement.dataset.value;
+
+            if (entityid > 0) {
+                timeTableModal(entityid);
+            }
+        }
     });
 };
 
@@ -50,6 +55,7 @@ export const init = () => {
         const id = entityid;
         const json = {'id': id, 'locale': 'de'};
         Templates.renderForPromise('local_entities/entitiescalendar', json).then(({html, js}) => {
+
             ModalFactory.create({
                 type: ModalFactory.types.SAVE_CANCEL,
                 large: 'true'
