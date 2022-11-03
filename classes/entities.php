@@ -26,6 +26,7 @@ namespace local_entities;
 
 use DateTime;
 use stdClass;
+use local_entities\calendar\reoccuringevent;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -298,8 +299,12 @@ class entities {
 
         $conflicts = [];
         foreach ($datestobook as $datetobook) {
+            $entity = entity::load($entityid);
+            $openinghoursevents = reoccuringevent::json_to_events($entity->__get('openinghours'));
+            if (!(reoccuringevent::date_within_openinghours($openinghoursevents, $datetobook))) {
+                $conflicts[] = $datetobook;
+            }
             foreach ($bookeddates as $bookeddate) {
-
                 if ($datetobook->link->out() === $bookeddate->link->out()) {
                     continue;
                 }

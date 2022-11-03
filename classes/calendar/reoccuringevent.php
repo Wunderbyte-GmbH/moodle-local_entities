@@ -25,6 +25,9 @@
 namespace local_entities\calendar;
 
 use stdClass;
+use DateTime;
+use DateTimeZone;
+use local_entities\local\entities\entitydate;
 
 /**
  * Class event
@@ -47,8 +50,16 @@ class reoccuringevent {
     public function __construct(array $eventarray) {
         $this->title = $eventarray['title'];
         $this->daysofweek = $eventarray['daysofweek'];
-        $this->starttime = $eventarray['starthours']. ':' .$eventarray['startminutes'];
-        $this->endtime = $eventarray['endhours']. ':' .$eventarray['endminutes'];
+        if (isset($eventarray['starttime'])) {
+            $this->starttime = $eventarray['starttime'];
+        } else {
+            $this->starttime = $eventarray['starthours']. ':' .$eventarray['startminutes'];
+        }
+        if (isset($eventarray['endtime'])) {
+            $this->endtime = $eventarray['endtime'];
+        } else {
+            $this->endtime = $eventarray['endhours']. ':' .$eventarray['endminutes'];
+        }
         // Record misc properties.
         foreach ($eventarray as $name => $value) {
             if (!in_array($name, array('title', 'daysofweek', 'starthours', 'startminutes', 'endhours', 'endminutes'))) {
@@ -105,7 +116,77 @@ class reoccuringevent {
             $formevent->endminutes[$i] = $end[1];
             $i++;
         }
-        $formevent->count = $i + 1;
+        $formevent->count = $i;
         return $formevent;
+    }
+
+    /**
+     * Converts JSON from DB to reoccuring event class array
+     *
+     * @param string $eventsjson
+     * @return array
+     */
+    public static function json_to_events(string $eventsjson) :array {
+        $events = json_decode($eventsjson);
+        $reoccuringevents = [];
+        foreach ($events as $event) {
+            $reoccuringevent['title'] = $event->title;
+            $reoccuringevent['daysofweek'] = $event->daysOfWeek;
+            $reoccuringevent['starttime'] = $event->startTime;
+            $reoccuringevent['endtime'] = $event->endTime;
+            $reoccuringevents[] = new self($reoccuringevent);
+        }
+        return $reoccuringevents;
+    }
+
+    /**
+     * Checks if an event is within openinghours
+     *
+     * @param array $reoccuringevents
+     * @param entitydate $eventtobook
+     * @return boolean
+     */
+    public static function date_within_openinghours(array $reoccuringevents, entitydate $eventtobook) :bool {
+        if (empty($eventtobook->starttime) || empty($eventtobook->endtime)) {
+            return false;
+        }
+        $startweekday = date('N', $eventtobook->starttime);
+        $endweekday = date('N', $eventtobook->endtime);
+
+        $eventswithweekday = self::has_weekday($reoccuringevents, $startweekday);
+        $inopeninghours = false;
+        foreach ($eventswithweekday as $event) {
+            $startopeninghourstime = (int)str_replace(':', '', $event->starttime);
+            $dtstarteventtobooktime = new DateTime();
+            $dtstarteventtobooktime->setTimezone(new DateTimeZone('Europe/Vienna'));
+            $dtstarteventtobooktime->setTimestamp($eventtobook->starttime);
+            $starteventtobooktime = (int)$dtstarteventtobooktime->format('Hi');
+            $endopeninghourstime = (int)str_replace(':', '', $event->endtime);
+            $dtendeventtobooktime = new DateTime();
+            $dtendeventtobooktime->setTimezone(new DateTimeZone('Europe/Vienna'));
+            $dtendeventtobooktime->setTimestamp($eventtobook->endtime);
+            $endeventtobooktime = (int)$dtendeventtobooktime->format('Hi');
+            if ($starteventtobooktime >= $startopeninghourstime && $endeventtobooktime <= $endopeninghourstime) {
+                $inopeninghours = true;
+            }
+        }
+        return $inopeninghours;
+    }
+
+    /**
+     * Gives back events with the given weekday
+     *
+     * @param array $reoccuringevents
+     * @param integer $weekday
+     * @return array
+     */
+    private static function has_weekday(array $reoccuringevents, int $weekday) :array {
+        $eventswithweekday = [];
+        foreach ($reoccuringevents as $reoccuringevent) {
+            if (strstr($reoccuringevent->daysofweek, (string)$weekday)) {
+                $eventswithweekday[] = $reoccuringevent;
+            }
+        }
+        return $eventswithweekday;
     }
 }
