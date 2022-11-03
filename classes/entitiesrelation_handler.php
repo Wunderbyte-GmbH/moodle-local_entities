@@ -151,7 +151,8 @@ class entitiesrelation_handler {
 
             foreach ($conflicts as $conflict) {
                 $link = $conflict->link->out();
-                $errors['local_entities_entityid'] .= "<br><a href='$link'>$conflict->name</a>";
+                $errors['local_entities_entityid'] .= "<br><a href='$link'>$conflict->name (" .
+                    dates::prettify_dates_start_end($conflict->starttime, $conflict->endtime, current_language()) . ")</a>";
             }
         }
     }

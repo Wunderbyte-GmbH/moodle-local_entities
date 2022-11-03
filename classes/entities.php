@@ -205,16 +205,14 @@ class entities {
         global $DB;
 
         // First we retrieve all the ids and components connected to this entitiy.
-
         $records = $DB->get_records('local_entities_relations', ['entityid' => $entityid], 'component, area ASC');
 
         // Create an array for the calls we'll execute afterwards.
         $calls = [];
         foreach ($records as $record) {
 
-            // We want to have one call per component
+            // We want to have one call per component.
             if (!isset($calls[$record->component])) {
-
                 $calls[$record->component][$record->area] = [$record->instanceid];
             } else if (isset($calls[$record->component][$record->area])) {
                 $calls[$record->component][$record->area][] = $record->instanceid;
@@ -309,15 +307,10 @@ class entities {
                     continue;
                 }
 
-                // Avoid conflicts with itself.
-                if ($noconflictarea == $datetobook->area && $noconflictid == $datetobook->itemid) {
-                    continue;
-                }
-
                 if (($datetobook->starttime >= $bookeddate->starttime && $datetobook->starttime < $bookeddate->endtime)
                     || ($datetobook->endtime > $bookeddate->starttime && $datetobook->endtime < $bookeddate->endtime)
                     || ($datetobook->starttime <= $bookeddate->starttime && $datetobook->endtime >= $bookeddate->endtime)) {
-                        $conflicts[] = $datetobook;
+                        $conflicts[] = $bookeddate;
                 }
             }
         }
