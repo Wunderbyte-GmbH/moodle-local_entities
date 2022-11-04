@@ -37,8 +37,10 @@ class secondary extends core_secondary {
 
     public function initialise(): void {
         $context = \context_system::instance();
+
         $canview = has_capability('local/entities:canview', $context);
-        $canedit = has_capability('local/entities:canview', $context);
+        $canedit = has_capability('local/entities:canedit', $context);
+
         if ($canview) {
             $this->add(get_string('entitieslist', 'local_entities') , '/local/entities/entities.php', \navigation_node::TYPE_CUSTOM,
             'entitieslist', 'entitieslist');
