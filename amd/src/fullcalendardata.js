@@ -43,6 +43,26 @@ export const init = (entityid, locale, jsondata = null) => {
 
 const renderCalendar = (events) => {
     var calendar = new Calendar(calendarEl, {
+        eventClick: function(info) {
+          alert('Event: ' + info.event.start);
+          alert('Event: ' + JSON.stringify(info.event.extendedProps));
+
+          alert('Coordinates: ' + info.jsEvent.pageX + ',' + info.jsEvent.pageY);
+          alert('View: ' + info.view.type);
+
+          // change the border color just for fun
+          info.el.style.borderColor = 'red';
+        },
+        eventDidMount: function(info) {
+          console.log(info.event.start);
+          console.log(info.event.id);
+
+          if (info.event.start == 'Tue Nov 01 2022 11:00:00 GMT+0100 (Mitteleuropäische Normalzeit)') {
+            info.event.remove();
+            console.log('remove');
+          }
+          // {description: "Lecture", department: "BioChemistry"}
+        },
         timeZone: 'UTC',
         eventStartEditable: false,
         displayEventEnd: true,

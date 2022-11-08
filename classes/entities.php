@@ -128,6 +128,13 @@ class entities {
         return $DB->get_records_sql_menu($sql);
     }
 
+
+    public static function list_all_parent_entities_query(string $query): array {
+        global $DB;
+        $sql = "SELECT * FROM {local_entities} WHERE parentid = '0' ORDER BY sortorder, timecreated";
+        return $DB->get_records_sql_menu($sql);
+    }
+
     /**
      *
      * This is to update values in the database
@@ -205,14 +212,16 @@ class entities {
         global $DB;
 
         // First we retrieve all the ids and components connected to this entitiy.
+
         $records = $DB->get_records('local_entities_relations', ['entityid' => $entityid], 'component, area ASC');
 
         // Create an array for the calls we'll execute afterwards.
         $calls = [];
         foreach ($records as $record) {
 
-            // We want to have one call per component.
+            // We want to have one call per component
             if (!isset($calls[$record->component])) {
+
                 $calls[$record->component][$record->area] = [$record->instanceid];
             } else if (isset($calls[$record->component][$record->area])) {
                 $calls[$record->component][$record->area][] = $record->instanceid;
@@ -248,6 +257,7 @@ class entities {
         foreach ($datearray as $event) {
             $calendarevent = $event;
             $calendarevent->allDay = false;
+            $calendarevent->extendedProps['department'] = 'test';
             if ($event->starttime) {
                 $calendarevent->title = $event->name;
                 $start = new DateTime();
@@ -296,25 +306,40 @@ class entities {
         // We might have a function to do just that, so we don't write it now.
 
         $conflicts = [];
+        $tempconflicts = [];
+        $conflicts['openinghours'] = false;
         foreach ($datestobook as $datetobook) {
             $entity = entity::load($entityid);
-            $openinghoursevents = reoccuringevent::json_to_events($entity->__get('openinghours'));
-            if (!(reoccuringevent::date_within_openinghours($openinghoursevents, $datetobook))) {
-                $conflicts[] = $datetobook;
+            $openinghours = $entity->__get('openinghours');
+            if (!empty($openinghours)) {
+                $openinghoursevents = reoccuringevent::json_to_events($openinghours);
+                if (!(reoccuringevent::date_within_openinghours($openinghoursevents, $datetobook))) {
+                    $conflicts['openinghours'] = true;
+                }
             }
-            foreach ($bookeddates as $bookeddate) {
-                if ($datetobook->link->out() === $bookeddate->link->out()) {
-                    continue;
-                }
+            $maxallocations = $entity->__get('maxallocation');
+            if ($maxallocations > 0) {
+                foreach ($bookeddates as $bookeddate) {
+                    if ($datetobook->link->out() === $bookeddate->link->out()) {
+                        continue;
+                    }
 
-                if (($datetobook->starttime >= $bookeddate->starttime && $datetobook->starttime < $bookeddate->endtime)
-                    || ($datetobook->endtime > $bookeddate->starttime && $datetobook->endtime < $bookeddate->endtime)
-                    || ($datetobook->starttime <= $bookeddate->starttime && $datetobook->endtime >= $bookeddate->endtime)) {
-                        $conflicts[] = $bookeddate;
+                    // Avoid conflicts with itself.
+                    if ($noconflictarea == $datetobook->area && $noconflictid == $datetobook->itemid) {
+                        continue;
+                    }
+
+                    if (($datetobook->starttime >= $bookeddate->starttime && $datetobook->starttime < $bookeddate->endtime)
+                        || ($datetobook->endtime > $bookeddate->starttime && $datetobook->endtime < $bookeddate->endtime)
+                        || ($datetobook->starttime <= $bookeddate->starttime && $datetobook->endtime >= $bookeddate->endtime)) {
+                            $tempconflicts[] = $datetobook;
+                    }
                 }
+            }
+            if (count($tempconflicts) > $maxallocations) {
+                $conflicts['conflicts'] = $tempconflicts;
             }
         }
-
         return $conflicts;
     }
 
