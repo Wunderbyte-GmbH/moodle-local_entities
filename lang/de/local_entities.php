@@ -69,7 +69,7 @@ $string['endhours'] = 'Ende hh';
 $string['endminutes'] = 'Ende mm';
 $string['deleteopeninghours'] = 'Öffnungszeiten löschen';
 $string['addopeninghours'] = 'Öffnungszeiten hinzufügen';
-
+$string['notwithinopeninghours'] = 'Außerhalb der Öffnungszeiten';
 $string['stdcategories'] = 'Standard-Kategorien';
 $string['stdcategories:description'] = 'Standard-Kategorien aus der Liste der Customfield-Kategorien auswählen, die auf allen Bearbeitungsseiten sichtbar sein sollen.';
 $string['entitieslist'] = 'Entity Liste';

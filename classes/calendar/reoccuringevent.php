@@ -152,6 +152,10 @@ class reoccuringevent {
         }
         $startweekday = date('N', $eventtobook->starttime);
         $endweekday = date('N', $eventtobook->endtime);
+        // TODO: Maybe allow overlapping?
+        if ($startweekday != $endweekday) {
+            return false;
+        }
 
         $eventswithweekday = self::has_weekday($reoccuringevents, $startweekday);
         $inopeninghours = false;

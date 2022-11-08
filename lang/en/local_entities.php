@@ -69,6 +69,7 @@ $string['endhours'] = 'End hh';
 $string['endminutes'] = 'End mm';
 $string['deleteopeninghours'] = 'Delete opening hours';
 $string['addopeninghours'] = 'Add opening hours';
+$string['notwithinopeninghours'] = 'Outside business hours';
 
 $string['stdcategories'] = 'Default categories';
 $string['categories:description'] = 'Set the default category from the list of the customfieldcategories visible on the edit page';

@@ -46,6 +46,35 @@ $PAGE->requires->css('/local/entities/js/main.css');
 $templatedata = new stdClass();
 $templatedata->id = $id;
 $templatedata->locale = 'de';
+global $DB;
+$query = "";
+//$SQL;
+$sql = "Select * FROM {local_entities} WHERE name LIKE '%{$query}%'";
+$rs = $DB->get_recordset_sql($sql);
+$count = 0;
+$list = [];
+
+foreach ($rs as $record) {
+    $entity = (object)[
+        'id' => $record->id,
+        'name' => $record->name,
+        'shortname' => $record->shortname,
+        'extrafields' => [],
+    ];
+
+    /* foreach ($extrafields as $extrafield) {
+        // Sanitize the extra fields to prevent potential XSS exploit.
+        $entity->extrafields[] = (object)[
+            'name' => $extrafield,
+            'value' => s($record->$extrafield)
+        ];
+    } */
+
+    $count++;
+    $list[$record->id] = $entity;
+}
+
+$rs->close();
 echo $OUTPUT->header();
 
 echo $OUTPUT->render_from_template('local_entities/entitiescalendar', $templatedata);

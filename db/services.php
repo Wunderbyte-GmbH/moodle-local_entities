@@ -73,6 +73,13 @@ $functions = array(
                 'type' => 'read',
                 'ajax' => true
         ),
+        'local_entities_search_entities' => array(
+                'classname' => 'local_entities\external\search_entities',
+                'classpath' => '',
+                'description' => 'Get entities from query',
+                'type' => 'read',
+                'ajax' => true
+        ),
 );
 
 $services = array(

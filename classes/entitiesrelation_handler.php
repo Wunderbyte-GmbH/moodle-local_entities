@@ -103,11 +103,27 @@ class entitiesrelation_handler {
             }
             $options = [
                 'multiple' => false,
-                'noselectionstring' => get_string('none', 'local_entities')
+                'noselectionstring' => get_string('none', 'local_entities'),
+                'ajax' => 'local_entities/form_entities_selector',
+                'valuehtmlcallback' => function($value) {
+                    global $OUTPUT;
+                    $entity = \local_entities\entity::load($value);
+                    $parentname = "";
+                    if ($entity->parentid) {
+                        $parententity = \local_entities\entity::load($entity->parentid);
+                        $parentname = $parententity->name;
+                    }
+                    $entitydata = [
+                        'name' => $entity->name,
+                        'shortname' => $entity->name,
+                        'parentname' => $parentname,
+                    ];
+                    return $OUTPUT->render_from_template('local_entities/form-entities-selector-suggestion', $entitydata);
+                }
             ];
 
             $mform->addElement('autocomplete', 'local_entities_entityid', get_string('er_entitiesname', 'local_entities'),
-                $select, $options);
+                [], $options);
         }
 
         $mform->addElement('button', 'openmodal', get_string('opentimetable', 'local_entities'));
@@ -145,15 +161,18 @@ class entitiesrelation_handler {
         $data['optionid'] ?? 0,
         'optiondate');
 
-        if (!empty($conflicts)) {
+        if (!empty($conflicts['conflicts'])) {
 
             $errors['local_entities_entityid'] = get_string('errorwiththefollowingdates', 'local_entities');
 
-            foreach ($conflicts as $conflict) {
+            foreach ($conflicts['conflicts'] as $conflict) {
                 $link = $conflict->link->out();
                 $errors['local_entities_entityid'] .= "<br><a href='$link'>$conflict->name (" .
                     dates::prettify_dates_start_end($conflict->starttime, $conflict->endtime, current_language()) . ")</a>";
             }
+        }
+        if ($conflicts['openinghours']) {
+            $errors['local_entities_entityid'] .= get_string('notwithinopeninghours', 'local_entities');
         }
     }
 
