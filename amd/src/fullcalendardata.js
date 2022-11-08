@@ -54,12 +54,9 @@ const renderCalendar = (events) => {
           info.el.style.borderColor = 'red';
         },
         eventDidMount: function(info) {
-          console.log(info.event.start);
-          console.log(info.event.id);
 
           if (info.event.start == 'Tue Nov 01 2022 11:00:00 GMT+0100 (Mitteleuropäische Normalzeit)') {
             info.event.remove();
-            console.log('remove');
           }
           // {description: "Lecture", department: "BioChemistry"}
         },
