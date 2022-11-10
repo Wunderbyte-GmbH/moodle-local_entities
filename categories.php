@@ -15,6 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Categories page
  * @package    local_entities
  * @copyright  2021 Wunderbyte GmbH
  * @author     Thomas Winkler
@@ -48,10 +49,11 @@ $output = $PAGE->get_renderer('core_customfield');
 $categories = \local_entities\customfield\entities_cf_helper::get_all_cf_categories_with_subcategories();
 $templatedata['categories'] = array();
 
+
 foreach ($categories as $category) {
     $cat = new stdClass();
     $cat = $category;
-    if (isset($olditemid) && ($category->itemid == $olditemid)) {
+    if(isset($olditemid) && ($category->itemid == $olditemid)) {
         $cat->sub = true;
     }
     $olditemid = $category->itemid;

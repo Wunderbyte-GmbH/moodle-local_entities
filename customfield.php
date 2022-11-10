@@ -15,13 +15,13 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Customfield page
  * @package    local_entities
  * @copyright  2021 Wunderbyte GmbH
  * @author     Thomas Winkler
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use local_entities\entity;
 use local_entities\local\views\secondary;
 require_once('../../config.php');
 

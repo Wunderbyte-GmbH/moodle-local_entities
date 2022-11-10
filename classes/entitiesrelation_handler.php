@@ -14,6 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * Handler for entities relations
+ * @package    local_entities
+ * @copyright  2021 Wunderbyte GmbH
+ * @author     Thomas Winkler
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 namespace local_entities;
 
 defined('MOODLE_INTERNAL') || die();
@@ -150,10 +158,10 @@ class entitiesrelation_handler {
             return;
         }
 
-        if (empty($data['local_entities_entityid'])) {
+        if (!$data['local_entities_entityid']) {
             return;
         }
-        
+
         // Now determine if there is a conflict.
 
         $conflicts = entities::return_conflicts($data['local_entities_entityid'],
@@ -238,7 +246,7 @@ class entitiesrelation_handler {
      *
      * @param MoodleQuickForm $mform
      * @param stdClass $instance
-     * @param integer $instanceid
+     * @param int $instanceid
      * @return void
      */
     public function instance_form_before_set_data(MoodleQuickForm &$mform, stdClass $instance, $instanceid = 0) {
@@ -264,7 +272,7 @@ class entitiesrelation_handler {
      *   }
      *
      * @param stdClass $instance
-     * @param integer $instanceid
+     * @param int $instanceid
      * @return
      */
     public function instance_form_save(stdClass $instance, int $instanceid) {
@@ -403,7 +411,7 @@ class entitiesrelation_handler {
     /**
      * Return entity by id.
      *
-     * @param integer $entityid
+     * @param int $entityid
      * @return bool|array
      */
     public static function get_entity_by_id(int $entityid) {

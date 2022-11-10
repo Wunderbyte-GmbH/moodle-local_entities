@@ -128,19 +128,12 @@ class entities {
         return $DB->get_records_sql_menu($sql);
     }
 
-
-    public static function list_all_parent_entities_query(string $query): array {
-        global $DB;
-        $sql = "SELECT * FROM {local_entities} WHERE parentid = '0' ORDER BY sortorder, timecreated";
-        return $DB->get_records_sql_menu($sql);
-    }
-
     /**
      *
      * This is to update values in the database
      *
-     * @param array of objects with information on what to update:
-     *      field name, id of the record, newvalue
+     * @param string $table name
+     * @param object $change new data
      * @return true in case of success, false otherwise.
      * @throws \invalid_parameter_exception in case parameters were invalid.
      */
@@ -152,7 +145,7 @@ class entities {
     /**
      *
      * This is to return all children from parententity the database
-     *
+     * @param int $parentid
      * @return array - returns array of Objects
      */
     public static function list_all_subentities(int $parentid): array {
@@ -166,7 +159,7 @@ class entities {
     /**
      *
      * This is to return all children from parententity as select from the database
-     *
+     * @param int $parentid
      * @return array - returns array of Objects
      */
     public static function list_all_subentities_select(int $parentid): array {
@@ -204,7 +197,7 @@ class entities {
      * Function to use callback in connected modules to retrieve all dates...
      * ... connected to this entity.
      *
-     * @param integer $entityid
+     * @param int $entityid
      * @return array
      */
     public static function get_all_dates_for_entity(int $entityid): array {
@@ -248,11 +241,11 @@ class entities {
      * Prepares given datearray for fullcalendar js.
      *
      * @param array $datearray
+     * @param string $bgcolor Background color for calendar
      * @return array
      */
     public static function prepare_datearray_for_calendar(array $datearray, string $bgcolor = null): array {
         $bgcolor = $bgcolor ?? get_config('local_entities', 'calendarcolor');
-        date_default_timezone_set('UTC');
         $calendarevents = [];
         foreach ($datearray as $event) {
             $calendarevent = $event;
@@ -278,9 +271,9 @@ class entities {
 
     /**
      * Function to check if the function entitiy is available.
-     * @param integer $entityid
+     * @param int $entityid
      * @param array $datestobook
-     * @param integer $noconflictid
+     * @param int $noconflictid
      * @param string $noconflictarea
      * @return array
      */
@@ -325,20 +318,20 @@ class entities {
                     }
 
                     // Avoid conflicts with itself.
-                    /* if ($noconflictarea == $datetobook->area && $noconflictid == $datetobook->itemid) {
+                    if ($noconflictarea == $datetobook->area && $noconflictid == $datetobook->itemid) {
                         continue;
-                    } */
+                    }
 
                     if (($datetobook->starttime >= $bookeddate->starttime && $datetobook->starttime < $bookeddate->endtime)
                         || ($datetobook->endtime > $bookeddate->starttime && $datetobook->endtime < $bookeddate->endtime)
                         || ($datetobook->starttime <= $bookeddate->starttime && $datetobook->endtime >= $bookeddate->endtime)) {
-                            $tempconflicts[] = $bookeddate;
+                            $tempconflicts[] = $datetobook;
                     }
                 }
             }
-        }
-        if (count($tempconflicts) >= $maxallocations) {
-            $conflicts['conflicts'] = $tempconflicts;
+            if (count($tempconflicts) > $maxallocations) {
+                $conflicts['conflicts'] = $tempconflicts;
+            }
         }
         return $conflicts;
     }

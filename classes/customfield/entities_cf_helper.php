@@ -14,14 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * Course handler for custom fields
- *
- * @package   core_course
- * @copyright 2018 David Matamoros <davidmc@moodle.com>
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
 namespace local_entities\customfield;
 use local_entities\customfield\entities_handler;
 
@@ -34,12 +26,15 @@ use local_entities\customfield\entities_handler;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class entities_cf_helper {
-
+     /**
+     * Defines the customfieldarea
+     */
     const CFAREA = 'entities';
 
+     /**
+     * Defines the customfield Component
+     */
     const CFCOMPONENT = 'local_entities';
-
-    // TODO function descriptons.
 
     /**
      * Gets all customfield categories for entities
@@ -58,10 +53,10 @@ class entities_cf_helper {
     /**
      * Gets categoryname for cfitemid
      *
-     * @param integer $instanceid
+     * @param int $cfitemid
      * @return string
      */
-    public static function get_categoryname($cfitemid) {
+    public static function get_categoryname(int $cfitemid) {
         global $DB;
         $sql = 'SELECT name FROM {customfield_category}
         WHERE area = ? AND component = ? AND itemid = ? AND sortorder = 0';
@@ -132,8 +127,8 @@ class entities_cf_helper {
     /**
      * Get itemid () function
      *
-     * @param integer $instanceid
-     * @return integer
+     * @param int $instanceid
+     * @return int
      */
     public static function get_categoryid_from_instanceid(int $instanceid): int {
         global $DB;
@@ -162,6 +157,12 @@ class entities_cf_helper {
         return $handlers;
     }
 
+    /**
+     * Creates the categoryhandler for the specific id itemid used as categoryid
+     *
+     * @param int $itemid
+     * @return void
+     */
     public static function create_categoryhandler(int $itemid) {
         $handler = entities_handler::create($itemid);
         return $handler;

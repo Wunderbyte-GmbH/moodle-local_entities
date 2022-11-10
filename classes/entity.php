@@ -31,7 +31,6 @@ namespace local_entities;
  * @copyright   2021 Wunderbyte GmbH
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 class entity {
 
     /**
@@ -45,10 +44,6 @@ class entity {
      */
     public function __construct($data) {
         $this->_data = $data;
-    }
-
-    public function isopen($data) {
-
     }
 
     /**
@@ -68,10 +63,10 @@ class entity {
      *
      * This is to load the entity based on the enitity id
      *
-     * @param integer $id
+     * @param int $id
      * @return object
      */
-    public static function load($id, $editor = false) {
+    public static function load($id) {
         global $DB;
         $data = new \stdClass();
         $data = $DB->get_record_sql("SELECT * FROM {local_entities} WHERE id=? LIMIT 1", array(intval($id)));

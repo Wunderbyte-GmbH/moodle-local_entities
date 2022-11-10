@@ -18,6 +18,7 @@
  * This class contains a list of webservice functions related to the Shopping Cart Module by Wunderbyte.
  *
  * @package    local_entities
+ * @category   external
  * @copyright  2022 Thomas Winkler <info@wunderbyte.at>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -37,6 +38,12 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . '/externallib.php');
 
+/**
+ * get_entity_calendardata webservice
+ * @copyright Wunderbyte GmbH <info@wunderbyte.at>
+ * @author Thomas Winkler
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class get_entity_calendardata extends external_api {
 
     /**
@@ -52,6 +59,7 @@ class get_entity_calendardata extends external_api {
     /**
      * Webservice to get entity calendardata.
      *
+     * @param int $id
      * @return array
      */
     public static function execute(int $id): array {
@@ -73,7 +81,7 @@ class get_entity_calendardata extends external_api {
         return $calendardata;
     }
 
-    /*
+    /**
      * Returns description of method result value.
      *
      * @return external_single_structure

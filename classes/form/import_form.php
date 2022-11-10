@@ -14,6 +14,13 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * Import form implemantion for local Plugin entities
+ * @package     local_entities
+ * @copyright   2021 Wunderbyte GmbH
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 namespace local_entities\form;
 
 defined('MOODLE_INTERNAL') || die();

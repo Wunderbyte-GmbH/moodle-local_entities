@@ -30,7 +30,7 @@ use core\navigation\views\secondary as core_secondary;
  */
 class secondary extends core_secondary {
     /**
-     * Initialise secondary naviagation for entities
+     * Define a custom secondary nav order/view.
      *
      * @return void
      */

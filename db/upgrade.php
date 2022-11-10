@@ -15,13 +15,20 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * local entities
+ * Function to correctly upgrade local_entities.
  *
- * @package local_entities
- * @author Thomas Winkler
- * @copyright 2021 Wunderbyte GmbH
- * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    local_entities
+ * @copyright  2022 Wunderbyte GmbH <info@wunderbyte.at>
+ * @author     Thomas Winkler
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
+ /**
+  * Upgrade function
+  *
+  * @param int $oldversion
+  * @return void
+  */
 function xmldb_local_entities_upgrade($oldversion) {
     global $DB, $CFG;
 

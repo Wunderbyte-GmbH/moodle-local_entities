@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * local entities
+ * local entities reoccuringevent
  *
  * @package local_entities
  * @author Thomas Winkler
@@ -30,7 +30,7 @@ use DateTimeZone;
 use local_entities\local\entities\entitydate;
 
 /**
- * Class event
+ * Class reoccuringevent for fullcalendar.js
  *
  * @author Thomas Winkler
  * @copyright 2022 Wunderbyte GmbH
@@ -45,7 +45,9 @@ class reoccuringevent {
     public $properties = array();
 
     /**
-     * event constructor.
+     * reoccuringevent constructor.
+     *
+     * @param array $eventarray
      */
     public function __construct(array $eventarray) {
         $this->title = $eventarray['title'];
@@ -143,7 +145,6 @@ class reoccuringevent {
 
     /**
      * Checks if an event is within openinghours
-     *
      * @param array $reoccuringevents
      * @param entitydate $eventtobook
      * @return boolean
@@ -182,8 +183,8 @@ class reoccuringevent {
     /**
      * Gives back events with the given weekday
      *
-     * @param array $reoccuringevents
-     * @param integer $weekday
+     * @param array $reoccuringevents array of events
+     * @param int $weekday
      * @return array
      */
     private static function has_weekday(array $reoccuringevents, int $weekday) :array {

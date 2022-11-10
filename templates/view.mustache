@@ -39,9 +39,11 @@
         {{/haspicture}}
     </div>
     <div class="card-header">
+        {{#name}}
         <h3>
             {{name}}{{#shortname}} ({{.}}){{/shortname}}
         </h3>
+        {{/name}}
     </div>
     <div class="card-body">
         {{{description}}}

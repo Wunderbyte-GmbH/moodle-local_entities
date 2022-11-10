@@ -46,7 +46,7 @@ class settings_manager {
 
     /**
      * Entity constructor.
-     *
+     * @param int $id
      */
     public function __construct(int $id = null) {
         $this->id = $id;
@@ -57,6 +57,7 @@ class settings_manager {
     /**
      * This is to create a new entity in the database
      * @param stdClass $data
+     * @return int
      */
     private function create_entity(stdClass $data): int {
         global $DB;
@@ -175,6 +176,7 @@ class settings_manager {
      * This is to update the entity based on the data object
      *
      * @param stdClass $data
+     * @param int $index
      * @return mixed
      */
     private function update_address(stdClass $data, int $index): int {
@@ -193,8 +195,9 @@ class settings_manager {
      *
      * This is to update the entity based on the data object
      *
-     * @param mixed $data
-     * @return mixed
+     * @param stdClass $data
+     * @param int $index
+     * @return int
      */
     private function create_address(stdClass $data, int $index): int {
         global $DB;
@@ -206,6 +209,13 @@ class settings_manager {
         return 0;
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param stdClass $data contact data
+     * @param int $index of entity
+     * @return int
+     */
     private function update_contacts(stdClass $data, int $index): int {
         global $DB;
         $recordcontacts = $this->prepare_contacts($data, $index);
@@ -221,7 +231,8 @@ class settings_manager {
      *
      * This is to update the entity based on the data object
      *
-     * @param mixed $data
+     * @param stdClass $data
+     * @param int $index
      * @return mixed
      */
     private function create_contacts(stdClass $data, int $index): int {
@@ -238,15 +249,15 @@ class settings_manager {
      * This is to update the entity based on the data object
      *
      * @param stdClass $data
-     * @param int $result
-     * @return stdClass $addressdata
+     * @param int $id
+     * @return stdClass $imagedata
      * @return null
      */
-    public function prepare_image($data, $i): stdClass {
+    public function prepare_image($data, $id): stdClass {
         if (isset($data->ogimage_filemanager)) {
             $context = \context_system::instance();
             $options = array('subdirs' => 0, 'maxbytes' => 204800, 'maxfiles' => 1, 'accepted_types' => '*');
-            $data = file_postupdate_standard_filemanager($data, 'image', $options, $context->id, 'local_entities', 'image', $i);
+            $data = file_postupdate_standard_filemanager($data, 'image', $options, $context->id, 'local_entities', 'image', $id);
         }
         return $data;
     }
@@ -256,8 +267,8 @@ class settings_manager {
      * This is to update the entity based on the data object
      *
      * @param stdClass $data
-     * @return stdClass $addressdata
-     * @return null
+     * @param int $i index
+     * @return stdclass
      */
     public function prepare_address($data, $i): stdClass {
 
@@ -427,7 +438,13 @@ class settings_manager {
         $handler->delete_instance($this->id);
     }
 
-    public function delete_address($id) {
+    /**
+     * Deletes address of entity
+     *
+     * @param int $id
+     * @return void
+     */
+    public function delete_address(int $id): void {
         global $DB;
         $DB->delete_records('local_entities_address', array('id' => $id));
     }

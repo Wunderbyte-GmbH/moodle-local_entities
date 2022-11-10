@@ -15,6 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Test file for entities
  * @package    local_entities
  * @copyright  2021 Wunderbyte GmbH
  * @author     Thomas Winkler
@@ -48,7 +49,6 @@ $templatedata->id = $id;
 $templatedata->locale = 'de';
 global $DB;
 $query = "";
-//$SQL;
 $sql = "Select * FROM {local_entities} WHERE name LIKE '%{$query}%'";
 $rs = $DB->get_recordset_sql($sql);
 $count = 0;
@@ -61,14 +61,6 @@ foreach ($rs as $record) {
         'shortname' => $record->shortname,
         'extrafields' => [],
     ];
-
-    /* foreach ($extrafields as $extrafield) {
-        // Sanitize the extra fields to prevent potential XSS exploit.
-        $entity->extrafields[] = (object)[
-            'name' => $extrafield,
-            'value' => s($record->$extrafield)
-        ];
-    } */
 
     $count++;
     $list[$record->id] = $entity;

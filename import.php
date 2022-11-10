@@ -16,8 +16,8 @@
 /**
  * Import options or just add new users from CSV
  *
- * @package Booking
- * @copyright 2014 Andraž Prinčič www.princic.net
+ * @package local_entities
+ * @copyright 2022 Wunderbyte GmbH <info@wunderbyte.at>
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

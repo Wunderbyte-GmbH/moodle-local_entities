@@ -24,6 +24,8 @@
  */
 namespace local_entities\privacy;
 
+defined('MOODLE_INTERNAL') || die();
+
 /**
  * The local_entities module does not store any data.
  *
