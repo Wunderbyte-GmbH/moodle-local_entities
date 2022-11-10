@@ -30,11 +30,10 @@ use core\navigation\views\secondary as core_secondary;
  */
 class secondary extends core_secondary {
     /**
-     * Define a custom secondary nav order/view.
+     * Initialise secondary naviagation for entities
      *
-     * @return array
+     * @return void
      */
-
     public function initialise(): void {
         $context = \context_system::instance();
 

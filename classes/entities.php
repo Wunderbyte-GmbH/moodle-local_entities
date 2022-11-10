@@ -325,20 +325,20 @@ class entities {
                     }
 
                     // Avoid conflicts with itself.
-                    if ($noconflictarea == $datetobook->area && $noconflictid == $datetobook->itemid) {
+                    /* if ($noconflictarea == $datetobook->area && $noconflictid == $datetobook->itemid) {
                         continue;
-                    }
+                    } */
 
                     if (($datetobook->starttime >= $bookeddate->starttime && $datetobook->starttime < $bookeddate->endtime)
                         || ($datetobook->endtime > $bookeddate->starttime && $datetobook->endtime < $bookeddate->endtime)
                         || ($datetobook->starttime <= $bookeddate->starttime && $datetobook->endtime >= $bookeddate->endtime)) {
-                            $tempconflicts[] = $datetobook;
+                            $tempconflicts[] = $bookeddate;
                     }
                 }
             }
-            if (count($tempconflicts) > $maxallocations) {
-                $conflicts['conflicts'] = $tempconflicts;
-            }
+        }
+        if (count($tempconflicts) >= $maxallocations) {
+            $conflicts['conflicts'] = $tempconflicts;
         }
         return $conflicts;
     }

@@ -150,10 +150,10 @@ class entitiesrelation_handler {
             return;
         }
 
-        if (!$data['local_entities_entityid']) {
+        if (empty($data['local_entities_entityid'])) {
             return;
         }
-
+        
         // Now determine if there is a conflict.
 
         $conflicts = entities::return_conflicts($data['local_entities_entityid'],

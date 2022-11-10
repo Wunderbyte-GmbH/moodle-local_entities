@@ -14,6 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * local entities
+ *
+ * @package local_entities
+ * @author Thomas Winkler
+ * @copyright 2021 Wunderbyte GmbH
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 function xmldb_local_entities_upgrade($oldversion) {
     global $DB, $CFG;
 
@@ -237,7 +245,6 @@ function xmldb_local_entities_upgrade($oldversion) {
         // Entities savepoint reached.
         upgrade_plugin_savepoint(true, 2022103001, 'local', 'entities');
     }
-
 
     return true;
 }
