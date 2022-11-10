@@ -68,6 +68,7 @@ $functions = array(
         ),
         'local_entities_get_entity_calendardata' => array(
                 'classname' => 'local_entities\external\get_entity_calendardata',
+                'methodname' => 'execute',
                 'classpath' => '',
                 'description' => 'Get calendardata from specific entity',
                 'type' => 'read',
@@ -75,6 +76,7 @@ $functions = array(
         ),
         'local_entities_search_entities' => array(
                 'classname' => 'local_entities\external\search_entities',
+                'methodname' => 'execute',
                 'classpath' => '',
                 'description' => 'Get entities from query',
                 'type' => 'read',
