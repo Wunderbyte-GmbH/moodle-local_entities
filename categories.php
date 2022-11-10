@@ -22,7 +22,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use local_entities\entity;
 require_once('../../config.php');
 use local_entities\local\views\secondary;
 

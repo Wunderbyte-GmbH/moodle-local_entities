@@ -40,8 +40,6 @@ $title = "Test cases";
 $PAGE->set_title($title);
 $PAGE->set_heading($title);
 
-
-
 echo $OUTPUT->header();
 
 $out = entitiesrelation_handler::get_pricefactor_by_entityid(1);
@@ -50,68 +48,5 @@ $jsonpretty = json_encode($out, JSON_PRETTY_PRINT);
 $tree = \local_entities\entities::build_whole_entitytree();
 
 echo $OUTPUT->render_from_template('local_entities/entitiestree', $tree);
-
-
-
-/*
-$data = new stdClass();
-$data->country_1 = 'country_1';
-$data->city_1 = 'city_1';
-$data->streetname_1 = 'streetname_1';
-$data->streetnumber_1 = 'streetnumber_1';
-$data->country_2 = 'country_2';
-$data->city_2 = 'city_2';
-$data->streetname_2 = 'streetname_2';
-$data->streetnumber_2 = 'streetnumber_2';
-$id = 1;
-$out = $enity_manager->prepareaddress($data, $id);
-
-$json_pretty = json_encode($out, JSON_PRETTY_PRINT);
-echo "<pre>".$json_pretty."<pre/>";
-$id = 2;
-$out = $enity_manager->prepareaddress($data, $id);
-$json_pretty = json_encode($out,  JSON_PRETTY_PRINT);
-echo "<pre>".$json_pretty."<pre/>";
-*/
-
-/*
-$input = 0;
-$update = 0;
-$list = 0;
-if ($input) {
-    $data = new stdClass();
-    $data->name = "asdasfd";
-    $data->description = "asd";
-    $data->type = "category";
-    $data->timecreated = time();
-    $data->timemodified = time();
-    $data->createdby = $USER->id;
-    $data->parentid = 0;
-    $entity = new entity($data);
-    $entity->update($data);
-}
-
-if ($update) {
-    $data = new stdClass();
-    $data->id = 1;
-    $data->name = "asdasfd";
-    $data->description = "asd";
-    $data->type = "category";
-    $data->timecreated = time();
-    $data->timemodified = time();
-    $data->createdby = $USER->id;
-    $data->parentid = 0;
-    $entity = new entity($data);
-    $entity->update($data);
-}
-
-if ($list) {
-    $entities = new entities();
-    $list = $entities->list_all_entities();
-}
-*/
-
-
-$b = reoccuringevent::json_to_form('[{"title":"openinghours","daysOfWeek":"1,2,3","startTime":"10:00","endTime":"19:00"},{"title":"openinghours","daysOfWeek":"1,2,3,4","startTime":"21:00","endTime":"21:00"}]');
 
 echo $OUTPUT->footer();

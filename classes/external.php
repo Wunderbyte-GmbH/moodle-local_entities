@@ -238,7 +238,7 @@ class local_entities_external extends external_api {
     private static function does_entity_exist(string $table, $id): array {
         global $DB;
         $warning = array();
-        // todo invalid response exception
+        // Todo invalid response exception,
         $matchingentities = $DB->count_records($table, array('id' => $id));
         if ($matchingentities != 1) {
             $warning['itemid'] = $id;
@@ -374,7 +374,7 @@ class local_entities_external extends external_api {
      * @param array $params
      * @return array
      */
-    // this should never be reached. invalid params exception should be thrown before.
+    // This should never be reached. invalid params exception should be thrown before.
     private static function has_params(array $params): array {
         $warning = array();
         if (count($params['data']) < 1) {
