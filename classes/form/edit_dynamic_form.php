@@ -67,7 +67,7 @@ class edit_dynamic_form extends dynamic_form {
 
         $allentities = entities::list_all_entities();
         foreach ($allentities as $entity) {
-            if ($entity->id != $this->_customdata['entityid']) {
+            if ($entity->id != $entityid) {
                 $entities[$entity->id] = $entity->newname;
             }
         }
@@ -126,7 +126,7 @@ class edit_dynamic_form extends dynamic_form {
         $repeatedopeninghours[] = $mform->createElement('select', 'endminutes', get_string('endminutes', 'local_entities'),
         $minutes);
 
-        $numberofopeninghours = $data->openinghours ? count(json_decode($data->openinghours)) : 1;
+        $numberofopeninghours = is_array(json_decode($data->openinghours)) ? count(json_decode($data->openinghours)) : 1;
 
         $repeatedopeninghours[] = $mform->createElement('submit', 'deleteopeninghours',
         get_string('deleteopeninghours', 'local_entities'));
@@ -408,11 +408,11 @@ class edit_dynamic_form extends dynamic_form {
         }
         if (!empty($defaults->openinghours)) {
             $openinghours = reoccuringevent::json_to_form($defaults->openinghours);
-            $defaults->daysofweek = $openinghours->daysofweek;
-            $defaults->starthours = $openinghours->starthours;
-            $defaults->startminutes = $openinghours->startminutes;
-            $defaults->endhours = $openinghours->endhours;
-            $defaults->endminutes = $openinghours->endminutes;
+            $defaults->daysofweek = $openinghours->daysofweek ?? 1;
+            $defaults->starthours = $openinghours->starthours ?? "00";
+            $defaults->startminutes = $openinghours->startminutes ?? "00";
+            $defaults->endhours = $openinghours->endhours ?? "00";
+            $defaults->endminutes = $openinghours->endminutes ?? "00";
         }
 
         $this->standardhandlers = \local_entities\customfield\entities_cf_helper::create_std_handlers();

@@ -103,7 +103,9 @@ class reoccuringevent {
      * @return stdClass
      */
     public static function json_to_form(string $eventsjson) :stdClass {
-        $events = json_decode($eventsjson);
+        if (!$events = json_decode($eventsjson)) {
+            return (object)[];
+        }
         $i = 0;
         $formevent = new stdClass();
         foreach ($events as $event) {
