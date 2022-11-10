@@ -171,7 +171,7 @@ class entitiesrelation_handler {
                     dates::prettify_dates_start_end($conflict->starttime, $conflict->endtime, current_language()) . ")</a>";
             }
         }
-        if ($conflicts['openinghours']) {
+        if (!empty($conflicts['openinghours'])) {
             $errors['local_entities_entityid'] .= get_string('notwithinopeninghours', 'local_entities');
         }
     }
