@@ -37,11 +37,25 @@ use local_entities\local\entities\entitydate;
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class reoccuringevent {
-
+    /**
+     * @var string
+     */
     public $title;
+    /**
+     * @var string
+     */
     public $daysofweek;
+    /**
+     * @var int
+     */
     public $starttime;
+    /**
+     * @var int
+     */
     public $endtime;
+    /**
+     * @var array
+     */
     public $properties = array();
 
     /**

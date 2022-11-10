@@ -43,7 +43,7 @@ function reloadCats() {
         cats.forEach(cat => {
             // eslint-disable-next-line no-console
             console.log(cat, id);
-            if (typeof(cat) != 'undefined' && cat !== null) {
+            if (typeof (cat) != 'undefined' && cat !== null) {
                 cat.hidden = false;
                 cat.disabled = false;
             }

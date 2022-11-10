@@ -31,10 +31,16 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class local_entities_renderer extends plugin_renderer_base {
-    public $records = [];
 
-    public function get_submenuitem($parent, $name) {
-        global $DB, $CFG, $USER;
+    /**
+     * Undocumented function
+     *
+     * @param int $parent
+     * @param string $name
+     * @return string htmlcode
+     */
+    public function get_submenuitem(int $parent, string $name): string{
+        global $CFG, $USER;
         $html = '';
         $records = \local_entities\entities::list_all_subentities($parent);
         if ($records) {
@@ -82,8 +88,13 @@ class local_entities_renderer extends plugin_renderer_base {
         return $html;
     }
 
-    public function list_entities() {
-        global $DB, $CFG;
+    /**
+     * Lists entities
+     *
+     * @return string
+     */
+    public function list_entities(): string {
+        global $CFG;
 
         $html = '<ul class="list-group mb-4">';
         $html .= '<li class="list-group-item bg-light"><h4>Entity List</h4></li>';
@@ -116,8 +127,14 @@ class local_entities_renderer extends plugin_renderer_base {
     }
 
 
-    public function get_submenuitem_select($parent, $name) {
-        global $DB, $CFG, $USER;
+    /**
+     * Get submenu select
+     *
+     * @param int $parent
+     * @param string $name
+     * @return string htmlcode
+     */
+    public function get_submenuitem_select(int $parent, string $name) {
         $html = '';
         $records = \local_entities\entities::list_all_subentities($parent);
         if ($records) {
@@ -144,8 +161,12 @@ class local_entities_renderer extends plugin_renderer_base {
         return $html;
     }
 
-    public function list_entities_select() {
-        global $DB, $CFG;
+    /**
+     * A custom Select for js select addentity
+     *
+     * @return string
+     */
+    public function list_entities_select(): string {
         $html = '<ul class="list-group group-root my-4">';
         $html .= "<li  class='list-group-item p-0 pl-2'><span class='btn btn-primary py-0' data-action='addentity'
         data-entityname='none'  data-entityid='-1'>No entity</span></li>";

@@ -26,7 +26,6 @@
 namespace local_entities;
 
 use cache_helper;
-use local_entities_external;
 use stdClass;
 
 /**
@@ -35,7 +34,6 @@ use stdClass;
  * @copyright   2021 Wunderbyte GmbH
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 class settings_manager {
 
     /** @var int $id */
@@ -365,9 +363,10 @@ class settings_manager {
      * Prepare contactdata object for DB (remove postfixes)
      *
      * @param stdClass $data
-     * @return stdClass $contactdatalocal_entities_address
+     * @param int $i
+     * @return stdClass $contactdata
      */
-    public function prepare_contacts($data, $i) {
+    public function prepare_contacts(stdClass $data, int $i) {
         $contactdata = new stdClass();
         $contactdata->id = isset($data->{'contactsid_' . $i}) ? $data->{'contactsid_' . $i} : 0;
         $contactdata->givenname = $data->{'givenname_' . $i};
@@ -391,7 +390,7 @@ class settings_manager {
     /**
      * Given the entitiy id, get data from db formatted for moodle form.
      *
-     * @param int $entity
+     * @param int $entityid
      * @return stdClass
      * @throws dml_exception
      */
@@ -408,7 +407,7 @@ class settings_manager {
     /**
      * Given the entitiy id, get data from db formatted for moodle form.
      *
-     * @param int $entity
+     * @param int $entityid
      * @return stdClass
      * @throws dml_exception
      */

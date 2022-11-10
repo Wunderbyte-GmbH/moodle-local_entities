@@ -48,11 +48,10 @@ $output = $PAGE->get_renderer('core_customfield');
 $categories = \local_entities\customfield\entities_cf_helper::get_all_cf_categories_with_subcategories();
 $templatedata['categories'] = array();
 
-
 foreach ($categories as $category) {
     $cat = new stdClass();
     $cat = $category;
-    if(isset($olditemid) && ($category->itemid == $olditemid)) {
+    if (isset($olditemid) && ($category->itemid == $olditemid)) {
         $cat->sub = true;
     }
     $olditemid = $category->itemid;
@@ -60,6 +59,7 @@ foreach ($categories as $category) {
     $cat->url = new moodle_url('/local/entities/customfield.php', array('id' => $cat->itemid));
     $templatedata['categories'][] = $cat;
 }
+
 echo $OUTPUT->render_from_template('local_entities/cfcategories', $templatedata);
 
 echo $OUTPUT->footer();

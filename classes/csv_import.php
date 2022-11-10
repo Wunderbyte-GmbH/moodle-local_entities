@@ -107,7 +107,7 @@ class csv_import {
         $this->additionalcolumns = array_merge($addresses, $contacts);
     }
 
-
+    
     public function process_data($csvcontent, $data) {
 
         global $DB;

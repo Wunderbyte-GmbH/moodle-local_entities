@@ -148,6 +148,7 @@ class entitiesrelation_handler {
      * This distinction is important to no falsly identify conflict with itself.
      *
      * @param array $data
+     * @param array $errors
      * @return void
      */
     public function instance_form_validation(array $data, array &$errors) {
@@ -273,7 +274,7 @@ class entitiesrelation_handler {
      *
      * @param stdClass $instance
      * @param int $instanceid
-     * @return
+     * @return int|void
      */
     public function instance_form_save(stdClass $instance, int $instanceid) {
         if (empty($instanceid)) {
@@ -365,17 +366,6 @@ class entitiesrelation_handler {
             return true;
         }
         return false;
-    }
-
-    /**
-     * Get date array for a specific weekday and time between two dates.
-     *
-     * @param int $semesterid
-     * @param string $reoccuringdatestring
-     * @return array
-     */
-    public static function get_entities_list(int $semesterid, string $reoccurringdatestring): array {
-        return array();
     }
 
     /**
