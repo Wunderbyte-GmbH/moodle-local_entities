@@ -217,10 +217,10 @@ class csv_import {
      * Validate lines in csv data. Write it to csverrors.
      *
      * @param array $csvrecord
-     * @param $linenumber
+     * @param mixed $linenumber
      * @return bool true on validation false on error
      */
-    protected function validate_data(array &$csvrecord, $linenumber) {
+    protected function validate_data(array &$csvrecord, mixed $linenumber) {
 
         // Set to false if error occured in csv-line.
         if (empty($csvrecord['name'])) {
@@ -239,7 +239,8 @@ class csv_import {
     /**
      * Add error message to $this->csverrors
      *
-     * @param $errorstring
+     * @param string $errorstring
+     * @param mixed $i
      */
     protected function add_csverror($errorstring, $i) {
         $this->csverrors .= html_writer::empty_tag('br');
@@ -265,7 +266,7 @@ class csv_import {
     /**
      * Function to unset fields a user must not fill out.
      *
-     * @param array $array
+     * @param array $csvrecord
      * @return void
      */
     protected function identify_fieldtypes(array &$csvrecord) {

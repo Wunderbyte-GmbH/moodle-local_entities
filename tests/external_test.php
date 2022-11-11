@@ -23,6 +23,8 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace local_entities\tests;
+
 /**
  * Tests for the external class of local_entities.
  *
@@ -69,8 +71,12 @@ class external_test extends \advanced_testcase {
     }
 
     /**
+     * test local_entities_update_entity
+     *
+     * @param int $id
+     * @param array $data
+     * @param mixed $expected
      * @return void
-     * @dataProvider update_data_provider
      */
     public function test_local_entities_update_entity($id, $data, $expected) {
         $this->resetAfterTest(true);
@@ -80,7 +86,10 @@ class external_test extends \advanced_testcase {
     }
 
     /**
-     * @dataProvider update_exceptions_data_provider
+     * Test local_entities_update_entity_exceptions
+     * @param int $id
+     * @param array $data
+     * @param mixed $expected
      * @return void
      * @throws invalid_response_exception
      * @throws moodle_exception
