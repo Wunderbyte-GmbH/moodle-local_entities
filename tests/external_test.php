@@ -23,10 +23,6 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-//use local_entities\external;
-
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Tests for the external class of local_entities.
  *
@@ -40,16 +36,16 @@ class external_test extends \advanced_testcase {
 
     /**
      * data for unit tests of update_entity that are expected to run without exceptions
-     * 
+     *
      * These test cases are expected to throw an invalid_parameter_exception.
      * Note how a field name that is an empty string will evaluate as valid,
      * while a field name containing only whitespace will not.
      */
     public function update_data_provider(): array {
         return [
-                // todo these two are not yet tested because tests don't find the table. will have to find out how to solve this.
-            //'valid data' => $this->get_valid_data(),
-            //'unavailable id' => $this->get_unavailable_id(),
+                // Todo these two are not yet tested because tests don't find the table. will have to find out how to solve this.
+                // ...'valid data' => $this->get_valid_data(),.
+                // ...'unavailable id' => $this->get_unavailable_id(),.
                 'empty field name should update remaining fields' => $this->get_data_with_empty_field_name(),
                 'whitespace value should update remaining fields' => $this->get_data_with_whitespace_value(),
                 'empty value should update remaining fields' => $this->get_data_with_empty_value(),
@@ -78,8 +74,8 @@ class external_test extends \advanced_testcase {
      */
     public function test_local_entities_update_entity($id, $data, $expected) {
         $this->resetAfterTest(true);
-        $result_raw = local_entities_external::update_entity($id, $data);
-        $result = external_api::clean_returnvalue(local_entities_external::update_entity_returns(), $result_raw);
+        $resultraw = local_entities_external::update_entity($id, $data);
+        $result = external_api::clean_returnvalue(local_entities_external::update_entity_returns(), $resultraw);
         $this->assertEquals($expected, $result);
     }
 
@@ -93,6 +89,12 @@ class external_test extends \advanced_testcase {
         $this->expectException(invalid_parameter_exception::class);
         local_entities_external::update_entity($id, $data);
     }
+
+    /**
+     * get_valid_data
+     *
+     * @return array
+     */
     private function get_valid_data(): array {
         $id = 1;
         $field1 = array(
@@ -114,6 +116,11 @@ class external_test extends \advanced_testcase {
         return [$id, $data, $expected];
     }
 
+    /**
+     * get_unavailable_id
+     *
+     * @return array
+     */
     private function get_unavailable_id(): array {
         $id = 100;
         $field1 = array(
@@ -140,6 +147,11 @@ class external_test extends \advanced_testcase {
         return [$id, $data, $expected];
     }
 
+    /**
+     * get_data_with_empty_field_name
+     *
+     * @return array
+     */
     private function get_data_with_empty_field_name(): array {
         $id = 1;
         $field1 = array(
@@ -166,6 +178,11 @@ class external_test extends \advanced_testcase {
         return [$id, $data, $expected];
     }
 
+    /**
+     * get_data_with_empty_value
+     *
+     * @return array
+     */
     private function get_data_with_empty_value(): array {
         $id = 1;
         $field1 = array(
@@ -192,6 +209,11 @@ class external_test extends \advanced_testcase {
         return [$id, $data, $expected];
     }
 
+    /**
+     * get_data_with_whitespace_value
+     *
+     * @return array
+     */
     private function get_data_with_whitespace_value(): array {
         $id = 1;
         $field1 = array(
@@ -218,6 +240,11 @@ class external_test extends \advanced_testcase {
         return [$id, $data, $expected];
     }
 
+    /**
+     * get_data_with_whitespace_field_name
+     *
+     * @return array
+     */
     private function get_data_with_whitespace_field_name(): array {
         $id = 1;
         $field1 = array(
@@ -244,6 +271,11 @@ class external_test extends \advanced_testcase {
         return [$id, $data, $expected];
     }
 
+    /**
+     * get_data_with_invalid_format
+     *
+     * @return array
+     */
     private function get_data_with_invalid_format(): array {
         $id = 1;
         $field1 = array(
@@ -265,6 +297,11 @@ class external_test extends \advanced_testcase {
         return [$id, $data, $expected];
     }
 
+    /**
+     * get_data_with_value_not_set
+     *
+     * @return array
+     */
     private function get_data_with_value_not_set(): array {
         $id = 100;
         $field1 = array(

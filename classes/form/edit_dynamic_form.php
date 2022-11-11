@@ -377,10 +377,12 @@ class edit_dynamic_form extends dynamic_form {
     }
 
     /**
-     * Validate dates.
+     * Validate data.
      *
-     * {@inheritdoc}
-     * @see moodleform::validation()
+     * @param array $data array of ("fieldname"=>value) of submitted data
+     * @param array $files array of uploaded files "element_name"=>tmp_file_path
+     * @return array of "element_name"=>"error_description" if there are errors,
+     * or an empty array if everything is OK (true allowed for backwards compatibility too).
      */
     public function validation($data, $files) {
         $errors = array();
@@ -388,8 +390,8 @@ class edit_dynamic_form extends dynamic_form {
     }
 
     /**
-     * {@inheritDoc}
-     * @see moodleform::get_data()
+     * Returns data from form
+     * @return object submitted data; NULL if not valid or not submitted or cancelled
      */
     public function get_data() {
         $data = parent::get_data();

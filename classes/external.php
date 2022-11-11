@@ -167,7 +167,7 @@ class local_entities_external extends external_api {
     }
 
     /**
-     * Describes the parameters for update_entity.
+     * Describes the parameters for delete_entity.
      *
      * @return external_function_parameters
      */
@@ -217,6 +217,7 @@ class local_entities_external extends external_api {
     }
 
     /**
+     * Returns tablename
      * @param array $data
      * @return string
      */
@@ -230,15 +231,16 @@ class local_entities_external extends external_api {
     }
 
     /**
+     * Checks if the entity exists.
      * @param string $table
-     * @param $id
+     * @param int $id
      * @return array
      * @throws dml_exception
      */
-    private static function does_entity_exist(string $table, $id): array {
+    private static function does_entity_exist(string $table, int $id): array {
         global $DB;
         $warning = array();
-        // Todo invalid response exception,
+        // Todo invalid response exception.
         $matchingentities = $DB->count_records($table, array('id' => $id));
         if ($matchingentities != 1) {
             $warning['itemid'] = $id;
@@ -249,6 +251,7 @@ class local_entities_external extends external_api {
     }
 
     /**
+     * Are params set?
      * @param array $params
      * @return array
      */
@@ -275,7 +278,8 @@ class local_entities_external extends external_api {
 
     /**
      * checks if all parameters are valid
-     *
+     * @param string $table
+     * @param array $params
      * @throws moodle_exception
      */
     private static function verify_param_contents(string $table, array $params) {
@@ -295,6 +299,7 @@ class local_entities_external extends external_api {
     }
 
     /**
+     * Update an entity in Database.
      * @param string $table
      * @param stdClass $dataobject
      * @return bool|true
@@ -314,6 +319,7 @@ class local_entities_external extends external_api {
     }
 
     /**
+     * Describes the parameters for list_all_subentities.
      * @return external_function_parameters
      */
     public static function list_all_subentities_parameters(): external_function_parameters {
@@ -325,6 +331,7 @@ class local_entities_external extends external_api {
     }
 
     /**
+     * Lists all subentities
      * @param int $parentid
      * @return array
      * @throws invalid_parameter_exception
@@ -337,6 +344,7 @@ class local_entities_external extends external_api {
     }
 
     /**
+     * Return values of list_all_subentities
      * @return external_multiple_structure
      */
     public static function list_all_subentities_returns(): external_multiple_structure {
@@ -353,6 +361,7 @@ class local_entities_external extends external_api {
     }
 
     /**
+     * extract_returnvalues
      * @param array $entities
      * @param array $returnedentities
      * @return array
@@ -371,10 +380,11 @@ class local_entities_external extends external_api {
     }
 
     /**
+     * Checks if it has params
+     * This should never be reached. invalid params exception should be thrown before.
      * @param array $params
      * @return array
      */
-    // This should never be reached. invalid params exception should be thrown before.
     private static function has_params(array $params): array {
         $warning = array();
         if (count($params['data']) < 1) {
@@ -388,6 +398,7 @@ class local_entities_external extends external_api {
     }
 
     /**
+     * Build dataobject
      * @param int $id
      * @param array $data
      * @return stdClass

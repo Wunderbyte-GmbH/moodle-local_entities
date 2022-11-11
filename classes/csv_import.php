@@ -37,7 +37,7 @@ global $CFG;
 require_once("$CFG->libdir/externallib.php");
 
 /**
- * Class entity
+ * Class csv_import
  *
  * @author Georg Maißer
  * @copyright 2022 Wunderbyte GmbH
@@ -107,7 +107,13 @@ class csv_import {
         $this->additionalcolumns = array_merge($addresses, $contacts);
     }
 
-    
+    /**
+     * Process CSV data
+     *
+     * @param object $csvcontent
+     * @param object $data
+     * @return void
+     */
     public function process_data($csvcontent, $data) {
 
         global $DB;
@@ -324,6 +330,7 @@ class csv_import {
     }
 
     /**
+     * Get line errors
      * @return string line errors
      */
     public function get_line_errors() {
@@ -331,6 +338,7 @@ class csv_import {
     }
 
     /**
+     * Get the error
      * @return string line errors
      */
     public function get_error() {

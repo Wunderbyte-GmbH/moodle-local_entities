@@ -83,8 +83,6 @@ class import_form extends dynamic_form {
         $mform->addHelpButton('dateparseformat', 'dateparseformat', 'mod_booking');
 
         $this->add_action_buttons(true, get_string('import'));
-        // $mform->addElement('header', 'importinfo', get_string('import') . ' ' . get_string('info') );
-        // $mform->addElement('html', '<div class="qheader">' . $this->_customdata['importer']->display_importinfo() . '</div>');
     }
 
     /**
@@ -106,14 +104,9 @@ class import_form extends dynamic_form {
      * @return mixed
      */
     public function process_dynamic_submission() {
-        global $CFG, $OUTPUT;
-        // We don't need the data of the form.
-        // $data = (object)$this->_ajaxformdata;
 
         $importer = new csv_import();
         $csvfile = $this->get_file_content('csvfile');
-
-        // $importer->process_data($csvfile, $data);
 
         $data = new stdClass();
 
@@ -173,10 +166,10 @@ class import_form extends dynamic_form {
     }
 
     /**
-     * Validate dates.
-     *
-     * {@inheritdoc}
+     * {@inheritDoc}
      * @see moodleform::validation()
+     * @param array $data array of ("fieldname"=>value) of submitted data
+     * @param array $files array of uploaded files "element_name"=>tmp_file_path
      */
     public function validation($data, $files) {
         $errors = array();
@@ -192,15 +185,4 @@ class import_form extends dynamic_form {
         return $data;
     }
 
-    /**
-     *
-     * Set the page data.
-     *
-     * @param mixed $defaults
-     * @return mixed
-     */
-    public function set_data($defaults) {
-
-        return parent::set_data($defaults);
-    }
 }

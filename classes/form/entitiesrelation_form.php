@@ -148,10 +148,10 @@ class entitiesrelation_form extends dynamic_form {
     }
 
     /**
-     * Validate dates.
-     *
      * {@inheritdoc}
      * @see moodleform::validation()
+     * @param array $data array of ("fieldname"=>value) of submitted data
+     * @param array $files array of uploaded files "element_name"=>tmp_file_path
      */
     public function validation($data, $files) {
 

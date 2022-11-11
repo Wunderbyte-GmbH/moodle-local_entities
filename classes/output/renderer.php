@@ -39,7 +39,7 @@ class local_entities_renderer extends plugin_renderer_base {
      * @param string $name
      * @return string htmlcode
      */
-    public function get_submenuitem(int $parent, string $name): string{
+    public function get_submenuitem(int $parent, string $name): string {
         global $CFG, $USER;
         $html = '';
         $records = \local_entities\entities::list_all_subentities($parent);
