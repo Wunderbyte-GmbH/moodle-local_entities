@@ -76,6 +76,7 @@ class external_test extends \advanced_testcase {
      * @param int $id
      * @param array $data
      * @param mixed $expected
+     * @dataProvider update_data_provider
      * @return void
      */
     public function test_local_entities_update_entity($id, $data, $expected) {
@@ -92,6 +93,7 @@ class external_test extends \advanced_testcase {
      * @param array $data
      * @param mixed $expected
      * @return void
+     * @dataProvider update_exceptions_data_provider
      * @throws invalid_response_exception
      * @throws moodle_exception
      */

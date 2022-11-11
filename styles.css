@@ -89,6 +89,7 @@
     padding-left: 20px;
 }
 #page-local-entities-index #entitiesrelation-form .btn {
+    line-height: 1.3;
     padding: 0px 10px;
 }
 #page-local-entities-index #entitiesrelation-form ul [aria-expanded="true"]:before {
