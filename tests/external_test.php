@@ -23,7 +23,7 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace local_entities\tests;
+namespace local_entities;
 
 /**
  * Tests for the external class of local_entities.
@@ -79,6 +79,7 @@ class external_test extends \advanced_testcase {
      * @return void
      */
     public function test_local_entities_update_entity($id, $data, $expected) {
+        $this->setAdminUser();
         $this->resetAfterTest(true);
         $resultraw = local_entities_external::update_entity($id, $data);
         $result = external_api::clean_returnvalue(local_entities_external::update_entity_returns(), $resultraw);
@@ -95,6 +96,7 @@ class external_test extends \advanced_testcase {
      * @throws moodle_exception
      */
     public function test_local_entities_update_entity_exceptions($id, $data, $expected) {
+        $this->setAdminUser();
         $this->expectException(invalid_parameter_exception::class);
         local_entities_external::update_entity($id, $data);
     }
