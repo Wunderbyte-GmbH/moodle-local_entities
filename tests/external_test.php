@@ -101,7 +101,7 @@ class external_test extends \advanced_testcase {
      */
     public function test_local_entities_update_entity_exceptions($id, $data, $expected) {
         $this->setAdminUser();
-        $this->expectException(invalid_parameter_exception::class);
+        $this->expectException(\invalid_parameter_exception::class);
         \local_entities_external::update_entity($id, $data);
     }
 
@@ -205,7 +205,7 @@ class external_test extends \advanced_testcase {
                 'value' => '',
         );
         $field2 = array(
-                'name' => 'type',
+                'name' => 'shortname',
                 'value' => '2_freibad',
         );
         $data = array(
@@ -236,7 +236,7 @@ class external_test extends \advanced_testcase {
                 'value' => ' ',
         );
         $field2 = array(
-                'name' => 'type',
+                'name' => 'shortname',
                 'value' => '2_freibad',
         );
         $data = array(
