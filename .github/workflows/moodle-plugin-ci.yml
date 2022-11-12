@@ -44,7 +44,6 @@ jobs:
           coverage: none
           extensions: mbstring, pgsql, mysqli, zip, gd
           ini-values: max_input_vars=5000
-          coverage: none
 
       - name: Initialise moodle-plugin-ci
         run: |
