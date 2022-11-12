@@ -77,13 +77,14 @@ class external_test extends \advanced_testcase {
      * @param array $data
      * @param mixed $expected
      * @dataProvider update_data_provider
+     * @covers \local_entities_external::update_entity
      * @return void
      */
     public function test_local_entities_update_entity($id, $data, $expected) {
         $this->setAdminUser();
         $this->resetAfterTest(true);
-        $resultraw = local_entities_external::update_entity($id, $data);
-        $result = external_api::clean_returnvalue(local_entities_external::update_entity_returns(), $resultraw);
+        $resultraw = \local_entities_external::update_entity($id, $data);
+        $result = \external_api::clean_returnvalue(\local_entities_external::update_entity_returns(), $resultraw);
         $this->assertEquals($expected, $result);
     }
 
@@ -94,13 +95,14 @@ class external_test extends \advanced_testcase {
      * @param mixed $expected
      * @return void
      * @dataProvider update_exceptions_data_provider
+     * @covers \local_entities_external::update_entity
      * @throws invalid_response_exception
      * @throws moodle_exception
      */
     public function test_local_entities_update_entity_exceptions($id, $data, $expected) {
         $this->setAdminUser();
         $this->expectException(invalid_parameter_exception::class);
-        local_entities_external::update_entity($id, $data);
+        \local_entities_external::update_entity($id, $data);
     }
 
     /**
@@ -306,7 +308,7 @@ class external_test extends \advanced_testcase {
                 ],
 
         );
-        $expected = new invalid_parameter_exception();
+        $expected = new \invalid_parameter_exception();
         return [$id, $data, $expected];
     }
 
