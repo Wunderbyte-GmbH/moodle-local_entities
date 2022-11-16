@@ -431,7 +431,8 @@ class settings_manager {
     public function delete() {
         global $DB;
         $entity = \local_entities\entity::load($this->id);
-        $this->delete_cfhandlers($entity->__get('cfitemid'));
+        $cfitemid = $entity->__get('cfitemid') ?? 0;
+        $this->delete_cfhandlers($cfitemid);
         $DB->delete_records('local_entities', array('id' => $this->id));
         $DB->delete_records('local_entities_address', array('entityidto' => $this->id));
         $DB->delete_records('local_entities_contacts', array('entityidto' => $this->id));
