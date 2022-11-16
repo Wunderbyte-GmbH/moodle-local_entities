@@ -110,7 +110,6 @@ class edit_dynamic_form extends dynamic_form {
 
         $mform->addElement('editor', 'description', get_string('entity_description', 'local_entities'),
             '', $editoroptions);
-        $mform->setType('description', FORMAT_HTML);
 
         $mform->addRule('description', null, 'required', null, 'client');
 
