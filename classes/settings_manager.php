@@ -313,7 +313,7 @@ class settings_manager {
         $formdata->id = $record->id ?? 0;
         $formdata->name = $record->name;
         $formdata->shortname = $record->shortname;
-        $formdata->description['text'] = $record->description;
+        $formdata->description = $record->description;
         $formdata->pricefactor = floatval(str_replace(',', '.', $record->pricefactor));
         $formdata->parentid = $record->parentid;
         $formdata->sortorder  = $record->sortorder;

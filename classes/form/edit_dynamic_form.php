@@ -423,9 +423,6 @@ class edit_dynamic_form extends dynamic_form {
         $options = array('subdirs' => 0, 'maxbytes' => 204800, 'maxfiles' => 20, 'accepted_types' => '*', 'context' => $context);
         $defaults->descriptionformat = FORMAT_HTML;
 
-        $defaults->description['itemid'] = $draftideditor;
-        $defaults->description['format'] = FORMAT_HTML;
-
         if (!empty($defaults->id)) {
             file_prepare_standard_editor($defaults, 'description',
                 $options, $context, 'local_entities', 'entitycontent', $defaults->id);
