@@ -430,11 +430,41 @@ class settings_manager {
      */
     public function delete() {
         global $DB;
+        $this->delete_cfhandlers($this->id);
         $DB->delete_records('local_entities', array('id' => $this->id));
         $DB->delete_records('local_entities_address', array('entityidto' => $this->id));
         $DB->delete_records('local_entities_contacts', array('entityidto' => $this->id));
-        $handler = \local_entities\customfield\entities_handler::create();
-        $handler->delete_instance($this->id);
+        $this->delete_pluginfiles($this->id);
+    }
+
+    /**
+     * Deletes images of entity
+     *
+     * @param int $id
+     * @return void
+     */
+    private function delete_pluginfiles(int $id) {
+        $fs = get_file_storage();
+        $context = \context_system::instance();
+        $files = $fs->get_area_files($context->id, 'local_entities', 'image', $id);
+        foreach ($files as $file) {
+            $file->delete();
+        }
+    }
+
+    /**
+     * Deletes the customfieldhandlers for this instance
+     *
+     * @return void
+     */
+    private function delete_cfhandlers() {
+        $handlers = \local_entities\customfield\entities_cf_helper::create_std_handlers();
+        if (isset($this->cfitemid)) {
+            $handlers[] = \local_entities\customfield\entities_handler::create($this->cfitemid);
+        }
+        foreach ($handlers as $handler) {
+            $handler->delete_instance($this->id);
+        }
     }
 
     /**

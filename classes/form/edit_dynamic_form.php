@@ -53,12 +53,12 @@ class edit_dynamic_form extends dynamic_form {
     /**
      * @var $standardhandlers - These handlers add customfields to all the entities.
      */
-    public mixed $standardhandlers;
+    public array $standardhandlers;
 
     /**
      * @var $customhandler - This handler specifies the type of an entitiy and only the category-specific fields.
      */
-    public mixed $customhandler;
+    public \local_entities\customfield\entities_handler $customhandler;
 
     /**
      * @var int $entityid - This handler specifies the type of an entitiy and only the category-specific fields.

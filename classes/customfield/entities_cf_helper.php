@@ -143,7 +143,7 @@ class entities_cf_helper {
     /**
      * Creates all the customfieldhandlers from all defined standardcategories
      *
-     * @return \local_entities\customfield\entities_handler|void
+     * @return array
      */
     public static function create_std_handlers() {
         $categories = \local_entities\settings_manager::get_standardcategories();
