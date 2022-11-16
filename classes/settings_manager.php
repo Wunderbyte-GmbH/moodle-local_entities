@@ -426,7 +426,7 @@ class settings_manager {
      *
      * This is to update or delete an entity if it does not exist
      *
-     * @return mixed
+     * @return void
      */
     public function delete() {
         global $DB;
@@ -455,6 +455,8 @@ class settings_manager {
 
     /**
      * Deletes the customfieldhandlers for this instance
+     *
+     * @param int $cfitemid
      *
      * @return void
      */

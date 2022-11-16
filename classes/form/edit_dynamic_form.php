@@ -104,7 +104,10 @@ class edit_dynamic_form extends dynamic_form {
         $mform->addElement('filemanager', 'image_filemanager', get_string('edit_image', 'local_entities'), null, $options);
 
         $context = context_system::instance();
-        $editoroptions = array('maxfiles' => EDITOR_UNLIMITED_FILES, 'noclean' => true, 'context' => $context, 'format' => FORMAT_HTML);
+        $editoroptions = array('maxfiles' => EDITOR_UNLIMITED_FILES,
+         'noclean' => true,
+         'context' => $context,
+          'format' => FORMAT_HTML);
 
         $mform->addElement('editor', 'description', get_string('entity_description', 'local_entities'),
             '', $editoroptions);
@@ -273,10 +276,9 @@ class edit_dynamic_form extends dynamic_form {
         $context = context_system::instance();
 
         $data->entitydata = '';
-        if (!isset($data->description['itemid'])) {
-            $description = $data->description;
-            $data->description = [];
-            $data->description['text'] = $description;
+        if (isset($data->description['itemid'])) {
+            $description = $data->description['text'];
+            $draftitemid = $data->description['itemid'];
         }
 
         $recordentity = new stdClass();
@@ -316,9 +318,11 @@ class edit_dynamic_form extends dynamic_form {
             if (isset($data->image_filemanager)) {
                 file_postupdate_standard_filemanager($data, 'image', $options, $context, 'local_entities', 'image', $result);
             }
-            $data->description['text'] = file_save_draft_area_files($data->entityid, $context->id,
-            'local_entities', 'entitycontent',
-            0, array('subdirs' => true), $data->description['text']);
+            if (isset($draftitemid)) {
+                file_save_draft_area_files($draftitemid, $context->id,
+                'local_entities', 'entitycontent',
+                $data->id, array('subdirs' => true), $description);
+            }
         }
         if (!empty($this->standardhandlers) && !empty($data->id)) {
             foreach ($this->standardhandlers as $handler) {
@@ -413,10 +417,13 @@ class edit_dynamic_form extends dynamic_form {
      */
     public function set_data($defaults) {
         $context = context_system::instance();
+
+        $data = (Object)$this->_ajaxformdata;
         $draftideditor = file_get_submitted_draft_itemid('description');
+        $options = array('subdirs' => 0, 'maxbytes' => 204800, 'maxfiles' => 20, 'accepted_types' => '*');
         if (!empty($defaults->id)) {
-            $defaults->description['text'] = file_prepare_draft_area($draftideditor, $context->id,
-            'local_entities', 'description', 0, array('subdirs' => true), $defaults->description['text']);
+            file_prepare_standard_editor($defaults->description['text'], 'description',
+            $options, $context, 'local_entities', 'entitycontent', $defaults->id);
             $defaults->description['itemid'] = $draftideditor;
             $defaults->description['format'] = FORMAT_HTML;
 
