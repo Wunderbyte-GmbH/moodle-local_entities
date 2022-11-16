@@ -76,7 +76,7 @@ class edit_dynamic_form extends dynamic_form {
         $mform = $this->_form;
         $data = (Object)$this->_ajaxformdata;
 
-        $entityid = (int) $this->_customdata['entityid'] ?? (int) $data->entityid ?? 0;
+        $entityid = $this->_customdata['entityid'] ?? $data->entityid ?? $data->id ?? 0;
 
         $entities = array(0 => $none);
 
@@ -110,6 +110,7 @@ class edit_dynamic_form extends dynamic_form {
 
         $mform->addElement('editor', 'description', get_string('entity_description', 'local_entities'),
             '', $editoroptions);
+        $mform->setType('description', FORMAT_HTML);
 
         $mform->addRule('description', null, 'required', null, 'client');
 
@@ -420,11 +421,14 @@ class edit_dynamic_form extends dynamic_form {
         $data = (Object)$this->_ajaxformdata;
         $draftideditor = file_get_submitted_draft_itemid('description');
         $options = array('subdirs' => 0, 'maxbytes' => 204800, 'maxfiles' => 20, 'accepted_types' => '*', 'context' => $context);
+        $defaults->descriptionformat = FORMAT_HTML;
+
+        $defaults->description['itemid'] = $draftideditor;
+        $defaults->description['format'] = FORMAT_HTML;
+
         if (!empty($defaults->id)) {
-            file_prepare_standard_editor($defaults->description['text'], 'description',
+            file_prepare_standard_editor($defaults, 'description',
                 $options, $context, 'local_entities', 'entitycontent', $defaults->id);
-            $defaults->description['itemid'] = $draftideditor;
-            $defaults->description['format'] = FORMAT_HTML;
 
             $options = array('maxbytes' => 204800, 'maxfiles' => 1, 'accepted_types' => ['jpg, png']);
             $defaults->picture = file_prepare_standard_filemanager(

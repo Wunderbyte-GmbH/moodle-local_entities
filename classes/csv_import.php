@@ -217,10 +217,10 @@ class csv_import {
      * Validate lines in csv data. Write it to csverrors.
      *
      * @param array $csvrecord
-     * @param mixed $linenumber
+     * @param int $linenumber
      * @return bool true on validation false on error
      */
-    protected function validate_data(array &$csvrecord, mixed $linenumber) {
+    protected function validate_data(array &$csvrecord, int $linenumber) {
 
         // Set to false if error occured in csv-line.
         if (empty($csvrecord['name'])) {
