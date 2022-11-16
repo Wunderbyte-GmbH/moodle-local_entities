@@ -38,7 +38,6 @@ use local_entities\entities;
 use local_entities\customfield\entities_handler;
 use local_entities\calendar\fullcalendar_helper;
 use local_entities\calendar\reoccuringevent;
-use moodleform;
 use stdClass;
 
 
@@ -51,19 +50,19 @@ use stdClass;
 class edit_dynamic_form extends dynamic_form {
 
     /**
-     * @var $standardhandlers - These handlers add customfields to all the entities.
+     * @var array $standardhandlers - These handlers add customfields to all the entities.
      */
-    public array $standardhandlers;
+    public $standardhandlers;
 
     /**
-     * @var $customhandler - This handler specifies the type of an entitiy and only the category-specific fields.
+     * @var entities_handler $customhandler - This handler specifies the type of an entitiy and only the category-specific fields.
      */
-    public \local_entities\customfield\entities_handler $customhandler;
+    public $customhandler;
 
     /**
      * @var int $entityid - This handler specifies the type of an entitiy and only the category-specific fields.
      */
-    public int $entityid;
+    public $entityid;
 
     /**
      * {@inheritdoc}
@@ -420,10 +419,10 @@ class edit_dynamic_form extends dynamic_form {
 
         $data = (Object)$this->_ajaxformdata;
         $draftideditor = file_get_submitted_draft_itemid('description');
-        $options = array('subdirs' => 0, 'maxbytes' => 204800, 'maxfiles' => 20, 'accepted_types' => '*');
+        $options = array('subdirs' => 0, 'maxbytes' => 204800, 'maxfiles' => 20, 'accepted_types' => '*', 'context' => $context);
         if (!empty($defaults->id)) {
             file_prepare_standard_editor($defaults->description['text'], 'description',
-            $options, $context, 'local_entities', 'entitycontent', $defaults->id);
+                $options, $context, 'local_entities', 'entitycontent', $defaults->id);
             $defaults->description['itemid'] = $draftideditor;
             $defaults->description['format'] = FORMAT_HTML;
 
