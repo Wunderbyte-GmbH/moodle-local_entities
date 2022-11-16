@@ -59,7 +59,6 @@ $classname = "local-entities-{$entity->name}-{$id}";
 // Now add that class name to the body of this page :).
 $PAGE->add_body_class($classname);
 
-
 // Output the header.
 echo $OUTPUT->header();
 
@@ -108,6 +107,7 @@ if ($entity->hascontacts) {
 
 $entity->canedit = has_capability('local/entities:canedit', \context_system::instance());
 $entity->editurl = new moodle_url('/local/entities/edit.php', array( 'id' => $id));
+$entity->calendarurl = new moodle_url('/local/entities/calendar.php', array( 'id' => $id));
 $entity->delurl = new moodle_url('/local/entities/entities.php', array( 'del' => $id , 'sesskey' => $USER->sesskey));
 
 echo $OUTPUT->render_from_template('local_entities/view', $entity);
