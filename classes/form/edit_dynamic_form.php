@@ -417,8 +417,6 @@ class edit_dynamic_form extends dynamic_form {
     public function set_data($defaults) {
         $context = context_system::instance();
 
-        $data = (Object)$this->_ajaxformdata;
-        $draftideditor = file_get_submitted_draft_itemid('description');
         $options = array('subdirs' => 0, 'maxbytes' => 204800, 'maxfiles' => 20, 'accepted_types' => '*', 'context' => $context);
         $defaults->descriptionformat = FORMAT_HTML;
 
@@ -436,6 +434,12 @@ class edit_dynamic_form extends dynamic_form {
                 'image',
                 $defaults->id);
         }
+
+        $description = $defaults->description;
+        unset($defaults->description);
+        $defaults->description['text'] = $description;
+        $defaults->description['format'] = 1;
+
         if (!empty($defaults->openinghours)) {
             $openinghours = reoccuringevent::json_to_form($defaults->openinghours);
             $defaults->daysofweek = $openinghours->daysofweek ?? 1;
