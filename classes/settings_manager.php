@@ -430,7 +430,8 @@ class settings_manager {
      */
     public function delete() {
         global $DB;
-        $this->delete_cfhandlers($this->id);
+        $entity = \local_entities\entity::load($this->id);
+        $this->delete_cfhandlers($entity->__get('cfitemid'));
         $DB->delete_records('local_entities', array('id' => $this->id));
         $DB->delete_records('local_entities_address', array('entityidto' => $this->id));
         $DB->delete_records('local_entities_contacts', array('entityidto' => $this->id));
@@ -457,10 +458,10 @@ class settings_manager {
      *
      * @return void
      */
-    private function delete_cfhandlers() {
+    private function delete_cfhandlers(int $cfitemid = 0) {
         $handlers = \local_entities\customfield\entities_cf_helper::create_std_handlers();
-        if (isset($this->cfitemid)) {
-            $handlers[] = \local_entities\customfield\entities_handler::create($this->cfitemid);
+        if ($cfitemid > 0) {
+            $handlers[] = \local_entities\customfield\entities_handler::create($cfitemid);
         }
         foreach ($handlers as $handler) {
             $handler->delete_instance($this->id);

@@ -77,7 +77,7 @@ class edit_dynamic_form extends dynamic_form {
         $mform = $this->_form;
         $data = (Object)$this->_ajaxformdata;
 
-        $entityid = $this->_customdata['entityid'] ?? $data->entityid ?? 0;
+        $entityid = (int) $this->_customdata['entityid'] ?? (int) $data->entityid ?? 0;
 
         $entities = array(0 => $none);
 
@@ -104,13 +104,12 @@ class edit_dynamic_form extends dynamic_form {
         $mform->addElement('filemanager', 'image_filemanager', get_string('edit_image', 'local_entities'), null, $options);
 
         $context = context_system::instance();
-        $editoroptions = array('maxfiles' => EDITOR_UNLIMITED_FILES, 'noclean' => true, 'context' => $context);
+        $editoroptions = array('maxfiles' => EDITOR_UNLIMITED_FILES, 'noclean' => true, 'context' => $context, 'format' => FORMAT_HTML);
 
         $mform->addElement('editor', 'description', get_string('entity_description', 'local_entities'),
             '', $editoroptions);
 
         $mform->addRule('description', null, 'required', null, 'client');
-        $mform->setType('description', PARAM_RAW);
 
         // Repeated elements.
         $repeatedopeninghours = [];
@@ -270,11 +269,16 @@ class edit_dynamic_form extends dynamic_form {
      * @return mixed
      */
     public function process_dynamic_submission() {
-        global $CFG;
         $data = (object)$this->_ajaxformdata;
         $context = context_system::instance();
 
         $data->entitydata = '';
+        if (!isset($data->description['itemid'])) {
+            $description = $data->description;
+            $data->description = [];
+            $data->description['text'] = $description;
+        }
+
         $recordentity = new stdClass();
         // We copy the whole element.
         $recordentity = $data;
@@ -312,6 +316,9 @@ class edit_dynamic_form extends dynamic_form {
             if (isset($data->image_filemanager)) {
                 file_postupdate_standard_filemanager($data, 'image', $options, $context, 'local_entities', 'image', $result);
             }
+            $data->description['text'] = file_save_draft_area_files($data->entityid, $context->id,
+            'local_entities', 'entitycontent',
+            0, array('subdirs' => true), $data->description['text']);
         }
         if (!empty($this->standardhandlers) && !empty($data->id)) {
             foreach ($this->standardhandlers as $handler) {
@@ -325,7 +332,6 @@ class edit_dynamic_form extends dynamic_form {
         $recordentity->returnurl = $returnurl->out(false);
         return $recordentity;
     }
-
 
     /**
      * Load in existing data as form defaults
@@ -442,7 +448,7 @@ class edit_dynamic_form extends dynamic_form {
         if (!empty($this->customhandler)) {
             $this->customhandler->instance_form_before_set_data($defaults);
         }
-        $this->entityid = $defaults->id ?? 0;
+        $this->entityid = !empty($defaults->id) ? $defaults->id : 0;
         return parent::set_data($defaults);
     }
 }
