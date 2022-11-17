@@ -53,7 +53,9 @@ class secondary extends core_secondary {
             new \moodle_url('/local/entities/customfield.php', array('id' => -1)),
             \navigation_node::TYPE_CUSTOM, 'addcategory', 'addcategory',
             new \pix_icon('t/add', get_string('addcategory', 'local_entities')));
-            $this->add(get_string('settings'), '/admin/category.php?category=local_entities ', \navigation_node::TYPE_CUSTOM,
+            $this->add(get_string('import', 'local_entities'), '/local/entities/import.php', \navigation_node::TYPE_CUSTOM,
+            'import', 'import');
+            $this->add(get_string('settings'), '/admin/category.php?category=local_entities', \navigation_node::TYPE_CUSTOM,
             'settings', 'settings');
         }
         $this->initialised = true;

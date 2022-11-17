@@ -199,9 +199,9 @@ class csv_import {
             }
 
             $formdata = \core_customfield\field_config_form::mock_ajax_submit($entity);
+
             $entitiesform = new edit_dynamic_form(null, null, 'post', '', [], true, $formdata);
 
-            $entitiesform->set_data_for_dynamic_submission();
             $entitiesform->is_validated();
             $entitiesform->process_dynamic_submission();
 

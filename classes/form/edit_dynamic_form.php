@@ -306,7 +306,9 @@ class edit_dynamic_form extends dynamic_form {
             $eventarray['endminutes'] = sprintf("%02d", $data->endminutes[$i]);
             $events[] = new reoccuringevent($eventarray);
         }
-        $recordentity->openinghours = reoccuringevent::events_to_json($events);
+        if (!empty($events)) {
+            $recordentity->openinghours = reoccuringevent::events_to_json($events);
+        }
 
         $settingsmanager = new \local_entities\settings_manager();
 
