@@ -243,7 +243,7 @@ class edit_dynamic_form extends dynamic_form {
                 $cfitemid = $this->_customdata['cfitemid'];
             }
 
-            $this->customhandler = entities_handler::create($cfitemid);
+            $this->customhandler = entities_handler::create((int) $cfitemid);
             $this->customhandler->instance_form_definition($mform, $entityid);
             $this->customhandler->instance_form_before_set_data($data);
         }

@@ -76,7 +76,7 @@ foreach ($files as $file) {
 
 $handlers = local_entities\customfield\entities_cf_helper::create_std_handlers();
 if (isset($entity->cfitemid)) {
-    $handlers[] = local_entities\customfield\entities_handler::create($entity->cfitemid);
+    $handlers[] = local_entities\customfield\entities_handler::create((int) $entity->cfitemid);
 }
 $metadata = '';
 foreach ($handlers as $handler) {

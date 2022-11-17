@@ -149,7 +149,7 @@ class entities_cf_helper {
         $categories = \local_entities\settings_manager::get_standardcategories();
         $handlers = array();
         foreach ($categories as $category) {
-            $handlers[] = entities_handler::create($category);
+            $handlers[] = entities_handler::create((int) $category);
         }
         if (empty($handlers)) {
             return array();

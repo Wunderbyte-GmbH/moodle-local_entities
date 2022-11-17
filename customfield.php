@@ -52,7 +52,7 @@ $renderer = $PAGE->get_renderer('local_entities');
 
 echo $OUTPUT->header();
 $output = $PAGE->get_renderer('core_customfield');
-$handler = local_entities\customfield\entities_handler::create($id);
+$handler = local_entities\customfield\entities_handler::create((int) $id);
 $outputpage = new \core_customfield\output\management($handler);
 echo $output->render($outputpage);
 
