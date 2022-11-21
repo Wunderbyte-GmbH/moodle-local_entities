@@ -26,20 +26,20 @@
 defined('MOODLE_INTERNAL') || die();
 
 $capabilities = [
-    'local/entities:canedit' => [
+    'local/entities:edit' => [
         'riskbitmask' => RISK_DATALOSS,
         'captype' => 'write',
         'contextlevel' => CONTEXT_SYSTEM,
         'archetypes' => [
-            'manager' => CAP_ALLOW,
+            'manager' => CAP_ALLOW
         ],
     ],
-    'local/entities:canview' => [
-        'riskbitmask' => RISK_DATALOSS,
-        'captype' => 'write',
+    'local/entities:view' => [
+        'riskbitmask' => RISK_PERSONAL,
+        'captype' => 'read',
         'contextlevel' => CONTEXT_SYSTEM,
         'archetypes' => [
-            'manager' => CAP_ALLOW,
-        ],
-    ],
+            'user' => CAP_ALLOW
+        ]
+    ]
 ];

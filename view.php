@@ -37,7 +37,7 @@ require_once("{$CFG->dirroot}/local/entities/lib.php");
 
 // Set the page layout.
 require_login();
-require_capability('local/entities:canview', \context_system::instance());
+require_capability('local/entities:view', \context_system::instance());
 $PAGE->set_pagelayout('standard');
 
 $secondarynav = new secondary($PAGE);
@@ -105,7 +105,7 @@ if ($entity->hascontacts) {
     $entity->contactscleaned = array_values($entity->contacts);
 }
 
-$entity->canedit = has_capability('local/entities:canedit', \context_system::instance());
+$entity->canedit = has_capability('local/entities:edit', \context_system::instance());
 $entity->editurl = new moodle_url('/local/entities/edit.php', array( 'id' => $id));
 $entity->calendarurl = new moodle_url('/local/entities/calendar.php', array( 'id' => $id));
 $entity->delurl = new moodle_url('/local/entities/entities.php', array( 'del' => $id , 'sesskey' => $USER->sesskey));

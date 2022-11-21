@@ -97,15 +97,15 @@ class entities_handler extends \core_customfield\handler {
         if ($instanceid) {
             $context = $this->get_instance_context($instanceid);
             return (!$field->get_configdata_property('locked') ||
-                    has_capability('local/entities:canedit', $context));
+                    has_capability('local/entities:edit', $context));
         } else {
             $context = $this->get_parent_context();
             if ($context->contextlevel == CONTEXT_SYSTEM) {
                 return (!$field->get_configdata_property('locked') ||
-                    has_capability('local/entities:canedit', $context));
+                    has_capability('local/entities:edit', $context));
             } else {
                 return (!$field->get_configdata_property('locked') ||
-                    guess_if_creator_will_have_course_capability('local/entities:canedit', $context));
+                    guess_if_creator_will_have_course_capability('local/entities:edit', $context));
             }
         }
     }

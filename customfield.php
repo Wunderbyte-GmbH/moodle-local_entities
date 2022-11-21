@@ -28,7 +28,7 @@ require_once('../../config.php');
 $id = optional_param('id', -1, PARAM_INT);
 
 $context = \context_system::instance();
-require_capability('local/entities:canedit', $context);
+require_capability('local/entities:edit', $context);
 $PAGE->set_context($context);
 require_login();
 

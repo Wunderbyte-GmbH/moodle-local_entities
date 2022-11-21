@@ -115,7 +115,7 @@ class local_entities_external extends external_api {
      */
     public static function update_entity(int $id, array $data): array {
         $context = \context_system::instance();
-        require_capability('local/entities:canedit', $context);
+        require_capability('local/entities:edit', $context);
         $messages = array();
         $warnings = array();
         $params = [
@@ -189,7 +189,7 @@ class local_entities_external extends external_api {
     public static function delete_entity(int $id): array {
         global $DB;
         $context = \context_system::instance();
-        require_capability('local/entities:canedit', $context);
+        require_capability('local/entities:edit', $context);
         $messages = array();
         $warnings = array();
         $params = self::validate_parameters(self::delete_entity_parameters(),

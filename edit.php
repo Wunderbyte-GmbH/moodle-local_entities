@@ -32,7 +32,7 @@ use local_entities\settings_manager;
 $entityid = optional_param('id', 0, PARAM_INT);
 $categoryid = optional_param('catid', 0, PARAM_INT);
 $context = context_system::instance();
-require_capability('local/entities:canedit', $context);
+require_capability('local/entities:edit', $context);
 
 global $USER, $PAGE, $DB;
 

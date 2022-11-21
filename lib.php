@@ -28,7 +28,7 @@
  */
 function local_entities_extend_navigation($navigation) {
     $context = \context_system::instance();
-    if (has_capability('local/entities:canedit', $context)) {
+    if (has_capability('local/entities:edit', $context)) {
         $nodehome = $navigation->get('home');
         if (empty($nodehome)) {
             $nodehome = $navigation;

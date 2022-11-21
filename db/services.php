@@ -34,7 +34,7 @@ $functions = array(
                 'type' => 'read',
                 'ajax' => true,
                 'services' => array(),
-                'capabilities' => 'local/entities:canedit'
+                'capabilities' => 'local/entities:edit'
         ),
         'local_entities_update_entity' => array(
                 'classname' => 'local_entities_external',
@@ -44,7 +44,7 @@ $functions = array(
                 'type' => 'write',
                 'ajax' => true,
                 'services' => array(),
-                'capabilities' => 'local/entities:canedit'
+                'capabilities' => 'local/entities:edit'
         ),
         'local_entities_list_all_subentities' => array(
                 'classname' => 'local_entities_external',
@@ -64,7 +64,7 @@ $functions = array(
                 'type' => 'read',
                 'ajax' => true,
                 'services' => array(),
-                'capabilities' => 'local/entities:canedit'
+                'capabilities' => 'local/entities:edit'
         ),
         'local_entities_get_entity_calendardata' => array(
                 'classname' => 'local_entities\external\get_entity_calendardata',

@@ -37,7 +37,7 @@ require_once("{$CFG->dirroot}/local/entities/lib.php");
 
 // Set the page layout.
 require_login();
-require_capability('local/entities:canview', \context_system::instance());
+require_capability('local/entities:view', \context_system::instance());
 $PAGE->set_pagelayout('popup');
 
 $PAGE->requires->css('/local/entities/js/main.css');

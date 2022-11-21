@@ -30,7 +30,7 @@ global $USER, $DB;
 $context = \context_system::instance();
 $PAGE->set_context($context);
 require_login();
-require_capability('local/entities:canedit' , $context);
+require_capability('local/entities:edit' , $context);
 $PAGE->set_url(new moodle_url('/local/entities/entities2.php', array()));
 
 $secondarynav = new secondary($PAGE);
