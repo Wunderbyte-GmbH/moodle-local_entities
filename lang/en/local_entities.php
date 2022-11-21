@@ -88,8 +88,8 @@ $string['maxallocation'] = 'Max number of bookings on this entity';
 $string['maxallocation_help'] = '0 for no limit, -1 for not bookable.';
 
 // Access.php.
-$string['entities:canedit'] = 'User is allowed to edit entities';
-$string['entities:canview'] = 'User is allowed to see entities';
+$string['entities:edit'] = 'User is allowed to edit entities';
+$string['entities:view'] = 'User is allowed to see entities';
 
 $string['calendar'] = 'Calendar';
 
