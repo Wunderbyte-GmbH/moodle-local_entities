@@ -67,7 +67,6 @@
                     </li>
                     {{/maplink}}
                     {{#mapembed}}<li>{{#str}}map, local_entities{{/str}}:<br/>{{{.}}}</li>{{/mapembed}}
-                    <li>{{streetname}} {{streetnumber}}</li>
                     {{/addresscleaned}}
                 </ul>
             </div>
@@ -101,10 +100,10 @@
 
 <div class="card-footer d-flex">
     {{#canedit}}
-    <a class="btn" title="Ressource bearbeiten" href="{{editurl}}"><i class="fa fa-edit" aria-hidden="true"></i> Bearbeiten</a>
-    <a class="btn" title="Kalendar" href="{{calendarurl}}" target="_blank"><i class="fa fa-calendar" aria-hidden="true"></i> Kalendar</a>
+    <a class="btn" title="Ressource bearbeiten" href="{{editurl}}"><i class="fa fa-edit" aria-hidden="true"></i> {{#str}}edit{{/str}}</a>
+    <a class="btn" title="Kalendar" href="{{calendarurl}}" target="_blank"><i class="fa fa-calendar" aria-hidden="true"></i> {{#str}}calendar , local_entities{{/str}}</a>
     <div class="d-block ml-auto">
-    <a data-confirm="Diese Ressource wirklich löschen?" class="btn" title="Ressource löschen" rel="nofollow" data-method="delete" href="{{delurl}}"><i class="fa fa-trash"></i> Löschen</a>
+    <a data-confirm="Diese Ressource wirklich löschen?" class="btn" title="Ressource löschen" rel="nofollow" data-method="delete" href="{{delurl}}"><i class="fa fa-trash"></i>  {{#str}}delete{{/str}}</a>
     </div>
     {{/canedit}}
   </div>

@@ -225,7 +225,7 @@ class edit_dynamic_form extends dynamic_form {
         $this->standardhandlers = \local_entities\customfield\entities_cf_helper::create_std_handlers();
         if (!empty($this->standardhandlers)) {
             foreach ($this->standardhandlers as $handler) {
-                $handler->instance_form_definition($mform, $entityid);
+                $handler->instance_form_definition($mform, (int) $entityid);
                 $handler->instance_form_before_set_data($data);
             }
         }
@@ -244,7 +244,7 @@ class edit_dynamic_form extends dynamic_form {
             }
 
             $this->customhandler = entities_handler::create((int) $cfitemid);
-            $this->customhandler->instance_form_definition($mform, $entityid);
+            $this->customhandler->instance_form_definition($mform, (int) $entityid);
             $this->customhandler->instance_form_before_set_data($data);
         }
 
@@ -304,7 +304,10 @@ class edit_dynamic_form extends dynamic_form {
             $eventarray['startminutes'] = sprintf("%02d", $data->startminutes[$i]);
             $eventarray['endhours'] = sprintf("%02d", $data->endhours[$i]);
             $eventarray['endminutes'] = sprintf("%02d", $data->endminutes[$i]);
-            $events[] = new reoccuringevent($eventarray);
+            if ($eventarray['starthours'].$eventarray['startminutes'] !=
+            $eventarray['endhours'].$eventarray['endminutes']) {
+                $events[] = new reoccuringevent($eventarray);
+            }
         }
         if (!empty($events)) {
             $recordentity->openinghours = reoccuringevent::events_to_json($events);
@@ -460,7 +463,7 @@ class edit_dynamic_form extends dynamic_form {
         if (!empty($this->customhandler)) {
             $this->customhandler->instance_form_before_set_data($defaults);
         }
-        $this->entityid = !empty($defaults->id) ? $defaults->id : 0;
+        $this->entityid = !empty($defaults->id) ? (int) $defaults->id : 0;
         return parent::set_data($defaults);
     }
 }
