@@ -41,7 +41,7 @@ $PAGE->set_secondarynav($secondarynav);
 $PAGE->set_secondary_navigation(true);
 
 // Add capability.
-if ($delid !== 0 && (is_siteadmin() || has_capability('local_entities/canedit', $context))) {
+if ($delid !== 0 && (is_siteadmin() || has_capability('local_entities/edit', $context))) {
     $entity = new settings_manager($delid);
     $entity->delete();
 }
