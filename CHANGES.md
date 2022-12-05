@@ -1,3 +1,3 @@
-## Version 0.1.2 (2022112300)
-**Improvements:**
-* Small design improvements and linting.
+## Version 0.1.3 (2022120500)
+**Bugfixes:**
+* Bugfix: Wrong capability name.
