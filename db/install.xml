@@ -20,10 +20,10 @@
             </FIELDS>
             <KEYS>
                 <KEY NAME="primary" TYPE="primary" FIELDS="id" />
-                <KEY NAME="parentid" TYPE="foreign" FIELDS="parentid" REFTABLE="local_entities" REFFIELDS="parentid"/>
             </KEYS>
             <INDEXES>
                 <INDEX NAME="cfitemid" UNIQUE="false" FIELDS="cfitemid"/>
+                <INDEX NAME="parentid" UNIQUE="false" FIELDS="parentid"/>
             </INDEXES>
         </TABLE>
         <TABLE NAME="local_entities_address" COMMENT="Address connected to entities">

@@ -253,5 +253,24 @@ function xmldb_local_entities_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2022103001, 'local', 'entities');
     }
 
+    if ($oldversion < 2022120600) {
+        $table = new xmldb_table('local_entities');
+        $index = new xmldb_index('parentid', XMLDB_INDEX_NOTUNIQUE, ['parentid']);
+        // Conditionally launch add index.
+        if (!$dbman->index_exists($table, $index)) {
+            $dbman->add_index($table, $index);
+        }
+
+        $table = new xmldb_table('local_entities');
+        $index = new xmldb_index('cfitemid', XMLDB_INDEX_NOTUNIQUE, ['cfitemid']);
+        // Conditionally launch add index.
+        if (!$dbman->index_exists($table, $index)) {
+            $dbman->add_index($table, $index);
+        }
+
+        // Entities savepoint reached.
+        upgrade_plugin_savepoint(true, 2022120600, 'local', 'entities');
+    }
+
     return true;
 }
