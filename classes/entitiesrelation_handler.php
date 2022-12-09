@@ -261,6 +261,22 @@ class entitiesrelation_handler {
         $mform->setDefaults(array('local_entities_entityname' => $entityname));
     }
 
+    /**
+     * Sets the fields from entitiesrelations to the given form if entry is found in DB
+     *
+     * @param stdClass $data
+     * @param int $instanceid
+     * @return void
+     */
+    public function values_for_set_data(stdClass &$data, $instanceid = 0) {
+        $instanceid = !empty($instanceid) ? $instanceid : 0;
+        $fromdb = $this->get_instance_data($instanceid);
+
+        $data->local_entities_entityid = isset($fromdb->id) ? $fromdb->id : 0;
+        $data->local_entities_entityname = isset($fromdb->name) ? $fromdb->name : "";
+        $data->local_entities_relationid = isset($fromdb->relationid) ? $fromdb->relationid : 0;
+    }
+
 
     /**
      * Saves the given data for entitiesrelations, must be called after the instance is saved and id is present
