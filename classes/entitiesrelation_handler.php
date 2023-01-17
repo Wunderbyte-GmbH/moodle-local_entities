@@ -132,11 +132,11 @@ class entitiesrelation_handler {
 
             $mform->addElement('autocomplete', 'local_entities_entityid', get_string('er_entitiesname', 'local_entities'),
                 [], $options);
-        }
 
-        $mform->addElement('button', 'openmodal', get_string('opentimetable', 'local_entities'));
-        $PAGE->requires->js_call_amd('local_entities/handler', 'init');
-        $PAGE->requires->css('/local/entities/js/main.css');
+            $mform->addElement('button', 'openmodal', get_string('opentimetable', 'local_entities'));
+            $PAGE->requires->js_call_amd('local_entities/handler', 'init');
+            $PAGE->requires->css('/local/entities/js/main.css');
+        }
 
         return $mform;
     }
