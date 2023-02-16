@@ -174,7 +174,7 @@ class edit_dynamic_form extends dynamic_form {
                 $mform->createElement('select', 'cfitemid', get_string('entity_category', 'local_entities'), $categories),
                 $mform->createElement('submit', 'btn_cfcategoryid', get_string('categories'), $buttonargs)
             ];
-            $mform->addGroup($categoryselect, 'tagsgroup', get_string('categories'), [' '], false);
+            $mform->addGroup($categoryselect, 'tagsgroup', get_string('categories', 'local_entities'), [' '], false);
             $mform->setType('btn_cfcategoryid', PARAM_NOTAGS);
         }
 

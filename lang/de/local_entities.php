@@ -90,7 +90,7 @@ $string['maxallocation_help'] = '0 für kein Limit, -1 bedeutet nicht buchbar';
 $string['entities:edit'] = 'Nutzer*in darf Entities editieren.';
 $string['entities:view'] = 'Nutzer*in darf Entities sehen.';
 
-$string['calendar'] = 'Kalendar';
+$string['calendar'] = 'Kalender';
 
 // Entities handler.
 $string['opentimetable'] = "Öffne Stundenplan";
