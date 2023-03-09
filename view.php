@@ -90,6 +90,15 @@ foreach ($handlers as $handler) {
         $metadata .= '<span><b>' . $metakey . '</b>: ' . $data->get_value() .'</span></br>';
     }
 }
+$affiliated = '<ul>';
+global $DB;
+$subentities = $DB->get_records("local_entities", array("parentid" => $id));
+foreach ($subentities as $entry) {
+    $link = new \moodle_url("/local/entities/view.php", array("id" => $entry->id));
+    $affiliated .= '<li>' . $entry->name . ' <a href="' . $link . '">(View)</a></li>';
+}
+$affiliated .= '</ul>';
+$entity->affiliated = $affiliated;
 $entity->metadata = $metadata;
 $entity->description = file_rewrite_pluginfile_urls($entity->description, 'pluginfile.php',
 $context->id, 'local_entity', 'description', null);
