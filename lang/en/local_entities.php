@@ -42,6 +42,7 @@ $string['address_streetname'] = 'Street name';
 $string['address_streetnumber'] = 'Street number';
 $string['address_map_link'] = 'Maps link';
 $string['address_map_embed'] = 'Embed map (HTML)';
+$string['affiliated'] = 'Affiliated locations';
 $string['contacts'] = 'Contacts';
 $string['contacts_givenname'] = 'Given name';
 $string['contacts_surname'] = 'Surname';

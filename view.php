@@ -26,6 +26,8 @@
 use local_entities\local\views\secondary;
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 
+global $DB;
+
 // Get the id of the page to be displayed.
 $id = optional_param('id', 0, PARAM_INT);
 
@@ -90,15 +92,19 @@ foreach ($handlers as $handler) {
         $metadata .= '<span><b>' . $metakey . '</b>: ' . $data->get_value() .'</span></br>';
     }
 }
-$affiliated = '<ul>';
-global $DB;
-$subentities = $DB->get_records("local_entities", array("parentid" => $id));
-foreach ($subentities as $entry) {
-    $link = new \moodle_url("/local/entities/view.php", array("id" => $entry->id));
-    $affiliated .= '<li>' . $entry->name . ' <a href="' . $link . '">(View)</a></li>';
+
+// Affiliated entities.
+$subentities = $DB->get_records('local_entities', ['parentid' => $id]);
+if (!empty($subentities)) {
+    $affiliated = '<ul>';
+    foreach ($subentities as $entry) {
+        $link = new \moodle_url("/local/entities/view.php", array("id" => $entry->id));
+        $affiliated .= '<li><a href="' . $link . '">' . $entry->name . '</a></li>';
+    }
+    $affiliated .= '</ul>';
+    $entity->affiliated = $affiliated;
 }
-$affiliated .= '</ul>';
-$entity->affiliated = $affiliated;
+
 $entity->metadata = $metadata;
 $entity->description = file_rewrite_pluginfile_urls($entity->description, 'pluginfile.php',
 $context->id, 'local_entity', 'description', null);
