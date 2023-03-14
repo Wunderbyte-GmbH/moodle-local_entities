@@ -61,7 +61,7 @@ class settings_manager {
         global $DB;
         $id = $DB->insert_record('local_entities', $data);
         // Custom fields save needs id.
-        $data->id  = $id;
+        $data->id = $id;
         // Unset empty hidden customfields (otherwise persistence error is thrown).
         foreach ($data as $key => $property) {
             if (strpos( $key , 'customfield' ) === 0) {
@@ -316,9 +316,9 @@ class settings_manager {
         $formdata->description = $record->description;
         $formdata->pricefactor = floatval(str_replace(',', '.', $record->pricefactor));
         $formdata->parentid = $record->parentid;
-        $formdata->sortorder  = $record->sortorder;
-        $formdata->status  = $record->status;
-        $formdata->openinghours  = $record->openinghours;
+        $formdata->sortorder = $record->sortorder;
+        $formdata->status = $record->status;
+        $formdata->openinghours = $record->openinghours;
         $formdata->cfitemid = $record->cfitemid;
         // Address.
         $i = 0;
