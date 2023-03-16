@@ -1,3 +1,7 @@
+## Version 0.1.6 (2023031600)
+**Improvements:**
+* Improvement: Added list of affiliated entities to detail page.
+
 ## Version 0.1.5 (2023022000)
 **Improvements:**
 * Improvement: New set data function to set data to stdclass, not mform (for nested handlers).
