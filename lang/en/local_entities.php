@@ -43,6 +43,7 @@ $string['address_streetnumber'] = 'Street number';
 $string['address_map_link'] = 'Maps link';
 $string['address_map_embed'] = 'Embed map (HTML)';
 $string['affiliated'] = 'Affiliated locations';
+$string['belongs_to'] = 'Belongs to';
 $string['contacts'] = 'Contacts';
 $string['contacts_givenname'] = 'Given name';
 $string['contacts_surname'] = 'Surname';
@@ -87,6 +88,14 @@ $string['errorwiththefollowingdates'] = 'There is a conflict with the following 
 
 $string['maxallocation'] = 'Max number of bookings on this entity';
 $string['maxallocation_help'] = '0 for no limit, -1 for not bookable.';
+
+//Settings
+$string['fallback_image_parent'] = 'Use image of parent entity as fallback';
+$string['fallback_image_parent:description'] = 'If enabled and there is no image, the image of the parent entity is used.';
+$string['fallback_contacts_parent'] = 'Use contacts of parent entity as fallback';
+$string['fallback_contacts_parent:description'] = 'If enabled and there are not contact information, the contact information of the parent entity is used';
+$string['fallback_address_parent'] = 'Use address of parent entity as fallback';
+$string['fallback_address_parent:description'] = 'If enabled and there is not address, the address of the parent entity is used';
 
 // Access.php.
 $string['entities:edit'] = 'User is allowed to edit entities';

@@ -48,4 +48,31 @@ if ($hassiteconfig) {
             )
         );
     }
+
+    $settings->add(
+        new admin_setting_configcheckbox(
+            $componentname .'/fallback_image_parent',
+            get_string('fallback_image_parent', $componentname),
+            get_string('fallback_image_parent:description', $componentname),
+            1
+        )
+    );
+
+    $settings->add(
+        new admin_setting_configcheckbox(
+            $componentname .'/fallback_address_parent',
+            get_string('fallback_address_parent', $componentname),
+            get_string('fallback_address_parent:description', $componentname),
+            1
+        )
+    );
+
+    $settings->add(
+        new admin_setting_configcheckbox(
+            $componentname .'/fallback_contacts_parent',
+            get_string('fallback_contacts_parent', $componentname),
+            get_string('fallback_contacts_parent:description', $componentname),
+            1
+        )
+    );
 }

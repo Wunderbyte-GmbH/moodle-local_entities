@@ -105,19 +105,53 @@ if (!empty($subentities)) {
     $entity->affiliated = $affiliated;
 }
 
+// Parent Entity
+$imagefallback = get_config('local_entities', 'fallback_image_parent');
+$contactsfallback = get_config('local_entities', 'fallback_contacts_parent');
+$addressfallback = get_config('local_entities', 'fallback_address_parent');
+
+if(!empty($entity->parentid)){
+$parent = \local_entities\settings_manager::get_settings($entity->parentid);
+if(!empty($parent)){
+
+    $entity->parent = $parent;
+    $entity->parent->link = new \moodle_url("/local/entities/view.php", array("id" => $parent->id));
+    $parenthasaddress = !empty($parent->address);
+    $parenthascontacts = !empty($parent->contacts);
+
+    if(!isset($url) && $imagefallback){
+        $url = $files = $fs->get_area_files($context->id, 'local_entities', 'image', $parent->id);
+
+        foreach ($files as $file) {
+            $filename = $file->get_filename();
+            if ($file->get_filesize() > 0) {
+                $url = moodle_url::make_file_url('/pluginfile.php', '/1/local_entities/image/' . $parent->id . '/' . $filename);
+            }
+        }
+    }
+}
+}
+
 $entity->metadata = $metadata;
 $entity->description = file_rewrite_pluginfile_urls($entity->description, 'pluginfile.php',
 $context->id, 'local_entity', 'description', null);
 
 $entity->picture = isset($url) ? $url : null;
-$entity->hasaddress = isset($entity->address);
-$entity->hascontacts = isset($entity->contacts);
+$entity->hasaddress = !empty($entity->address);
+$entity->hascontacts = !empty($entity->contacts);
 $entity->haspicture = isset($entity->picture);
+
 if ($entity->hasaddress) {
     $entity->addresscleaned = array_values($entity->address);
+}else if($parenthasaddress && $addressfallback){
+    $entity->hasaddress = $parenthasaddress;
+    $entity->addresscleaned = array_values($parent->address);
 }
 if ($entity->hascontacts) {
     $entity->contactscleaned = array_values($entity->contacts);
+}else if($parenthascontacts && $contactsfallback){
+    $entity->hascontacts = $parenthascontacts;
+    $entity->contactscleaned = array_values($parent->contacts);
 }
 
 $entity->canedit = has_capability('local/entities:edit', \context_system::instance());
