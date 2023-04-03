@@ -43,6 +43,7 @@ $string['address_streetnumber'] = 'Haus-Nr.';
 $string['address_map_link'] = 'Karten-Link';
 $string['address_map_embed'] = 'Karte einbetten (HTML)';
 $string['affiliated'] = 'Zugehörige Orte';
+$string['belongs_to'] = 'Gehört zu';
 $string['contacts'] = 'Kontakte';
 $string['contacts_givenname'] = 'Vorname';
 $string['contacts_surname'] = 'Nachname';
@@ -86,6 +87,14 @@ $string['errorwiththefollowingdates'] = 'Es gibt einen Konflikt mit den folgende
 
 $string['maxallocation'] = 'Maximale Anzahl möglicher Buchungen.';
 $string['maxallocation_help'] = '0 für kein Limit, -1 bedeutet nicht buchbar';
+
+//Settings
+$string['fallback_image_parent'] = 'Bild der übergeordneten Entity als Fallback verwenden';
+$string['fallback_image_parent:description'] = 'Wenn die Option gesetzt ist, wird, wenn keine Bild angegeben ist, das Bild der übergeordneten Entity verwendet.';
+$string['fallback_contacts_parent'] = 'Kontakte der übergeordneten Entity als Fallback verwenden';
+$string['fallback_contacts_parent:description'] = 'Wenn die Option gesetzt ist, werden, wenn keine Kontaktdaten angegeben sind, die Kontaktdaten der übergeordneten Entity verwendet.';
+$string['fallback_address_parent'] = 'Adresse der übergeordneten Entity als Fallback verwenden';
+$string['fallback_address_parent:description'] = 'Wenn die Option gesetzt ist, werden, wenn keine Adressdaten angegeben sind, die Adressdaten der übergeordneten Entity verwendet.';
 
 // Access.php.
 $string['entities:edit'] = 'Nutzer*in darf Entities editieren.';

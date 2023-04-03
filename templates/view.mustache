@@ -95,7 +95,12 @@
         </div>
         {{/metadata}}
         </div>
-        
+
+        {{#parent}}
+            <h5>{{#str}} belongs_to, local_entities {{/str}}</h5>
+            <a href="{{link}}">{{name}} ({{shortname}})</a>
+        {{/parent}}
+
         {{#affiliated}}
         <h5>{{#str}} affiliated, local_entities {{/str}}</h5>
             <div class="row">
