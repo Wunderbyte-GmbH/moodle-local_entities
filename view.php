@@ -60,6 +60,7 @@ $classname = "local-entities-{$entity->name}-{$id}";
 
 // Now add that class name to the body of this page :).
 $PAGE->add_body_class($classname);
+$PAGE->requires->css('/local/entities/js/main.css');
 
 // Output the header.
 echo $OUTPUT->header();
@@ -80,29 +81,40 @@ $handlers = local_entities\customfield\entities_cf_helper::create_std_handlers()
 if (isset($entity->cfitemid)) {
     $handlers[] = local_entities\customfield\entities_handler::create((int) $entity->cfitemid);
 }
-$metadata = '';
+
+$metadata = [];
+$cat="";
 foreach ($handlers as $handler) {
     $datas = $handler->get_instance_data($id, true);
+
     foreach ($datas as $data) {
         if (empty($data->get_value())) {
             continue;
         }
         $cat = $data->get_field()->get_category()->get('name');
-        $metakey = $data->get_field()->get('name');
-        $metadata .= '<span><b>' . $metakey . '</b>: ' . $data->get_value() .'</span></br>';
+        $meta = new stdClass();;
+        $meta->key = $data->get_field()->get('name');
+        $meta->value = $data->get_value();
+        $metadata[] = $meta;
     }
 }
+$entity->hasmetadata = !empty($metadata);
+$entity->metacategorie = $cat;
+$entity->metadata = $metadata;
 
 // Affiliated entities.
 $subentities = $DB->get_records('local_entities', ['parentid' => $id]);
-if (!empty($subentities)) {
-    $affiliated = '<ul>';
+$affiliation = [];
+if ($entity->hasaffiliation = !empty($subentities)) {
     foreach ($subentities as $entry) {
-        $link = new \moodle_url("/local/entities/view.php", array("id" => $entry->id));
-        $affiliated .= '<li><a href="' . $link . '">' . $entry->name . '</a></li>';
+        $subentry = new stdClass();
+        $subentry->link = new \moodle_url("/local/entities/view.php", array("id" => $entry->id));
+        $subentry->name = $entry->name;
+        $subentry->shortname = $entry->shortname;
+        $subentry->editurl = new moodle_url('/local/entities/edit.php', array( 'id' => $entry->id));
+        $affiliation[] = $subentry;
     }
-    $affiliated .= '</ul>';
-    $entity->affiliated = $affiliated;
+    $entity->affiliation = $affiliation;
 }
 
 // Parent Entity
@@ -136,10 +148,14 @@ $entity->metadata = $metadata;
 $entity->description = file_rewrite_pluginfile_urls($entity->description, 'pluginfile.php',
 $context->id, 'local_entity', 'description', null);
 
+
+
 $entity->picture = isset($url) ? $url : null;
 $entity->hasaddress = !empty($entity->address);
 $entity->hascontacts = !empty($entity->contacts);
 $entity->haspicture = isset($entity->picture);
+
+
 
 if ($entity->hasaddress) {
     $entity->addresscleaned = array_values($entity->address);
@@ -154,6 +170,10 @@ if ($entity->hascontacts) {
     $entity->contactscleaned = array_values($parent->contacts);
 }
 
+$entity->hasleftsidebar = $entity->hasmetadata && $entity->hasaffiliation;
+$entity->hasrightsidebar = $entity->hascontacts && $entity->hasaddress;
+
+$entity->showcalendar = get_config('local_entities', 'show_calendar_on_details_page');
 $entity->canedit = has_capability('local/entities:edit', \context_system::instance());
 $entity->editurl = new moodle_url('/local/entities/edit.php', array( 'id' => $id));
 $entity->calendarurl = new moodle_url('/local/entities/calendar.php', array( 'id' => $id));

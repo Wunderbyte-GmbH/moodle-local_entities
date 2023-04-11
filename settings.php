@@ -75,4 +75,13 @@ if ($hassiteconfig) {
             1
         )
     );
+
+    $settings->add(
+        new admin_setting_configcheckbox(
+            $componentname .'/show_calendar_on_details_page',
+            get_string('show_calendar_on_details_page', $componentname),
+            get_string('show_calendar_on_details_page:description', $componentname),
+            0
+        )
+    );
 }
