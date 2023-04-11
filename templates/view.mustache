@@ -21,104 +21,201 @@
     Context variables required for this template:
     Example context (json):
     {
-
     }
 }}
 
-<div class="card" style="max-width: 900px">
-    <div class="card-header p-0 m-0" style="min-height:60px; background: #fff">
-        <div class="headerpill badge badge-info">{{type}}</div>
-        {{#canedit}}
-        <label class="switch headerswitch">
-            <input type="checkbox">
-            <span class="slider round"></span>
-        </label>
-        {{/canedit}}
-        {{#haspicture}}
-            <img src="{{picture}}" class="w-100" alt="{{name}}-picture">
-        {{/haspicture}}
-    </div>
-    <div class="card-header">
-        {{#name}}
-        <h3>
-            {{name}}{{#shortname}} ({{.}}){{/shortname}}
-        </h3>
-        {{/name}}
-    </div>
-    <div class="card-body">
-        {{{description}}}
-        <hr>
-        {{#hasaddress}}
-        <div class="container-fluid">
+<div class="container-fluid shadow-bottom pb-3">
 
-        <div class="row">
-            <div class="col-md-6">
-            <i class="fa fa-map-marker fa-2x" aria-hidden="true"></i>
-                <ul class="addresslist list-unstyled pl-4 py-4">
-                    {{#addresscleaned}}
-                    <li>{{city}}, {{postcode}}</li>
-                    <li>{{streetname}} {{streetnumber}}</li>
-                    {{#maplink}}
-                    <li>
-                        {{#str}}address_map_link , local_entities{{/str}}:
-                        <a href="{{maplink}}" target="_blank">
-                            {{maplink}}
-                        </a>
-                    </li>
-                    {{/maplink}}
-                    {{#mapembed}}<li>{{#str}}map, local_entities{{/str}}:<br/>{{{.}}}</li>{{/mapembed}}
-                    {{/addresscleaned}}
-                </ul>
-            </div>
-            <div class="col-md-6">
-            <i class="fa fa-id-card-o fa-2x" aria-hidden="true"></i>
-                <ul class="contactlist list-unstyled pl-4 py-4">
-                    {{#contactscleaned}}
-                    <li>{{givenname}} {{surname}}</li>
-                    <li>{{mail}}</li>
-                    {{/contactscleaned}}
-                </ul>
-            </div>
-
-        </div>
-        </div>
-        <hr>
-        {{/hasaddress}}
-        <div class="container-fluid">
-
-        {{#metadata}}
-        <h5>Additonal Info</h5>
-        <div class="row">
-            <div class="col">
-                {{{metadata}}}
-            </div>
-        </div>
-        {{/metadata}}
+    <div class="row">
+        <div class="col-md-2">
+            {{#haspicture}}
+                <img class="img-fluid img-thumbnail" src="{{picture}}">
+            {{/haspicture}}
         </div>
 
-        {{#parent}}
-            <h5>{{#str}} belongs_to, local_entities {{/str}}</h5>
-            <a href="{{link}}">{{name}} ({{shortname}})</a>
-        {{/parent}}
+        <div class="col-md-10">
 
-        {{#affiliated}}
-        <h5>{{#str}} affiliated, local_entities {{/str}}</h5>
-            <div class="row">
-                <div class="col">
-                    {{{affiliated}}}
+            {{#parent}}
+                <h5 class="">
+                    <a class="text-muted" href="{{link}}">{{name}} ({{shortname}})</a>
+                </h5>
+            {{/parent}}
+            <h1 class=" ">{{#name}}{{name}}{{#shortname}} ({{.}}){{/shortname}}{{/name}}</h1>
+            <span>
+                {{{description}}}
+            </span>
+            {{#canedit}}
+                <div class="text-left ">
+                    <a class="btn btn-sm btn-primary" title="Ressource bearbeiten"
+                       href="{{editurl}}"><i
+                            class="fa fa-edit" aria-hidden="true"></i> {{#str}}edit{{/str}}</a>
+                    <button class="btn btn-sm btn-danger ml-auto"
+                            title="Ressource löschen" rel="nofollow" data-method="delete"
+                            data-target="#deleteModal" data-toggle="modal"><i
+                            class="fa fa-trash"></i>  {{#str}}delete{{/str}}</button>
                 </div>
-            </div>
-        {{/affiliated}}
-</div>
-
-<div class="card-footer d-flex">
-    {{#canedit}}
-    <a class="btn" title="Ressource bearbeiten" href="{{editurl}}"><i class="fa fa-edit" aria-hidden="true"></i> {{#str}}edit{{/str}}</a>
-    <a class="btn" title="Kalender" href="{{calendarurl}}" target="_blank"><i class="fa fa-calendar" aria-hidden="true"></i> {{#str}}calendar , local_entities{{/str}}</a>
-    <div class="d-block ml-auto">
-    <a data-confirm="Diese Ressource wirklich löschen?" class="btn" title="Ressource löschen" rel="nofollow" data-method="delete" href="{{delurl}}"><i class="fa fa-trash"></i>  {{#str}}delete{{/str}}</a>
+                <!-- Modal -->
+                <div class="modal fade" id="deleteModal">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">{{#str}}
+                                    deleteentity , local_entities{{/str}}</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <p>{{#str}}deleteentityconfirm , local_entities{{/str}}</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                                        id="close-modal">{{#str}}cancel{{/str}}</button>
+                                <a href="{{delurl}}" rel="nofollow" class="btn btn-danger">{{#str}}
+                                    delete{{/str}}</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {{/canedit}}
+        </div>
     </div>
-    {{/canedit}}
-  </div>
+</div>
+<div class="row pt-3" style="background-color:#eee;">
+    {{#hasleftsidebar}}
+        <div class="col-xl-3 col-lg-12">
+
+            {{#hasmetadata}}
+                <div class=" card shadow mb-3">
+                    <div class="card-body">
+                        <h2 class="card-title mb-4">{{metacategorie}}</h2>
+                        <div class="row row-cols-xl-1 card-text ml-2">
+                            {{#metadata}}
+                                <div class="col-auto d-inline-flex mb-3 ">
+                                    <div class=" mr-2">
+                                        <i class="fa fa-info-circle fa-fw icon-uxs text-muted"></i>
+                                    </div>
+                                    <div class=" ">
+                                        <div class="bold">{{key}}</div>
+                                        <div class="text-muted">{{{value}}}</div>
+                                    </div>
+                                </div>
+                            {{/metadata}}
+                        </div>
+                    </div>
+                </div>
+            {{/hasmetadata}}
+            {{#hasaffiliation}}
+                <div class=" card shadow mb-3">
+                    <div class="card-body">
+                        <h2 class="card-title">{{#str}} affiliated, local_entities {{/str}}</h2>
+                        <ul class="list-group list-group-flush card-text">
+                            {{#affiliation}}
+                                <li class="list-group-item shadow-none border-0">
+                                    <a href="{{link}}">{{name}} ({{shortname}})</a>
+                                    {{#canedit}}
+                                        <a class="btn btn-link pull-right pt-0 pb-0" title="Ressource bearbeiten"
+                                           href="{{editurl}}">
+                                            <i class="fa fa-edit" aria-hidden="true"></i>
+                                        </a>
+                                    {{/canedit}}
+                                </li>
+                            {{/affiliation}}
+                        </ul>
+                    </div>
+                </div>
+            {{/hasaffiliation}}
+        </div>
+    {{/hasleftsidebar}}
+    <div class="col-xl-auto col-lg-12 flex-fill">
+        <div class=" card shadow mb-3">
+            <div class="card-body">
+                <div>
+                    <h2 class="d-inline-block mr-3 mb-4">{{#str}}calendar , local_entities{{/str}} </h2>
+                    {{#showcalendar}}
+                        <a href="{{calendarurl}}" target="_blank"><i class="fa fa-external-link"></i> {{#str}}
+                            opencalendarfullsize , local_entities{{/str}}</a>{{/showcalendar}}
+                </div>
+                {{#showcalendar}}
+                    <div id="entity-calendar"></div>
+                {{/showcalendar}}
+                {{^showcalendar}}
+                    <a href="{{calendarurl}}" class="btn btn-outline-info btn-block" target="_blank"><i
+                            class="fa fa-external-link"></i> {{#str}}opencalendar , local_entities{{/str}}</a>
+                {{/showcalendar}}
+
+            </div>
+        </div>
+
+    </div>
+    {{#hasrightsidebar}}
+        <div class="col-xl-3 col-lg-12">
+            {{#hascontacts}}
+                <div class=" card shadow mb-3">
+                    <div class="card-body">
+                        <h2 class="card-title mb-4">{{#str}}contacts , local_entities{{/str}}</h2>
+                        <div class="row row-cols-xl-1 card-text ml-2 ">
+                            {{#contactscleaned}}
+                                <div class="col-auto d-inline-flex mb-3 ">
+                                    <div class="mr-2">
+                                        <i class="fa fa-id-card fa-fw icon-uxs text-muted"></i>
+                                    </div>
+                                    <div class=" ">
+                                        <div class="bold">{{givenname}} {{surname}}</div>
+                                        <div class="text-muted"><a href="mailto:{{mail}}">{{mail}}</a></div>
+                                    </div>
+                                </div>
+                            {{/contactscleaned}}
+                        </div>
+                    </div>
+                </div>
+            {{/hascontacts}}
+
+
+            {{#hasaddress}}
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h2 class="card-title mb-4">{{#str}}address , local_entities{{/str}}</h2>
+                        <div class="row row-cols-xl-1 card-text">
+                            {{#addresscleaned}}
+                                <div class="col-auto d-inline-flex mb-3 ml-2">
+                                    <div class="mr-2">
+                                        <i class="fa fa-map-marker fa-fw icon-uxs text-muted"></i>
+                                    </div>
+                                    <div>
+                                        <div class="bold">{{streetname}} {{streetnumber}}</div>
+                                        <div class="text-muted">{{postcode}} {{city}}</div>
+                                    </div>
+                                </div>
+                                {{#mapembed}}
+                                    <div class="col-auto mb-3">
+                                        {{{.}}}
+                                        {{#maplink}}
+
+                                            <a href="{{maplink}}" target="_blank">
+                                                {{maplink}}
+                                            </a>
+
+                                        {{/maplink}}
+                                    </div>
+                                {{/mapembed}}
+
+
+                            {{/addresscleaned}}
+
+                        </div>
+                    </div>
+                </div>
+            {{/hasaddress}}
+        </div>
+    {{/hasrightsidebar}}
+</div>
 </div>
 
+{{#showcalendar}}
+    {{#js}}
+        require(['local_entities/fullcalendardata'], function(calendar) {
+        calendar.init("{{id}}", "de");
+        });
+    {{/js}}
+{{/showcalendar}}

@@ -10,12 +10,7 @@
 #page-local-entities-index #page-content {
     margin-top: 30px;
 }
-#page-local-entities-index .addresslist,
-.contactlist,
-#page-local-entities-index .card-body .fa {
-    font-style: italic;
-    color: #333;
-}
+
 #page-local-entities-index .card-header h3 {
     letter-spacing: 3px;
 }

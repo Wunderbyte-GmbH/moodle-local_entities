@@ -57,6 +57,8 @@ $string['edit_entity'] = 'Entity bearbeiten';
 $string['view'] = 'Ansehen';
 $string['edit'] = 'Bearbeiten';
 $string['delete'] = 'Löschen';
+$string['deleteentity'] = 'Entity löschen!';
+$string['deleteentityconfirm'] = 'Wollen Sie die Entity wirklich löschen?';
 $string['entities:copymodule'] = 'Entities: Modul kopieren';
 $string['categories'] = 'Entity Kategorien';
 $string['map'] = 'Karte';
@@ -95,12 +97,16 @@ $string['fallback_contacts_parent'] = 'Kontakte der übergeordneten Entity als F
 $string['fallback_contacts_parent:description'] = 'Wenn die Option gesetzt ist, werden, wenn keine Kontaktdaten angegeben sind, die Kontaktdaten der übergeordneten Entity verwendet.';
 $string['fallback_address_parent'] = 'Adresse der übergeordneten Entity als Fallback verwenden';
 $string['fallback_address_parent:description'] = 'Wenn die Option gesetzt ist, werden, wenn keine Adressdaten angegeben sind, die Adressdaten der übergeordneten Entity verwendet.';
+$string['show_calendar_on_details_page'] = 'Kalender auf der Detailseite anzeigen';
+$string['show_calendar_on_details_page:description'] = 'Wenn die Option gesetzt ist, wird der Kalender direkt auf der Detailseite angezeigt, ansonsten wird ein Link zur Kalenderseite angezeigt';
 
 // Access.php.
 $string['entities:edit'] = 'Nutzer*in darf Entities editieren.';
 $string['entities:view'] = 'Nutzer*in darf Entities sehen.';
 
 $string['calendar'] = 'Kalender';
+$string['opencalendar'] = 'Kalender öffnen';
+$string['opencalendarfullsize'] = 'Kalender in Vollansicht öffnen';
 
 // Entities handler.
 $string['opentimetable'] = "Öffne Stundenplan";

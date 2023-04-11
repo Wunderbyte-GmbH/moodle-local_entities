@@ -47,7 +47,10 @@ echo $OUTPUT->header();
 echo '<script src=
 "https://cdn.jsdelivr.net/npm/html2canvas@1.0.0-rc.5/dist/html2canvas.min.js">
     </script>';
-$templatedata = array('id' => $id, 'locale' => 'de');
+
+$entity = \local_entities\settings_manager::get_settings($id);
+
+$templatedata = array('id' => $id, 'locale' => 'de', 'name' => $entity->name, 'shortname' => $entity->shortname);
 echo $OUTPUT->render_from_template('local_entities/calendarprintbtn', $templatedata);
 echo $OUTPUT->render_from_template('local_entities/entitiescalendar', $templatedata);
 

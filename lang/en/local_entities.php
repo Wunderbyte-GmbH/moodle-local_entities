@@ -57,6 +57,8 @@ $string['edit_entity'] = 'Edit entity';
 $string['view'] = 'View';
 $string['edit'] = 'Edit';
 $string['delete'] = 'Delete';
+$string['deleteentity'] = 'Delete entity!';
+$string['deleteentityconfirm'] = 'Are you sure you want to delete this entity?';
 $string['entities:copymodule'] = 'Entities: Copy module';
 $string['categories'] = 'Categories';
 $string['map'] = 'Map';
@@ -96,12 +98,16 @@ $string['fallback_contacts_parent'] = 'Use contacts of parent entity as fallback
 $string['fallback_contacts_parent:description'] = 'If enabled and there are not contact information, the contact information of the parent entity is used';
 $string['fallback_address_parent'] = 'Use address of parent entity as fallback';
 $string['fallback_address_parent:description'] = 'If enabled and there is not address, the address of the parent entity is used';
+$string['show_calendar_on_details_page'] = 'Show calendar on detail page';
+$string['show_calendar_on_details_page:description'] = 'If enabled the calendar will be shown on the detail page, otherwise there will be a link to the calendar page';
 
 // Access.php.
 $string['entities:edit'] = 'User is allowed to edit entities';
 $string['entities:view'] = 'User is allowed to see entities';
 
 $string['calendar'] = 'Calendar';
+$string['opencalendar'] = 'Open calendar';
+$string['opencalendarfullsize'] = 'Open calendar in full size';
 
 // Entities handler.
 $string['opentimetable'] = "Open timetable";
