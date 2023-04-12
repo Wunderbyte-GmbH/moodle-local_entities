@@ -43,6 +43,8 @@ $PAGE->set_url($CFG->wwwroot . '/local/entities/edit.php', array("id" => $entity
 // Force the user to login/create an account to access this page.
 require_login();
 
+$PAGE->set_url(new moodle_url('/local/entities/edit.php'));
+
 $secondarynav = new secondary($PAGE);
 $secondarynav->initialise();
 $PAGE->set_secondarynav($secondarynav);

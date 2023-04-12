@@ -115,7 +115,7 @@ $string['timetablemodaltitle'] = "Entity Timetable";
 $string['timetablemodalbutton'] = "OK";
 
 // Import.
-$string['import'] = "Import";
+$string['import'] = "Import entities";
 $string['conflictingshortnames'] = 'There is a conflict between the column names in the table and the used customfield shortanmes. Please change this shortname: {$a}';
 $string['successfullimport'] = "Import was successfull.";
 $string['failedimport'] = "Your import failed.";

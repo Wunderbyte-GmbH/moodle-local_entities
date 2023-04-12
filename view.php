@@ -121,6 +121,7 @@ if ($entity->hasaffiliation = !empty($subentities)) {
 $imagefallback = get_config('local_entities', 'fallback_image_parent');
 $contactsfallback = get_config('local_entities', 'fallback_contacts_parent');
 $addressfallback = get_config('local_entities', 'fallback_address_parent');
+$parenthascontacts = false; // Initialize.
 
 if (!empty($entity->parentid)) {
     $parent = \local_entities\settings_manager::get_settings($entity->parentid);
