@@ -171,8 +171,8 @@ if ($entity->hascontacts) {
     $entity->contactscleaned = array_values($parent->contacts);
 }
 
-$entity->hasleftsidebar = $entity->hasmetadata && $entity->hasaffiliation;
-$entity->hasrightsidebar = $entity->hascontacts && $entity->hasaddress;
+$entity->hasleftsidebar = $entity->hasmetadata || $entity->hasaffiliation;
+$entity->hasrightsidebar = $entity->hascontacts || $entity->hasaddress;
 
 $entity->showcalendar = get_config('local_entities', 'show_calendar_on_details_page');
 $entity->canedit = has_capability('local/entities:edit', \context_system::instance());

@@ -143,7 +143,7 @@ class edit_dynamic_form extends dynamic_form {
         $repeatedopeninghours[] = $mform->createElement('select', 'endminutes', get_string('endminutes', 'local_entities'),
         $minutes);
 
-        $numberofopeninghours = is_array(json_decode($data->openinghours)) ? count(json_decode($data->openinghours)) : 1;
+        $numberofopeninghours = !empty($data->openinghours) && is_array(json_decode($data->openinghours)) ? count(json_decode($data->openinghours)) : 1;
 
         $repeatedopeninghours[] = $mform->createElement('submit', 'deleteopeninghours',
         get_string('deleteopeninghours', 'local_entities'));

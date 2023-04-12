@@ -82,6 +82,7 @@ $string['er_saverelationsforoptiondates'] = 'Save entity for each date too';
 $string['er_placeholder'] = '... search';
 $string['addcategory'] = 'Add category';
 $string['entitieslist'] = 'List entities';
+$string['entitylist'] = 'Entity List';
 
 $string['pricefactor'] = 'Relative price factor';
 $string['pricefactor_help'] = 'Relative price factor: Can be used for automatic price calculations, e.g. in booking plugin';
