@@ -90,7 +90,7 @@ $string['errorwiththefollowingdates'] = 'Es gibt einen Konflikt mit den folgende
 $string['maxallocation'] = 'Maximale Anzahl möglicher Buchungen.';
 $string['maxallocation_help'] = '0 für kein Limit, -1 bedeutet nicht buchbar';
 
-//Settings
+// Settings.
 $string['fallback_image_parent'] = 'Bild der übergeordneten Entity als Fallback verwenden';
 $string['fallback_image_parent:description'] = 'Wenn die Option gesetzt ist, wird, wenn keine Bild angegeben ist, das Bild der übergeordneten Entity verwendet.';
 $string['fallback_contacts_parent'] = 'Kontakte der übergeordneten Entity als Fallback verwenden';

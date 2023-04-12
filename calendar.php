@@ -24,6 +24,7 @@
  */
 
 use local_entities\local\views\secondary;
+
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 
 // Get the id of the page to be displayed.
@@ -50,7 +51,12 @@ echo '<script src=
 
 $entity = \local_entities\settings_manager::get_settings($id);
 
-$templatedata = array('id' => $id, 'locale' => 'de', 'name' => $entity->name, 'shortname' => $entity->shortname);
+$templatedata = [
+    'id' => $id,
+    'locale' => current_language(),
+    'name' => $entity->name,
+    'shortname' => $entity->shortname
+];
 echo $OUTPUT->render_from_template('local_entities/calendarprintbtn', $templatedata);
 echo $OUTPUT->render_from_template('local_entities/entitiescalendar', $templatedata);
 

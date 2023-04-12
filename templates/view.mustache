@@ -25,16 +25,13 @@
 }}
 
 <div class="container-fluid shadow-bottom pb-3">
-
     <div class="row">
         <div class="col-md-2">
             {{#haspicture}}
                 <img class="img-fluid img-thumbnail" src="{{picture}}">
             {{/haspicture}}
         </div>
-
         <div class="col-md-10">
-
             {{#parent}}
                 <h5 class="">
                     <a class="text-muted" href="{{link}}">{{name}} ({{shortname}})</a>
@@ -84,11 +81,10 @@
 <div class="row pt-3" style="background-color:#eee;">
     {{#hasleftsidebar}}
         <div class="col-xl-3 col-lg-12">
-
             {{#hasmetadata}}
                 <div class=" card shadow mb-3">
                     <div class="card-body">
-                        <h2 class="card-title mb-4">{{metacategorie}}</h2>
+                        <h2 class="card-title mb-4">{{metacategory}}</h2>
                         <div class="row row-cols-xl-1 card-text ml-2">
                             {{#metadata}}
                                 <div class="col-auto d-inline-flex mb-3 ">
@@ -146,7 +142,6 @@
 
             </div>
         </div>
-
     </div>
     {{#hasrightsidebar}}
         <div class="col-xl-3 col-lg-12">
@@ -170,8 +165,6 @@
                     </div>
                 </div>
             {{/hascontacts}}
-
-
             {{#hasaddress}}
                 <div class="card shadow">
                     <div class="card-body">
@@ -199,17 +192,13 @@
                                         {{/maplink}}
                                     </div>
                                 {{/mapembed}}
-
-
                             {{/addresscleaned}}
-
                         </div>
                     </div>
                 </div>
             {{/hasaddress}}
         </div>
     {{/hasrightsidebar}}
-</div>
 </div>
 
 {{#showcalendar}}

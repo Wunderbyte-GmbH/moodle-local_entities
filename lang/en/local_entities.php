@@ -91,7 +91,7 @@ $string['errorwiththefollowingdates'] = 'There is a conflict with the following 
 $string['maxallocation'] = 'Max number of bookings on this entity';
 $string['maxallocation_help'] = '0 for no limit, -1 for not bookable.';
 
-//Settings
+// Settings.
 $string['fallback_image_parent'] = 'Use image of parent entity as fallback';
 $string['fallback_image_parent:description'] = 'If enabled and there is no image, the image of the parent entity is used.';
 $string['fallback_contacts_parent'] = 'Use contacts of parent entity as fallback';

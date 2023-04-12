@@ -83,7 +83,7 @@ if (isset($entity->cfitemid)) {
 }
 
 $metadata = [];
-$cat="";
+$cat = "";
 foreach ($handlers as $handler) {
     $datas = $handler->get_instance_data($id, true);
 
@@ -99,7 +99,7 @@ foreach ($handlers as $handler) {
     }
 }
 $entity->hasmetadata = !empty($metadata);
-$entity->metacategorie = $cat;
+$entity->metacategory = $cat;
 $entity->metadata = $metadata;
 
 // Affiliated entities.
@@ -117,31 +117,31 @@ if ($entity->hasaffiliation = !empty($subentities)) {
     $entity->affiliation = $affiliation;
 }
 
-// Parent Entity
+// Parent entity.
 $imagefallback = get_config('local_entities', 'fallback_image_parent');
 $contactsfallback = get_config('local_entities', 'fallback_contacts_parent');
 $addressfallback = get_config('local_entities', 'fallback_address_parent');
 
-if(!empty($entity->parentid)){
-$parent = \local_entities\settings_manager::get_settings($entity->parentid);
-if(!empty($parent)){
+if (!empty($entity->parentid)) {
+    $parent = \local_entities\settings_manager::get_settings($entity->parentid);
+    if (!empty($parent)) {
 
-    $entity->parent = $parent;
-    $entity->parent->link = new \moodle_url("/local/entities/view.php", array("id" => $parent->id));
-    $parenthasaddress = !empty($parent->address);
-    $parenthascontacts = !empty($parent->contacts);
+        $entity->parent = $parent;
+        $entity->parent->link = new \moodle_url("/local/entities/view.php", array("id" => $parent->id));
+        $parenthasaddress = !empty($parent->address);
+        $parenthascontacts = !empty($parent->contacts);
 
-    if(!isset($url) && $imagefallback){
-        $url = $files = $fs->get_area_files($context->id, 'local_entities', 'image', $parent->id);
+        if (!isset($url) && $imagefallback) {
+            $url = $files = $fs->get_area_files($context->id, 'local_entities', 'image', $parent->id);
 
-        foreach ($files as $file) {
-            $filename = $file->get_filename();
-            if ($file->get_filesize() > 0) {
-                $url = moodle_url::make_file_url('/pluginfile.php', '/1/local_entities/image/' . $parent->id . '/' . $filename);
+            foreach ($files as $file) {
+                $filename = $file->get_filename();
+                if ($file->get_filesize() > 0) {
+                    $url = moodle_url::make_file_url('/pluginfile.php', '/1/local_entities/image/' . $parent->id . '/' . $filename);
+                }
             }
         }
     }
-}
 }
 
 $entity->metadata = $metadata;
@@ -159,13 +159,13 @@ $entity->haspicture = isset($entity->picture);
 
 if ($entity->hasaddress) {
     $entity->addresscleaned = array_values($entity->address);
-}else if($parenthasaddress && $addressfallback){
+} else if ($parenthasaddress && $addressfallback) {
     $entity->hasaddress = $parenthasaddress;
     $entity->addresscleaned = array_values($parent->address);
 }
 if ($entity->hascontacts) {
     $entity->contactscleaned = array_values($entity->contacts);
-}else if($parenthascontacts && $contactsfallback){
+} else if ($parenthascontacts && $contactsfallback) {
     $entity->hascontacts = $parenthascontacts;
     $entity->contactscleaned = array_values($parent->contacts);
 }
