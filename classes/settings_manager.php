@@ -120,23 +120,26 @@ class settings_manager {
         if (!isset($data->parentid)) {
             $data->parentid = 0;
         }
-
         // Addresscount is unrelyable...
-        if (isset($data->country_0)
-            || isset($data->city_0)
-            || isset($data->postcode_0)
-            || isset($data->streetname)
-            || isset($data->streetnumber_0)
-            || isset($data->maplink_0)
-            || isset($data->mapembed_0)) {
-                $data->addresscount = 1;
+        if (empty($data->country_0)
+            && empty($data->city_0)
+            && empty($data->postcode_0)
+            && empty($data->streetname_0)
+            && empty($data->streetnumber_0)
+            && empty($data->maplink_0)
+            && empty($data->mapembed_0)) {
+                $data->addresscount = 0;
+        }else{
+            $data->addresscount = 1;
         }
 
         // Addresscount is unrelyable...
-        if (isset($data->givenname_0)
-            || isset($data->surname_0)
-            || isset($data->mail_0)) {
-                $data->contactscount = 1;
+        if (empty($data->givenname_0)
+            && empty($data->surname_0)
+            && empty($data->mail_0)) {
+                $data->contactscount = 0;
+        }else{
+            $data->contactscount=1;
         }
 
         if (isset($data->id) && $data->id > 0) {
@@ -240,6 +243,7 @@ class settings_manager {
         if ($recordcontacts->id == 0) {
             return $DB->insert_record('local_entities_contacts', $recordcontacts);
         }
+        return $data->id;
     }
 
     /**
