@@ -133,7 +133,7 @@ if (!empty($entity->parentid)) {
         $parenthascontacts = !empty($parent->contacts);
 
         if (!isset($url) && $imagefallback) {
-            $url = $files = $fs->get_area_files($context->id, 'local_entities', 'image', $parent->id);
+            $files = $fs->get_area_files($context->id, 'local_entities', 'image', $parent->id);
 
             foreach ($files as $file) {
                 $filename = $file->get_filename();
@@ -151,10 +151,10 @@ $context->id, 'local_entity', 'description', null);
 
 
 
-$entity->picture = isset($url) ? $url : null;
+$entity->picture = !empty($url) ? $url : null;
 $entity->hasaddress = !empty($entity->address);
 $entity->hascontacts = !empty($entity->contacts);
-$entity->haspicture = isset($entity->picture);
+$entity->haspicture = !empty($entity->picture);
 
 
 
