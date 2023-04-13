@@ -221,7 +221,8 @@ class settings_manager {
         global $DB;
         $recordcontacts = $this->prepare_contacts($data, $index);
         $recordcontacts->entityidto = $data->id;
-        if ($recordcontacts->id == 0) {
+
+        if (empty($recordcontacts->id) || $recordcontacts->id == 0) {
             return $DB->insert_record('local_entities_contacts', $recordcontacts);
         } else {
             return $DB->update_record('local_entities_contacts', $recordcontacts);
@@ -240,7 +241,7 @@ class settings_manager {
         global $DB;
         $recordcontacts = $this->prepare_contacts($data, $index);
         $recordcontacts->entityidto = $data->id;
-        if ($recordcontacts->id == 0) {
+        if (empty($recordcontacts->id) || $recordcontacts->id == 0) {
             return $DB->insert_record('local_entities_contacts', $recordcontacts);
         }
         return $data->id;
