@@ -1,3 +1,9 @@
+## Version 0.1.7 (2023042400)
+**Improvements:**
+* Contact and address as fallback from parent.
+* Layout improvements.
+* Minor fixes and code quality.
+
 ## Version 0.1.6 (2023031600)
 **Improvements:**
 * Improvement: Added list of affiliated entities to detail page.

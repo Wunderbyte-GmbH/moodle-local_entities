@@ -18,7 +18,7 @@
  * Plugin version and other meta-data are defined here.
  *
  * @package     local_entities
- * @copyright   2021-2022 Wunderbyte GmbH <info@wunderbyte.at>
+ * @copyright   2023 Wunderbyte GmbH <info@wunderbyte.at>
  * @author      Thomas Winkler, Bernhard Fischer, Georg Maißer
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -26,7 +26,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'local_entities';
-$plugin->release = '0.1.6';
-$plugin->version = 2023040300;
+$plugin->release = '0.1.7';
+$plugin->version = 2023042400;
 $plugin->requires = 2020061500;
 $plugin->maturity = MATURITY_ALPHA;
