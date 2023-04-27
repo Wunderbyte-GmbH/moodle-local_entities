@@ -100,6 +100,10 @@ $string['fallback_address_parent'] = 'Use address of parent entity as fallback';
 $string['fallback_address_parent:description'] = 'If enabled and there is not address, the address of the parent entity is used';
 $string['show_calendar_on_details_page'] = 'Show calendar on detail page';
 $string['show_calendar_on_details_page:description'] = 'If enabled the calendar will be shown on the detail page, otherwise there will be a link to the calendar page';
+$string['event_category_course'] = 'ID of the course of the event category';
+$string['event_category_course:description'] = 'If the value ist set, the Page-Activity with the custom field "bgcolor" can be used for the color of the event';
+$string['event_status_course'] = 'ID of the course of the event status';
+$string['event_status_course:description'] = 'If the value ist set, the Page-Activity with the custom field "bgcolor" can be used for the color of the event, if bgcolor is set it overrides the category value';
 
 // Access.php.
 $string['entities:edit'] = 'User is allowed to edit entities';

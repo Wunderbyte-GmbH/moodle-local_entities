@@ -263,7 +263,7 @@ class entities {
                 $end->setTimestamp($event->endtime);
                 $calendarevent->end = $end->format('Y-m-d'). 'T' .$end->format('H:i:s');
             }
-            $calendarevent->backgroundColor = $bgcolor;
+            $calendarevent->backgroundColor = !empty($event->bgcolor) ? $event->bgcolor : $bgcolor;
             $calendarevents[] = $calendarevent;
         }
         return $calendarevents;

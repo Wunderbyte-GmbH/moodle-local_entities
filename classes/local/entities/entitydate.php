@@ -91,6 +91,13 @@ class entitydate {
     public $link;
 
     /**
+     * Category of the booking item
+     *
+     * @var category
+     */
+    public $bgcolor;
+
+    /**
      * Cunstructor.
      *
      * @param int $itemid
@@ -101,6 +108,7 @@ class entitydate {
      * @param int $endtime
      * @param int $status
      * @param moodle_url $link
+     * @param string $bgcolor
      */
     public function __construct(int $itemid,
                                 string $component,
@@ -109,7 +117,8 @@ class entitydate {
                                 int $starttime,
                                 int $endtime,
                                 int $status,
-                                moodle_url $link) {
+                                moodle_url $link,
+                                string $bgcolor = null) {
         $this->itemid = $itemid;
         $this->component = $component;
         $this->area = $area;
@@ -118,6 +127,7 @@ class entitydate {
         $this->endtime = $endtime;
         $this->status = $status;
         $this->link = $link;
+        $this->bgcolor = $bgcolor;
     }
 
     /**
@@ -135,6 +145,7 @@ class entitydate {
         $item['endtime'] = $this->endtime;
         $item['status'] = $this->status;
         $item['link'] = $this->link;
+        $item['bgcolor'] = $this->bgcolor;
         return $item;
     }
 
