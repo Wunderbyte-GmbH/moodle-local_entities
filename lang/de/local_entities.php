@@ -99,10 +99,6 @@ $string['fallback_address_parent'] = 'Adresse der übergeordneten Entity als Fal
 $string['fallback_address_parent:description'] = 'Wenn die Option gesetzt ist, werden, wenn keine Adressdaten angegeben sind, die Adressdaten der übergeordneten Entity verwendet.';
 $string['show_calendar_on_details_page'] = 'Kalender auf der Detailseite anzeigen';
 $string['show_calendar_on_details_page:description'] = 'Wenn die Option gesetzt ist, wird der Kalender direkt auf der Detailseite angezeigt, ansonsten wird ein Link zur Kalenderseite angezeigt';
-$string['event_category_course'] = 'ID des Kurses der Eventkategorien';
-$string['event_category_course:description'] = 'Wenn der Wert gesetzt ist kann aus einer Page-Activity das Custom-Field "bgcolor" für die Kalendereintragfarbe verwendet werden';
-$string['event_status_course'] = 'ID des Kurses des Eventstatus';
-$string['event_status_course:description'] = 'Wenn der Wert gesetzt ist kann aus einer Page-Activity das Custom-Field "bgcolor" für die Kalendereintragfarbe verwendet werden, wenn bgcolor gesetzt ist überschreibt er den Wert der Kategorie';
 
 // Access.php.
 $string['entities:edit'] = 'Nutzer*in darf Entities editieren.';

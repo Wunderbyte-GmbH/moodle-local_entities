@@ -84,22 +84,4 @@ if ($hassiteconfig) {
             0
         )
     );
-
-    $settings->add(
-        new admin_setting_configtext(
-            $componentname .'/event_category_course',
-            get_string('event_category_course', $componentname),
-            get_string('event_category_course:description', $componentname),
-            ''
-        )
-    );
-
-    $settings->add(
-        new admin_setting_configtext(
-            $componentname .'/event_status_course',
-            get_string('event_status_course', $componentname),
-            get_string('event_status_course:description', $componentname),
-            ''
-        )
-    );
 }
