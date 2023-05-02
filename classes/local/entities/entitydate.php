@@ -117,7 +117,7 @@ class entitydate {
                                 int $starttime,
                                 int $endtime,
                                 int $status,
-                                moodle_url $link,
+                                moodle_url $link = null,
                                 string $bgcolor = null) {
         $this->itemid = $itemid;
         $this->component = $component;
