@@ -41,5 +41,14 @@ $capabilities = [
         'archetypes' => [
             'user' => CAP_ALLOW
         ]
+    ],
+    'local/entities:viewlist' => [
+        'riskbitmask' => RISK_PERSONAL,
+        'captype' => 'read',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => [
+            'manager' => CAP_ALLOW
+        ]
     ]
+    
 ];

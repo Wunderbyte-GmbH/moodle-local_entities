@@ -33,7 +33,7 @@ $delid = optional_param('del', 0, PARAM_INT);
 $context = \context_system::instance();
 $PAGE->set_context($context);
 require_login();
-require_admin();
+require_capability('local_entities/viewlist', $context);
 
 $secondarynav = new secondary($PAGE);
 $secondarynav->initialise();
