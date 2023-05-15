@@ -97,7 +97,7 @@ class local_entities_renderer extends plugin_renderer_base {
         global $CFG;
 
         $html = '<ul class="list-group mb-4">';
-        $html .= '<li class="list-group-item bg-light"><h4>Entity List</h4></li>';
+        $html .= '<li class="list-group-item bg-light"><h4>'.get_string("entitylist", "local_entities").'</h4></li>';
         $html .= "<li class='list-group-item'><a href='"
         . new moodle_url($CFG->wwwroot . '/local/entities/edit.php') .
            "' class='btn btn-smaller btn-primary pull-right mx-2'>" .

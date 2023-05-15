@@ -122,6 +122,7 @@ $imagefallback = get_config('local_entities', 'fallback_image_parent');
 $contactsfallback = get_config('local_entities', 'fallback_contacts_parent');
 $addressfallback = get_config('local_entities', 'fallback_address_parent');
 $parenthascontacts = false; // Initialize.
+$parenthasaddress = false; // Initialize.
 
 if (!empty($entity->parentid)) {
     $parent = \local_entities\settings_manager::get_settings($entity->parentid);
@@ -133,7 +134,7 @@ if (!empty($entity->parentid)) {
         $parenthascontacts = !empty($parent->contacts);
 
         if (!isset($url) && $imagefallback) {
-            $url = $files = $fs->get_area_files($context->id, 'local_entities', 'image', $parent->id);
+            $files = $fs->get_area_files($context->id, 'local_entities', 'image', $parent->id);
 
             foreach ($files as $file) {
                 $filename = $file->get_filename();
@@ -151,10 +152,10 @@ $context->id, 'local_entity', 'description', null);
 
 
 
-$entity->picture = isset($url) ? $url : null;
+$entity->picture = !empty($url) ? $url : null;
 $entity->hasaddress = !empty($entity->address);
 $entity->hascontacts = !empty($entity->contacts);
-$entity->haspicture = isset($entity->picture);
+$entity->haspicture = !empty($entity->picture);
 
 
 
@@ -171,8 +172,8 @@ if ($entity->hascontacts) {
     $entity->contactscleaned = array_values($parent->contacts);
 }
 
-$entity->hasleftsidebar = $entity->hasmetadata && $entity->hasaffiliation;
-$entity->hasrightsidebar = $entity->hascontacts && $entity->hasaddress;
+$entity->hasleftsidebar = $entity->hasmetadata || $entity->hasaffiliation;
+$entity->hasrightsidebar = $entity->hascontacts || $entity->hasaddress;
 
 $entity->showcalendar = get_config('local_entities', 'show_calendar_on_details_page');
 $entity->canedit = has_capability('local/entities:edit', \context_system::instance());

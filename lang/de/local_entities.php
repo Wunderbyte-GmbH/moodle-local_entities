@@ -77,6 +77,7 @@ $string['notwithinopeninghours'] = 'Außerhalb der Öffnungszeiten';
 $string['stdcategories'] = 'Standard-Kategorien';
 $string['stdcategories:description'] = 'Standard-Kategorien aus der Liste der Customfield-Kategorien auswählen, die auf allen Bearbeitungsseiten sichtbar sein sollen.';
 $string['entitieslist'] = 'Entity Liste';
+$string['entitylist'] = 'Entity Liste';
 $string['er_entitiesname'] = 'Ausgewählte Entity';
 $string['er_saverelationsforoptiondates'] = 'Entity auch für jeden Termin speichern';
 $string['addcategory'] = 'Kategorie hinzufügen';
