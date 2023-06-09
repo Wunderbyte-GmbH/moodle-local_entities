@@ -1,3 +1,15 @@
+## Version 0.1.8 (2023060900)
+**Improvements:**
+* Set calendar color.
+* Set URL for clickable events.
+* Remove Settings only used for testing.
+* Layout Bugfix and Language String added.
+
+**Bugfixes:**
+* Bugfix: Fix parent image.
+* Bugfix: Fix address and contacts count.
+* Bugfix: Check contact id for update or insert.
+
 ## Version 0.1.7 (2023042400)
 **Improvements:**
 * Contact and address as fallback from parent.
