@@ -298,15 +298,17 @@ class edit_dynamic_form extends dynamic_form {
         $events = [];
         $eventarray = [];
         for ($i = 0; $i < count($data->daysofweek); $i++) {
-            $eventarray['title'] = 'openinghours';
-            $eventarray['daysofweek'] = implode(',', $data->daysofweek[$i]);
-            $eventarray['starthours'] = sprintf("%02d", $data->starthours[$i]);
-            $eventarray['startminutes'] = sprintf("%02d", $data->startminutes[$i]);
-            $eventarray['endhours'] = sprintf("%02d", $data->endhours[$i]);
-            $eventarray['endminutes'] = sprintf("%02d", $data->endminutes[$i]);
-            if ($eventarray['starthours'].$eventarray['startminutes'] !=
-            $eventarray['endhours'].$eventarray['endminutes']) {
-                $events[] = new reoccuringevent($eventarray);
+            if(is_array($data->daysofweek[$i])) {
+                $eventarray['title'] = 'openinghours';
+                $eventarray['daysofweek'] = implode(',', $data->daysofweek[$i]);
+                $eventarray['starthours'] = sprintf("%02d", $data->starthours[$i]);
+                $eventarray['startminutes'] = sprintf("%02d", $data->startminutes[$i]);
+                $eventarray['endhours'] = sprintf("%02d", $data->endhours[$i]);
+                $eventarray['endminutes'] = sprintf("%02d", $data->endminutes[$i]);
+                if ($eventarray['starthours'] . $eventarray['startminutes'] !=
+                    $eventarray['endhours'] . $eventarray['endminutes']) {
+                    $events[] = new reoccuringevent($eventarray);
+                }
             }
         }
         if (!empty($events)) {
