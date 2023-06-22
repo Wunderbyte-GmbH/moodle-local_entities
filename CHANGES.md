@@ -1,3 +1,7 @@
+## Version 0.1.9 (2023062200)
+**Bugfixes:**
+* Bugfix: Fix a Bug with PHP 8.
+
 ## Version 0.1.8 (2023060900)
 **Improvements:**
 * Set calendar color.
