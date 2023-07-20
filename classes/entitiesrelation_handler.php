@@ -391,8 +391,13 @@ class entitiesrelation_handler {
      */
     public function get_entities_by_name(string $entityname) {
         global $DB;
+
+        $sql = "SELECT * FROM {local_entities}
+            WHERE " . $DB->sql_like('name', ':entityname', false);
+        $params = ['entityname' => $entityname];
+
         // We see if there are more than one entities with the same name.
-        if ($entities = $DB->get_records('local_entities', ['name' => $entityname])) {
+        if ($entities = $DB->get_records_sql($sql, $params)) {
             return $entities;
         } else {
             return [];
