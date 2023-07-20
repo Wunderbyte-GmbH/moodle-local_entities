@@ -1,3 +1,10 @@
+## Version 0.2.0 (2023072000)
+**Improvements:**
+* Improvement: Entity import via CSV is now case-insensitive.
+
+**Bugfixes:**
+* Bugfix: Entity autocomplete search was case sensitive - made it case insensitive.
+
 ## Version 0.1.9 (2023062200)
 **Bugfixes:**
 * Bugfix: Fix a Bug with PHP 8.
