@@ -55,13 +55,17 @@ class search_entities extends external_api {
         $params = self::validate_parameters(self::execute_parameters(), [
             'query' => $query,
         ]);
-        $query = $params['query'];
+        $query = strtolower($params['query']);
 
         $sql = "SELECT e.*, COALESCE(e2.name, '') as parentname FROM {local_entities} e
         LEFT JOIN {local_entities} e2 ON e.parentid = e2.id
-        WHERE e.name LIKE '%{$query}%' OR COALESCE(e2.name, '')
-        LIKE '%{$query}%'
-        ORDER BY CASE WHEN e.parentid=0 THEN e.id ELSE e.parentid END ASC, e.id ASC";
+        WHERE LOWER(e.name) LIKE '%{$query}%'
+        OR COALESCE(LOWER(e2.name), '') LIKE '%{$query}%'
+        ORDER BY
+            CASE
+                WHEN e.parentid = 0 THEN e.id
+            ELSE e.parentid
+        END ASC, e.id ASC";
         $rs = $DB->get_recordset_sql($sql);
         $count = 0;
         $list = [];
