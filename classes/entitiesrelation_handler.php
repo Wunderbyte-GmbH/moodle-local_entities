@@ -420,12 +420,12 @@ class entitiesrelation_handler {
     }
 
     /**
-     * Return entity by id.
+     * Return entities by id.
      *
      * @param int $entityid
      * @return bool|array
      */
-    public static function get_entity_by_id(int $entityid) {
+    public static function get_entities_by_id(int $entityid) {
         global $DB;
 
         $sql = "SELECT  ea.id as addressid, e.id as id, e.name, e.shortname, e.description,
