@@ -34,10 +34,10 @@
         <div class="col-md-10">
             {{#parent}}
                 <h5 class="">
-                    <a class="text-muted" href="{{link}}">{{name}} ({{shortname}})</a>
+                    <a class="text-muted" href="{{link}}">{{name}}</a>
                 </h5>
             {{/parent}}
-            <h1 class=" ">{{#name}}{{name}}{{#shortname}} ({{.}}){{/shortname}}{{/name}}</h1>
+            <h1 class=" ">{{#name}}{{.}}{{/name}}</h1>
             <span>
                 {{{description}}}
             </span>
@@ -108,7 +108,7 @@
                         <ul class="list-group list-group-flush card-text">
                             {{#affiliation}}
                                 <li class="list-group-item shadow-none border-0">
-                                    <a href="{{link}}">{{name}} ({{shortname}})</a>
+                                    <a href="{{link}}">{{name}}</a>
                                     {{#canedit}}
                                         <a class="btn btn-link pull-right pt-0 pb-0" title="Ressource bearbeiten"
                                            href="{{editurl}}">
