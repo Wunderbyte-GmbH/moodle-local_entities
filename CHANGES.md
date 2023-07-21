@@ -1,3 +1,9 @@
+## Version 0.2.1 (2023072100)
+**Improvements:**
+* Improvement: Renamed get_entity_by_id to get_entities_by_id
+    (there can be more than one because of join with address table).
+* Improvement: Do not show shortname on view.php.
+
 ## Version 0.2.0 (2023072000)
 **Improvements:**
 * Improvement: Entity import via CSV is now case-insensitive.
