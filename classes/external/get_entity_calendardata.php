@@ -87,10 +87,9 @@ class get_entity_calendardata extends external_api {
      * @return external_single_structure
      */
     public static function execute_returns(): external_single_structure {
-        return new external_single_structure(array(
-            'json' => new external_value(PARAM_TEXT, 'json'),
-            'error' => new external_value(PARAM_TEXT, 'error'),
-            )
-        );
+        return new external_single_structure([
+            'json' => new external_value(PARAM_RAW, 'json'),
+            'error' => new external_value(PARAM_RAW, 'error'),
+        ]);
     }
 }
