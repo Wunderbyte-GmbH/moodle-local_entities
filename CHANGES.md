@@ -1,3 +1,7 @@
+## Version 0.2.2 (2023081100)
+**Bugfixes:**
+* Bugfix: Return values of webservice should be PARAM_RAW - so they do not crash with HTML tags.
+
 ## Version 0.2.1 (2023072100)
 **Improvements:**
 * Improvement: Renamed get_entity_by_id to get_entities_by_id
