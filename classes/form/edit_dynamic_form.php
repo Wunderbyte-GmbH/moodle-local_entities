@@ -143,7 +143,8 @@ class edit_dynamic_form extends dynamic_form {
         $repeatedopeninghours[] = $mform->createElement('select', 'endminutes', get_string('endminutes', 'local_entities'),
         $minutes);
 
-        $numberofopeninghours = !empty($data->openinghours) && is_array(json_decode($data->openinghours)) ? count(json_decode($data->openinghours)) : 1;
+        $numberofopeninghours = !empty($data->openinghours) && is_array(json_decode($data->openinghours)) ?
+            count(json_decode($data->openinghours)) : 1;
 
         $repeatedopeninghours[] = $mform->createElement('submit', 'deleteopeninghours',
         get_string('deleteopeninghours', 'local_entities'));
@@ -298,7 +299,7 @@ class edit_dynamic_form extends dynamic_form {
         $events = [];
         $eventarray = [];
         for ($i = 0; $i < count($data->daysofweek); $i++) {
-            if(is_array($data->daysofweek[$i])) {
+            if (is_array($data->daysofweek[$i])) {
                 $eventarray['title'] = 'openinghours';
                 $eventarray['daysofweek'] = implode(',', $data->daysofweek[$i]);
                 $eventarray['starthours'] = sprintf("%02d", $data->starthours[$i]);
