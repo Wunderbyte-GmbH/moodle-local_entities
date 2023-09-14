@@ -15,10 +15,12 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 namespace local_entities\external;
-use external_api;
-use external_function_parameters;
-use external_value;
-use external_single_structure;
+use core_external\external_api;
+use core_external\external_description;
+use core_external\external_function_parameters;
+use core_external\external_multiple_structure;
+use core_external\external_single_structure;
+use core_external\external_value;
 
 
 /**
@@ -104,19 +106,19 @@ class search_entities extends external_api {
      *
      * @return external_description
      */
-    public static function execute_returns(): \external_description {
+    public static function execute_returns(): external_description {
 
-        return new \external_single_structure([
-            'list' => new \external_multiple_structure(
-                new \external_single_structure([
-                    'id' => new \external_value(\core_user::get_property_type('id'), 'ID of the user'),
-                    'name' => new \external_value(PARAM_TEXT, 'The fullname of the entity'),
-                    'shortname' => new \external_value(PARAM_TEXT, 'The shortname of the entity', VALUE_OPTIONAL),
-                    'parentname' => new \external_value(PARAM_TEXT, 'The shortname of the entity', VALUE_OPTIONAL),
-                    'extrafields' => new \external_multiple_structure(
-                        new \external_single_structure([
-                            'name' => new \external_value(PARAM_TEXT, 'Name of the extrafield.'),
-                            'value' => new \external_value(PARAM_TEXT, 'Value of the extrafield.'),
+        return new external_single_structure([
+            'list' => new external_multiple_structure(
+                new external_single_structure([
+                    'id' => new external_value(\core_user::get_property_type('id'), 'ID of the user'),
+                    'name' => new external_value(PARAM_TEXT, 'The fullname of the entity'),
+                    'shortname' => new external_value(PARAM_TEXT, 'The shortname of the entity', VALUE_OPTIONAL),
+                    'parentname' => new external_value(PARAM_TEXT, 'The shortname of the entity', VALUE_OPTIONAL),
+                    'extrafields' => new external_multiple_structure(
+                        new external_single_structure([
+                            'name' => new external_value(PARAM_TEXT, 'Name of the extrafield.'),
+                            'value' => new external_value(PARAM_TEXT, 'Value of the extrafield.'),
                         ]), 'List of extra fields', VALUE_OPTIONAL)
                 ])
             ),

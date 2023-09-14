@@ -208,7 +208,10 @@ class entitiesrelation_handler {
     public function get_instance_data(int $instanceid): stdClass {
         global $DB;
         $sql = "SELECT r.entityid as id, r.id as relationid, r.component, r.area, r.instanceid,
-                    e.name, e.shortname, r.timecreated
+                    e.name, e.shortname, r.timecreated, e.parentid, (
+                    SELECT pe.name
+                    FROM {local_entities} pe
+                    WHERE pe.id=e.parentid) as parentname
                  FROM {local_entities_relations} r
                  JOIN {local_entities} e
                  ON e.id = r.entityid
@@ -433,7 +436,12 @@ class entitiesrelation_handler {
                         e.parentid, e.sortorder, e.cfitemid, e.openinghours,
                         e.maxallocation, e.pricefactor,
                         ea.country, ea.city, ea.postcode,
-                        ea.streetname, ea.streetnumber, ea.maplink, ea.mapembed
+                        ea.streetname, ea.streetnumber, ea.maplink, ea.mapembed,
+                        (
+                            SELECT pe.name
+                            FROM {local_entities} pe
+                            WHERE pe.id=e.parentid) as parentname
+
                 FROM {local_entities} e
                 LEFT JOIN {local_entities_address} ea
                 ON e.id = ea.entityidto
