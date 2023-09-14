@@ -1,3 +1,7 @@
+## Version 0.2.3 (2023091400)
+**Improvements:**
+* Improvement: Return parent name directly via sql on many occassions.
+
 ## Version 0.2.2 (2023081100)
 **Bugfixes:**
 * Bugfix: Return values of webservice should be PARAM_RAW - so they do not crash with HTML tags.
