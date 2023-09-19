@@ -1,3 +1,6 @@
+## Version 0.2.4 (2023091900)
+* Bugfix: Fix namespaces for Calendar webservices.
+
 ## Version 0.2.3 (2023091400)
 **Improvements:**
 * Improvement: Return parent name directly via sql on many occassions.
