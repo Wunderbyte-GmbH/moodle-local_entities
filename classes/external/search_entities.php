@@ -16,7 +16,6 @@
 
 namespace local_entities\external;
 
-use external_description;
 use external_multiple_structure;
 use external_api;
 use external_function_parameters;
@@ -109,9 +108,9 @@ class search_entities extends external_api {
     /**
      * Describes the external function result value.
      *
-     * @return external_description
+     * @return external_single_structure
      */
-    public static function execute_returns(): external_description {
+    public static function execute_returns(): external_single_structure {
 
         return new external_single_structure([
             'list' => new external_multiple_structure (
