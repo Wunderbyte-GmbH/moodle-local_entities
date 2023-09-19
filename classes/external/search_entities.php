@@ -15,12 +15,17 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 namespace local_entities\external;
-use core_external\external_api;
-use core_external\external_description;
-use core_external\external_function_parameters;
-use core_external\external_multiple_structure;
-use core_external\external_single_structure;
-use core_external\external_value;
+
+use external_description;
+use external_multiple_structure;
+use external_api;
+use external_function_parameters;
+use external_value;
+use external_single_structure;
+
+defined('MOODLE_INTERNAL') || die();
+
+require_once($CFG->libdir . '/externallib.php');
 
 
 /**
@@ -109,7 +114,7 @@ class search_entities extends external_api {
     public static function execute_returns(): external_description {
 
         return new external_single_structure([
-            'list' => new external_multiple_structure(
+            'list' => new external_multiple_structure (
                 new external_single_structure([
                     'id' => new external_value(\core_user::get_property_type('id'), 'ID of the user'),
                     'name' => new external_value(PARAM_TEXT, 'The fullname of the entity'),
