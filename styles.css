@@ -76,7 +76,7 @@
 }
 #page-local-entities-index #entitiesrelation-form ul [aria-expanded="false"]:before {
     content: "\f054";
-    font-family: FontAwesome;
+    font-family: FontAwesome, "Font Awesome 6 Free";
     position: absolute;
     left: 5px;
 }
@@ -89,7 +89,7 @@
 }
 #page-local-entities-index #entitiesrelation-form ul [aria-expanded="true"]:before {
     content: "\f078";
-    font-family: FontAwesome;
+    font-family: FontAwesome, "Font Awesome 6 Free";
     position: absolute;
     left: 5px;
 }
