@@ -34,7 +34,7 @@ use context_module;
 use context_system;
 use html_writer;
 
-$PAGE->set_context(\context_system::instance());
+$PAGE->set_context(context_system::instance());
 
 require_login();
 

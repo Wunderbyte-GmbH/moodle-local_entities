@@ -112,7 +112,7 @@ class csv_import {
      *
      * @param object $csvcontent
      * @param object $data
-     * @return void
+     * @return bool
      */
     public function process_data($csvcontent, $data) {
 
@@ -182,11 +182,11 @@ class csv_import {
                 $entity['cfitemid'] = $csvrecord['cfitemid'];
                 unset($csvrecord['cfitemid']);
                 unset($csvrecord['entitiescategory']);
-            } else if (isset($cfitemid['entitiescategory'])) {
+            } else if (isset($csvrecord['entitiescategory'])) {
                 $categories = entities_cf_helper::get_alternative_cf_categories();
 
                 foreach ($categories as $key => $value) {
-                    if ($value == $cfitemid['entitiescategory']) {
+                    if ($value == $csvrecord['entitiescategory']) {
                         $entity['cfitemid'] = $key;
                     }
                 }

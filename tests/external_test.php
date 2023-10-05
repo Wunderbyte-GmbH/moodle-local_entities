@@ -96,8 +96,8 @@ class external_test extends \advanced_testcase {
      * @return void
      * @dataProvider update_exceptions_data_provider
      * @covers \local_entities_external::update_entity
-     * @throws invalid_response_exception
-     * @throws moodle_exception
+     * @throws \invalid_response_exception
+     * @throws \moodle_exception
      */
     public function test_local_entities_update_entity_exceptions($id, $data, $expected) {
         $this->resetAfterTest(true);

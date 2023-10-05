@@ -50,7 +50,7 @@ $secondarynav->initialise();
 $PAGE->set_secondarynav($secondarynav);
 $PAGE->set_secondary_navigation(true);
 
-$settingsmanager = new \local_entities\settings_manager();
+$settingsmanager = new settings_manager();
 
 if (!empty($entityid)) {
 
