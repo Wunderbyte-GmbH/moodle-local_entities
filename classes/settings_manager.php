@@ -129,7 +129,7 @@ class settings_manager {
             && empty($data->maplink_0)
             && empty($data->mapembed_0)) {
                 $data->addresscount = 0;
-        }else{
+        } else {
             $data->addresscount = 1;
         }
 
@@ -138,8 +138,8 @@ class settings_manager {
             && empty($data->surname_0)
             && empty($data->mail_0)) {
                 $data->contactscount = 0;
-        }else{
-            $data->contactscount=1;
+        } else {
+            $data->contactscount = 1;
         }
 
         if (isset($data->id) && $data->id > 0) {
@@ -260,7 +260,7 @@ class settings_manager {
         if (isset($data->ogimage_filemanager)) {
             $context = \context_system::instance();
             $options = array('subdirs' => 0, 'maxbytes' => 204800, 'maxfiles' => 1, 'accepted_types' => '*');
-            $data = file_postupdate_standard_filemanager($data, 'image', $options, $context->id, 'local_entities', 'image', $id);
+            $data = file_postupdate_standard_filemanager($data, 'image', $options, $context, 'local_entities', 'image', $id);
         }
         return $data;
     }
@@ -397,7 +397,7 @@ class settings_manager {
      *
      * @param int $entityid
      * @return stdClass
-     * @throws dml_exception
+     * @throws \dml_exception
      */
     public static function get_settings_forform(int $entityid): stdClass {
         global $DB;
@@ -414,7 +414,7 @@ class settings_manager {
      *
      * @param int $entityid
      * @return stdClass
-     * @throws dml_exception
+     * @throws \dml_exception
      */
     public static function get_settings(int $entityid): stdClass {
         global $DB;
