@@ -1,3 +1,7 @@
+## Version 0.2.5 (2023100900)
+* Bugfix: Add FontAwesome 6 compatibility for Moodle 4.2.
+* Bugfix: Fix github actions.
+
 ## Version 0.2.4 (2023091900)
 * Bugfix: Fix namespaces for Calendar webservices.
 
