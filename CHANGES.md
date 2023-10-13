@@ -1,3 +1,6 @@
+## Version 0.2.6 (2023101300)
+* Improvement: We even show entities when logged out.
+
 ## Version 0.2.5 (2023100900)
 * Bugfix: Add FontAwesome 6 compatibility for Moodle 4.2.
 * Bugfix: Fix github actions.
