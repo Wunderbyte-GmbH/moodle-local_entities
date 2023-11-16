@@ -27,6 +27,7 @@ use local_entities\local\views\secondary;
 // We even want to show entities when logged out!
 // phpcs:ignore moodle.Files.RequireLogin.Missing
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
+require_once("{$CFG->dirroot}/local/entities/lib.php");
 
 global $DB;
 
@@ -37,13 +38,11 @@ $id = optional_param('id', 0, PARAM_INT);
 $PAGE->set_context(\context_system::instance());
 $PAGE->set_url("{$CFG->wwwroot}/local/entities/index.php", ['id' => $id]);
 
-require_once("{$CFG->dirroot}/local/entities/lib.php");
-
 // Set the page layout.
 // We even want to show entities when logged out!
 // phpcs:ignore Squiz.PHP.CommentedOutCode.Found
 /* require_capability('local/entities:view', \context_system::instance()); */
-$PAGE->set_pagelayout('standard');
+$PAGE->set_pagelayout('base');
 
 $secondarynav = new secondary($PAGE);
 $secondarynav->initialise();
