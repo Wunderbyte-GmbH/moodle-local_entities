@@ -44,10 +44,12 @@ $PAGE->set_url("{$CFG->wwwroot}/local/entities/index.php", ['id' => $id]);
 /* require_capability('local/entities:view', \context_system::instance()); */
 $PAGE->set_pagelayout('base');
 
-$secondarynav = new secondary($PAGE);
-$secondarynav->initialise();
-$PAGE->set_secondarynav($secondarynav);
-$PAGE->set_secondary_navigation(true);
+if (isloggedin()) {
+    $secondarynav = new secondary($PAGE);
+    $secondarynav->initialise();
+    $PAGE->set_secondarynav($secondarynav);
+    $PAGE->set_secondary_navigation(true);
+}
 
 // Add a class to the body that identifies this page.
 
