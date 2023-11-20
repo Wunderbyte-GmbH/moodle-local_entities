@@ -1,3 +1,7 @@
+## Version 0.2.7 (2023112000)
+* Improvement: view.php layout change: base instead of standard.
+* Improvement: Only load secondary navigation if user is logged in.
+
 ## Version 0.2.6 (2023101300)
 * Improvement: We even show entities when logged out.
 
