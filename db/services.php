@@ -25,72 +25,72 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$functions = array(
-        'local_entities_list_all_parent_entities' => array(
+$functions = [
+        'local_entities_list_all_parent_entities' => [
                 'classname' => 'local_entities_external',
                 'methodname' => 'list_all_parent_entities',
                 'classpath' => 'local/entities/classes/external.php',
                 'description' => 'fetches all top-level entities',
                 'type' => 'read',
                 'ajax' => true,
-                'services' => array(),
-                'capabilities' => 'local/entities:edit'
-        ),
-        'local_entities_update_entity' => array(
+                'services' => [],
+                'capabilities' => 'local/entities:edit',
+        ],
+        'local_entities_update_entity' => [
                 'classname' => 'local_entities_external',
                 'methodname' => 'update_entity',
                 'classpath' => 'local/entities/classes/external.php',
                 'description' => 'updates the given record with the new values.',
                 'type' => 'write',
                 'ajax' => true,
-                'services' => array(),
-                'capabilities' => 'local/entities:edit'
-        ),
-        'local_entities_list_all_subentities' => array(
+                'services' => [],
+                'capabilities' => 'local/entities:edit',
+        ],
+        'local_entities_list_all_subentities' => [
                 'classname' => 'local_entities_external',
                 'methodname' => 'list_all_subentities',
                 'classpath' => 'local/entities/classes/external.php',
                 'description' => 'fetches all subentities of a given parent',
                 'type' => 'read',
                 'ajax' => true,
-                'services' => array(),
-                'capabilities' => ''
-        ),
-        'local_entities_delete_entity' => array(
+                'services' => [],
+                'capabilities' => '',
+        ],
+        'local_entities_delete_entity' => [
                 'classname' => 'local_entities_external',
                 'methodname' => 'delete_entity',
                 'classpath' => 'local/entities/classes/external.php',
                 'description' => 'deletes an entity',
                 'type' => 'read',
                 'ajax' => true,
-                'services' => array(),
-                'capabilities' => 'local/entities:edit'
-        ),
-        'local_entities_get_entity_calendardata' => array(
+                'services' => [],
+                'capabilities' => 'local/entities:edit',
+        ],
+        'local_entities_get_entity_calendardata' => [
                 'classname' => 'local_entities\external\get_entity_calendardata',
                 'classpath' => '',
                 'description' => 'Get calendardata from specific entity',
                 'type' => 'read',
-                'ajax' => true
-        ),
-        'local_entities_search_entities' => array(
+                'ajax' => true,
+        ],
+        'local_entities_search_entities' => [
                 'classname' => 'local_entities\external\search_entities',
                 'classpath' => '',
                 'description' => 'Get entities from query',
                 'type' => 'read',
-                'ajax' => true
-        ),
-);
+                'ajax' => true,
+        ],
+];
 
-$services = array(
-        'Wunderbyte entities external' => array(
-                'functions' => array(
+$services = [
+        'Wunderbyte entities external' => [
+                'functions' => [
                         'local_entities_list_all_parent_entities',
                         'local_entities_update_entity',
                         'local_entities_list_all_subentities',
-                ),
+                ],
                 'restrictedusers' => 0,
                 'shortname' => 'local_entities_external',
-                'enabled' => 1
-        )
-);
+                'enabled' => 1,
+        ],
+];

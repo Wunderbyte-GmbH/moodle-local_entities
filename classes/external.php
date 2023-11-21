@@ -44,8 +44,8 @@ class local_entities_external extends external_api {
      */
     public static function list_all_parent_entities_parameters(): external_function_parameters {
         return new external_function_parameters(
-                array(// No parameters in this query.
-                )
+                [// No parameters in this query.
+                ]
         );
     }
 
@@ -56,9 +56,9 @@ class local_entities_external extends external_api {
      * @throws invalid_parameter_exception
      */
     public static function list_all_parent_entities(): array {
-        $returnedentities = array();
+        $returnedentities = [];
 
-        self::validate_parameters(self::list_all_parent_entities_parameters(), (array()));
+        self::validate_parameters(self::list_all_parent_entities_parameters(), ([]));
 
         $entities = entities::list_all_parent_entities();
         return self::extract_returnvalues($entities, $returnedentities);
@@ -72,12 +72,12 @@ class local_entities_external extends external_api {
     public static function list_all_parent_entities_returns(): external_multiple_structure {
         return new external_multiple_structure(
                 new external_single_structure(
-                        array(
+                        [
                                 'id' => new external_value(PARAM_INT, 'id of the entity', VALUE_REQUIRED),
                                 'name' => new external_value(PARAM_RAW, 'name of the entity', VALUE_REQUIRED),
                                 'description' => new external_value(PARAM_RAW, 'description of the entity', VALUE_OPTIONAL),
                                 'type' => new external_value(PARAM_RAW, 'type of the entity', VALUE_OPTIONAL),
-                        )
+                        ]
                 )
         );
     }
@@ -89,17 +89,17 @@ class local_entities_external extends external_api {
      */
     public static function update_entity_parameters(): external_function_parameters {
         return new external_function_parameters(
-                array(
+                [
                         'id' => new external_value(PARAM_INT, VALUE_REQUIRED),
                         'data' => new external_multiple_structure(
                                 new external_single_structure(
-                                        array(
+                                        [
                                                 'name' => new external_value(PARAM_ALPHANUMEXT, 'data name'),
                                                 'value' => new external_value(PARAM_RAW, 'data value'),
-                                        )
-                                ), 'Name of the column where to pass to the new value.', VALUE_DEFAULT, array()
+                                        ]
+                                ), 'Name of the column where to pass to the new value.', VALUE_DEFAULT, []
                         ),
-                )
+                ]
         );
     }
 
@@ -116,8 +116,8 @@ class local_entities_external extends external_api {
     public static function update_entity(int $id, array $data): array {
         $context = \context_system::instance();
         require_capability('local/entities:edit', $context);
-        $messages = array();
-        $warnings = array();
+        $messages = [];
+        $warnings = [];
         $params = [
                 'id' => $id,
                 'data' => $data,
@@ -159,10 +159,10 @@ class local_entities_external extends external_api {
      */
     public static function update_entity_returns(): external_single_structure {
         return new external_single_structure(
-                array(
+                [
                         'updated' => new external_value(PARAM_BOOL, 'did things get updated?'),
                         'warnings' => new external_warnings(),
-                )
+                ]
         );
     }
 
@@ -173,9 +173,9 @@ class local_entities_external extends external_api {
      */
     public static function delete_entity_parameters(): external_function_parameters {
         return new external_function_parameters(
-                array(
+                [
                         'id' => new external_value(PARAM_INT, VALUE_REQUIRED),
-                )
+                ]
         );
     }
 
@@ -190,16 +190,16 @@ class local_entities_external extends external_api {
         global $DB;
         $context = \context_system::instance();
         require_capability('local/entities:edit', $context);
-        $messages = array();
-        $warnings = array();
+        $messages = [];
+        $warnings = [];
         $params = self::validate_parameters(self::delete_entity_parameters(),
-        array(
+        [
             'id' => $id,
-        ));
+        ]);
         $DB->delete_records('local_entities', ['id' => $params['id']]);
 
         return [
-                'deleted' => $DB->record_exists('local_entities', ['id' => $params['id']])
+                'deleted' => $DB->record_exists('local_entities', ['id' => $params['id']]),
         ];
     }
 
@@ -210,9 +210,9 @@ class local_entities_external extends external_api {
      */
     public static function delete_entity_returns(): external_single_structure {
         return new external_single_structure(
-                array(
-                        'deleted' => new external_value(PARAM_BOOL, 'did things got deleted?')
-                )
+                [
+                        'deleted' => new external_value(PARAM_BOOL, 'did things got deleted?'),
+                ]
         );
     }
 
@@ -239,9 +239,9 @@ class local_entities_external extends external_api {
      */
     private static function does_entity_exist(string $table, int $id): array {
         global $DB;
-        $warning = array();
+        $warning = [];
         // Todo invalid response exception.
-        $matchingentities = $DB->count_records($table, array('id' => $id));
+        $matchingentities = $DB->count_records($table, ['id' => $id]);
         if ($matchingentities != 1) {
             $warning['itemid'] = $id;
             $warning['warningcode'] = 'nosuchid';
@@ -256,16 +256,16 @@ class local_entities_external extends external_api {
      * @return array
      */
     private static function are_params_set(array $params): array {
-        $warning = array();
+        $warning = [];
         $data = $params['data'];
-        $validdata = array();
+        $validdata = [];
         foreach ($data as $item) {
             if (empty($item['name']) || ctype_space($item['value'] . ' ')) {
-                $warning = array(
+                $warning = [
                         'item' => $item['name'] . ', ' . $item['value'],
                         'warningcode' => 'invalidparams',
                         'message' => 'These parameters are invalid.',
-                );
+                ];
             } else {
                 $validdata[] = $item;
             }
@@ -284,7 +284,7 @@ class local_entities_external extends external_api {
      */
     private static function verify_param_contents(string $table, array $params) {
         global $DB;
-        $matchingentities = $DB->count_records($table, array('id' => $params['id']));
+        $matchingentities = $DB->count_records($table, ['id' => $params['id']]);
         if ($matchingentities != 1) {
             throw new moodle_exception('nosuchentry', 'local_entities', null, $params['id'], 'there is no entity with this id.');
         }
@@ -324,9 +324,9 @@ class local_entities_external extends external_api {
      */
     public static function list_all_subentities_parameters(): external_function_parameters {
         return new external_function_parameters(
-                array(
+                [
                         'parentid' => new external_value(PARAM_INT, VALUE_REQUIRED),
-                )
+                ]
         );
     }
 
@@ -337,8 +337,8 @@ class local_entities_external extends external_api {
      * @throws invalid_parameter_exception
      */
     public static function list_all_subentities(int $parentid): array {
-        $returnedentities = array();
-        self::validate_parameters(self::list_all_subentities_parameters(), array('parentid' => $parentid));
+        $returnedentities = [];
+        self::validate_parameters(self::list_all_subentities_parameters(), ['parentid' => $parentid]);
         $entities = entities::list_all_subentities($parentid);
         return self::extract_returnvalues($entities, $returnedentities);
     }
@@ -350,12 +350,12 @@ class local_entities_external extends external_api {
     public static function list_all_subentities_returns(): external_multiple_structure {
         return new external_multiple_structure(
                 new external_single_structure(
-                        array(
+                        [
                                 'id' => new external_value(PARAM_INT, 'id of the entity', VALUE_REQUIRED),
                                 'name' => new external_value(PARAM_RAW, 'name of the entity', VALUE_REQUIRED),
                                 'description' => new external_value(PARAM_RAW, 'description of the entity', VALUE_OPTIONAL),
                                 'type' => new external_value(PARAM_RAW, 'type of the entity', VALUE_OPTIONAL),
-                        )
+                        ]
                 )
         );
     }
@@ -368,7 +368,7 @@ class local_entities_external extends external_api {
      */
     public static function extract_returnvalues(array $entities, array $returnedentities): array {
         foreach ($entities as $entity) {
-            $entityrecord = array();
+            $entityrecord = [];
             $entityrecord['id'] = $entity->id;
             $entityrecord['name'] = $entity->name;
             $entityrecord['description'] = $entity->description;
@@ -386,13 +386,13 @@ class local_entities_external extends external_api {
      * @return array
      */
     private static function has_params(array $params): array {
-        $warning = array();
+        $warning = [];
         if (count($params['data']) < 1) {
-            $warning = array(
+            $warning = [
                     'itemid' => $params['id'],
                     'warningcode' => 'noparams',
                     'message' => 'There are no valid parameters.',
-            );
+            ];
         }
         return $warning;
     }

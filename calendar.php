@@ -55,7 +55,7 @@ $templatedata = [
     'id' => $id,
     'locale' => current_language(),
     'name' => $entity->name,
-    'shortname' => $entity->shortname
+    'shortname' => $entity->shortname,
 ];
 echo $OUTPUT->render_from_template('local_entities/calendarprintbtn', $templatedata);
 echo $OUTPUT->render_from_template('local_entities/entitiescalendar', $templatedata);

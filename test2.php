@@ -36,7 +36,7 @@ require_admin();
 
 $entity = entity::load($id);
 
-$PAGE->set_url(new moodle_url('/local/entities/test2.php', array('id' => $id)));
+$PAGE->set_url(new moodle_url('/local/entities/test2.php', ['id' => $id]));
 
 $title = get_string('calendar', 'local_entities') . " " . $entity->name;
 $PAGE->set_title($title);

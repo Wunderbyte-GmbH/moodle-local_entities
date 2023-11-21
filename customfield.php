@@ -34,10 +34,10 @@ require_login();
 
 if ($id == -1) {
     $id = \local_entities\customfield\entities_cf_helper::get_next_itemid();
-    redirect(new moodle_url('/local/entities/customfield.php', array('id' => $id)));
+    redirect(new moodle_url('/local/entities/customfield.php', ['id' => $id]));
 }
 
-$PAGE->set_url(new moodle_url('/local/entities/customfield.php', array('id' => $id)));
+$PAGE->set_url(new moodle_url('/local/entities/customfield.php', ['id' => $id]));
 
 $secondarynav = new secondary($PAGE);
 $secondarynav->initialise();

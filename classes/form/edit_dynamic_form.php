@@ -78,7 +78,7 @@ class edit_dynamic_form extends dynamic_form {
 
         $entityid = $this->_customdata['entityid'] ?? $data->entityid ?? $data->id ?? 0;
 
-        $entities = array(0 => $none);
+        $entities = [0 => $none];
 
         $allentities = entities::list_all_entities();
         foreach ($allentities as $entity) {
@@ -103,10 +103,10 @@ class edit_dynamic_form extends dynamic_form {
         $mform->addElement('filemanager', 'image_filemanager', get_string('edit_image', 'local_entities'), null, $options);
 
         $context = context_system::instance();
-        $editoroptions = array('maxfiles' => EDITOR_UNLIMITED_FILES,
+        $editoroptions = ['maxfiles' => EDITOR_UNLIMITED_FILES,
          'noclean' => true,
          'context' => $context,
-          'format' => FORMAT_HTML);
+          'format' => FORMAT_HTML];
 
         $mform->addElement('editor', 'description', get_string('entity_description', 'local_entities'),
             '', $editoroptions);
@@ -120,11 +120,11 @@ class edit_dynamic_form extends dynamic_form {
         $repeateoptions = [];
 
         $openinghourslabel = \html_writer::tag('b', get_string('openinghours', 'local_entities') . ' {no}',
-            array('class' => 'openinghourslabel'));
+            ['class' => 'openinghourslabel']);
         $repeatedopeninghours[] = $mform->createElement('static', 'openinghourslabel', $openinghourslabel);
         $dayofweekoptions = [
             'tags' => false,
-            'multiple' => true
+            'multiple' => true,
         ];
         $repeatedopeninghours[] = $mform->createElement('select', 'daysofweek', get_string('daysofweek', 'local_entities'),
         fullcalendar_helper::get_weekdays(),
@@ -170,10 +170,10 @@ class edit_dynamic_form extends dynamic_form {
         $categories = \local_entities\customfield\entities_cf_helper::get_alternative_cf_categories();
         if (!empty($categories)) {
             $mform->registerNoSubmitButton('btn_cfcategoryid');
-            $buttonargs = array('style' => 'visibility:hidden;');
+            $buttonargs = ['style' => 'visibility:hidden;'];
             $categoryselect = [
                 $mform->createElement('select', 'cfitemid', get_string('entity_category', 'local_entities'), $categories),
-                $mform->createElement('submit', 'btn_cfcategoryid', get_string('categories'), $buttonargs)
+                $mform->createElement('submit', 'btn_cfcategoryid', get_string('categories'), $buttonargs),
             ];
             $mform->addGroup($categoryselect, 'tagsgroup', get_string('categories', 'local_entities'), [' '], false);
             $mform->setType('btn_cfcategoryid', PARAM_NOTAGS);
@@ -323,14 +323,14 @@ class edit_dynamic_form extends dynamic_form {
         $result = $settingsmanager->update_or_createentity($recordentity);
         if ($result && $result > 0) {
             $data->id = $result;
-            $options = array('subdirs' => 0, 'maxbytes' => 204800, 'maxfiles' => 1, 'accepted_types' => '*');
+            $options = ['subdirs' => 0, 'maxbytes' => 204800, 'maxfiles' => 1, 'accepted_types' => '*'];
             if (isset($data->image_filemanager)) {
                 file_postupdate_standard_filemanager($data, 'image', $options, $context, 'local_entities', 'image', $result);
             }
             if (isset($draftitemid)) {
                 file_save_draft_area_files($draftitemid, $context->id,
                 'local_entities', 'entitycontent',
-                $data->id, array('subdirs' => true), $description);
+                $data->id, ['subdirs' => true], $description);
             }
         }
         if (!empty($this->standardhandlers) && !empty($data->id)) {
@@ -404,7 +404,7 @@ class edit_dynamic_form extends dynamic_form {
      * or an empty array if everything is OK (true allowed for backwards compatibility too).
      */
     public function validation($data, $files) {
-        $errors = array();
+        $errors = [];
         return $errors;
     }
 
@@ -427,14 +427,14 @@ class edit_dynamic_form extends dynamic_form {
     public function set_data($defaults) {
         $context = context_system::instance();
 
-        $options = array('subdirs' => 0, 'maxbytes' => 204800, 'maxfiles' => 20, 'accepted_types' => '*', 'context' => $context);
+        $options = ['subdirs' => 0, 'maxbytes' => 204800, 'maxfiles' => 20, 'accepted_types' => '*', 'context' => $context];
         $defaults->descriptionformat = FORMAT_HTML;
 
         if (!empty($defaults->id)) {
             file_prepare_standard_editor($defaults, 'description',
                 $options, $context, 'local_entities', 'entitycontent', $defaults->id);
 
-            $options = array('maxbytes' => 204800, 'maxfiles' => 1, 'accepted_types' => ['jpg, png']);
+            $options = ['maxbytes' => 204800, 'maxfiles' => 1, 'accepted_types' => ['jpg, png']];
             $defaults->picture = file_prepare_standard_filemanager(
                 $defaults,
                 'image',

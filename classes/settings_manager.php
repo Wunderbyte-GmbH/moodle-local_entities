@@ -259,7 +259,7 @@ class settings_manager {
     public function prepare_image($data, $id): stdClass {
         if (isset($data->ogimage_filemanager)) {
             $context = \context_system::instance();
-            $options = array('subdirs' => 0, 'maxbytes' => 204800, 'maxfiles' => 1, 'accepted_types' => '*');
+            $options = ['subdirs' => 0, 'maxbytes' => 204800, 'maxfiles' => 1, 'accepted_types' => '*'];
             $data = file_postupdate_standard_filemanager($data, 'image', $options, $context, 'local_entities', 'image', $id);
         }
         return $data;
@@ -401,9 +401,9 @@ class settings_manager {
      */
     public static function get_settings_forform(int $entityid): stdClass {
         global $DB;
-        $record = $DB->get_record('local_entities', array('id' => $entityid));
-        $address = $DB->get_records('local_entities_address', array('entityidto' => $entityid));
-        $contacts = $DB->get_records('local_entities_contacts', array('entityidto' => $entityid));
+        $record = $DB->get_record('local_entities', ['id' => $entityid]);
+        $address = $DB->get_records('local_entities_address', ['entityidto' => $entityid]);
+        $contacts = $DB->get_records('local_entities_contacts', ['entityidto' => $entityid]);
         $record->address[] = $address ?? null;
         $record->contacts[] = $contacts ?? null;
         return self::db_to_form($record);
@@ -418,9 +418,9 @@ class settings_manager {
      */
     public static function get_settings(int $entityid): stdClass {
         global $DB;
-        $record = $DB->get_record('local_entities', array('id' => $entityid));
-        $address = $DB->get_records('local_entities_address', array('entityidto' => $entityid));
-        $contacts = $DB->get_records('local_entities_contacts', array('entityidto' => $entityid));
+        $record = $DB->get_record('local_entities', ['id' => $entityid]);
+        $address = $DB->get_records('local_entities_address', ['entityidto' => $entityid]);
+        $contacts = $DB->get_records('local_entities_contacts', ['entityidto' => $entityid]);
         $record->address = $address ?? null;
         $record->contacts = $contacts ?? null;
         return $record;
@@ -438,9 +438,9 @@ class settings_manager {
         $entity = \local_entities\entity::load($this->id);
         $cfitemid = $entity->__get('cfitemid') ?? 0;
         $this->delete_cfhandlers($cfitemid);
-        $DB->delete_records('local_entities', array('id' => $this->id));
-        $DB->delete_records('local_entities_address', array('entityidto' => $this->id));
-        $DB->delete_records('local_entities_contacts', array('entityidto' => $this->id));
+        $DB->delete_records('local_entities', ['id' => $this->id]);
+        $DB->delete_records('local_entities_address', ['entityidto' => $this->id]);
+        $DB->delete_records('local_entities_contacts', ['entityidto' => $this->id]);
         $this->delete_pluginfiles($this->id);
     }
 
@@ -484,7 +484,7 @@ class settings_manager {
      */
     public function delete_address(int $id): void {
         global $DB;
-        $DB->delete_records('local_entities_address', array('id' => $id));
+        $DB->delete_records('local_entities_address', ['id' => $id]);
     }
 
     /**

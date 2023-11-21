@@ -43,7 +43,7 @@ if ($hassiteconfig) {
             $componentname .'/categories',
             get_string('categories', $componentname),
             get_string('categories:description', $componentname),
-            array(),
+            [],
             $categories
             )
         );

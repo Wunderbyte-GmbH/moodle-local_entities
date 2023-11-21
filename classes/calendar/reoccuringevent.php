@@ -56,7 +56,7 @@ class reoccuringevent {
     /**
      * @var array
      */
-    public $properties = array();
+    public $properties = [];
 
     /**
      * reoccuringevent constructor.
@@ -78,7 +78,7 @@ class reoccuringevent {
         }
         // Record misc properties.
         foreach ($eventarray as $name => $value) {
-            if (!in_array($name, array('title', 'daysofweek', 'starthours', 'startminutes', 'endhours', 'endminutes'))) {
+            if (!in_array($name, ['title', 'daysofweek', 'starthours', 'startminutes', 'endhours', 'endminutes'])) {
                 $this->properties[$name] = $value;
             }
         }

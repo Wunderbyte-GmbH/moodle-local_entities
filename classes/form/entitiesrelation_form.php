@@ -144,7 +144,7 @@ class entitiesrelation_form extends dynamic_form {
         if (!$cmid) {
             $cmid = $this->optional_param('cmid', '', PARAM_RAW);
         }
-        return new moodle_url('/mod/booking/editoptions', array('id' => $cmid));
+        return new moodle_url('/mod/booking/editoptions', ['id' => $cmid]);
     }
 
     /**
@@ -155,7 +155,7 @@ class entitiesrelation_form extends dynamic_form {
      */
     public function validation($data, $files) {
 
-        $errors = array();
+        $errors = [];
 
         return $errors;
     }

@@ -50,7 +50,7 @@ class secondary extends core_secondary {
             $this->add(get_string('new_entity', 'local_entities') , '/local/entities/edit.php', \navigation_node::TYPE_CUSTOM,
             'new_entity', 'new_entity', new \pix_icon('t/add', get_string('new_entity', 'local_entities')));
             $this->add(get_string('addcategory', 'local_entities') ,
-            new \moodle_url('/local/entities/customfield.php', array('id' => -1)),
+            new \moodle_url('/local/entities/customfield.php', ['id' => -1]),
             \navigation_node::TYPE_CUSTOM, 'addcategory', 'addcategory',
             new \pix_icon('t/add', get_string('addcategory', 'local_entities')));
             $this->add(get_string('import', 'local_entities'), '/local/entities/import.php', \navigation_node::TYPE_CUSTOM,

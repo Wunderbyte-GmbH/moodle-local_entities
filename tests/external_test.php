@@ -25,6 +25,8 @@
 
 namespace local_entities;
 
+use local_entities_external;
+
 /**
  * Tests for the external class of local_entities.
  *
@@ -76,6 +78,7 @@ class external_test extends \advanced_testcase {
      * @param int $id
      * @param array $data
      * @param mixed $expected
+     * @runInSeparateProcess
      * @dataProvider update_data_provider
      * @covers \local_entities_external::update_entity
      * @return void
@@ -83,8 +86,8 @@ class external_test extends \advanced_testcase {
     public function test_local_entities_update_entity($id, $data, $expected) {
         $this->resetAfterTest(true);
         $this->setAdminUser();
-        $resultraw = \local_entities_external::update_entity($id, $data);
-        $result = \external_api::clean_returnvalue(\local_entities_external::update_entity_returns(), $resultraw);
+        $resultraw = local_entities_external::update_entity($id, $data);
+        $result = \external_api::clean_returnvalue(local_entities_external::update_entity_returns(), $resultraw);
         $this->assertEquals($expected, $result);
     }
 
@@ -94,6 +97,7 @@ class external_test extends \advanced_testcase {
      * @param array $data
      * @param mixed $expected
      * @return void
+     * @runInSeparateProcess
      * @dataProvider update_exceptions_data_provider
      * @covers \local_entities_external::update_entity
      * @throws \invalid_response_exception
@@ -103,7 +107,7 @@ class external_test extends \advanced_testcase {
         $this->resetAfterTest(true);
         $this->setAdminUser();
         $this->expectException(\invalid_parameter_exception::class);
-        \local_entities_external::update_entity($id, $data);
+        local_entities_external::update_entity($id, $data);
     }
 
     /**
@@ -113,18 +117,18 @@ class external_test extends \advanced_testcase {
      */
     private function get_valid_data(): array {
         $id = 1;
-        $field1 = array(
+        $field1 = [
                 'name' => 'name',
                 'value' => 'Bad',
-        );
-        $field2 = array(
+        ];
+        $field2 = [
                 'name' => 'description',
                 'value' => '2_freibad',
-        );
-        $data = array(
+        ];
+        $data = [
                 $field1,
                 $field2,
-        );
+        ];
         $expected = [
                 'updated' => true,
                 'warnings' => [],
@@ -139,18 +143,18 @@ class external_test extends \advanced_testcase {
      */
     private function get_unavailable_id(): array {
         $id = 100;
-        $field1 = array(
+        $field1 = [
                 'name' => 'name',
                 'value' => 'Bad',
-        );
-        $field2 = array(
+        ];
+        $field2 = [
                 'name' => 'description',
                 'value' => '2_freibad',
-        );
-        $data = array(
+        ];
+        $data = [
                 $field1,
                 $field2,
-        );
+        ];
         $warning = [
                 'itemid' => $id,
                 'warningcode' => 'nosuchid',
@@ -170,18 +174,18 @@ class external_test extends \advanced_testcase {
      */
     private function get_data_with_empty_field_name(): array {
         $id = 1;
-        $field1 = array(
+        $field1 = [
                 'name' => 'name',
                 'value' => 'Bad',
-        );
-        $field2 = array(
+        ];
+        $field2 = [
                 'name' => '',
                 'value' => '2_freibad',
-        );
-        $data = array(
+        ];
+        $data = [
                 $field1,
                 $field2,
-        );
+        ];
         $warning = [
                 'item' => $field2['name'] . ', ' . $field2['value'],
                 'warningcode' => 'invalidparams',
@@ -201,18 +205,18 @@ class external_test extends \advanced_testcase {
      */
     private function get_data_with_empty_value(): array {
         $id = 1;
-        $field1 = array(
+        $field1 = [
                 'name' => 'name',
                 'value' => '',
-        );
-        $field2 = array(
+        ];
+        $field2 = [
                 'name' => 'shortname',
                 'value' => '2_freibad',
-        );
-        $data = array(
+        ];
+        $data = [
                 $field1,
                 $field2,
-        );
+        ];
         $warning = [
                 'item' => $field1['name'] . ', ' . $field1['value'],
                 'warningcode' => 'invalidparams',
@@ -232,18 +236,18 @@ class external_test extends \advanced_testcase {
      */
     private function get_data_with_whitespace_value(): array {
         $id = 1;
-        $field1 = array(
+        $field1 = [
                 'name' => 'name',
                 'value' => ' ',
-        );
-        $field2 = array(
+        ];
+        $field2 = [
                 'name' => 'shortname',
                 'value' => '2_freibad',
-        );
-        $data = array(
+        ];
+        $data = [
                 $field1,
                 $field2,
-        );
+        ];
         $warning = [
                 'item' => $field1['name'] . ', ' . $field1['value'],
                 'warningcode' => 'invalidparams',
@@ -263,18 +267,18 @@ class external_test extends \advanced_testcase {
      */
     private function get_data_with_whitespace_field_name(): array {
         $id = 1;
-        $field1 = array(
+        $field1 = [
                 'name' => 'name',
                 'value' => 'Bad',
-        );
-        $field2 = array(
+        ];
+        $field2 = [
                 'name' => '  ',
                 'value' => '2_freibad',
-        );
-        $data = array(
+        ];
+        $data = [
                 $field1,
                 $field2,
-        );
+        ];
         $warning = [
                 'item' => $field2['name'] . ', ' . $field2['value'],
                 'warningcode' => 'invalidparams',
@@ -294,21 +298,21 @@ class external_test extends \advanced_testcase {
      */
     private function get_data_with_invalid_format(): array {
         $id = 1;
-        $field1 = array(
+        $field1 = [
                 'name' => 'name',
                 'value' => 'Bad',
-        );
-        $field2 = array(
+        ];
+        $field2 = [
                 'name' => '',
                 'value' => '2_freibad',
-        );
-        $data = array(
+        ];
+        $data = [
                 $id => [
                         $field1,
                         $field2,
                 ],
 
-        );
+        ];
         $expected = new \invalid_parameter_exception();
         return [$id, $data, $expected];
     }
@@ -320,17 +324,17 @@ class external_test extends \advanced_testcase {
      */
     private function get_data_with_value_not_set(): array {
         $id = 100;
-        $field1 = array(
+        $field1 = [
                 'name' => 'name',
-        );
-        $field2 = array(
+        ];
+        $field2 = [
                 'name' => 'description',
                 'value' => '2_freibad',
-        );
-        $data = array(
+        ];
+        $data = [
                 $field1,
                 $field2,
-        );
+        ];
         $warning = [
                 'itemid' => $id,
                 'warningcode' => 'invalidparam',

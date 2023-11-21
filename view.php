@@ -112,10 +112,10 @@ $affiliation = [];
 if ($entity->hasaffiliation = !empty($subentities)) {
     foreach ($subentities as $entry) {
         $subentry = new stdClass();
-        $subentry->link = new \moodle_url("/local/entities/view.php", array("id" => $entry->id));
+        $subentry->link = new \moodle_url("/local/entities/view.php", ["id" => $entry->id]);
         $subentry->name = $entry->name;
         $subentry->shortname = $entry->shortname;
-        $subentry->editurl = new moodle_url('/local/entities/edit.php', array( 'id' => $entry->id));
+        $subentry->editurl = new moodle_url('/local/entities/edit.php', [ 'id' => $entry->id]);
         $affiliation[] = $subentry;
     }
     $entity->affiliation = $affiliation;
@@ -133,7 +133,7 @@ if (!empty($entity->parentid)) {
     if (!empty($parent)) {
 
         $entity->parent = $parent;
-        $entity->parent->link = new \moodle_url("/local/entities/view.php", array("id" => $parent->id));
+        $entity->parent->link = new \moodle_url("/local/entities/view.php", ["id" => $parent->id]);
         $parenthasaddress = !empty($parent->address);
         $parenthascontacts = !empty($parent->contacts);
 
@@ -181,9 +181,9 @@ $entity->hasrightsidebar = $entity->hascontacts || $entity->hasaddress;
 
 $entity->showcalendar = get_config('local_entities', 'show_calendar_on_details_page');
 $entity->canedit = has_capability('local/entities:edit', \context_system::instance());
-$entity->editurl = new moodle_url('/local/entities/edit.php', array( 'id' => $id));
-$entity->calendarurl = new moodle_url('/local/entities/calendar.php', array( 'id' => $id));
-$entity->delurl = new moodle_url('/local/entities/entities.php', array( 'del' => $id , 'sesskey' => $USER->sesskey));
+$entity->editurl = new moodle_url('/local/entities/edit.php', [ 'id' => $id]);
+$entity->calendarurl = new moodle_url('/local/entities/calendar.php', [ 'id' => $id]);
+$entity->delurl = new moodle_url('/local/entities/entities.php', [ 'del' => $id , 'sesskey' => $USER->sesskey]);
 
 echo $OUTPUT->render_from_template('local_entities/view', $entity);
 

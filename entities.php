@@ -46,7 +46,7 @@ if ($delid !== 0 && (is_siteadmin() || has_capability('local_entities/edit', $co
     $entity->delete();
 }
 
-$PAGE->set_url(new moodle_url('/local/entities/entities.php', array()));
+$PAGE->set_url(new moodle_url('/local/entities/entities.php', []));
 
 $title = get_string('pluginname', 'local_entities');
 $PAGE->set_title($title);

@@ -31,7 +31,7 @@ $context = \context_system::instance();
 $PAGE->set_context($context);
 require_login();
 require_capability('local/entities:edit' , $context);
-$PAGE->set_url(new moodle_url('/local/entities/entities2.php', array()));
+$PAGE->set_url(new moodle_url('/local/entities/entities2.php', []));
 
 $secondarynav = new secondary($PAGE);
 $secondarynav->initialise();

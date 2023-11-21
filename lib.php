@@ -34,7 +34,7 @@ function local_entities_extend_navigation($navigation) {
             $nodehome = $navigation;
         }
         $pluginname = get_string('pluginname', 'local_entities');
-        $link = new moodle_url('/local/entities/entities.php', array());
+        $link = new moodle_url('/local/entities/entities.php', []);
         $icon = new pix_icon('tennis-ball', $pluginname, 'local_entities');
         $nodecreatecourse = $nodehome->add($pluginname, $link, navigation_node::NODETYPE_LEAF, $pluginname, 'entities', $icon);
         $nodecreatecourse->showinflatnavigation = true;
@@ -53,7 +53,7 @@ function local_entities_extend_navigation($navigation) {
  * @param bool $forcedownload
  * @param array $options
  */
-function local_entities_pluginfile($course, $birecordorcm, $context, $filearea, $args, $forcedownload, array $options = array()) {
+function local_entities_pluginfile($course, $birecordorcm, $context, $filearea, $args, $forcedownload, array $options = []) {
     $fs = get_file_storage();
 
     $filename = array_pop($args);

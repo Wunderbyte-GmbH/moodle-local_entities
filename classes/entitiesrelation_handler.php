@@ -127,7 +127,7 @@ class entitiesrelation_handler {
                         'parentname' => $parentname,
                     ];
                     return $OUTPUT->render_from_template('local_entities/form-entities-selector-suggestion', $entitydata);
-                }
+                },
             ];
 
             $mform->addElement('autocomplete', 'local_entities_entityid', get_string('er_entitiesname', 'local_entities'),
@@ -196,7 +196,7 @@ class entitiesrelation_handler {
         $DB->delete_records_select('local_entities_relations', $select, [
             'component' => $this->component,
             'area' => $this->area,
-            'instanceid' => $instanceid
+            'instanceid' => $instanceid,
         ]);
     }
 
@@ -259,9 +259,9 @@ class entitiesrelation_handler {
         $entityid = isset($fromdb->id) ? $fromdb->id : 0;
         $entityname = isset($fromdb->name) ? $fromdb->name : "";
         $erid = isset($fromdb->relationid) ? $fromdb->relationid : 0;
-        $mform->setDefaults(array('local_entities_relationid' => $erid));
-        $mform->setDefaults(array('local_entities_entityid' => $entityid));
-        $mform->setDefaults(array('local_entities_entityname' => $entityname));
+        $mform->setDefaults(['local_entities_relationid' => $erid]);
+        $mform->setDefaults(['local_entities_entityid' => $entityid]);
+        $mform->setDefaults(['local_entities_entityname' => $entityname]);
     }
 
     /**
@@ -379,7 +379,7 @@ class entitiesrelation_handler {
         if ($id = $DB->get_field_select('local_entities_relations', 'id', $select, [
                 'component' => $this->component,
                 'area' => $this->area,
-                'instanceid' => $data->instanceid
+                'instanceid' => $data->instanceid,
         ])) {
             $data->id = $id;
             return true;
@@ -481,7 +481,7 @@ class entitiesrelation_handler {
                 if (!$DB->delete_records('local_entities_relations', [
                     'component' => 'mod_booking',
                     'area' => 'option',
-                    'instanceid' => $existingoption->id
+                    'instanceid' => $existingoption->id,
                 ])) {
                     $success = false;
                 }
@@ -499,7 +499,7 @@ class entitiesrelation_handler {
      */
     public static function get_pricefactor_by_entityid(int $id) {
         global $DB;
-        $params = array('id' => $id);
+        $params = ['id' => $id];
         $pricefactor = $DB->get_field_select('local_entities', 'pricefactor', 'id = :id', $params, IGNORE_MISSING);
         return $pricefactor;
     }

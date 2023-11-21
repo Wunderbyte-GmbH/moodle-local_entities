@@ -59,7 +59,7 @@ class import_form extends dynamic_form {
 
         $mform = $this->_form;
         $mform->addElement('filepicker', 'csvfile', get_string('csvfile', 'booking'), null,
-                array('maxbytes' => $CFG->maxbytes, 'accepted_types' => '*'));
+                ['maxbytes' => $CFG->maxbytes, 'accepted_types' => '*']);
         $mform->addRule('csvfile', null, 'required', null, 'client');
 
         $choices = csv_import_reader::get_delimiter_list();
@@ -172,7 +172,7 @@ class import_form extends dynamic_form {
      * @param array $files array of uploaded files "element_name"=>tmp_file_path
      */
     public function validation($data, $files) {
-        $errors = array();
+        $errors = [];
         return $errors;
     }
 

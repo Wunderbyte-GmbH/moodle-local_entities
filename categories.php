@@ -46,7 +46,7 @@ echo $OUTPUT->header();
 
 $output = $PAGE->get_renderer('core_customfield');
 $categories = \local_entities\customfield\entities_cf_helper::get_all_cf_categories_with_subcategories();
-$templatedata['categories'] = array();
+$templatedata['categories'] = [];
 
 foreach ($categories as $category) {
     $cat = new stdClass();
@@ -56,7 +56,7 @@ foreach ($categories as $category) {
     }
     $olditemid = $category->itemid;
     $cat->categoryname = $category->name;
-    $cat->url = new moodle_url('/local/entities/customfield.php', array('id' => $cat->itemid));
+    $cat->url = new moodle_url('/local/entities/customfield.php', ['id' => $cat->itemid]);
     $templatedata['categories'][] = $cat;
 }
 

@@ -211,7 +211,7 @@ class entities_handler extends \core_customfield\handler {
      */
     public function get_customfieldcategory_names(): array {
         $categories = $this->get_categories_with_fields();
-        $categorynames = array();
+        $categorynames = [];
         if (isset($categories)) {
             foreach ($categories as $category) {
                 $name = $category->get('name');

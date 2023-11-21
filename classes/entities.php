@@ -69,7 +69,7 @@ class entities {
     public static function build_whole_entitytree(int $fulltree = 0, $allowedit = true): array {
         global $DB;
         $items = $DB->get_records('local_entities');
-        $childs = array();
+        $childs = [];
         foreach ($items as $item) {
                 $item->allowedit = $allowedit;
                 $childs[$item->parentid][] = $item;
@@ -151,9 +151,9 @@ class entities {
     public static function list_all_subentities(int $parentid): array {
         global $DB;
         $stmt = "SELECT * FROM {local_entities} WHERE " . "parentid=? ORDER BY sortorder";
-        return $DB->get_records_sql($stmt, array(
-            $parentid
-        ));
+        return $DB->get_records_sql($stmt, [
+            $parentid,
+        ]);
     }
 
     /**
@@ -165,9 +165,9 @@ class entities {
     public static function list_all_subentities_select(int $parentid): array {
         global $DB;
         $stmt = "SELECT id, name FROM {local_entities} WHERE " . "parentid=? ORDER BY sortorder";
-        return $DB->get_records_sql_menu($stmt, array(
-            $parentid
-        ));
+        return $DB->get_records_sql_menu($stmt, [
+            $parentid,
+        ]);
     }
 
 

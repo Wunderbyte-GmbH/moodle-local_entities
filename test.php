@@ -34,7 +34,7 @@ $context = \context_system::instance();
 $PAGE->set_context($context);
 require_login();
 require_admin();
-$PAGE->set_url(new moodle_url('/local/entities/test.php', array()));
+$PAGE->set_url(new moodle_url('/local/entities/test.php', []));
 
 $title = "Test cases";
 $PAGE->set_title($title);

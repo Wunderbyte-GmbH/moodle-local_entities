@@ -69,7 +69,7 @@ class entity {
     public static function load($id) {
         global $DB;
         $data = new \stdClass();
-        $data = $DB->get_record_sql("SELECT * FROM {local_entities} WHERE id=? LIMIT 1", array(intval($id)));
+        $data = $DB->get_record_sql("SELECT * FROM {local_entities} WHERE id=? LIMIT 1", [intval($id)]);
         return new entity($data);
     }
 }

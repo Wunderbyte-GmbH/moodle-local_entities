@@ -136,7 +136,7 @@ class entitydate {
      * @return array
      */
     public function getitem():array {
-        $item = array();
+        $item = [];
         $item['itemid'] = $this->itemid;
         $item['component'] = $this->component;
         $item['area'] = $this->area;

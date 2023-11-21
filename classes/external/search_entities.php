@@ -90,7 +90,7 @@ class search_entities extends external_api {
                 // Sanitize the extra fields to prevent potential XSS exploit.
                 $entity->extrafields[] = (object)[
                     'name' => $extrafield,
-                    'value' => s($record->$extrafield)
+                    'value' => s($record->$extrafield),
                 ];
             }
 
@@ -123,7 +123,7 @@ class search_entities extends external_api {
                         new external_single_structure([
                             'name' => new external_value(PARAM_TEXT, 'Name of the extrafield.'),
                             'value' => new external_value(PARAM_TEXT, 'Value of the extrafield.'),
-                        ]), 'List of extra fields', VALUE_OPTIONAL)
+                        ]), 'List of extra fields', VALUE_OPTIONAL),
                 ])
             ),
         ]);
