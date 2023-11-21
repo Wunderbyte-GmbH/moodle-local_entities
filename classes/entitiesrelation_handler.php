@@ -70,10 +70,12 @@ class entitiesrelation_handler {
      *
      * @param MoodleQuickForm $mform
      * @param int $instanceid
-     * @param string $formmode 'simple' or 'expert' mode
-     * @param string $headerlangidentifier
-     * @param string $headerlangcomponent
-     * @return void
+     * @param string $formmode
+     * @param string|null $headerlangidentifier
+     * @param string|null $headerlangcomponent
+     *
+     * @return mixed
+     *
      */
     public function instance_form_definition(MoodleQuickForm &$mform, int $instanceid = 0, string $formmode = 'expert',
         ?string $headerlangidentifier = null, ?string $headerlangcomponent = null) {
