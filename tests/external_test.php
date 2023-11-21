@@ -45,14 +45,14 @@ class external_test extends \advanced_testcase {
      * Note how a field name that is an empty string will evaluate as valid,
      * while a field name containing only whitespace will not.
      */
-    public function update_data_provider(): array {
+    public static function update_data_provider(): array {
         return [
                 // Todo these two are not yet tested because tests don't find the table. will have to find out how to solve this.
                 // ...'valid data' => $this->get_valid_data(),.
                 // ...'unavailable id' => $this->get_unavailable_id(),.
-                'empty field name should update remaining fields' => $this->get_data_with_empty_field_name(),
-                'whitespace value should update remaining fields' => $this->get_data_with_whitespace_value(),
-                'empty value should update remaining fields' => $this->get_data_with_empty_value(),
+                'empty field name should update remaining fields' => self::get_data_with_empty_field_name(),
+                'whitespace value should update remaining fields' => self::get_data_with_whitespace_value(),
+                'empty value should update remaining fields' => self::get_data_with_empty_value(),
 
         ];
     }
@@ -64,11 +64,11 @@ class external_test extends \advanced_testcase {
      * Note how a field name that is an empty string will evaluate as valid,
      * while a field name containing only whitespace will not.
      */
-    public function update_exceptions_data_provider(): array {
+    public static function update_exceptions_data_provider(): array {
         return [
-                'whitespace field_name should throw exception' => $this->get_data_with_whitespace_field_name(),
-                'invalid format should throw exception' => $this->get_data_with_invalid_format(),
-                'value not set should throw exception' => $this->get_data_with_value_not_set(),
+                'whitespace field_name should throw exception' => self::get_data_with_whitespace_field_name(),
+                'invalid format should throw exception' => self::get_data_with_invalid_format(),
+                'value not set should throw exception' => self::get_data_with_value_not_set(),
         ];
     }
 
@@ -80,7 +80,7 @@ class external_test extends \advanced_testcase {
      * @param mixed $expected
      * @runInSeparateProcess
      * @dataProvider update_data_provider
-     * @covers \local_entities_external::update_entity
+     * @covers ::update_entity
      * @return void
      */
     public function test_local_entities_update_entity($id, $data, $expected) {
@@ -99,7 +99,7 @@ class external_test extends \advanced_testcase {
      * @return void
      * @runInSeparateProcess
      * @dataProvider update_exceptions_data_provider
-     * @covers \local_entities_external::update_entity
+     * @covers ::update_entity
      * @throws \invalid_response_exception
      * @throws \moodle_exception
      */
@@ -115,7 +115,7 @@ class external_test extends \advanced_testcase {
      *
      * @return array
      */
-    private function get_valid_data(): array {
+    private static function get_valid_data(): array {
         $id = 1;
         $field1 = [
                 'name' => 'name',
@@ -172,7 +172,7 @@ class external_test extends \advanced_testcase {
      *
      * @return array
      */
-    private function get_data_with_empty_field_name(): array {
+    private static function get_data_with_empty_field_name(): array {
         $id = 1;
         $field1 = [
                 'name' => 'name',
@@ -203,7 +203,7 @@ class external_test extends \advanced_testcase {
      *
      * @return array
      */
-    private function get_data_with_empty_value(): array {
+    private static function get_data_with_empty_value(): array {
         $id = 1;
         $field1 = [
                 'name' => 'name',
@@ -234,7 +234,7 @@ class external_test extends \advanced_testcase {
      *
      * @return array
      */
-    private function get_data_with_whitespace_value(): array {
+    private static function get_data_with_whitespace_value(): array {
         $id = 1;
         $field1 = [
                 'name' => 'name',
@@ -265,7 +265,7 @@ class external_test extends \advanced_testcase {
      *
      * @return array
      */
-    private function get_data_with_whitespace_field_name(): array {
+    private static function get_data_with_whitespace_field_name(): array {
         $id = 1;
         $field1 = [
                 'name' => 'name',
@@ -296,7 +296,7 @@ class external_test extends \advanced_testcase {
      *
      * @return array
      */
-    private function get_data_with_invalid_format(): array {
+    private static function get_data_with_invalid_format(): array {
         $id = 1;
         $field1 = [
                 'name' => 'name',
@@ -322,7 +322,7 @@ class external_test extends \advanced_testcase {
      *
      * @return array
      */
-    private function get_data_with_value_not_set(): array {
+    private static function get_data_with_value_not_set(): array {
         $id = 100;
         $field1 = [
                 'name' => 'name',

@@ -103,10 +103,12 @@ class edit_dynamic_form extends dynamic_form {
         $mform->addElement('filemanager', 'image_filemanager', get_string('edit_image', 'local_entities'), null, $options);
 
         $context = context_system::instance();
-        $editoroptions = ['maxfiles' => EDITOR_UNLIMITED_FILES,
-         'noclean' => true,
-         'context' => $context,
-          'format' => FORMAT_HTML];
+        $editoroptions = [
+            'maxfiles' => EDITOR_UNLIMITED_FILES,
+            'noclean' => true,
+            'context' => $context,
+            'format' => FORMAT_HTML,
+        ];
 
         $mform->addElement('editor', 'description', get_string('entity_description', 'local_entities'),
             '', $editoroptions);

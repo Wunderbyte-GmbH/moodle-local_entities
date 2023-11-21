@@ -61,7 +61,8 @@ class fullcalendar_helper {
             4 => get_string('thursday', 'calendar'),
             5 => get_string('friday', 'calendar'),
             6 => get_string('saturday', 'calendar'),
-            7 => get_string('sunday', 'calendar')];
+            7 => get_string('sunday', 'calendar'),
+        ];
         return $daysofweekarray;
     }
 
