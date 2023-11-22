@@ -33,6 +33,10 @@ export const init = () => {
         a.href = canvas.toDataURL("image/png");
         document.body.appendChild(a);
         a.click();
+        return;
+      }).catch((e) => {
+        // eslint-disable-next-line no-console
+        console.log(e);
       });
     });
 };
