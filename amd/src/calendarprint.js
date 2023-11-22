@@ -27,7 +27,7 @@ export const init = () => {
         window.html2canvas(document.querySelector('.fc-view-harness-active'),
         {
 
-        }).then(function (canvas) {
+        }).then(function(canvas) {
         var a = document.createElement("a");
         a.download = "chart.png";
         a.href = canvas.toDataURL("image/png");

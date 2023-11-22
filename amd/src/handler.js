@@ -54,8 +54,9 @@ export const init = () => {
 
         const id = entityid;
         const json = {'id': id, 'locale': 'de'};
+        // eslint-disable-next-line promise/no-nesting
         Templates.renderForPromise('local_entities/entitiescalendar', json).then(({html, js}) => {
-
+            // eslint-disable-next-line promise/no-nesting
             ModalFactory.create({
                 type: ModalFactory.types.SAVE_CANCEL,
                 large: 'true'
