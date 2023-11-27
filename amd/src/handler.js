@@ -27,6 +27,10 @@ import {get_strings as getStrings} from 'core/str';
 export const init = () => {
     const element = document.querySelector('#id_openmodal');
 
+    if (!element) {
+        return;
+    }
+
     element.addEventListener('click', () => {
 
         const selectedelement = document.querySelector('#id_entitiesrelationcontainer div.form-autocomplete-selection span');
