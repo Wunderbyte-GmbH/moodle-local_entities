@@ -38,9 +38,9 @@ interface service_provider {
      * This function takes a list of ids and returns a list of dates in the entitydate format.
      * As one plugin can use multiple different handlers...
      * ... we use $area to specify the handler of the component.
-     * Every area in the $areas array holds its on list of ids.
+     * Every area in the $areas array holds its own list of ids.
      * @param array $areas
      * @return array
      */
-    public static function return_array_of_dates(array $areas):array;
+    public static function return_array_of_entity_dates(array $areas):array;
 }

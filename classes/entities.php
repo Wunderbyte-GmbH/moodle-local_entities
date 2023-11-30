@@ -229,7 +229,7 @@ class entities {
             // Finally, we assemble the array and return it.
             $providerclass = static::get_service_provider_classname($component);
 
-            $newdates = component_class_callback($providerclass, 'return_array_of_dates', [$areas]);
+            $newdates = component_class_callback($providerclass, 'return_array_of_entity_dates', [$areas]);
 
             $datearray = array_merge($datearray, $newdates);
         }
