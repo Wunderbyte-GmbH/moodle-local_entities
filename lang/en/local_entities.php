@@ -120,3 +120,12 @@ $string['import'] = "Import entities";
 $string['conflictingshortnames'] = 'There is a conflict between the column names in the table and the used customfield shortanmes. Please change this shortname: {$a}';
 $string['successfullimport'] = "Import was successfull.";
 $string['failedimport'] = "Your import failed.";
+$string['examplecsv'] = '<div class="alert alert-info">
+    <p><b>CSV example file:</b></p>
+    <p class="text-monospace">
+        name;shortname;description<br>
+        "Testimport 1";testimport1;"Description 1"<br>
+        "Testimport 2";testimport2;"Description 2"<br>
+        "Testimport 3";testimport3;"Description 3"<br>
+    </p>
+</div>';

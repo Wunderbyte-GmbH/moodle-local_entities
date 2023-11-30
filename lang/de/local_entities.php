@@ -119,3 +119,12 @@ $string['import'] = "Entities importieren";
 $string['conflictingshortnames'] = 'Es gibt einen Konflikt zwischen den verwendenten Kurznamen der benutzerdefinierten Felder und der Tabellennamen. Bitte ändern Sie diesen Kurznamen: {$a}';
 $string['successfullimport'] = "Die Datei wurde erfolgreich importiert";
 $string['failedimport'] = "Es gab ein Problem beim Import.";
+$string['examplecsv'] = '<div class="alert alert-info">
+    <p><b>Beispiel für eine CSV-Datei:</b></p>
+    <p class="text-monospace">
+        name;shortname;description<br>
+        "Testimport 1";testimport1;"Beschreibung 1"<br>
+        "Testimport 2";testimport2;"Beschreibung 2"<br>
+        "Testimport 3";testimport3;"Beschreibung 3"<br>
+    </p>
+</div>';

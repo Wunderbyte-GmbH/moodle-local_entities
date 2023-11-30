@@ -62,8 +62,8 @@ $importform = new import_form(null, null, 'post', '', [], true);
 $importform->set_data_for_dynamic_submission();
 echo html_writer::div($importform->render(), '', ['id' => 'importformcontainer']);
 
-$csvimporter = new csv_import();
-$csvimporter->check_for_import_conflicts();
+// Check for conflicts.
+csv_import::check_for_import_conflicts();
 
 $PAGE->requires->js_call_amd(
     'local_entities/import',

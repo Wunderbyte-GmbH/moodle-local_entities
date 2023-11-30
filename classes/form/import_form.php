@@ -71,8 +71,11 @@ class import_form extends dynamic_form {
         } else {
             $mform->setDefault('delimiter_name', 'comma');
         }
+        $mform->addElement('html', get_string('examplecsv', 'local_entities'));
 
-        $choices = core_text::get_encodings();
+        // Has no impact currently, so comment it out.
+        // phpcs:ignore Squiz.PHP.CommentedOutCode.Found
+        /* $choices = core_text::get_encodings();
         $mform->addElement('select', 'encoding', get_string('encoding', 'tool_uploaduser'), $choices);
         $mform->setDefault('encoding', 'UTF-8');
 
@@ -80,7 +83,7 @@ class import_form extends dynamic_form {
         $mform->setType('dateparseformat', PARAM_NOTAGS);
         $mform->setDefault('dateparseformat', get_string('defaultdateformat', 'booking'));
         $mform->addRule('dateparseformat', null, 'required', null, 'client');
-        $mform->addHelpButton('dateparseformat', 'dateparseformat', 'mod_booking');
+        $mform->addHelpButton('dateparseformat', 'dateparseformat', 'mod_booking'); */
 
         $this->add_action_buttons(true, get_string('import'));
     }
@@ -105,7 +108,10 @@ class import_form extends dynamic_form {
      */
     public function process_dynamic_submission() {
 
-        $importer = new csv_import();
+        $data = (array) $this->get_data();
+        $delimiter = $data['delimiter_name'];
+
+        $importer = new csv_import($delimiter);
         $csvfile = $this->get_file_content('csvfile');
 
         $data = new stdClass();
@@ -135,8 +141,8 @@ class import_form extends dynamic_form {
      *     $this->set_data(get_entity($this->_ajaxformdata['cmid']));
      */
     public function set_data_for_dynamic_submission(): void {
-        global $DB;
-
+        $data = (object) $this->_ajaxformdata;
+        $this->set_data($data);
     }
 
     /**

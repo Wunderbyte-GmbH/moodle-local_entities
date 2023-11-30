@@ -91,13 +91,17 @@ class csv_import {
     protected $error = '';
 
     /**
-     * entities constructor.
+     * Entities constructor.
+     *
+     * @param string $delimiter 'comma' or 'semicolon'
      */
-    public function __construct() {
+    public function __construct(string $delimiter = 'comma') {
         global $DB;
 
-        // We get the relevant columns from DB for matching with the csv.
+        // Comma or semicolon.
+        $this->delimiter = $delimiter;
 
+        // We get the relevant columns from DB for matching with the csv.
         $this->columns = $DB->get_columns('local_entities');
         $addresses = $DB->get_columns('local_entities_address');
         unset($addresses['id']);
@@ -122,10 +126,14 @@ class csv_import {
         $iid = csv_import_reader::get_new_iid('modbooking');
         $cir = new csv_import_reader($iid, 'modbooking');
 
-        $delimiter = !empty($this->formdata->delimiter_name) ? $this->formdata->delimiter_name : 'comma';
-        $enclosure = !empty($this->formdata->enclosure) ? $this->formdata->enclosure : '"';
-        $encoding = !empty($this->formdata->encoding) ? $this->formdata->encoding : 'utf-8';
-        $updateexisting = !empty($this->formdata->updateexisting) ? $this->formdata->updateexisting : false;
+        $delimiter = $this->delimiter;
+        $enclosure = '"'; // TODO: It should be possible to configure this like delimiter.
+        $encoding = 'utf-8'; // TODO: It should be possible to configure this like delimiter.
+
+        // Currently not implemented.
+        // phpcs:ignore Squiz.PHP.CommentedOutCode.Found
+        /* $updateexisting = !empty($this->formdata->updateexisting) ? $this->formdata->updateexisting : false; */
+
         $readcount = $cir->load_csv_content($csvcontent, $encoding, $delimiter, null, $enclosure);
 
         if (empty($readcount)) {
@@ -209,6 +217,10 @@ class csv_import {
         }
         $cir->cleanup(true);
         $cir->close();
+
+        // DB cleanup.
+        $DB->delete_records_select("local_entities", "name IS NULL AND shortname IS NULL");
+
         return true;
 
     }
@@ -224,7 +236,7 @@ class csv_import {
 
         // Set to false if error occured in csv-line.
         if (empty($csvrecord['name'])) {
-            $this->add_csverror('There is no data for the column "namex".', $linenumber);
+            $this->add_csverror('There is no data for the column "name".', $linenumber);
                     return false;
         }
 
@@ -310,7 +322,7 @@ class csv_import {
      *
      * @return void
      */
-    public function check_for_import_conflicts() {
+    public static function check_for_import_conflicts() {
 
         global $DB;
 
@@ -320,8 +332,16 @@ class csv_import {
 
         $records = $DB->get_records_sql($sql);
 
-        $columns = array_keys($this->columns);
-        $additionalcolumns = array_keys($this->additionalcolumns);
+        $cols = $DB->get_columns('local_entities');
+        $columns = array_keys($cols);
+
+        $addresses = $DB->get_columns('local_entities_address');
+        unset($addresses['id']);
+        $contacts = $DB->get_columns('local_entities_contacts');
+        unset($contacts['id']);
+
+        $additionalcols = array_merge($addresses, $contacts);
+        $additionalcolumns = array_keys($additionalcols);
 
         foreach ($records as $record) {
             if (in_array($record->shortname, $columns) || in_array($record->shortname, $additionalcolumns)) {
