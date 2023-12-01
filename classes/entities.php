@@ -68,15 +68,20 @@ class entities {
      */
     public static function build_whole_entitytree(int $fulltree = 0, $allowedit = true): array {
         global $DB;
-        $items = $DB->get_records('local_entities');
+        $items = $DB->get_records('local_entities', null, 'name');
         $childs = [];
         foreach ($items as $item) {
-                $item->allowedit = $allowedit;
-                $childs[$item->parentid][] = $item;
+            $item->allowedit = $allowedit;
+
+            // Generate delete url for each item.
+            $delurl = new moodle_url('/local/entities/entities.php', ['del' => $item->id]);
+            $item->delurl = $delurl->out(false);
+
+            $childs[$item->parentid][] = $item;
         }
         foreach ($items as $item) {
             if (isset($childs[$item->id])) {
-                    $item->childs = $childs[$item->id];
+                $item->childs = $childs[$item->id];
             } else {
                 $item->childs = false;
                 $item->leaf = true;
@@ -111,8 +116,11 @@ class entities {
      */
     public static function list_all_parent_entities(): array {
         global $DB;
-        $stmt = "SELECT * FROM {local_entities} WHERE parentid = '0' ORDER BY sortorder, timecreated";
-        return $DB->get_records_sql($stmt);
+        return $DB->get_records_sql(
+            "SELECT * FROM {local_entities}
+            WHERE parentid = '0'
+            ORDER BY sortorder, name ASC
+        ");
     }
 
 
@@ -124,7 +132,8 @@ class entities {
      */
     public static function list_all_parent_entities_select(): array {
         global $DB;
-        $sql = "SELECT id, name FROM {local_entities} WHERE parentid = '0' ORDER BY sortorder, timecreated";
+        $sql = "SELECT id, name FROM {local_entities} WHERE parentid = '0'
+            ORDER BY sortorder, name ASC";
         return $DB->get_records_sql_menu($sql);
     }
 
@@ -150,7 +159,7 @@ class entities {
      */
     public static function list_all_subentities(int $parentid): array {
         global $DB;
-        $stmt = "SELECT * FROM {local_entities} WHERE " . "parentid=? ORDER BY sortorder";
+        $stmt = "SELECT * FROM {local_entities} WHERE " . "parentid=? ORDER BY sortorder, name ASC";
         return $DB->get_records_sql($stmt, [
             $parentid,
         ]);
@@ -164,7 +173,7 @@ class entities {
      */
     public static function list_all_subentities_select(int $parentid): array {
         global $DB;
-        $stmt = "SELECT id, name FROM {local_entities} WHERE " . "parentid=? ORDER BY sortorder";
+        $stmt = "SELECT id, name FROM {local_entities} WHERE " . "parentid=? ORDER BY sortorder, name ASC";
         return $DB->get_records_sql_menu($stmt, [
             $parentid,
         ]);

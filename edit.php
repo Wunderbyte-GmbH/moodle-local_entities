@@ -29,6 +29,9 @@ use local_entities\form\edit_dynamic_form;
 use local_entities\local\views\secondary;
 use local_entities\settings_manager;
 
+// Force the user to login/create an account to access this page.
+require_login();
+
 $entityid = optional_param('id', 0, PARAM_INT);
 $categoryid = optional_param('catid', 0, PARAM_INT);
 $context = context_system::instance();
@@ -40,10 +43,9 @@ global $USER, $PAGE, $DB;
 $PAGE->set_context($context);
 $PAGE->set_url($CFG->wwwroot . '/local/entities/edit.php', ["id" => $entityid]);
 
-// Force the user to login/create an account to access this page.
-require_login();
-
-$PAGE->set_url(new moodle_url('/local/entities/edit.php'));
+// Return URL to return to if form is cancelled.
+$entitiesurl = new moodle_url('/local/entities/entities.php');
+$returnurl = $entitiesurl->out(false);
 
 $secondarynav = new secondary($PAGE);
 $secondarynav->initialise();
@@ -78,5 +80,10 @@ $PAGE->requires->js_call_amd(
     'local_entities/dynamiceditform',
     'init',
     ['#local_entities_formcontainer', edit_dynamic_form::class], $entityid);
-echo html_writer::div($mform->render(), '', ['id' => 'local_entities_formcontainer']);
+
+echo html_writer::div($mform->render(), '', [
+    'id' => 'local_entities_formcontainer',
+    'data-returnurl' => $returnurl, // Needed for cancel button (FORM_CANCELLED event in JS).
+]);
+
 echo $OUTPUT->footer();

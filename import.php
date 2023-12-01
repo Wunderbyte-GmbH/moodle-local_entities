@@ -48,6 +48,9 @@ $PAGE->set_url($url);
 $context = context_system::instance();
 require_capability('mod/booking:updatebooking', $context);
 
+// Return URL to return to if form is cancelled.
+$entitiesurl = new moodle_url('/local/entities/entities.php');
+$returnurl = $entitiesurl->out(false);
 
 $PAGE->navbar->add(get_string("import", "local_entities"));
 
@@ -60,7 +63,10 @@ echo $OUTPUT->header();
 $importform = new import_form(null, null, 'post', '', [], true);
 
 $importform->set_data_for_dynamic_submission();
-echo html_writer::div($importform->render(), '', ['id' => 'importformcontainer']);
+echo html_writer::div($importform->render(), '', [
+    'id' => 'importformcontainer',
+    'data-returnurl' => $returnurl,
+]);
 
 // Check for conflicts.
 csv_import::check_for_import_conflicts();

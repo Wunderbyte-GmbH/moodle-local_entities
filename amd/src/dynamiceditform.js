@@ -32,9 +32,8 @@
 
  export const init = (selector, formClass) => {
 
-    // eslint-disable-next-line no-console
-    console.log(selector, formClass);
     const formContainer = document.querySelector(selector);
+    const returnurl = formContainer.dataset.returnurl;
     const editform = new DynamicForm(formContainer, formClass);
 
     formContainer.addEventListener('change', (e) => {
@@ -55,8 +54,6 @@
     // Cancel button does not make much sense in such forms but since it's there we'll just reload.
     editform.addEventListener(editform.events.FORM_CANCELLED, (e) => {
         e.preventDefault();
-        // eslint-disable-next-line promise/catch-or-return
-        editform.notifyResetFormChanges()
-            .then(() => editform.load());
+        window.location.href = returnurl;
     });
  };

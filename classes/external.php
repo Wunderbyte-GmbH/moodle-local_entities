@@ -127,7 +127,6 @@ class local_entities_external extends external_api {
         $table = self::find_table($params['data']);
         // Todo tests do not find entity in db, because the table doesn't exist.
         // Need to find out how to add relevant tables in tests.
-        // Todo $messages[] = self::does_entity_exist($table, $params['id']);.
         $returnvalue = self::are_params_set($params);
         $messages[] = self::has_params($params);
 
@@ -190,8 +189,6 @@ class local_entities_external extends external_api {
         global $DB;
         $context = \context_system::instance();
         require_capability('local/entities:edit', $context);
-        $messages = [];
-        $warnings = [];
         $params = self::validate_parameters(self::delete_entity_parameters(),
         [
             'id' => $id,
@@ -231,26 +228,6 @@ class local_entities_external extends external_api {
     }
 
     /**
-     * Checks if the entity exists.
-     * @param string $table
-     * @param int $id
-     * @return array
-     * @throws dml_exception
-     */
-    private static function does_entity_exist(string $table, int $id): array {
-        global $DB;
-        $warning = [];
-        // Todo invalid response exception.
-        $matchingentities = $DB->count_records($table, ['id' => $id]);
-        if ($matchingentities != 1) {
-            $warning['itemid'] = $id;
-            $warning['warningcode'] = 'nosuchid';
-            $warning['message'] = 'There is no entity with the given id.';
-        }
-        return $warning;
-    }
-
-    /**
      * Are params set?
      * @param array $params
      * @return array
@@ -274,28 +251,6 @@ class local_entities_external extends external_api {
                 'data' => $validdata,
                 'warning' => $warning,
         ];
-    }
-
-    /**
-     * checks if all parameters are valid
-     * @param string $table
-     * @param array $params
-     * @throws moodle_exception
-     */
-    private static function verify_param_contents(string $table, array $params) {
-        global $DB;
-        $matchingentities = $DB->count_records($table, ['id' => $params['id']]);
-        if ($matchingentities != 1) {
-            throw new moodle_exception('nosuchentry', 'local_entities', null, $params['id'], 'there is no entity with this id.');
-        }
-        if (count($params['data']) < 1) {
-            throw new moodle_exception('noparams', 'local_entities', null, null, 'No params found');
-        }
-        foreach ($params['data'] as $item) {
-            if (!isset($item['name']) || !isset($item['value'])) {
-                throw new moodle_exception('invalidparams', 'local_entities', null, $item, 'No params found');
-            }
-        }
     }
 
     /**
@@ -413,7 +368,4 @@ class local_entities_external extends external_api {
         }
         return $dataobject;
     }
-
-
-
 }

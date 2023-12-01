@@ -47,12 +47,12 @@
                        href="{{editurl}}"><i
                             class="fa fa-edit" aria-hidden="true"></i>&nbsp;{{#str}}edit{{/str}}</a>
                     <button class="btn btn-sm btn-danger ml-auto"
-                            title="Ressource löschen" rel="nofollow" data-method="delete"
-                            data-target="#deleteModal" data-toggle="modal"><i
+                            title="{{#str}}delete{{/str}}" rel="nofollow" data-method="delete"
+                            data-target="#deleteModal-{{id}}" data-toggle="modal"><i
                             class="fa fa-trash"></i>&nbsp;{{#str}}delete{{/str}}</button>
                 </div>
                 <!-- Modal -->
-                <div class="modal fade" id="deleteModal">
+                <div class="modal fade" id="deleteModal-{{id}}">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">

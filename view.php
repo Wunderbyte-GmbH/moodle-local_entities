@@ -35,7 +35,6 @@ global $DB;
 $id = optional_param('id', 0, PARAM_INT);
 
 $viewphpurl = new moodle_url("/local/entities/view.php", ['id' => $id]);
-$returnurl = $viewphpurl->out();
 
 // Setup the page.
 $PAGE->set_context(\context_system::instance());
@@ -111,7 +110,7 @@ $entity->metacategory = $cat;
 $entity->metadata = $metadata;
 
 // Affiliated entities.
-$subentities = $DB->get_records('local_entities', ['parentid' => $id]);
+$subentities = $DB->get_records('local_entities', ['parentid' => $id], 'name');
 $affiliation = [];
 if ($entity->hasaffiliation = !empty($subentities)) {
     foreach ($subentities as $entry) {

@@ -22,19 +22,17 @@
 
 import DynamicForm from 'core_form/dynamicform';
 import Notification from 'core/notification';
-import {
-    get_string as getString
-        }
-        from 'core/str';
-// ...
-
+import {get_string as getString} from 'core/str';
 
 export const init = () => {
     // eslint-disable-next-line no-console
     console.log('init import form');
 
     // Initialize the form - pass the container element and the form class name.
-    const dynamicForm = new DynamicForm(document.querySelector('#importformcontainer'), 'local_entities\\form\\import_form');
+    const importformcontainer = document.querySelector('#importformcontainer');
+    const returnurl = importformcontainer.dataset.returnurl;
+    const dynamicForm = new DynamicForm(importformcontainer, 'local_entities\\form\\import_form');
+
     // By default the form is removed from the DOM after it is submitted, you may want to change this behavior:
     dynamicForm.addEventListener(dynamicForm.events.FORM_SUBMITTED, (e) => {
         e.preventDefault();
@@ -83,5 +81,11 @@ export const init = () => {
         // This will also remove previous submission errors. You will need to pass the same arguments to the form
         // that you passed when you rendered the form on the page.
         dynamicForm.load();
+    });
+
+    // Return to returnurl if form is cancelled.
+    dynamicForm.addEventListener(dynamicForm.events.FORM_CANCELLED, (e) => {
+        e.preventDefault();
+        window.location.href = returnurl;
     });
 };
