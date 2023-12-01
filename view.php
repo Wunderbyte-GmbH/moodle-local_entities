@@ -34,9 +34,13 @@ global $DB;
 // Get the id of the page to be displayed.
 $id = optional_param('id', 0, PARAM_INT);
 
+$viewphpurl = new moodle_url("/local/entities/view.php", ['id' => $id]);
+$returnurl = $viewphpurl->out();
+
 // Setup the page.
 $PAGE->set_context(\context_system::instance());
-$PAGE->set_url("{$CFG->wwwroot}/local/entities/index.php", ['id' => $id]);
+$PAGE->set_url($viewphpurl);
+
 
 // Set the page layout.
 // We even want to show entities when logged out!

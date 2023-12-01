@@ -31,14 +31,11 @@
     <span class="h4">{{name}}</span>
     <div class="pull-right">
         <a href="/local/entities/view.php?id={{id}}" class="btn btn--plain btn--smaller btn-entities">
-            <i class="fa fa-edit"></i>
-        {{#str}} view, local_entities {{/str}}</a>
+            <i class="fa fa-search-plus"></i>&nbsp;{{#str}} view, local_entities {{/str}}</a>
         <a href="/local/entities/edit.php?id={{id}}" class="btn btn--plain btn--smaller btn-entities">
-            <i class="fa fa-edit"></i>
-       {{#str}} edit, local_entities {{/str}}</a>
+            <i class="fa fa-edit"></i>&nbsp;{{#str}} edit, local_entities {{/str}}</a>
         <a href="/local/entities/entities.php?del={{id}}" class="btn btn--plain btn--smaller btn-entities">
-            <i class="fa fa fa-trash"></i>
-        {{#str}} delete, local_entities {{/str}}</a></div>
+            <i class="fa fa fa-trash"></i>&nbsp;{{#str}} delete, local_entities {{/str}}</a></div>
         {{#childs}}
             {{>local_entities/children}}
         {{/childs}}

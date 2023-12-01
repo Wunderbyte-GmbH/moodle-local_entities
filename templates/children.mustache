@@ -29,12 +29,15 @@
         {{#.}}
             <li class="list-group-item pr-0">
                     <a href="/local/entities/view.php?id={{id}}" class="">
-                    {{name}}</a>
+                        {{name}}
+                    </a>
                     <div class="pull-right">
                     <a href="/local/entities/edit.php?id={{id}}" class="btn btn--plain btn--smaller btn--primary btn-entities btn_edit">
-                        <i class="fa fa-edit"></i></a>
+                        <i class="fa fa-edit"></i>
+                    </a>
                     <a href="/local/entities/entities.php?del={{id}}" class="btn btn--plain btn--smaller btn--primary btn-entities btn_edit">
-                        <i class="fa fa fa-trash"></i></a>
+                        <i class="fa fa fa-trash"></i>
+                    </a>
                     </div>
                     {{#childs}}
                     <ul class="grandchilds mt-2 ml-2">

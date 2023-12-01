@@ -48,16 +48,16 @@ class local_entities_renderer extends plugin_renderer_base {
             $html .= '<div class="pull-right">' .
                 '<a href="' . new moodle_url($CFG->wwwroot . '/local/entities/view.php',
                     ['id' => $parent]) . '" class="btn btn--plain btn--smaller btn--primary btn_edit">' .
-                    '<i class="fa fa-edit"></i>' .
+                    '<i class="fa fa-search-plus"></i>&nbsp;' .
                 get_string('view', 'local_entities') . '</a> | ' .
                 '<a href="' . new moodle_url($CFG->wwwroot . '/local/entities/edit.php',
                     ['id' => $parent]) . '" class="btn btn--plain btn--smaller btn--primary btn_edit">' .
-                    '<i class="fa fa-edit"></i>' .
+                    '<i class="fa fa-edit"></i>&nbsp;' .
                 get_string('edit', 'local_entities') . '</a> | ' .
                 '<a href="' . new moodle_url($CFG->wwwroot . '/local/entities/entities.php',
                     ['del' => $parent, 'sesskey' => $USER->sesskey]) .
                     '" class="btn btn--plain btn--smaller btn--primary btn_edit">' .
-                    '<i class="fa fa fa-trash"></i>' .
+                    '<i class="fa fa fa-trash"></i>&nbsp;' .
                     get_string('delete', 'local_entities') . ' </a></div>';
             $html .= "<h4 class=''>" . $name . "</h4>";
             $html .= "<ul class='pl-4 border-0'>";
@@ -71,16 +71,16 @@ class local_entities_renderer extends plugin_renderer_base {
             $html .= '<div class="pull-right">' .
                 '<a href="' . new moodle_url($CFG->wwwroot . '/local/entities/view.php',
                     ['id' => $parent]) . '" class="btn btn--plain btn--smaller btn--primary btn_edit">' .
-                    '<i class="fa fa fa-edit"></i>' .
+                    '<i class="fa fa fa-search-plus"></i>&nbsp;' .
                 get_string('view', 'local_entities') . '</a> | ' .
                 '<a href="' . new moodle_url($CFG->wwwroot . '/local/entities/edit.php',
                     ['id' => $parent]) . '" class="btn btn--plain btn--smaller btn--primary btn_edit">' .
-                    '<i class="fa fa fa-edit"></i>' .
+                    '<i class="fa fa fa-edit"></i>&nbsp;' .
                 get_string('edit', 'local_entities') . '</a> | ' .
                 '<a href="' . new moodle_url($CFG->wwwroot . '/local/entities/entities.php',
                     ['del' => $parent, 'sesskey' => $USER->sesskey]) .
                     '" class="btn btn--plain btn--smaller btn--primary btn_edit">' .
-                    '<i class="fa fa fa-trash"></i>' .
+                    '<i class="fa fa fa-trash"></i>&nbsp;' .
                 get_string('delete', 'local_entities') . ' </a></div>';
             $html .= "<h4 class=''>" . $name . "</h4>";
             $html .= "</li>";
