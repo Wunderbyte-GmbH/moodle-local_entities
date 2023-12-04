@@ -64,6 +64,9 @@ $string['categories'] = 'Categories';
 $string['map'] = 'Map';
 $string['entity_openinghours'] = "Opening hours";
 
+// Errors.
+$string['error:entitydoesnotexist'] = "ERROR: Entity does not exist!";
+
 // Kalender.
 $string['openinghours'] = 'Opening hours';
 $string['daysofweek'] = 'Weekdays';

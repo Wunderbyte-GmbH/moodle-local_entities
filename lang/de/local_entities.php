@@ -64,6 +64,9 @@ $string['categories'] = 'Entity Kategorien';
 $string['map'] = 'Karte';
 $string['entity_openinghours'] = "Öffnungszeiten";
 
+// Errors.
+$string['error:entitydoesnotexist'] = "FEHLER: Die Entity existiert nicht!";
+
 // Kalender.
 $string['openinghours'] = 'Öffnungszeiten';
 $string['daysofweek'] = 'Wochentage';

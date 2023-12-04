@@ -54,6 +54,16 @@ if (isloggedin()) {
     $PAGE->set_secondary_navigation(true);
 }
 
+if (!empty($id) && !$DB->record_exists('local_entities', ['id' => $id])) {
+    $PAGE->set_title(get_string('error:entitydoesnotexist', 'local_entities'));
+    $PAGE->set_heading(get_string('error:entitydoesnotexist', 'local_entities'));
+    echo $OUTPUT->header();
+    echo "<div class='alert alert-danger'>" .
+        get_string('error:entitydoesnotexist', 'local_entities') . "</div>";
+    echo $OUTPUT->footer();
+    die();
+}
+
 // Add a class to the body that identifies this page.
 
 // Make the page name lowercase.

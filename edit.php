@@ -61,6 +61,16 @@ $settingsmanager = new settings_manager();
 
 if (!empty($entityid)) {
 
+    if (!$DB->record_exists('local_entities', ['id' => $entityid])) {
+        $PAGE->set_title(get_string('error:entitydoesnotexist', 'local_entities'));
+        $PAGE->set_heading(get_string('error:entitydoesnotexist', 'local_entities'));
+        echo $OUTPUT->header();
+        echo "<div class='alert alert-danger'>" .
+            get_string('error:entitydoesnotexist', 'local_entities') . "</div>";
+        echo $OUTPUT->footer();
+        die();
+    }
+
     // Here, we need to preload the form, because of the handler loading in definition.
     $entity = settings_manager::get_settings_forform($entityid);
 
