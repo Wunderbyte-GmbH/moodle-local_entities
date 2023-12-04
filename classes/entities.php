@@ -366,4 +366,54 @@ class entities {
         throw new \coding_exception("$component does not have an eligible implementation of entities service_provider.");
     }
 
+    /**
+     * Helper function to clean up entities table.
+     */
+    public static function clean_up_entities_db() {
+        global $DB;
+
+        $records = $DB->get_records_sql(
+            "SELECT DISTINCT id
+            FROM {local_entities}
+            WHERE (name IS NULL OR name = '')
+            OR (parentid <> 0 AND parentid NOT IN (SELECT id FROM {local_entities}))
+            UNION
+            SELECT DISTINCT entityid
+            FROM {local_entities_relations}
+            WHERE entityid NOT IN (SELECT id FROM {local_entities})
+            UNION
+            SELECT DISTINCT entityidto
+            FROM {local_entities_contacts}
+            WHERE entityidto NOT IN (SELECT id FROM {local_entities})
+            UNION
+            SELECT DISTINCT entityidto
+            FROM {local_entities_address}
+            WHERE entityidto NOT IN (SELECT id FROM {local_entities})");
+
+        // We also delete orphaned custom fields and images (plugin files).
+        if (!empty($records)) {
+            foreach ($records as $record) {
+                $entity = entity::load($record->id);
+                $cfitemid = $entity->__get('cfitemid') ?? 0;
+                $entitysettingsmanager = new settings_manager($record->id);
+                $entitysettingsmanager->delete_cfhandlers($cfitemid);
+                $entitysettingsmanager->delete_pluginfiles($record->id);
+            }
+        }
+
+        // Delete all entities with missing names.
+        $DB->delete_records_select('local_entities', "name IS NULL OR name = ''");
+
+        // This has to happen BEFORE we delete associated addresses, contacts and relations!
+        $DB->delete_records_select('local_entities',
+            'parentid <> 0 AND parentid NOT IN (SELECT id FROM {local_entities})');
+
+        // Now we can delete relations, contacts and addresses of already deleted entities.
+        $DB->delete_records_select('local_entities_relations',
+            'entityid NOT IN (SELECT id FROM {local_entities})');
+        $DB->delete_records_select('local_entities_contacts',
+            'entityidto NOT IN (SELECT id FROM {local_entities})');
+        $DB->delete_records_select('local_entities_address',
+            'entityidto NOT IN (SELECT id FROM {local_entities})');
+    }
 }

@@ -57,7 +57,7 @@ class settings_manager {
      * @param stdClass $data
      * @return int
      */
-    private function create_entity(stdClass $data): int {
+    public function create_entity(stdClass $data): int {
         global $DB;
         $id = $DB->insert_record('local_entities', $data);
         // Custom fields save needs id.
@@ -85,7 +85,7 @@ class settings_manager {
      * @param stdClass $data
      * @return int
      */
-    private function update_entity(stdClass $data): int {
+    public function update_entity(stdClass $data): int {
         global $DB;
 
         // Purge cache for options table.
@@ -102,6 +102,9 @@ class settings_manager {
             // TODO: Needs to be updated when table is changed!
         );
         cache_helper::invalidate_by_event('setbackoptionsettings', $affectedoptionids);
+
+        // Make sure DB is clean.
+        entities::clean_up_entities_db();
 
         return $DB->update_record('local_entities', $data);
     }
@@ -180,7 +183,7 @@ class settings_manager {
      * @param int $index
      * @return mixed
      */
-    private function update_address(stdClass $data, int $index): int {
+    public function update_address(stdClass $data, int $index): int {
         global $DB;
         $recordaddress = $this->prepare_address($data, $index);
         $recordaddress->entityidto = $data->id;
@@ -200,7 +203,7 @@ class settings_manager {
      * @param int $index
      * @return int
      */
-    private function create_address(stdClass $data, int $index): int {
+    public function create_address(stdClass $data, int $index): int {
         global $DB;
         $recordaddress = $this->prepare_address($data, $index);
         if (isset($recordaddress->id)) {
@@ -217,7 +220,7 @@ class settings_manager {
      * @param int $index of entity
      * @return int
      */
-    private function update_contacts(stdClass $data, int $index): int {
+    public function update_contacts(stdClass $data, int $index): int {
         global $DB;
         $recordcontacts = $this->prepare_contacts($data, $index);
         $recordcontacts->entityidto = $data->id;
@@ -237,7 +240,7 @@ class settings_manager {
      * @param int $index
      * @return mixed
      */
-    private function create_contacts(stdClass $data, int $index): int {
+    public function create_contacts(stdClass $data, int $index): int {
         global $DB;
         $recordcontacts = $this->prepare_contacts($data, $index);
         $recordcontacts->entityidto = $data->id;
@@ -441,7 +444,11 @@ class settings_manager {
         $DB->delete_records('local_entities', ['id' => $this->id]);
         $DB->delete_records('local_entities_address', ['entityidto' => $this->id]);
         $DB->delete_records('local_entities_contacts', ['entityidto' => $this->id]);
+        $DB->delete_records('local_entities_relations', ['entityid' => $this->id]);
         $this->delete_pluginfiles($this->id);
+
+        // Make sure DB is clean.
+        entities::clean_up_entities_db();
     }
 
     /**
@@ -450,7 +457,7 @@ class settings_manager {
      * @param int $id
      * @return void
      */
-    private function delete_pluginfiles(int $id) {
+    public function delete_pluginfiles(int $id) {
         $fs = get_file_storage();
         $context = \context_system::instance();
         $files = $fs->get_area_files($context->id, 'local_entities', 'image', $id);
@@ -466,7 +473,7 @@ class settings_manager {
      *
      * @return void
      */
-    private function delete_cfhandlers(int $cfitemid = 0) {
+    public function delete_cfhandlers(int $cfitemid = 0) {
         $handlers = \local_entities\customfield\entities_cf_helper::create_std_handlers();
         if ($cfitemid > 0) {
             $handlers[] = \local_entities\customfield\entities_handler::create($cfitemid);

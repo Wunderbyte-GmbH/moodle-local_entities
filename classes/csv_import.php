@@ -219,7 +219,7 @@ class csv_import {
         $cir->close();
 
         // DB cleanup.
-        $DB->delete_records_select("local_entities", "name IS NULL AND shortname IS NULL");
+        entities::clean_up_entities_db();
 
         return true;
 

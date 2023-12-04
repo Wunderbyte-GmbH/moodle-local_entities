@@ -30,6 +30,7 @@ global $CFG;
 require_once($CFG->libdir . '/externallib.php');
 
 use local_entities\entities;
+use local_entities\settings_manager;
 
 /**
  * Class local_entities_external
@@ -193,10 +194,13 @@ class local_entities_external extends external_api {
         [
             'id' => $id,
         ]);
-        $DB->delete_records('local_entities', ['id' => $params['id']]);
+
+        $entitysettingsmanager = new settings_manager($params['id']);
+        $entitysettingsmanager->delete();
 
         return [
-                'deleted' => $DB->record_exists('local_entities', ['id' => $params['id']]),
+            // True, if it does NOT exist anymore.
+            'deleted' => !$DB->record_exists('local_entities', ['id' => $params['id']]),
         ];
     }
 
@@ -206,11 +210,9 @@ class local_entities_external extends external_api {
      * @return external_single_structure
      */
     public static function delete_entity_returns(): external_single_structure {
-        return new external_single_structure(
-                [
-                        'deleted' => new external_value(PARAM_BOOL, 'did things got deleted?'),
-                ]
-        );
+        return new external_single_structure([
+            'deleted' => new external_value(PARAM_BOOL, 'True if delete was successful'),
+        ]);
     }
 
     /**
