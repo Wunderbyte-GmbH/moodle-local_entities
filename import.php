@@ -30,8 +30,8 @@ require_once($CFG->libdir . "/csvlib.class.php");
 
 use local_entities\form\import_form;
 use moodle_url;
-use context_module;
 use context_system;
+use local_entities\local\views\secondary;
 use html_writer;
 
 $PAGE->set_context(context_system::instance());
@@ -47,6 +47,11 @@ $PAGE->set_url($url);
 
 $context = context_system::instance();
 require_capability('mod/booking:updatebooking', $context);
+
+$secondarynav = new secondary($PAGE);
+$secondarynav->initialise();
+$PAGE->set_secondarynav($secondarynav);
+$PAGE->set_secondary_navigation(true);
 
 // Return URL to return to if form is cancelled.
 $entitiesurl = new moodle_url('/local/entities/entities.php');

@@ -159,7 +159,11 @@ class edit_dynamic_form extends dynamic_form {
         $mform->setType('maxallocation', PARAM_INT);
         $mform->addHelpButton('maxallocation', 'maxallocation', 'local_entities');
 
-        $mform->addElement('select', 'parentid', get_string('entity_parent', 'local_entities'), $entities);
+        $opts = [
+            'multiple' => false,
+            'noselectionstring' => get_string('none', 'local_entities'),
+        ];
+        $mform->addElement('autocomplete', 'parentid', get_string('entity_parent', 'local_entities'), $entities, $opts);
 
         $mform->addElement('text', 'sortorder', get_string('entity_order', 'local_entities'));
         $mform->setType('sortorder', PARAM_INT);

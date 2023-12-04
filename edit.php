@@ -41,7 +41,12 @@ global $USER, $PAGE, $DB;
 
 // Set PAGE variables.
 $PAGE->set_context($context);
-$PAGE->set_url($CFG->wwwroot . '/local/entities/edit.php', ["id" => $entityid]);
+if (empty($entityid)) {
+    $PAGE->set_url(new moodle_url('/local/entities/edit.php'));
+} else {
+    $PAGE->set_url(new moodle_url('/local/entities/edit.php', ['id' => $entityid]));
+}
+
 
 // Return URL to return to if form is cancelled.
 $entitiesurl = new moodle_url('/local/entities/entities.php');
