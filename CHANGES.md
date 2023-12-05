@@ -1,3 +1,12 @@
+## Version 0.2.9 (2023120500)
+* Improvement: Rename return_array_of_dates to return_array_of_entity_dates.
+* Improvement: Layout improvements.
+* Improvement: Lots of fixes and improvements with sorting, cancel buttons, deleting etc.
+* Improvement: Better handling of deleting entities and add a DB cleanup function.
+* Improvement: Autocomplete for parent entities, modals for every delete button, better navigation.
+* Improvement: Show an error if trying to view or edit a non-existing entity.
+* Bugfix: Fix and improve broken CSV importer.
+
 ## Version 0.2.8 (2023112700)
 * Improvement: Added support for Moodle 4.3 and PHP 8.2.
 
