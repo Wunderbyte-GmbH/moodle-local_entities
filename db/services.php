@@ -72,6 +72,7 @@ $functions = [
                 'description' => 'Get calendardata from specific entity',
                 'type' => 'read',
                 'ajax' => true,
+                'loginrequired' => false,
         ],
         'local_entities_search_entities' => [
                 'classname' => 'local_entities\external\search_entities',
