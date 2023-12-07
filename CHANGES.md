@@ -1,3 +1,7 @@
+## Version 0.3.0 (2023120700)
+* Improvement: Harden against errors.
+* Bugfix: Don't fail js when element is not found.
+
 ## Version 0.2.9 (2023120500)
 * Improvement: Rename return_array_of_dates to return_array_of_entity_dates.
 * Improvement: Layout improvements.
