@@ -45,7 +45,7 @@ class local_entities_renderer extends plugin_renderer_base {
         $records = \local_entities\entities::list_all_subentities($parent);
         if ($records) {
             $html .= "<li class='list-group-item'>";
-            $html .= '<div class="pull-right">' .
+            $html .=
                 // View.
                 '<a href="' . new moodle_url($CFG->wwwroot . '/local/entities/view.php',
                     ['id' => $parent]) . '" class="btn btn--plain btn--smaller btn--primary btn_edit">' .
@@ -104,7 +104,7 @@ class local_entities_renderer extends plugin_renderer_base {
             $html .= "</li>";
         } else {
             $html .= "<li class='list-group-item'>";
-            $html .= '<div class="pull-right">' .
+            $html .=
                 '<a href="' . new moodle_url($CFG->wwwroot . '/local/entities/view.php',
                     ['id' => $parent]) . '" class="btn btn--plain btn--smaller btn--primary btn_edit">' .
                     '<i class="fa fa fa-search-plus"></i>&nbsp;' .
@@ -152,7 +152,6 @@ class local_entities_renderer extends plugin_renderer_base {
                     </div>
                 </div>';
 
-            $html .= '</div>';
             $html .= "<h4 class=''>" . $name . "</h4>";
             $html .= "</li>";
         }
