@@ -82,7 +82,6 @@ $string['stdcategories:description'] = 'Standard-Kategorien aus der Liste der Cu
 $string['entitieslist'] = 'Entity Liste';
 $string['entitylist'] = 'Entity Liste';
 $string['er_entitiesname'] = 'Ausgewählte Entity';
-$string['er_saverelationsforoptiondates'] = 'Entity auch für jeden Termin speichern';
 $string['addcategory'] = 'Kategorie hinzufügen';
 $string['er_placeholder'] = '... suche';
 
