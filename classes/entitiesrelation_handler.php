@@ -190,6 +190,8 @@ class entitiesrelation_handler {
             return;
         }
 
+        // Validation needs to be made for all possible indexes.
+
         if (!$data['local_entities_entityid']) {
             return;
         }
@@ -282,17 +284,18 @@ class entitiesrelation_handler {
      * @param MoodleQuickForm $mform
      * @param stdClass $instance
      * @param int $instanceid
+     * @param int $index
      * @return void
      */
-    public function instance_form_before_set_data(MoodleQuickForm &$mform, stdClass $instance, $instanceid = 0) {
+    public function instance_form_before_set_data(MoodleQuickForm &$mform, stdClass $instance, $instanceid = 0, $index = 0) {
         $instanceid = !empty($instanceid) ? $instanceid : 0;
         $fromdb = $this->get_instance_data($instanceid);
         $entityid = isset($fromdb->id) ? $fromdb->id : 0;
         $entityname = isset($fromdb->name) ? $fromdb->name : "";
         $erid = isset($fromdb->relationid) ? $fromdb->relationid : 0;
-        $mform->setDefaults(['local_entities_relationid' => $erid]);
-        $mform->setDefaults(['local_entities_entityid' => $entityid]);
-        $mform->setDefaults(['local_entities_entityname' => $entityname]);
+        $mform->setDefaults(['local_entities_relationid_' . $index => $erid]);
+        $mform->setDefaults(['local_entities_entityid_' . $index => $entityid]);
+        $mform->setDefaults(['local_entities_entityname_' . $index => $entityname]);
     }
 
     /**
@@ -300,15 +303,16 @@ class entitiesrelation_handler {
      *
      * @param stdClass $data
      * @param int $instanceid
+     * @param int $index
      * @return void
      */
-    public function values_for_set_data(stdClass &$data, $instanceid = 0) {
+    public function values_for_set_data(stdClass &$data, $instanceid = 0, $index = 0) {
         $instanceid = !empty($instanceid) ? $instanceid : 0;
         $fromdb = $this->get_instance_data($instanceid);
 
-        $data->local_entities_entityid = isset($fromdb->id) ? $fromdb->id : 0;
-        $data->local_entities_entityname = isset($fromdb->name) ? $fromdb->name : "";
-        $data->local_entities_relationid = isset($fromdb->relationid) ? $fromdb->relationid : 0;
+        $data->{'local_entities_entityid_' . $index} = isset($fromdb->id) ? $fromdb->id : 0;
+        $data->{'local_entities_entityname_' . $index} = isset($fromdb->name) ? $fromdb->name : "";
+        $data->{'local_entities_relationid_' . $index} = isset($fromdb->relationid) ? $fromdb->relationid : 0;
     }
 
 
@@ -326,7 +330,7 @@ class entitiesrelation_handler {
      * @param int $instanceid
      * @return int|void
      */
-    public function instance_form_save(stdClass $instance, int $instanceid) {
+    public function instance_form_save(stdClass $instance, int $instanceid, int $index = 0) {
         if (empty($instanceid)) {
             throw new \coding_exception('Caller must ensure that id is already set in data before calling this method');
         }
@@ -335,7 +339,8 @@ class entitiesrelation_handler {
             $this->delete_relation($instanceid);
             return;
         }
-        if (empty($instance->local_entities_entityid)) {
+        $key = 'local_entities_entityid_' . $index;
+        if (empty($instance->{$key})) {
             $this->delete_relation($instanceid);
             return;
         }
@@ -347,7 +352,7 @@ class entitiesrelation_handler {
         $data->instanceid = $instanceid;
         $data->component = $this->component;
         $data->area = $this->area;
-        $data->entityid = $instance->local_entities_entityid;
+        $data->entityid = $instance->{$key};
         $data->timecreated = time();
         // Delete er if entitiyid is set to -1.
         if ($data->entityid == -1) {
@@ -363,6 +368,7 @@ class entitiesrelation_handler {
 
     /**
      * This saves a new relation and creates a "fake" form to use the form_save method.
+     * If an empty entityid is provided, the relation is deleted.
      *
      * @param int $instanceid
      * @param int $entityid
@@ -370,11 +376,16 @@ class entitiesrelation_handler {
      */
     public function save_entity_relation($instanceid, $entityid) {
 
+        if (empty($entityid)) {
+            $this->delete_relation($instanceid);
+            return;
+        }
+
         $instance = new stdClass();
 
-        $instance->local_entities_entityid = $entityid;
+        $instance->local_entities_entityid_0 = $entityid;
 
-        $this->instance_form_save($instance, $instanceid);
+        $this->instance_form_save($instance, $instanceid, 0);
     }
 
     /**
