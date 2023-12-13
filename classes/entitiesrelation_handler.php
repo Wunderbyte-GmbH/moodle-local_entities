@@ -69,21 +69,26 @@ class entitiesrelation_handler {
      * Add form fields to be passed on mform.
      *
      * @param MoodleQuickForm $mform
-     * @param int $instanceid
+     * @param int $index // We use the index if we have more than one entity in the form.
      * @param string $formmode
      * @param string|null $headerlangidentifier
      * @param string|null $headerlangcomponent
      *
-     * @return mixed
+     * @return array
      *
      */
-    public function instance_form_definition(MoodleQuickForm &$mform, int $instanceid = 0, string $formmode = 'expert',
-        ?string $headerlangidentifier = null, ?string $headerlangcomponent = null) {
-        global $DB, $OUTPUT, $PAGE;
+    public function instance_form_definition(
+            MoodleQuickForm &$mform,
+            int $index = 0,
+            string $formmode = 'expert',
+            ?string $headerlangidentifier = null,
+            ?string $headerlangcomponent = null) {
+        global $DB, $PAGE;
 
         // Workaround: Only show, if it is not turned off in the option form config.
         // We currently need this, because hideIf does not work with headers.
         // In expert mode, we always show everything.
+        $showelements = true;
         $showheader = true;
 
         if (!empty($headerlangidentifier)) {
@@ -91,19 +96,21 @@ class entitiesrelation_handler {
         } else {
             $header = get_string('addentity', 'local_entities');
         }
-
-        if ($formmode !== 'expert') {
+        // With the noheader mode, we show the entity but not the header.
+        if ($formmode == 'noheader') {
+            $showheader = false;
+        } else if ($formmode !== 'expert') {
             $cfgentityheader = $DB->get_field('booking_optionformconfig', 'active',
                 ['elementname' => 'entitiesrelation']);
             if ($cfgentityheader == 0) {
-                $showheader = false;
+                $showelements = false;
             }
         }
 
-        if ($showheader) {
-            $header = get_string('addentity', 'local_entities');
-
-            $mform->addElement('header', 'entitiesrelation', $header);
+        if ($showelements) {
+            if ($showheader) {
+                $mform->addElement('header', 'entitiesrelation', $header);
+            }
 
             $records = \local_entities\entities::list_all_parent_entities();
 
@@ -132,15 +139,35 @@ class entitiesrelation_handler {
                 },
             ];
 
-            $mform->addElement('autocomplete', 'local_entities_entityid', get_string('er_entitiesname', 'local_entities'),
+            $elements[] = $mform->addElement('autocomplete', 'local_entities_entityid_' . $index, get_string('er_entitiesname', 'local_entities'),
                 [], $options);
 
-            $mform->addElement('button', 'openmodal', get_string('opentimetable', 'local_entities'));
+            $elements[] = $mform->addElement('button', 'openmodal_' . $index, get_string('opentimetable', 'local_entities'));
             $PAGE->requires->js_call_amd('local_entities/handler', 'init');
-            $PAGE->requires->css('/local/entities/js/main.css');
+            // $PAGE->requires->css('/local/entities/js/main.css');
         }
 
-        return $mform;
+        return $elements;
+    }
+
+    /**
+     * Alernative function which adds the elements to the elements array.
+     * @param MoodleQuickForm $mform
+     * @param array $elements
+     * @param int $instanceid
+     * @param string $formmode
+     * @param null|string $headerlangidentifier
+     * @param null|string $headerlangcomponent
+     * @return array
+     */
+    public function instance_form_definition_elements(
+        MoodleQuickForm &$mform,
+        array &$elements,
+        int $instanceid = 0,
+        string $formmode = 'expert',
+        ?string $headerlangidentifier = null,
+        ?string $headerlangcomponent = null) {
+
     }
 
     /**
