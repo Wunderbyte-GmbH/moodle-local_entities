@@ -141,6 +141,8 @@ class entitiesrelation_handler {
 
             $elements[] = $mform->addElement('autocomplete', 'local_entities_entityid_' . $index, get_string('er_entitiesname', 'local_entities'),
                 [], $options);
+            $elements[] = $mform->addElement('hidden', 'local_entities_entityarea_' . $index, 'optiondate');
+            $mform->setType('local_entities_entityarea_' . $index, PARAM_TEXT);
 
             $elements[] = $mform->addElement('button', 'openmodal_' . $index, get_string('opentimetable', 'local_entities'));
             $PAGE->requires->js_call_amd('local_entities/handler', 'init');
