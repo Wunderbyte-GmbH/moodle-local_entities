@@ -195,37 +195,77 @@ class entitiesrelation_handler {
     public function instance_form_validation(array $data, array &$errors) {
 
         // First, see if an entitiyid is set. If not, we can proceed right away.
-        if (!preg_grep('/^local_entities/', array_keys($data))) {
+        if (!$entityidkeys = preg_grep('/^local_entities_entityid/', array_keys($data))) {
             // For performance.
             return;
         }
 
-        // Validation needs to be made for all possible indexes.
+        foreach ($entityidkeys as $entityidkey) {
 
-        if (!isset($data['local_entities_entityid'])) {
-            return;
-        }
+            if (empty($data[$entityidkey])) {
+                // If there is no entityid value found, we don't need to validate.
+                continue;
+            }
 
-        // Now determine if there is a conflict.
+            // Now determine if there are conflicts.
+            $conflicts = entities::return_conflicts($data[$entityidkey],
+            $data['datestobook'] ?? [],
+            $data['optionid'] ?? 0,
+            'optiondate');
 
-        $conflicts = entities::return_conflicts($data['local_entities_entityid'],
-        $data['datestobook'] ?? [],
-        $data['optionid'] ?? 0,
-        'optiondate');
+            if (!empty($conflicts['conflicts'])) {
 
-        if (!empty($conflicts['conflicts'])) {
+                $errors[$entityidkey] = get_string('errorwiththefollowingdates', 'local_entities');
 
-            $errors['local_entities_entityid'] = get_string('errorwiththefollowingdates', 'local_entities');
-
-            foreach ($conflicts['conflicts'] as $conflict) {
-                $link = $conflict->link->out();
-                $errors['local_entities_entityid'] .= "<br><a href='$link'>$conflict->name (" .
-                    dates::prettify_dates_start_end($conflict->starttime, $conflict->endtime, current_language()) . ")</a>";
+                foreach ($conflicts['conflicts'] as $conflict) {
+                    $link = $conflict->link->out();
+                    $errors[$entityidkey] .= "<br><a href='$link'>$conflict->name (" .
+                        dates::prettify_dates_start_end($conflict->starttime, $conflict->endtime, current_language()) . ")</a>";
+                }
+            }
+            if (!empty($conflicts['openinghours'])) {
+                $errors[$entityidkey] .= get_string('notwithinopeninghours', 'local_entities');
             }
         }
-        if (!empty($conflicts['openinghours'])) {
-            $errors['local_entities_entityid'] .= get_string('notwithinopeninghours', 'local_entities');
+
+        // Validation for entities in combination with mod_booking.
+        if ($this->component = 'mod_booking' && $this->area = 'option') {
+            $optionid = $this->instanceid;
+
+            // In validation we need to check, if there are optiondates that have "outlier" entities.
+            // If so, the outliers must be changed to the main entity before all relations can be saved.
+            if (!empty($data['er_saverelationsforoptiondates']) &&
+                self::option_has_dates_with_entity_outliers($optionid) &&
+                empty($data['confirm:er_saverelationsforoptiondates'])) {
+                    $errors['confirm:er_saverelationsforoptiondates'] =
+                        get_string('error:er_saverelationsforoptiondates', 'mod_booking');
+            }
         }
+    }
+
+    /**
+     * Helper function to check if there are dates with "entity outliers"
+     * (e.g. if all dates have set "Classroom" but there is a date that is
+     * happening outside and has set "Park").
+     * @param int $optionid
+     * @return bool true if there are outliers, false if not
+     */
+    public static function option_has_dates_with_entity_outliers(int $optionid): bool {
+        global $DB;
+        // If we have "outliers" (deviating entities), we show a confirm box...
+        // ...so a user does not overwrite them accidentally.
+        $sql = "SELECT COUNT(DISTINCT er.entityid) numberofentities
+                FROM {local_entities_relations} er
+                JOIN {booking_optiondates} bod
+                ON bod.id = er.instanceid
+                WHERE er.area = 'optiondate'
+                AND bod.optionid = :optionid";
+        $params = ['optionid' => $optionid];
+        $numberofentities = $DB->get_field_sql($sql, $params);
+        if (!empty($numberofentities) && $numberofentities > 1) {
+            return true;
+        }
+        return false;
     }
 
     /**
