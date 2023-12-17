@@ -25,6 +25,10 @@
 namespace local_entities;
 
 defined('MOODLE_INTERNAL') || die();
+define('LOCAL_ENTITIES_FORM_ENTITYID', 'local_entities_entityid_');
+define('LOCAL_ENTITIES_FORM_ENTITYAREA', 'local_entities_entityarea_');
+define('LOCAL_ENTITIES_FORM_RELATIONID', 'local_entities_relationid_');
+define('LOCAL_ENTITIES_FORM_NAME', 'local_entities_entityname_');
 
 global $CFG;
 require_once("$CFG->libdir/formslib.php");
@@ -139,10 +143,10 @@ class entitiesrelation_handler {
                 },
             ];
 
-            $elements[] = $mform->addElement('autocomplete', 'local_entities_entityid_' . $index, get_string('er_entitiesname', 'local_entities'),
+            $elements[] = $mform->addElement('autocomplete', LOCAL_ENTITIES_FORM_ENTITYID . $index, get_string('er_entitiesname', 'local_entities'),
                 [], $options);
-            $elements[] = $mform->addElement('hidden', 'local_entities_entityarea_' . $index, 'optiondate');
-            $mform->setType('local_entities_entityarea_' . $index, PARAM_TEXT);
+            $elements[] = $mform->addElement('hidden', LOCAL_ENTITIES_FORM_ENTITYAREA . $index, 'optiondate');
+            $mform->setType(LOCAL_ENTITIES_FORM_ENTITYAREA . $index, PARAM_TEXT);
 
             $elements[] = $mform->addElement('button', 'openmodal_' . $index, get_string('opentimetable', 'local_entities'));
             $PAGE->requires->js_call_amd('local_entities/handler', 'init');
@@ -293,9 +297,9 @@ class entitiesrelation_handler {
         $entityid = isset($fromdb->id) ? $fromdb->id : 0;
         $entityname = isset($fromdb->name) ? $fromdb->name : "";
         $erid = isset($fromdb->relationid) ? $fromdb->relationid : 0;
-        $mform->setDefaults(['local_entities_relationid_' . $index => $erid]);
-        $mform->setDefaults(['local_entities_entityid_' . $index => $entityid]);
-        $mform->setDefaults(['local_entities_entityname_' . $index => $entityname]);
+        $mform->setDefaults([LOCAL_ENTITIES_FORM_RELATIONID . $index => $erid]);
+        $mform->setDefaults([LOCAL_ENTITIES_FORM_ENTITYID . $index => $entityid]);
+        $mform->setDefaults([LOCAL_ENTITIES_FORM_NAME . $index => $entityname]);
     }
 
     /**
@@ -310,9 +314,9 @@ class entitiesrelation_handler {
         $instanceid = !empty($instanceid) ? $instanceid : 0;
         $fromdb = $this->get_instance_data($instanceid);
 
-        $data->{'local_entities_entityid_' . $index} = isset($fromdb->id) ? $fromdb->id : 0;
-        $data->{'local_entities_entityname_' . $index} = isset($fromdb->name) ? $fromdb->name : "";
-        $data->{'local_entities_relationid_' . $index} = isset($fromdb->relationid) ? $fromdb->relationid : 0;
+        $data->{LOCAL_ENTITIES_FORM_ENTITYID . $index} = isset($fromdb->id) ? $fromdb->id : 0;
+        $data->{LOCAL_ENTITIES_FORM_NAME . $index} = isset($fromdb->name) ? $fromdb->name : "";
+        $data->{LOCAL_ENTITIES_FORM_RELATIONID . $index} = isset($fromdb->relationid) ? $fromdb->relationid : 0;
     }
 
 
@@ -339,7 +343,7 @@ class entitiesrelation_handler {
             $this->delete_relation($instanceid);
             return;
         }
-        $key = 'local_entities_entityid_' . $index;
+        $key = LOCAL_ENTITIES_FORM_ENTITYID . $index;
         if (empty($instance->{$key})) {
             $this->delete_relation($instanceid);
             return;
@@ -383,7 +387,7 @@ class entitiesrelation_handler {
 
         $instance = new stdClass();
 
-        $instance->local_entities_entityid_0 = $entityid;
+        $instance->{LOCAL_ENTITIES_FORM_ENTITYID . 0} = $entityid;
 
         $this->instance_form_save($instance, $instanceid, 0);
     }
@@ -562,5 +566,25 @@ class entitiesrelation_handler {
                 </div>
             </div>
             </div>';
+    }
+
+    /**
+     * Returns false if items are not similar.
+     * @param array $olditem
+     * @param array $newitem
+     * @return bool
+     */
+    public static function compare_items(array $olditem, array $newitem) {
+
+        // If the ids are both empty, we don't see a need to update.
+        if (empty($olditem['entityid']) && empty($newitem['entityid'])) {
+            return true;
+        }
+
+        if ($olditem['entityid'] != $newitem['entityid']
+            || $olditem['entityarea'] != $newitem['entityarea']) {
+                return false;
+        }
+        return true;
     }
 }
