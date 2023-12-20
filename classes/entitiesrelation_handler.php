@@ -143,8 +143,12 @@ class entitiesrelation_handler {
                 },
             ];
 
-            $elements[] = $mform->addElement('autocomplete', LOCAL_ENTITIES_FORM_ENTITYID . $index, get_string('er_entitiesname', 'local_entities'),
-                [], $options);
+            $elements[] = $mform->addElement(
+                'autocomplete',
+                LOCAL_ENTITIES_FORM_ENTITYID . $index,
+                get_string('er_entitiesname', 'local_entities'),
+                [],
+                $options);
             $elements[] = $mform->addElement('hidden', LOCAL_ENTITIES_FORM_ENTITYAREA . $index, 'optiondate');
             $mform->setType(LOCAL_ENTITIES_FORM_ENTITYAREA . $index, PARAM_TEXT);
 
@@ -196,7 +200,7 @@ class entitiesrelation_handler {
 
         // Validation needs to be made for all possible indexes.
 
-        if (!$data['local_entities_entityid']) {
+        if (!isset($data['local_entities_entityid'])) {
             return;
         }
 
