@@ -155,7 +155,8 @@ class entitiesrelation_handler {
 
             $elements[] = $mform->addElement('button', 'openmodal_' . $index, get_string('opentimetable', 'local_entities'));
             $PAGE->requires->js_call_amd('local_entities/handler', 'init');
-            // $PAGE->requires->css('/local/entities/js/main.css');
+            // TODO: Check if this can be removed safely.
+            /* $PAGE->requires->css('/local/entities/js/main.css'); */ // phpcs:ignore Squiz.PHP.CommentedOutCode.Found
         }
 
         return $elements;
