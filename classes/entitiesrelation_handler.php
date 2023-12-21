@@ -94,6 +94,7 @@ class entitiesrelation_handler {
         // In expert mode, we always show everything.
         $showelements = true;
         $showheader = true;
+        $elements = [];
 
         if (!empty($headerlangidentifier)) {
             $header = get_string($headerlangidentifier, $headerlangcomponent);
