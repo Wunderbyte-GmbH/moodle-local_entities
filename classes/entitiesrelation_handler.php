@@ -207,11 +207,11 @@ class entitiesrelation_handler {
                 continue;
             }
 
+            $area = $data[$entityidkey] == "local_entities_entityid_0" ? 'option' : 'optiondate';
             // Now determine if there are conflicts.
             $conflicts = entities::return_conflicts($data[$entityidkey],
             $data['datestobook'] ?? [],
-            $data['optionid'] ?? 0,
-            'optiondate');
+            $data['optionid'] ?? 0, $area);
 
             if (!empty($conflicts['conflicts'])) {
 
