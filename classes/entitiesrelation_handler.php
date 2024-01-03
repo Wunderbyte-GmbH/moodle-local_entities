@@ -153,8 +153,12 @@ class entitiesrelation_handler {
             $elements[] = $mform->addElement('hidden', LOCAL_ENTITIES_FORM_ENTITYAREA . $index, 'optiondate');
             $mform->setType(LOCAL_ENTITIES_FORM_ENTITYAREA . $index, PARAM_TEXT);
 
-            $elements[] = $mform->addElement('button', 'openmodal_' . $index, get_string('opentimetable', 'local_entities'));
+            // TODO: Time table feature is currently not working, we need to fix this in a future release.
+            // phpcs:ignore Squiz.PHP.CommentedOutCode.Found
+            /* $elements[] = $mform->addElement('button', 'openmodal_' . $index, get_string('opentimetable', 'local_entities')); */
+
             $PAGE->requires->js_call_amd('local_entities/handler', 'init');
+
             // TODO: Check if this can be removed safely.
             /* $PAGE->requires->css('/local/entities/js/main.css'); */ // phpcs:ignore Squiz.PHP.CommentedOutCode.Found
         }
