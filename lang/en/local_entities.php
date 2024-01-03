@@ -80,7 +80,7 @@ $string['notwithinopeninghours'] = 'Outside business hours';
 
 $string['stdcategories'] = 'Default categories';
 $string['categories:description'] = 'Set the default category from the list of the customfieldcategories visible on the edit page';
-$string['er_entitiesname'] = 'Selected entitiy';
+$string['er_entitiesname'] = 'Entity';
 $string['er_placeholder'] = '... search';
 $string['addcategory'] = 'Add category';
 $string['entitieslist'] = 'List entities';
