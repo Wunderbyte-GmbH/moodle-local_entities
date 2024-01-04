@@ -77,6 +77,7 @@ class entitiesrelation_handler {
      * @param string $formmode
      * @param string|null $headerlangidentifier
      * @param string|null $headerlangcomponent
+     * @param int $entityid optional entity id
      *
      * @return array
      *
@@ -86,7 +87,9 @@ class entitiesrelation_handler {
             int $index = 0,
             string $formmode = 'expert',
             ?string $headerlangidentifier = null,
-            ?string $headerlangcomponent = null) {
+            ?string $headerlangcomponent = null,
+            int $entityid = 0
+    ) {
         global $DB, $PAGE;
 
         // Workaround: Only show, if it is not turned off in the option form config.
@@ -114,7 +117,9 @@ class entitiesrelation_handler {
 
         if ($showelements) {
             if ($showheader) {
-                $mform->addElement('header', 'entitiesrelation', $header);
+                $mform->addElement('header', 'entitiesrelation',
+                    '<i class="fa fa-fw fa-building" aria-hidden="true"></i>&nbsp;' .
+                    $header);
             }
 
             $records = \local_entities\entities::list_all_parent_entities();
@@ -144,12 +149,16 @@ class entitiesrelation_handler {
                 },
             ];
 
-            $elements[] = $mform->addElement(
-                'autocomplete',
-                LOCAL_ENTITIES_FORM_ENTITYID . $index,
+            $element = $mform->addElement(
+                'autocomplete', LOCAL_ENTITIES_FORM_ENTITYID . $index,
                 get_string('er_entitiesname', 'local_entities'),
                 [],
                 $options);
+
+            if (!empty($entityid)) {
+                $element->setValue($entityid);
+            }
+            $elements[] = $element;
             $elements[] = $mform->addElement('hidden', LOCAL_ENTITIES_FORM_ENTITYAREA . $index, 'optiondate');
             $mform->setType(LOCAL_ENTITIES_FORM_ENTITYAREA . $index, PARAM_TEXT);
 
@@ -233,7 +242,8 @@ class entitiesrelation_handler {
         }
 
         // Validation for entities in combination with mod_booking.
-        if ($this->component = 'mod_booking' && $this->area = 'option') {
+        // phpcs:ignore Squiz.PHP.CommentedOutCode.Found
+        /*if ($this->component = 'mod_booking' && $this->area = 'option') {
             $optionid = $this->instanceid;
 
             // In validation we need to check, if there are optiondates that have "outlier" entities.
@@ -244,7 +254,7 @@ class entitiesrelation_handler {
                     $errors['confirm:er_saverelationsforoptiondates'] =
                         get_string('error:er_saverelationsforoptiondates', 'mod_booking');
             }
-        }
+        }*/
     }
 
     /**
