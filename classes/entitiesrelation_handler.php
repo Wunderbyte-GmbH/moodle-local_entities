@@ -121,6 +121,7 @@ class entitiesrelation_handler {
                     '<i class="fa fa-fw fa-building" aria-hidden="true"></i>&nbsp;' .
                     $header);
             }
+            $mform->setExpanded('entitiesrelation', false);
 
             $records = \local_entities\entities::list_all_parent_entities();
 
@@ -134,6 +135,9 @@ class entitiesrelation_handler {
                 'ajax' => 'local_entities/form_entities_selector',
                 'valuehtmlcallback' => function($value) {
                     global $OUTPUT;
+                    if (empty($value)) {
+                        return get_string('choose...', 'mod_booking');
+                    }
                     $entity = \local_entities\entity::load($value);
                     $parentname = "";
                     if ($entity->parentid) {
