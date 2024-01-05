@@ -378,11 +378,17 @@ class entitiesrelation_handler {
         $instanceid = !empty($instanceid) ? $instanceid : 0;
         $fromdb = $this->get_instance_data($instanceid);
 
-        $data->{LOCAL_ENTITIES_FORM_ENTITYID . $index} = isset($fromdb->id) ? $fromdb->id : 0;
-        $data->{LOCAL_ENTITIES_FORM_NAME . $index} = isset($fromdb->name) ? $fromdb->name : "";
-        $data->{LOCAL_ENTITIES_FORM_RELATIONID . $index} = isset($fromdb->relationid) ? $fromdb->relationid : 0;
+        // Check for empty is important. Otherwise we overwrite form values when any nosubmit button is pressed.
+        if (empty($data->{LOCAL_ENTITIES_FORM_ENTITYID . $index})) {
+            $data->{LOCAL_ENTITIES_FORM_ENTITYID . $index} = isset($fromdb->id) ? $fromdb->id : 0;
+        }
+        if (empty($data->{LOCAL_ENTITIES_FORM_NAME . $index})) {
+            $data->{LOCAL_ENTITIES_FORM_NAME . $index} = isset($fromdb->name) ? $fromdb->name : "";
+        }
+        if (empty($data->{LOCAL_ENTITIES_FORM_RELATIONID . $index})) {
+            $data->{LOCAL_ENTITIES_FORM_RELATIONID . $index} = isset($fromdb->relationid) ? $fromdb->relationid : 0;
+        }
     }
-
 
     /**
      * Saves the given data for entitiesrelations, must be called after the instance is saved and id is present
