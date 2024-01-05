@@ -120,8 +120,8 @@ class entitiesrelation_handler {
                 $mform->addElement('header', 'entitiesrelation',
                     '<i class="fa fa-fw fa-building" aria-hidden="true"></i>&nbsp;' .
                     $header);
+                $mform->setExpanded('entitiesrelation', false);
             }
-            $mform->setExpanded('entitiesrelation', false);
 
             $records = \local_entities\entities::list_all_parent_entities();
 
