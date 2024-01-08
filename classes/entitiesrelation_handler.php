@@ -402,6 +402,7 @@ class entitiesrelation_handler {
      *
      * @param stdClass $instance
      * @param int $instanceid
+     * @param int $index
      * @return int|void
      */
     public function instance_form_save(stdClass $instance, int $instanceid, int $index = 0) {
