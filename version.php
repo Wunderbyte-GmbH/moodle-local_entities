@@ -26,7 +26,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'local_entities';
-$plugin->release = '0.3.0';
-$plugin->version = 2023120700;
+$plugin->release = '0.3.1';
+$plugin->version = 2024011000;
 $plugin->requires = 2020061500;
 $plugin->maturity = MATURITY_ALPHA;

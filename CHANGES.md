@@ -1,3 +1,15 @@
+## Version 0.3.1 (2024011000)
+* Improvement: Re-write entitiesrelation_handler.
+* Improvement: Remove string only relevant for mod_booking.
+* Improvement: Better strings.
+* Improvement: Checkbox to save entity for each session no longer needed. Layout improvements.
+* Improvement: Collapse entity section by default and show a "Choose..." string when entity is missing (instead of "0").
+* Improvement: Linting: Phpdocs for function entitiesrelation_handler::instance_form_save has incomplete parameters list.
+* Bugfix: Do not require login on view.php (web service still required it).
+* Bugfix: Fix alignment of entity list.
+* Bugfix: QuickForm Error: nonexistent html element: Element 'entitiesrelation' does not exist in HTML_QuickForm::getElement().
+* Bugfix: Check for empty is important. Otherwise we overwrite form values when any nosubmit button is pressed.
+
 ## Version 0.3.0 (2023120700)
 * Improvement: Harden against errors.
 * Bugfix: Don't fail js when element is not found.
