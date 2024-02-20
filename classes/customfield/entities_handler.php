@@ -82,7 +82,7 @@ class entities_handler extends \core_customfield\handler {
      *
      * @return bool true if the current can configure custom fields, false otherwise
      */
-    public function can_configure() : bool {
+    public function can_configure(): bool {
         return has_capability('moodle/course:configurecustomfields', $this->get_configuration_context());
     }
 
@@ -93,7 +93,7 @@ class entities_handler extends \core_customfield\handler {
      * @param int $instanceid id of the course to test edit permission
      * @return bool true if the current can edit custom fields, false otherwise
      */
-    public function can_edit(field_controller $field, int $instanceid = 0) : bool {
+    public function can_edit(field_controller $field, int $instanceid = 0): bool {
         if ($instanceid) {
             $context = $this->get_instance_context($instanceid);
             return (!$field->get_configdata_property('locked') ||
@@ -117,7 +117,7 @@ class entities_handler extends \core_customfield\handler {
      * @param int $instanceid id of the course to test edit permission
      * @return bool true if the current can edit custom fields, false otherwise
      */
-    public function can_view(field_controller $field, int $instanceid) : bool {
+    public function can_view(field_controller $field, int $instanceid): bool {
         $visibility = $field->get_configdata_property('visibility');
         if ($visibility == self::NOTVISIBLE) {
             return false;
@@ -133,7 +133,7 @@ class entities_handler extends \core_customfield\handler {
      *
      * @return bool
      */
-    public function uses_categories() : bool {
+    public function uses_categories(): bool {
         return true;
     }
 
@@ -153,7 +153,7 @@ class entities_handler extends \core_customfield\handler {
      *
      * @return \context
      */
-    protected function get_parent_context() : \context {
+    protected function get_parent_context(): \context {
         global $PAGE;
         if ($this->parentcontext) {
             return $this->parentcontext;
@@ -171,7 +171,7 @@ class entities_handler extends \core_customfield\handler {
      *
      * @return \context the context for configuration
      */
-    public function get_configuration_context() : \context {
+    public function get_configuration_context(): \context {
         return \context_system::instance();
     }
 
@@ -180,7 +180,7 @@ class entities_handler extends \core_customfield\handler {
      *
      * @return \moodle_url The URL to configure custom fields for this component
      */
-    public function get_configuration_url() : \moodle_url {
+    public function get_configuration_url(): \moodle_url {
         return new \moodle_url('/local/entities/customfield.php');
     }
 
@@ -190,7 +190,7 @@ class entities_handler extends \core_customfield\handler {
      * @param int $instanceid id of the record to get the context for
      * @return \context the context for the given record
      */
-    public function get_instance_context(int $instanceid = 0) : \context {
+    public function get_instance_context(int $instanceid = 0): \context {
             return \context_system::instance();
     }
 

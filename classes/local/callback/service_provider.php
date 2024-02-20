@@ -42,5 +42,5 @@ interface service_provider {
      * @param array $areas
      * @return array
      */
-    public static function return_array_of_entity_dates(array $areas):array;
+    public static function return_array_of_entity_dates(array $areas): array;
 }

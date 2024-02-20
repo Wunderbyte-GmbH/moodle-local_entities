@@ -89,7 +89,7 @@ class reoccuringevent {
      *
      * @return array
      */
-    public function toarray() :array {
+    public function toarray(): array {
         $eventarray = $this->properties;
         $eventarray['title'] = $this->title;
         $eventarray['daysOfWeek'] = $this->daysofweek;
@@ -104,7 +104,7 @@ class reoccuringevent {
      * @param array $events
      * @return string
      */
-    public static function events_to_json(array $events) :string {
+    public static function events_to_json(array $events): string {
         $allevents = [];
         foreach ($events as $event) {
             $allevents[] = $event->toarray();
@@ -118,7 +118,7 @@ class reoccuringevent {
      * @param string $eventsjson
      * @return stdClass
      */
-    public static function json_to_form(string $eventsjson) :stdClass {
+    public static function json_to_form(string $eventsjson): stdClass {
         if (!$events = json_decode($eventsjson)) {
             return (object)[];
         }
@@ -144,7 +144,7 @@ class reoccuringevent {
      * @param string $eventsjson
      * @return array
      */
-    public static function json_to_events(string $eventsjson) :array {
+    public static function json_to_events(string $eventsjson): array {
         $events = json_decode($eventsjson);
         $reoccuringevents = [];
         foreach ($events as $event) {
@@ -163,7 +163,7 @@ class reoccuringevent {
      * @param entitydate $eventtobook
      * @return boolean
      */
-    public static function date_within_openinghours(array $reoccuringevents, entitydate $eventtobook) :bool {
+    public static function date_within_openinghours(array $reoccuringevents, entitydate $eventtobook): bool {
         if (empty($eventtobook->starttime) || empty($eventtobook->endtime)) {
             return false;
         }
@@ -201,7 +201,7 @@ class reoccuringevent {
      * @param int $weekday
      * @return array
      */
-    private static function has_weekday(array $reoccuringevents, int $weekday) :array {
+    private static function has_weekday(array $reoccuringevents, int $weekday): array {
         $eventswithweekday = [];
         foreach ($reoccuringevents as $reoccuringevent) {
             if (strstr($reoccuringevent->daysofweek, (string)$weekday)) {

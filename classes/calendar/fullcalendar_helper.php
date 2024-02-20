@@ -53,7 +53,7 @@ class fullcalendar_helper {
      *
      * @return array
      */
-    public static function get_weekdays() :array {
+    public static function get_weekdays(): array {
         $daysofweekarray = [
             1 => get_string('monday', 'calendar'),
             2 => get_string('tuesday', 'calendar'),
@@ -71,7 +71,7 @@ class fullcalendar_helper {
      *
      * @return array
      */
-    public static function get_hours_select() :array {
+    public static function get_hours_select(): array {
         for ($i = 0; $i <= 23; $i++) {
             $hours[$i] = sprintf("%02d", $i);
         }
@@ -83,7 +83,7 @@ class fullcalendar_helper {
      *
      * @return array
      */
-    public static function get_minutes_select() :array {
+    public static function get_minutes_select(): array {
         for ($i = 0; $i < 60; $i++) {
             $minutes[$i] = "  " .  sprintf("%02d", $i);
         }
