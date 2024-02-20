@@ -63,6 +63,9 @@ $string['entities:copymodule'] = 'Entities: Modul kopieren';
 $string['categories'] = 'Entity Kategorien';
 $string['map'] = 'Karte';
 $string['entity_openinghours'] = "Öffnungszeiten";
+$string['usesubentitynamesforfilter'] = 'Filter: Namen von Sub-Entities verwenden';
+$string['usesubentitynamesforfilter:description'] = 'Filter nutzen standardmäßig den Namen der Parent-Entity.
+Wenn Sie dieses Häkchen aktivieren, dann wird jede einzelne Sub-Entity im Filter angezeigt.';
 
 // Errors.
 $string['error:entitydoesnotexist'] = "FEHLER: Die Entity existiert nicht!";

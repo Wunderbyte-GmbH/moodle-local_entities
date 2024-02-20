@@ -84,4 +84,13 @@ if ($hassiteconfig) {
             0
         )
     );
+
+    $settings->add(
+        new admin_setting_configcheckbox(
+            $componentname .'/usesubentitynamesforfilter',
+            get_string('usesubentitynamesforfilter', $componentname),
+            get_string('usesubentitynamesforfilter:description', $componentname),
+            0
+        )
+    );
 }

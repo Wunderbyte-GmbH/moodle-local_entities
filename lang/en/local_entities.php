@@ -63,6 +63,9 @@ $string['entities:copymodule'] = 'Entities: Copy module';
 $string['categories'] = 'Categories';
 $string['map'] = 'Map';
 $string['entity_openinghours'] = "Opening hours";
+$string['usesubentitynamesforfilter'] = 'For filters, use name of the actual sub-entity';
+$string['usesubentitynamesforfilter:description'] = 'Filters use the parent entity by default.
+If you activate this checkbox, then every single entity (sub-entity) will be shown in filter.';
 
 // Errors.
 $string['error:entitydoesnotexist'] = "ERROR: Entity does not exist!";

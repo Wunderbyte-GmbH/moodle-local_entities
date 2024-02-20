@@ -548,7 +548,7 @@ class entitiesrelation_handler {
     public static function get_entities_by_id(int $entityid) {
         global $DB;
 
-        $sql = "SELECT  ea.id as addressid, e.id as id, e.name, e.shortname, e.description,
+        $sql = "SELECT  e.id, ea.id as addressid, e.name, e.shortname, e.description,
                         e.timecreated, e.timemodified, e.status, e.createdby,
                         e.parentid, e.sortorder, e.cfitemid, e.openinghours,
                         e.maxallocation, e.pricefactor,
@@ -570,6 +570,88 @@ class entitiesrelation_handler {
             return $entities;
         } else {
             return [];
+        }
+    }
+
+    /**
+     * Return entity name to be used by filters.
+     * Might be the parentname, if the according setting is active.
+     *
+     * @param int $entityid
+     * @return string
+     */
+    public static function get_name_for_filter(int $entityid) {
+        global $DB;
+
+        $sql = "SELECT e.id, e.name, e.shortname, (
+                    SELECT pe.name
+                    FROM {local_entities} pe
+                    WHERE pe.id=e.parentid
+                ) as parentname
+                FROM {local_entities} e
+                WHERE e.id = :entityid";
+        $params = ['entityid' => $entityid];
+
+        // We might have more than one record, as there might be more than one address.
+        if ($entities = $DB->get_records_sql($sql, $params)) {
+            $entity = reset($entities);
+            // If the setting to use subentity names for filter is turned on...
+            // ... then we always return the actual name of the entity.
+            if (get_config('local_entities', 'usesubentitynamesforfilter')) {
+                return $entity->name ?? '';
+            }
+            // Default behavior: If we have a parent, then we return the parent's name.
+            return $entity->parentname ?? $entity->name ?? '';
+        } else {
+            return '';
+        }
+    }
+
+    /**
+     * Return first address of the entity.
+     * If there is more than one address, we always use the first one.
+     *
+     * @param int $entityid
+     * @return string
+     */
+    public static function get_first_address_as_string(int $entityid) {
+        global $DB;
+
+        $sql = "SELECT  e.id, ea.id as addressid,
+                        ea.country, ea.city, ea.postcode,
+                        ea.streetname, ea.streetnumber, ea.maplink, ea.mapembed,
+                        (
+                            SELECT pe.name
+                            FROM {local_entities} pe
+                            WHERE pe.id=e.parentid) as parentname
+
+                FROM {local_entities} e
+                LEFT JOIN {local_entities_address} ea
+                ON e.id = ea.entityidto
+                WHERE e.id = :entityid
+                LIMIT 1";
+        $params = ['entityid' => $entityid];
+
+        // We might have more than one record, as there might be more than one address.
+        if ($entities = $DB->get_records_sql($sql, $params)) {
+            $entity = reset($entities);
+            $addressstring = '';
+            if (!empty($entity->streetname)) {
+                $addressstring .= $entity->streetname;
+            }
+            if (!empty($entity->streetnumber)) {
+                $addressstring .= ' ' . $entity->streetnumber;
+            }
+            if (!empty($entity->postcode)) {
+                $addressstring .= ' ' . $entity->postcode;
+            }
+            if (!empty($entity->city)) {
+                $addressstring .= ' ' . $entity->city;
+            }
+            $addressstring = trim($addressstring);
+            return $addressstring;
+        } else {
+            return '';
         }
     }
 
