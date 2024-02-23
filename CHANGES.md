@@ -1,3 +1,6 @@
+## Version 0.3.2 (2024022300)
+* Improvement: New setting to set if we want to get parent name or subentity name for filters.
+
 ## Version 0.3.1 (2024011000)
 * Improvement: Re-write entitiesrelation_handler.
 * Improvement: Remove string only relevant for mod_booking.
