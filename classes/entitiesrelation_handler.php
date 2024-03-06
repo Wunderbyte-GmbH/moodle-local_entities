@@ -136,7 +136,7 @@ class entitiesrelation_handler {
                 'valuehtmlcallback' => function($value) {
                     global $OUTPUT;
                     if (empty($value)) {
-                        return get_string('choose...', 'mod_booking');
+                        return get_string('none', 'local_entities');
                     }
                     $entity = \local_entities\entity::load($value);
                     $parentname = "";
