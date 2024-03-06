@@ -1,3 +1,6 @@
+## Version 0.3.3 (2024030600)
+* Improvement: Better string in autocomplete if no entity is set.
+
 ## Version 0.3.2 (2024022300)
 * Improvement: New setting to set if we want to get parent name or subentity name for filters.
 
