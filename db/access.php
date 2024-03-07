@@ -34,6 +34,14 @@ $capabilities = [
             'manager' => CAP_ALLOW,
         ],
     ],
+    'local/entities:delete' => [
+        'riskbitmask' => RISK_DATALOSS,
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => [
+            'manager' => CAP_ALLOW,
+        ],
+    ],
     'local/entities:view' => [
         'riskbitmask' => RISK_PERSONAL,
         'captype' => 'read',

@@ -28,9 +28,11 @@ require_once('../../config.php');
 $id = optional_param('id', -1, PARAM_INT);
 
 $context = \context_system::instance();
-require_capability('local/entities:edit', $context);
-$PAGE->set_context($context);
+
 require_login();
+require_capability('local/entities:edit', $context);
+
+$PAGE->set_context($context);
 
 if ($id == -1) {
     $id = \local_entities\customfield\entities_cf_helper::get_next_itemid();

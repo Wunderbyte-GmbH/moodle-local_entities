@@ -189,7 +189,7 @@ class local_entities_external extends external_api {
     public static function delete_entity(int $id): array {
         global $DB;
         $context = \context_system::instance();
-        require_capability('local/entities:edit', $context);
+        require_capability('local/entities:delete', $context);
         $params = self::validate_parameters(self::delete_entity_parameters(),
         [
             'id' => $id,

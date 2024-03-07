@@ -107,8 +107,9 @@ $string['show_calendar_on_details_page'] = 'Kalender auf der Detailseite anzeige
 $string['show_calendar_on_details_page:description'] = 'Wenn die Option gesetzt ist, wird der Kalender direkt auf der Detailseite angezeigt, ansonsten wird ein Link zur Kalenderseite angezeigt';
 
 // Access.php.
-$string['entities:edit'] = 'Nutzer*in darf Entities editieren.';
-$string['entities:view'] = 'Nutzer*in darf Entities sehen.';
+$string['entities:edit'] = 'Nutzer:in darf Entities editieren';
+$string['entities:delete'] = 'Nutzer:in darf Entities löschen';
+$string['entities:view'] = 'Nutzer:in darf Entities sehen';
 
 $string['calendar'] = 'Kalender';
 $string['opencalendar'] = 'Kalender öffnen';

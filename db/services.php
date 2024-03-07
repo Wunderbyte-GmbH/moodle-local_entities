@@ -64,7 +64,7 @@ $functions = [
                 'type' => 'read',
                 'ajax' => true,
                 'services' => [],
-                'capabilities' => 'local/entities:edit',
+                'capabilities' => 'local/entities:delete',
         ],
         'local_entities_get_entity_calendardata' => [
                 'classname' => 'local_entities\external\get_entity_calendardata',

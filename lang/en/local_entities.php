@@ -109,6 +109,7 @@ $string['show_calendar_on_details_page:description'] = 'If enabled the calendar 
 
 // Access.php.
 $string['entities:edit'] = 'User is allowed to edit entities';
+$string['entities:delete'] = 'User is allowed to delete entities';
 $string['entities:view'] = 'User is allowed to see entities';
 
 $string['calendar'] = 'Calendar';
