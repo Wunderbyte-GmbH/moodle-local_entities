@@ -1,3 +1,6 @@
+## Version 0.3.4 (2024030700)
+* Bugfix: Fix capability checks.
+
 ## Version 0.3.3 (2024030600)
 * Improvement: Better string in autocomplete if no entity is set.
 
