@@ -74,7 +74,7 @@ class entitiesrelation_handler {
      *
      * @param MoodleQuickForm $mform
      * @param int $index // We use the index if we have more than one entity in the form.
-     * @param string $formmode
+     * @param bool $showheader true if header should be shown, false to hide header
      * @param string|null $headerlangidentifier
      * @param string|null $headerlangcomponent
      * @param int $entityid optional entity id
@@ -85,18 +85,13 @@ class entitiesrelation_handler {
     public function instance_form_definition(
             MoodleQuickForm &$mform,
             int $index = 0,
-            string $formmode = 'expert',
+            bool $showheader = true,
             ?string $headerlangidentifier = null,
             ?string $headerlangcomponent = null,
             int $entityid = 0
     ) {
-        global $DB, $PAGE;
+        global $PAGE;
 
-        // Workaround: Only show, if it is not turned off in the option form config.
-        // We currently need this, because hideIf does not work with headers.
-        // In expert mode, we always show everything.
-        $showelements = true;
-        $showheader = true;
         $elements = [];
 
         if (!empty($headerlangidentifier)) {
@@ -104,77 +99,65 @@ class entitiesrelation_handler {
         } else {
             $header = get_string('addentity', 'local_entities');
         }
-        // With the noheader mode, we show the entity but not the header.
-        if ($formmode == 'noheader') {
-            $showheader = false;
-        } else if ($formmode !== 'expert') {
-            $cfgentityheader = $DB->get_field('booking_optionformconfig', 'active',
-                ['elementname' => 'entitiesrelation']);
-            if ($cfgentityheader == 0) {
-                $showelements = false;
-            }
+
+        if ($showheader) {
+            $mform->addElement('header', 'entitiesrelation',
+                '<i class="fa fa-fw fa-building" aria-hidden="true"></i>&nbsp;' .
+                $header);
+            $mform->setExpanded('entitiesrelation', false);
         }
 
-        if ($showelements) {
-            if ($showheader) {
-                $mform->addElement('header', 'entitiesrelation',
-                    '<i class="fa fa-fw fa-building" aria-hidden="true"></i>&nbsp;' .
-                    $header);
-                $mform->setExpanded('entitiesrelation', false);
-            }
+        $records = \local_entities\entities::list_all_parent_entities();
 
-            $records = \local_entities\entities::list_all_parent_entities();
-
-            $select = [0 => get_string('none', 'local_entities')];
-            foreach ($records as $record) {
-                $select[$record->id] = $record->name;
-            }
-            $options = [
-                'multiple' => false,
-                'noselectionstring' => get_string('none', 'local_entities'),
-                'ajax' => 'local_entities/form_entities_selector',
-                'valuehtmlcallback' => function($value) {
-                    global $OUTPUT;
-                    if (empty($value)) {
-                        return get_string('none', 'local_entities');
-                    }
-                    $entity = \local_entities\entity::load($value);
-                    $parentname = "";
-                    if ($entity->parentid) {
-                        $parententity = \local_entities\entity::load($entity->parentid);
-                        $parentname = $parententity->name;
-                    }
-                    $entitydata = [
-                        'name' => $entity->name,
-                        'shortname' => $entity->name,
-                        'parentname' => $parentname,
-                    ];
-                    return $OUTPUT->render_from_template('local_entities/form-entities-selector-suggestion', $entitydata);
-                },
-            ];
-
-            $element = $mform->addElement(
-                'autocomplete', LOCAL_ENTITIES_FORM_ENTITYID . $index,
-                get_string('er_entitiesname', 'local_entities'),
-                [],
-                $options);
-
-            if (!empty($entityid)) {
-                $element->setValue($entityid);
-            }
-            $elements[] = $element;
-            $elements[] = $mform->addElement('hidden', LOCAL_ENTITIES_FORM_ENTITYAREA . $index, 'optiondate');
-            $mform->setType(LOCAL_ENTITIES_FORM_ENTITYAREA . $index, PARAM_TEXT);
-
-            // TODO: Time table feature is currently not working, we need to fix this in a future release.
-            // phpcs:ignore Squiz.PHP.CommentedOutCode.Found
-            /* $elements[] = $mform->addElement('button', 'openmodal_' . $index, get_string('opentimetable', 'local_entities')); */
-
-            $PAGE->requires->js_call_amd('local_entities/handler', 'init');
-
-            // TODO: Check if this can be removed safely.
-            /* $PAGE->requires->css('/local/entities/js/main.css'); */ // phpcs:ignore Squiz.PHP.CommentedOutCode.Found
+        $select = [0 => get_string('none', 'local_entities')];
+        foreach ($records as $record) {
+            $select[$record->id] = $record->name;
         }
+        $options = [
+            'multiple' => false,
+            'noselectionstring' => get_string('none', 'local_entities'),
+            'ajax' => 'local_entities/form_entities_selector',
+            'valuehtmlcallback' => function($value) {
+                global $OUTPUT;
+                if (empty($value)) {
+                    return get_string('none', 'local_entities');
+                }
+                $entity = \local_entities\entity::load($value);
+                $parentname = "";
+                if ($entity->parentid) {
+                    $parententity = \local_entities\entity::load($entity->parentid);
+                    $parentname = $parententity->name;
+                }
+                $entitydata = [
+                    'name' => $entity->name,
+                    'shortname' => $entity->name,
+                    'parentname' => $parentname,
+                ];
+                return $OUTPUT->render_from_template('local_entities/form-entities-selector-suggestion', $entitydata);
+            },
+        ];
+
+        $element = $mform->addElement(
+            'autocomplete', LOCAL_ENTITIES_FORM_ENTITYID . $index,
+            get_string('er_entitiesname', 'local_entities'),
+            [],
+            $options);
+
+        if (!empty($entityid)) {
+            $element->setValue($entityid);
+        }
+        $elements[] = $element;
+        $elements[] = $mform->addElement('hidden', LOCAL_ENTITIES_FORM_ENTITYAREA . $index, 'optiondate');
+        $mform->setType(LOCAL_ENTITIES_FORM_ENTITYAREA . $index, PARAM_TEXT);
+
+        // TODO: Time table feature is currently not working, we need to fix this in a future release.
+        // phpcs:ignore Squiz.PHP.CommentedOutCode.Found
+        /* $elements[] = $mform->addElement('button', 'openmodal_' . $index, get_string('opentimetable', 'local_entities')); */
+
+        $PAGE->requires->js_call_amd('local_entities/handler', 'init');
+
+        // TODO: Check if this can be removed safely.
+        /* $PAGE->requires->css('/local/entities/js/main.css'); */ // phpcs:ignore Squiz.PHP.CommentedOutCode.Found
 
         return $elements;
     }
@@ -184,7 +167,6 @@ class entitiesrelation_handler {
      * @param MoodleQuickForm $mform
      * @param array $elements
      * @param int $instanceid
-     * @param string $formmode
      * @param null|string $headerlangidentifier
      * @param null|string $headerlangcomponent
      * @return array
@@ -193,10 +175,10 @@ class entitiesrelation_handler {
         MoodleQuickForm &$mform,
         array &$elements,
         int $instanceid = 0,
-        string $formmode = 'expert',
         ?string $headerlangidentifier = null,
         ?string $headerlangcomponent = null) {
 
+        // @georgmaisser: This is never used, can we remove it?
     }
 
     /**
