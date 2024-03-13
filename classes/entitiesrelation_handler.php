@@ -178,7 +178,7 @@ class entitiesrelation_handler {
         ?string $headerlangidentifier = null,
         ?string $headerlangcomponent = null) {
 
-        // @georgmaisser: This is never used, can we remove it?
+        // This is never used, can we remove it?
     }
 
     /**
