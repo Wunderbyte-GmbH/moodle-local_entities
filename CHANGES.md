@@ -1,3 +1,6 @@
+## Version 0.3.5 (2024031400)
+* Improvement: Get rid of old expert / simple mode (formmode).
+
 ## Version 0.3.4 (2024030700)
 * Bugfix: Fix capability checks.
 
