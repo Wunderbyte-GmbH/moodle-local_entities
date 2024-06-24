@@ -46,7 +46,7 @@ class settings_manager {
      * Entity constructor.
      * @param int $id
      */
-    public function __construct(int $id = null) {
+    public function __construct(?int $id = null) {
         $this->id = $id;
         $this->data = new stdClass();
         $this->data->id = $this->id;
