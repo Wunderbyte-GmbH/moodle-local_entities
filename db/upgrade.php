@@ -272,5 +272,27 @@ function xmldb_local_entities_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2022120600, 'local', 'entities');
     }
 
+    if ($oldversion < 2024062501) {
+
+        // Define field floor to be added to local_entities_address.
+        $table = new xmldb_table('local_entities_address');
+        $field = new xmldb_field('floor', XMLDB_TYPE_CHAR, '255', null, null, null, null, 'mapembed');
+
+        // Conditionally launch add field floor.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        $field = new xmldb_field('entrance', XMLDB_TYPE_CHAR, '255', null, null, null, null, 'floor');
+
+        // Conditionally launch add field entrance.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Entities savepoint reached.
+        upgrade_plugin_savepoint(true, 2024062501, 'local', 'entities');
+    }
+
     return true;
 }

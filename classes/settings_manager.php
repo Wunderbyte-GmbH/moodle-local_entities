@@ -129,6 +129,8 @@ class settings_manager {
             && empty($data->postcode_0)
             && empty($data->streetname_0)
             && empty($data->streetnumber_0)
+            && empty($data->floor_0)
+            && empty($data->entrance_0)
             && empty($data->maplink_0)
             && empty($data->mapembed_0)) {
                 $data->addresscount = 0;
@@ -285,6 +287,8 @@ class settings_manager {
         $addressdata->postcode = $data->{'postcode_' . $i};
         $addressdata->streetname = $data->{'streetname_' . $i};
         $addressdata->streetnumber = $data->{'streetnumber_' . $i};
+        $addressdata->floor = $data->{'floor_' . $i};
+        $addressdata->entrance = $data->{'entrance_' . $i};
         $addressdata->maplink = $data->{'map_link_' . $i};
         $addressdata->mapembed = $data->{'map_embed_' . $i};
 
@@ -338,6 +342,8 @@ class settings_manager {
                 $formdata->{'postcode_' . $i} = $address->postcode;
                 $formdata->{'streetname_' . $i} = $address->streetname;
                 $formdata->{'streetnumber_' . $i} = $address->streetnumber;
+                $formdata->{'floor_' . $i} = $address->floor;
+                $formdata->{'entrance_' . $i} = $address->entrance;
                 $formdata->{'map_link_' . $i} = $address->maplink;
                 $formdata->{'map_embed_' . $i} = $address->mapembed;
                 $i++;

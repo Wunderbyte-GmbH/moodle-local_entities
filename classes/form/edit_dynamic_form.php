@@ -202,6 +202,10 @@ class edit_dynamic_form extends dynamic_form {
             $mform->setType('streetname_'.$i, PARAM_TEXT);
             $mform->addElement('text', 'streetnumber_'.$i, get_string('address_streetnumber', 'local_entities'));
             $mform->setType('streetnumber_'.$i, PARAM_TEXT);
+            $mform->addElement('text', 'floor_'.$i, get_string('address_floor', 'local_entities'));
+            $mform->setType('floor_'.$i, PARAM_TEXT);
+            $mform->addElement('text', 'entrance_'.$i, get_string('address_entrance', 'local_entities'));
+            $mform->setType('entrance_'.$i, PARAM_TEXT);
             $mform->addElement('text', 'map_link_'.$i, get_string('address_map_link', 'local_entities'));
             $mform->setType('map_link_'.$i, PARAM_TEXT);
             $mform->addElement('textarea', 'map_embed_'.$i, get_string('address_map_embed', 'local_entities'));
