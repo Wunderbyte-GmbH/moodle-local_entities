@@ -107,8 +107,8 @@ class entitydate {
      * @param int $starttime
      * @param int $endtime
      * @param int $status
-     * @param moodle_url $link
-     * @param string $bgcolor
+     * @param ?moodle_url $link
+     * @param ?string $bgcolor
      */
     public function __construct(int $itemid,
                                 string $component,

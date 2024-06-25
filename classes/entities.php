@@ -250,10 +250,10 @@ class entities {
      * Prepares given datearray for fullcalendar js.
      *
      * @param array $datearray
-     * @param string $bgcolor Background color for calendar
+     * @param ?string $bgcolor Background color for calendar
      * @return array
      */
-    public static function prepare_datearray_for_calendar(array $datearray, string $bgcolor = null): array {
+    public static function prepare_datearray_for_calendar(array $datearray, ?string $bgcolor = null): array {
         $bgcolor = $bgcolor ?? get_config('local_entities', 'calendarcolor');
         $calendarevents = [];
         foreach ($datearray as $event) {
