@@ -290,13 +290,13 @@ class entitiesrelation_handler {
      */
     public function get_instance_data(int $instanceid): stdClass {
         global $DB;
-        $sql = "SELECT r.entityid as id, r.id as relationid, r.component, r.area, r.instanceid,
-                    e.name, e.shortname, r.timecreated, e.parentid, (
+        $sql = "SELECT DISTINCT (r.entityid) as id, r.id as relationid, r.component, r.area, r.instanceid,
+                    e.name, e.shortname, r.timecreated, e.parentid, ea.maplink, ea.mapembed, (
                     SELECT pe.name
                     FROM {local_entities} pe
                     WHERE pe.id=e.parentid) as parentname
-                 FROM {local_entities_relations} r
-                 JOIN {local_entities} e
+                 FROM {local_entities_relations} r JOIN {local_entities} e
+                 JOIN {local_entities_address} ea ON ea.entityidto = e.id
                  ON e.id = r.entityid
                  WHERE r.component = '{$this->component}'
                  AND r.area = '{$this->area}'
