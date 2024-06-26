@@ -99,3 +99,6 @@
 #page-local-entities-index #local-entities-container .btn-entities {
     padding: 2px;
 }
+.mapcontainer.entities > iframe {
+    width: 100%;
+}

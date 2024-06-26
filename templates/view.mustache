@@ -183,14 +183,12 @@
                                     </div>
                                 </div>
                                 {{#mapembed}}
-                                    <div class="col-auto mb-3">
+                                    <div class="col-auto mb-3 mapcontainer entities">
                                         {{{.}}}
                                         {{#maplink}}
-
-                                            <a href="{{maplink}}" target="_blank">
-                                                {{maplink}}
+                                            <a href="{{maplink}}" class="btn btn-primary" target="_blank" role="button">
+                                                {{#str}} openmap, local_entities {{/str}}
                                             </a>
-
                                         {{/maplink}}
                                     </div>
                                 {{/mapembed}}
