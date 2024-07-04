@@ -1,3 +1,6 @@
+## Version 0.3.8 (2024070400)
+* Improvement: Add entity description to handler for better integration.
+
 ## Version 0.3.5 (2024031400)
 * Improvement: Get rid of old expert / simple mode (formmode).
 
