@@ -98,7 +98,7 @@ class edit_dynamic_form extends dynamic_form {
         $options['subdirs'] = 0;
         $options['maxbytes'] = 204800;
         $options['maxfiles'] = 1;
-        $options['accepted_types'] = ['jpg', 'jpeg', 'png', 'svg', 'webp'];
+        $options['accepted_types'] = ['jpg', 'jpeg', 'png', 'svg', 'webp', 'pdf'];
 
         $mform->addElement('filemanager', 'image_filemanager', get_string('edit_image', 'local_entities'), null, $options);
 
