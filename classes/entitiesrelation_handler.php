@@ -296,7 +296,7 @@ class entitiesrelation_handler {
                     FROM {local_entities} pe
                     WHERE pe.id=e.parentid) as parentname
                  FROM {local_entities_relations} r JOIN {local_entities} e
-                 JOIN {local_entities_address} ea ON ea.entityidto = e.id
+                 LEFT JOIN {local_entities_address} ea ON ea.entityidto = e.id
                  ON e.id = r.entityid
                  WHERE r.component = '{$this->component}'
                  AND r.area = '{$this->area}'
