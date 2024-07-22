@@ -1,4 +1,7 @@
-## Version 0.3.8 (2024070400)
+## Version 0.3.9 (2024072200)
+* Bugfix: Also fetch entities with no addresses given.
+
+## Version 0.3.8 (2024071200)
 * Improvement: Add entity description to handler for better integration.
 
 ## Version 0.3.5 (2024031400)
