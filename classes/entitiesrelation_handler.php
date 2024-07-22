@@ -298,10 +298,17 @@ class entitiesrelation_handler {
                  FROM {local_entities_relations} r JOIN {local_entities} e
                  LEFT JOIN {local_entities_address} ea ON ea.entityidto = e.id
                  ON e.id = r.entityid
-                 WHERE r.component = '{$this->component}'
-                 AND r.area = '{$this->area}'
-                 AND r.instanceid = {$instanceid}";
-        $fieldsdata = $DB->get_record_sql($sql);
+                 WHERE r.component =:component
+                 AND r.area =:area
+                 AND r.instanceid=:instanceid";
+
+        $params = [
+            'component' => $this->component,
+            'area' => $this->area,
+            'instanceid' => $instanceid,
+        ];
+
+        $fieldsdata = $DB->get_record_sql($sql, $params);
         if (!$fieldsdata) {
             $stdclass = new stdClass();
             return $stdclass;
