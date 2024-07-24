@@ -25,110 +25,58 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['pluginname'] = 'Entity-Manager';
-$string['none'] = 'Keine Entity';
-$string['edit_details'] = 'Details bearbeiten';
-$string['entity_name'] = 'Entity-Name';
-$string['edit_image'] = 'Bild auswählen';
-$string['entity_parent'] = 'Entity-Parent';
-$string['entity_order'] = 'Sortier-Reihenfolge';
-$string['entity_category'] = 'Entity-Kategorie';
-$string['entity_description'] = 'Entity-Beschreibung';
+$string['addcategory'] = 'Kategorie hinzufügen';
+$string['addentity'] = 'Entity hinzufügen';
+$string['addopeninghours'] = 'Öffnungszeiten hinzufügen';
 $string['address'] = 'Adresse';
 $string['address_city'] = 'Stadt';
 $string['address_country'] = 'Land';
+$string['address_entrance'] = 'Stiege';
+$string['address_floor'] = 'Stockwerk';
+$string['address_map_embed'] = 'Karte einbetten (HTML)';
+$string['address_map_link'] = 'Karten-Link';
 $string['address_postcode'] = 'Postleitzahl';
 $string['address_streetname'] = 'Straßenname';
 $string['address_streetnumber'] = 'Haus-Nr.';
-$string['address_floor'] = 'Stockwerk';
-$string['address_entrance'] = 'Stiege';
-$string['address_map_link'] = 'Karten-Link';
-$string['address_map_embed'] = 'Karte einbetten (HTML)';
 $string['affiliated'] = 'Zugehörige Orte';
+$string['backtolist'] = 'Zurück zum Entity-Manager';
 $string['belongs_to'] = 'Gehört zu';
+$string['calendar'] = 'Kalender';
+$string['categories'] = 'Entity Kategorien';
+$string['conflictingshortnames'] = 'Es gibt einen Konflikt zwischen den verwendenten Kurznamen der benutzerdefinierten Felder und der Tabellennamen. Bitte ändern Sie diesen Kurznamen: {$a}';
 $string['contacts'] = 'Kontakte';
 $string['contacts_givenname'] = 'Vorname';
-$string['contacts_surname'] = 'Nachname';
 $string['contacts_mail'] = 'E-Mail';
-$string['addentity'] = 'Entity hinzufügen';
-$string['entitysetup_heading'] = 'Entity erstellen oder bearbeiten';
-$string['entity_title'] = 'Entity';
-$string['backtolist'] = 'Zurück zum Entity-Manager';
-$string['new_entity'] = 'Neue Entity';
-$string['edit_entity'] = 'Entity bearbeiten';
-$string['view'] = 'Ansehen';
-$string['edit'] = 'Bearbeiten';
+$string['contacts_surname'] = 'Nachname';
+$string['daysofweek'] = 'Wochentage';
 $string['delete'] = 'Löschen';
 $string['deleteentity'] = 'Entity löschen!';
 $string['deleteentityconfirm'] = 'Wollen Sie die Entity wirklich löschen?';
-$string['entities:copymodule'] = 'Entities: Modul kopieren';
-$string['categories'] = 'Entity Kategorien';
-$string['map'] = 'Karte';
-$string['openmap'] = 'Karte öffnen';
-$string['entity_openinghours'] = "Öffnungszeiten";
-$string['usesubentitynamesforfilter'] = 'Filter: Namen von Sub-Entities verwenden';
-$string['usesubentitynamesforfilter:description'] = 'Filter nutzen standardmäßig den Namen der Parent-Entity.
-Wenn Sie dieses Häkchen aktivieren, dann wird jede einzelne Sub-Entity im Filter angezeigt.';
-
-
-// Errors.
-$string['error:entitydoesnotexist'] = "FEHLER: Die Entity existiert nicht!";
-
-// Kalender.
-$string['openinghours'] = 'Öffnungszeiten';
-$string['daysofweek'] = 'Wochentage';
-$string['starthours'] = 'Start hh';
-$string['startminutes'] = 'Start mm';
+$string['deleteopeninghours'] = 'Öffnungszeiten löschen';
+$string['edit'] = 'Bearbeiten';
+$string['edit_details'] = 'Details bearbeiten';
+$string['edit_entity'] = 'Entity bearbeiten';
+$string['edit_image'] = 'Bild auswählen';
 $string['endhours'] = 'Ende hh';
 $string['endminutes'] = 'Ende mm';
-$string['deleteopeninghours'] = 'Öffnungszeiten löschen';
-$string['addopeninghours'] = 'Öffnungszeiten hinzufügen';
-$string['notwithinopeninghours'] = 'Außerhalb der Öffnungszeiten';
-$string['stdcategories'] = 'Standard-Kategorien';
-$string['stdcategories:description'] = 'Standard-Kategorien aus der Liste der Customfield-Kategorien auswählen, die auf allen Bearbeitungsseiten sichtbar sein sollen.';
-$string['entitieslist'] = 'Entity Liste';
-$string['entitylist'] = 'Entity Liste';
-$string['er_entitiesname'] = 'Entity';
-$string['addcategory'] = 'Kategorie hinzufügen';
-$string['er_placeholder'] = '... suche';
-
-$string['pricefactor'] = 'Relativer Preisfaktor';
-$string['pricefactor_help'] = 'Relativer Preisfaktor: Kann für automatische Preisberechnung (z.B. mit dem Booking-Plugin) verwendet werden';
-
-$string['errorwiththefollowingdates'] = 'Es gibt einen Konflikt mit den folgenden Buchungen:';
-
-$string['maxallocation'] = 'Maximale Anzahl möglicher Buchungen.';
-$string['maxallocation_help'] = '0 für kein Limit, -1 bedeutet nicht buchbar';
-
-// Settings.
-$string['fallback_image_parent'] = 'Bild der übergeordneten Entity als Fallback verwenden';
-$string['fallback_image_parent:description'] = 'Wenn die Option gesetzt ist, wird, wenn keine Bild angegeben ist, das Bild der übergeordneten Entity verwendet.';
-$string['fallback_contacts_parent'] = 'Kontakte der übergeordneten Entity als Fallback verwenden';
-$string['fallback_contacts_parent:description'] = 'Wenn die Option gesetzt ist, werden, wenn keine Kontaktdaten angegeben sind, die Kontaktdaten der übergeordneten Entity verwendet.';
-$string['fallback_address_parent'] = 'Adresse der übergeordneten Entity als Fallback verwenden';
-$string['fallback_address_parent:description'] = 'Wenn die Option gesetzt ist, werden, wenn keine Adressdaten angegeben sind, die Adressdaten der übergeordneten Entity verwendet.';
-$string['show_calendar_on_details_page'] = 'Kalender auf der Detailseite anzeigen';
-$string['show_calendar_on_details_page:description'] = 'Wenn die Option gesetzt ist, wird der Kalender direkt auf der Detailseite angezeigt, ansonsten wird ein Link zur Kalenderseite angezeigt';
-
-// Access.php.
-$string['entities:edit'] = 'Nutzer:in darf Entities editieren';
+$string['entities:copymodule'] = 'Entities: Modul kopieren';
 $string['entities:delete'] = 'Nutzer:in darf Entities löschen';
+$string['entities:edit'] = 'Nutzer:in darf Entities editieren';
 $string['entities:view'] = 'Nutzer:in darf Entities sehen';
-
-$string['calendar'] = 'Kalender';
-$string['opencalendar'] = 'Kalender öffnen';
-$string['opencalendarfullsize'] = 'Kalender in Vollansicht öffnen';
-
-// Entities handler.
-$string['opentimetable'] = "Öffne Stundenplan";
-$string['timetablemodaltitle'] = "Entity Timetable";
-$string['timetablemodalbutton'] = "OK";
-
-// Import.
-$string['import'] = "Entities importieren";
-$string['conflictingshortnames'] = 'Es gibt einen Konflikt zwischen den verwendenten Kurznamen der benutzerdefinierten Felder und der Tabellennamen. Bitte ändern Sie diesen Kurznamen: {$a}';
-$string['successfullimport'] = "Die Datei wurde erfolgreich importiert";
-$string['failedimport'] = "Es gab ein Problem beim Import.";
+$string['entitieslist'] = 'Entity Liste';
+$string['entity_category'] = 'Entity-Kategorie';
+$string['entity_description'] = 'Entity-Beschreibung';
+$string['entity_name'] = 'Entity-Name';
+$string['entity_openinghours'] = "Öffnungszeiten";
+$string['entity_order'] = 'Sortier-Reihenfolge';
+$string['entity_parent'] = 'Entity-Parent';
+$string['entity_title'] = 'Entity';
+$string['entitylist'] = 'Entity Liste';
+$string['entitysetup_heading'] = 'Entity erstellen oder bearbeiten';
+$string['er_entitiesname'] = 'Entity';
+$string['er_placeholder'] = '... suche';
+$string['error:entitydoesnotexist'] = "FEHLER: Die Entity existiert nicht!";
+$string['errorwiththefollowingdates'] = 'Es gibt einen Konflikt mit den folgenden Buchungen:';
 $string['examplecsv'] = '<div class="alert alert-info">
     <p><b>Beispiel für eine CSV-Datei:</b></p>
     <p class="text-monospace">
@@ -138,3 +86,38 @@ $string['examplecsv'] = '<div class="alert alert-info">
         "Testimport 3";testimport3;"Beschreibung 3"<br>
     </p>
 </div>';
+$string['failedimport'] = "Es gab ein Problem beim Import.";
+$string['fallback_address_parent'] = 'Adresse der übergeordneten Entity als Fallback verwenden';
+$string['fallback_address_parent:description'] = 'Wenn die Option gesetzt ist, werden, wenn keine Adressdaten angegeben sind, die Adressdaten der übergeordneten Entity verwendet.';
+$string['fallback_contacts_parent'] = 'Kontakte der übergeordneten Entity als Fallback verwenden';
+$string['fallback_contacts_parent:description'] = 'Wenn die Option gesetzt ist, werden, wenn keine Kontaktdaten angegeben sind, die Kontaktdaten der übergeordneten Entity verwendet.';
+$string['fallback_image_parent'] = 'Bild der übergeordneten Entity als Fallback verwenden';
+$string['fallback_image_parent:description'] = 'Wenn die Option gesetzt ist, wird, wenn keine Bild angegeben ist, das Bild der übergeordneten Entity verwendet.';
+$string['import'] = "Entities importieren";
+$string['map'] = 'Karte';
+$string['maxallocation'] = 'Maximale Anzahl möglicher Buchungen.';
+$string['maxallocation_help'] = '0 für kein Limit, -1 bedeutet nicht buchbar';
+$string['new_entity'] = 'Neue Entity';
+$string['none'] = 'Keine Entity';
+$string['notwithinopeninghours'] = 'Außerhalb der Öffnungszeiten';
+$string['opencalendar'] = 'Kalender öffnen';
+$string['opencalendarfullsize'] = 'Kalender in Vollansicht öffnen';
+$string['openinghours'] = 'Öffnungszeiten';
+$string['openmap'] = 'Karte öffnen';
+$string['opentimetable'] = "Öffne Stundenplan";
+$string['pluginname'] = 'Entity-Manager';
+$string['pricefactor'] = 'Relativer Preisfaktor';
+$string['pricefactor_help'] = 'Relativer Preisfaktor: Kann für automatische Preisberechnung (z.B. mit dem Booking-Plugin) verwendet werden';
+$string['show_calendar_on_details_page'] = 'Kalender auf der Detailseite anzeigen';
+$string['show_calendar_on_details_page:description'] = 'Wenn die Option gesetzt ist, wird der Kalender direkt auf der Detailseite angezeigt, ansonsten wird ein Link zur Kalenderseite angezeigt';
+$string['starthours'] = 'Start hh';
+$string['startminutes'] = 'Start mm';
+$string['stdcategories'] = 'Standard-Kategorien';
+$string['stdcategories:description'] = 'Standard-Kategorien aus der Liste der Customfield-Kategorien auswählen, die auf allen Bearbeitungsseiten sichtbar sein sollen.';
+$string['successfullimport'] = "Die Datei wurde erfolgreich importiert";
+$string['timetablemodalbutton'] = "OK";
+$string['timetablemodaltitle'] = "Entity Timetable";
+$string['usesubentitynamesforfilter'] = 'Filter: Namen von Sub-Entities verwenden';
+$string['usesubentitynamesforfilter:description'] = 'Filter nutzen standardmäßig den Namen der Parent-Entity.
+Wenn Sie dieses Häkchen aktivieren, dann wird jede einzelne Sub-Entity im Filter angezeigt.';
+$string['view'] = 'Ansehen';
