@@ -36,7 +36,7 @@ use local_entities_external;
  *      - list_all_subentries
  * Tests are parameterised, i.e. there's a data provider for each
  */
-class external_test extends \advanced_testcase {
+final class external_test extends \advanced_testcase {
 
     /**
      * data for unit tests of update_entity that are expected to run without exceptions
@@ -83,7 +83,7 @@ class external_test extends \advanced_testcase {
      * @covers ::update_entity
      * @return void
      */
-    public function test_local_entities_update_entity($id, $data, $expected) {
+    public function test_local_entities_update_entity($id, $data, $expected): void {
         $this->resetAfterTest(true);
         $this->setAdminUser();
         $resultraw = local_entities_external::update_entity($id, $data);
@@ -103,7 +103,7 @@ class external_test extends \advanced_testcase {
      * @throws \invalid_response_exception
      * @throws \moodle_exception
      */
-    public function test_local_entities_update_entity_exceptions($id, $data, $expected) {
+    public function test_local_entities_update_entity_exceptions($id, $data, $expected): void {
         $this->resetAfterTest(true);
         $this->setAdminUser();
         $this->expectException(\invalid_parameter_exception::class);
