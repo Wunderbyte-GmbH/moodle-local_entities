@@ -117,6 +117,10 @@ foreach ($handlers as $handler) {
         $meta = new stdClass();;
         $meta->key = $data->get_field()->get('name');
         $meta->value = $data->get_value();
+
+        if (is_array($meta->value)) {
+            $meta->value = reset($meta->value);
+        }
         $metadata[] = $meta;
     }
 }
