@@ -180,8 +180,12 @@
                                     </div>
                                     <div>
                                         <div class="bold">{{streetname}} {{streetnumber}}</div>
-                                        <div class="bold">{{#str}} address_entrance, local_entities {{/str}} {{entrance}}</div>
-                                        <div class="bold">{{#str}} address_floor, local_entities {{/str}} {{floor}}</div>
+                                        {{#entrance}}
+                                        <div class="bold">{{#str}} address_entrance, local_entities {{/str}} {{.}}</div>
+                                        {{/entrance}}
+                                        {{#floor}}
+                                        <div class="bold">{{#str}} address_floor, local_entities {{/str}} {{.}}</div>
+                                        {{/floor}}
                                         <div class="text-muted">{{postcode}} {{city}}</div>
                                     </div>
                                 </div>
