@@ -1,3 +1,8 @@
+## Version 0.4.0 (2024080900)
+* Improvement: Meet requirements for strings in Moodle 4.4
+* Improvement: Create generator class to enable test integration within other plugins
+* Bugfix: Only display entrance and floor if given
+
 ## Version 0.3.9 (2024072200)
 * Bugfix: Also fetch entities with no addresses given.
 
