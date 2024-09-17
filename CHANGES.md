@@ -1,3 +1,6 @@
+## Version 0.4.1 (2024091700)
+* Bugfix: Temporary github handling to avoid failing actions
+
 ## Version 0.4.0 (2024080900)
 * Improvement: Meet requirements for strings in Moodle 4.4
 * Improvement: Create generator class to enable test integration within other plugins
