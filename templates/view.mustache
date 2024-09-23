@@ -27,9 +27,11 @@
 <div class="container-fluid shadow-bottom pb-3">
     <div class="row">
         <div class="col-md-2">
-            {{#haspicture}}
-                <img class="img-fluid img-thumbnail" src="{{picture}}">
-            {{/haspicture}}
+            {{^showpictureinsteadofcalendar}}
+                {{#haspicture}}
+                    <img class="img-fluid img-thumbnail" src="{{picture}}">
+                {{/haspicture}}
+            {{/showpictureinsteadofcalendar}}
             {{#haspdf}}
                 <iframe class="img-fluid img-thumbnail" src="{{picture}}"></iframe>
             {{/haspdf}}
@@ -129,21 +131,27 @@
     <div class="col-xl-auto col-lg-12 flex-fill">
         <div class=" card shadow mb-3">
             <div class="card-body">
+            {{^showpictureinsteadofcalendar}}
                 <div>
                     <h2 class="d-inline-block mr-3 mb-4">{{#str}}calendar , local_entities{{/str}} </h2>
-                    {{#showcalendar}}
-                        <a href="{{calendarurl}}" target="_blank"><i class="fa fa-external-link"></i> {{#str}}
-                            opencalendarfullsize , local_entities{{/str}}</a>{{/showcalendar}}
-                </div>
-                {{#showcalendar}}
+                        {{#showcalendar}}
+                            <a href="{{calendarurl}}" target="_blank"><i class="fa fa-external-link"></i> {{#str}}
+                                opencalendarfullsize , local_entities{{/str}}</a>{{/showcalendar}}
+                        </div>
+                        {{#showcalendar}}
                     <div id="entity-calendar"></div>
                 {{/showcalendar}}
                 {{^showcalendar}}
                     <a href="{{calendarurl}}" class="btn btn-outline-info btn-block" target="_blank"><i
                             class="fa fa-external-link"></i> {{#str}}opencalendar , local_entities{{/str}}</a>
                 {{/showcalendar}}
-
             </div>
+            {{/showpictureinsteadofcalendar}}
+            {{#showpictureinsteadofcalendar}}
+                {{#haspicture}}
+                    <img class="img-fluid" src="{{picture}}">
+                {{/haspicture}}
+            {{/showpictureinsteadofcalendar}}
         </div>
     </div>
     {{#hasrightsidebar}}
@@ -189,16 +197,18 @@
                                         <div class="text-muted">{{postcode}} {{city}}</div>
                                     </div>
                                 </div>
-                                {{#mapembed}}
-                                    <div class="col-auto mb-3 mapcontainer entities">
-                                        {{{.}}}
-                                        {{#maplink}}
-                                            <a href="{{maplink}}" class="btn btn-primary" target="_blank" role="button">
-                                                {{#str}} openmap, local_entities {{/str}}
-                                            </a>
-                                        {{/maplink}}
-                                    </div>
-                                {{/mapembed}}
+                                {{^showpictureinsteadofcalendar}}
+                                    {{#mapembed}}
+                                        <div class="col-auto mb-3 mapcontainer entities">
+                                            {{{.}}}
+                                            {{#maplink}}
+                                                <a href="{{maplink}}" class="btn btn-primary" target="_blank" role="button">
+                                                    {{#str}} openmap, local_entities {{/str}}
+                                                </a>
+                                            {{/maplink}}
+                                        </div>
+                                    {{/mapembed}}
+                                {{/showpictureinsteadofcalendar}}
                             {{/addresscleaned}}
                         </div>
                     </div>

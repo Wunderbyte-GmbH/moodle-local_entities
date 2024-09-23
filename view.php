@@ -205,6 +205,7 @@ $entity->hasrightsidebar = $entity->hascontacts || $entity->hasaddress;
 
 $entity->showcalendar = get_config('local_entities', 'show_calendar_on_details_page');
 $entity->canedit = has_capability('local/entities:edit', \context_system::instance());
+$entity->showpictureinsteadofcalendar = get_config('local_entities', 'showpictureinsteadofcalendar');
 $entity->editurl = new moodle_url('/local/entities/edit.php', [ 'id' => $id]);
 $entity->calendarurl = new moodle_url('/local/entities/calendar.php', [ 'id' => $id]);
 $entity->delurl = new moodle_url('/local/entities/entities.php', [ 'del' => $id , 'sesskey' => $USER->sesskey]);

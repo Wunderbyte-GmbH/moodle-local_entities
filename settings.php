@@ -93,4 +93,13 @@ if ($hassiteconfig) {
             0
         )
     );
+
+    $settings->add(
+        new admin_setting_configcheckbox(
+            $componentname .'/showpictureinsteadofcalendar',
+            get_string('showpictureinsteadofcalendar', $componentname),
+            get_string('showpictureinsteadofcalendar:description', $componentname),
+            0
+        )
+    );
 }
