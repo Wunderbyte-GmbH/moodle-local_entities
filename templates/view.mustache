@@ -36,7 +36,7 @@
                 <iframe class="img-fluid img-thumbnail" src="{{picture}}"></iframe>
             {{/haspdf}}
         </div>
-        <div class="col-md-10">
+        <div class="{{^showpictureinsteadofcalendar}}col-md-10{{/showpictureinsteadofcalendar}}{{#showpictureinsteadofcalendar}}col-md-12{{/showpictureinsteadofcalendar}}">
             {{#parent}}
                 <h5 class="">
                     <a class="text-muted" href="{{link}}">{{name}}</a>
@@ -85,76 +85,79 @@
 </div>
 <div class="row pt-3" style="background-color:#eee;">
     {{#hasleftsidebar}}
-        <div class="col-xl-3 col-lg-12">
-            {{#hasmetadata}}
-                <div class=" card shadow mb-3">
-                    <div class="card-body">
-                        <h2 class="card-title mb-4">{{metacategory}}</h2>
-                        <div class="row row-cols-xl-1 card-text ml-2">
-                            {{#metadata}}
-                                <div class="col-auto d-inline-flex mb-3 ">
-                                    <div class=" mr-2">
-                                        <i class="fa fa-info-circle fa-fw icon-uxs text-muted"></i>
-                                    </div>
-                                    <div class=" ">
-                                        <div class="bold">{{key}}</div>
-                                        <div class="text-muted">{{{value}}}</div>
-                                    </div>
+    <div class="col-xl-3 col-lg-12">
+        {{#hasmetadata}}
+            <div class=" card shadow mb-3">
+                <div class="card-body">
+                    <h2 class="card-title mb-4">{{metacategory}}</h2>
+                    <div class="row row-cols-xl-1 card-text ml-2">
+                        {{#metadata}}
+                            <div class="col-auto d-inline-flex mb-3 ">
+                                <div class=" mr-2">
+                                    <i class="fa fa-info-circle fa-fw icon-uxs text-muted"></i>
                                 </div>
-                            {{/metadata}}
-                        </div>
+                                <div class=" ">
+                                    <div class="bold">{{key}}</div>
+                                    <div class="text-muted">{{{value}}}</div>
+                                </div>
+                            </div>
+                        {{/metadata}}
                     </div>
                 </div>
-            {{/hasmetadata}}
-            {{#hasaffiliation}}
-                <div class="card shadow mb-3">
-                    <div class="card-body">
-                        <h2 class="card-title">{{#str}} affiliated, local_entities {{/str}}</h2>
-                        <ul class="list-group list-group-flush card-text">
-                            {{#affiliation}}
-                                <li class="list-group-item shadow-none border-0">
-                                    <a href="{{link}}">{{name}}</a>
-                                    {{#canedit}}
-                                        <a class="btn btn-link pull-right pt-0 pb-0" title="Ressource bearbeiten"
-                                           href="{{editurl}}">
-                                            <i class="fa fa-edit" aria-hidden="true"></i>
-                                        </a>
-                                    {{/canedit}}
-                                </li>
-                            {{/affiliation}}
-                        </ul>
-                    </div>
+            </div>
+        {{/hasmetadata}}
+        {{#hasaffiliation}}
+            <div class="card shadow mb-3">
+                <div class="card-body">
+                    <h2 class="card-title">{{#str}} affiliated, local_entities {{/str}}</h2>
+                    <ul class="list-group list-group-flush card-text">
+                        {{#affiliation}}
+                            <li class="list-group-item shadow-none border-0">
+                                <a href="{{link}}">{{name}}</a>
+                                {{#canedit}}
+                                    <a class="btn btn-link pull-right pt-0 pb-0" title="Ressource bearbeiten"
+                                        href="{{editurl}}">
+                                        <i class="fa fa-edit" aria-hidden="true"></i>
+                                    </a>
+                                {{/canedit}}
+                            </li>
+                        {{/affiliation}}
+                    </ul>
                 </div>
-            {{/hasaffiliation}}
-        </div>
+            </div>
+        {{/hasaffiliation}}
+    </div>
     {{/hasleftsidebar}}
-    <div class="col-xl-auto col-lg-12 flex-fill">
-        <div class=" card shadow mb-3">
+    <div class="col-xl-auto col-lg-12 flex-fill mb-3">
+        <div class="card shadow mb-3">
             <div class="card-body">
             {{^showpictureinsteadofcalendar}}
                 <div>
                     <h2 class="d-inline-block mr-3 mb-4">{{#str}}calendar , local_entities{{/str}} </h2>
-                        {{#showcalendar}}
-                            <a href="{{calendarurl}}" target="_blank"><i class="fa fa-external-link"></i> {{#str}}
-                                opencalendarfullsize , local_entities{{/str}}</a>{{/showcalendar}}
-                        </div>
-                        {{#showcalendar}}
-                    <div id="entity-calendar"></div>
+                {{#showcalendar}}
+                    <a href="{{calendarurl}}" target="_blank"><i class="fa fa-external-link"></i> {{#str}}
+                        opencalendarfullsize , local_entities{{/str}}</a>
+                {{/showcalendar}}
+                {{#showcalendar}}
+                <div id="entity-calendar"></div>
                 {{/showcalendar}}
                 {{^showcalendar}}
                     <a href="{{calendarurl}}" class="btn btn-outline-info btn-block" target="_blank"><i
                             class="fa fa-external-link"></i> {{#str}}opencalendar , local_entities{{/str}}</a>
                 {{/showcalendar}}
-            </div>
+                </div>
             {{/showpictureinsteadofcalendar}}
             {{#showpictureinsteadofcalendar}}
+                <div class="w-100 m-auto">
                 {{#haspicture}}
-                    <img class="img-fluid" src="{{picture}}">
+                    <img class="img-fluid w-100" src="{{picture}}">
                 {{/haspicture}}
+                </div>
             {{/showpictureinsteadofcalendar}}
         </div>
     </div>
     {{#hasrightsidebar}}
+    <div class="row pt-3">
         <div class="col-xl-3 col-lg-12">
             {{#hascontacts}}
                 <div class=" card shadow mb-3">
@@ -175,8 +178,8 @@
                         </div>
                     </div>
                 </div>
-            {{/hascontacts}}
-            {{#hasaddress}}
+                {{/hascontacts}}
+                {{#hasaddress}}
                 <div class="card shadow">
                     <div class="card-body">
                         <h2 class="card-title mb-4">{{#str}}address , local_entities{{/str}}</h2>
@@ -215,6 +218,7 @@
                 </div>
             {{/hasaddress}}
         </div>
+    </div>
     {{/hasrightsidebar}}
 </div>
 
