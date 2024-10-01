@@ -85,7 +85,7 @@
 </div>
 <div class="row pt-3" style="background-color:#eee;">
     {{#hasleftsidebar}}
-    <div class="col-xl-3 col-lg-12">
+    <div class="col-xl-3 col-lg-12" data-area="leftsidebar">
         {{#hasmetadata}}
             <div class=" card shadow mb-3">
                 <div class="card-body">
@@ -128,7 +128,9 @@
         {{/hasaffiliation}}
     </div>
     {{/hasleftsidebar}}
-    <div class="col-xl-auto col-lg-12 flex-fill mb-3">
+    <div class="{{#hasleftsidebar}}col-xl-6{{/hasleftsidebar}}
+    {{^hasleftsidebar}}col-xl-6{{/hasleftsidebar}}
+    col-lg-12 flex-fill mb-3" data-area="center">
         <div class="card shadow mb-3">
             <div class="card-body">
             {{^showpictureinsteadofcalendar}}
@@ -154,13 +156,13 @@
                 {{/haspicture}}
                 </div>
             {{/showpictureinsteadofcalendar}}
+            </div>
         </div>
     </div>
     {{#hasrightsidebar}}
-    <div class="row pt-3">
-        <div class="col-xl-3 col-lg-12">
+        <div class="col-xl-3 col-lg-12" data-area="rightsidebar">
             {{#hascontacts}}
-                <div class=" card shadow mb-3">
+                <div class=" card shadow mb-3" data-content="contacts">
                     <div class="card-body">
                         <h2 class="card-title mb-4">{{#str}}contacts , local_entities{{/str}}</h2>
                         <div class="row row-cols-xl-1 card-text ml-2 ">
@@ -180,7 +182,7 @@
                 </div>
                 {{/hascontacts}}
                 {{#hasaddress}}
-                <div class="card shadow">
+                <div class="card shadow mb-3" data-content="address">
                     <div class="card-body">
                         <h2 class="card-title mb-4">{{#str}}address , local_entities{{/str}}</h2>
                         <div class="row row-cols-xl-1 card-text">
@@ -217,7 +219,6 @@
                     </div>
                 </div>
             {{/hasaddress}}
-        </div>
     </div>
     {{/hasrightsidebar}}
 </div>

@@ -102,3 +102,9 @@
 .mapcontainer.entities > iframe {
     width: 100%;
 }
+
+@media (max-width: 768px) {
+    #page-local-entities-view [data-area="center"] {
+      order: 3;
+    }
+}
