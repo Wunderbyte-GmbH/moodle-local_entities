@@ -24,7 +24,9 @@
  */
 namespace local_entities;
 
+use cache_helper;
 use DateTime;
+use moodle_url;
 use stdClass;
 use local_entities\calendar\reoccuringevent;
 defined('MOODLE_INTERNAL') || die();
@@ -41,7 +43,6 @@ require_once("$CFG->libdir/externallib.php");
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class entities {
-
     /**
      * entities constructor.
      */
@@ -119,8 +120,8 @@ class entities {
         return $DB->get_records_sql(
             "SELECT * FROM {local_entities}
             WHERE parentid = '0'
-            ORDER BY sortorder, name ASC
-        ");
+            ORDER BY sortorder, name ASC"
+        );
     }
 
 
@@ -148,6 +149,7 @@ class entities {
      */
     public static function update_entity(string $table, object $change): bool {
         global $DB;
+        cache_helper::purge_by_event('purgecachedentities');
         return $DB->update_record($table, $change);
     }
 

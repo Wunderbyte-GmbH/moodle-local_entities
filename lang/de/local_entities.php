@@ -41,6 +41,7 @@ $string['address_streetnumber'] = 'Haus-Nr.';
 $string['affiliated'] = 'Zugehörige Orte';
 $string['backtolist'] = 'Zurück zum Entity-Manager';
 $string['belongs_to'] = 'Gehört zu';
+$string['cachedef_cachedentities'] = 'Cache um Entities zu speichern';
 $string['calendar'] = 'Kalender';
 $string['categories'] = 'Entity Kategorien';
 $string['conflictingshortnames'] = 'Es gibt einen Konflikt zwischen den verwendenten Kurznamen der benutzerdefinierten Felder und der Tabellennamen. Bitte ändern Sie diesen Kurznamen: {$a}';

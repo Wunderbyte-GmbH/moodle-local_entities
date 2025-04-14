@@ -59,6 +59,7 @@ class settings_manager {
      */
     public function create_entity(stdClass $data): int {
         global $DB;
+        cache_helper::purge_by_event('purgecachedentities');
         $id = $DB->insert_record('local_entities', $data);
         // Custom fields save needs id.
         $data->id = $id;
@@ -102,6 +103,7 @@ class settings_manager {
             // TODO: Needs to be updated when table is changed!
         );
         cache_helper::invalidate_by_event('setbackoptionsettings', $affectedoptionids);
+        cache_helper::purge_by_event('purgecachedentities');
 
         // Make sure DB is clean.
         entities::clean_up_entities_db();
@@ -194,6 +196,7 @@ class settings_manager {
         } else {
             $result = $DB->update_record('local_entities_address', $recordaddress);
         }
+        cache_helper::purge_by_event('purgecachedentities');
         return $result;
     }
 
@@ -210,6 +213,7 @@ class settings_manager {
         $recordaddress = $this->prepare_address($data, $index);
         if (isset($recordaddress->id)) {
             $recordaddress->entityidto = $data->id;
+            cache_helper::purge_by_event('purgecachedentities');
             return $DB->insert_record('local_entities_address', $recordaddress);
         }
         return 0;
@@ -226,7 +230,7 @@ class settings_manager {
         global $DB;
         $recordcontacts = $this->prepare_contacts($data, $index);
         $recordcontacts->entityidto = $data->id;
-
+        cache_helper::purge_by_event('purgecachedentities');
         if (empty($recordcontacts->id) || $recordcontacts->id == 0) {
             return $DB->insert_record('local_entities_contacts', $recordcontacts);
         } else {
@@ -246,6 +250,7 @@ class settings_manager {
         global $DB;
         $recordcontacts = $this->prepare_contacts($data, $index);
         $recordcontacts->entityidto = $data->id;
+        cache_helper::purge_by_event('purgecachedentities');
         if (empty($recordcontacts->id) || $recordcontacts->id == 0) {
             return $DB->insert_record('local_entities_contacts', $recordcontacts);
         }

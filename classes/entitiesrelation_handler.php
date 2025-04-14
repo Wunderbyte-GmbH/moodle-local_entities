@@ -24,6 +24,10 @@
 
 namespace local_entities;
 
+use cache;
+use cache_helper;
+use core\local\guzzle\cache_handler;
+
 defined('MOODLE_INTERNAL') || die();
 define('LOCAL_ENTITIES_FORM_ENTITYID', 'local_entities_entityid_');
 define('LOCAL_ENTITIES_FORM_ENTITYAREA', 'local_entities_entityarea_');
@@ -281,6 +285,8 @@ class entitiesrelation_handler {
             'area' => $this->area,
             'instanceid' => $instanceid,
         ]);
+
+        cache_helper::purge_by_event('purgecachedentities');
     }
 
     /**
@@ -290,17 +296,37 @@ class entitiesrelation_handler {
      */
     public function get_instance_data(int $instanceid): stdClass {
         global $DB;
-        $sql = "SELECT DISTINCT (r.entityid) as id, r.id as relationid, r.component, r.area, r.instanceid,
-                    e.name, e.shortname, e.description, r.timecreated, e.parentid, ea.maplink, ea.mapembed, (
-                    SELECT pe.name
-                    FROM {local_entities} pe
-                    WHERE pe.id=e.parentid) as parentname
-                 FROM {local_entities_relations} r JOIN {local_entities} e
-                 LEFT JOIN {local_entities_address} ea ON ea.entityidto = e.id
-                 ON e.id = r.entityid
-                 WHERE r.component =:component
-                 AND r.area =:area
-                 AND r.instanceid=:instanceid";
+
+        $cache = cache::make('local_entities', 'cachedentities');
+        $data = $cache->get($instanceid);
+        if ($data !== false) {
+            return $data;
+        }
+
+        $sql = "SELECT
+            r.entityid AS id,
+            r.id AS relationid,
+            r.component,
+            r.area,
+            r.instanceid,
+            e.name,
+            e.shortname,
+            e.description,
+            r.timecreated,
+            e.parentid,
+            ea.maplink,
+            ea.mapembed,
+            pe.name AS parentname
+        FROM {local_entities_relations} r
+        JOIN {local_entities} e
+            ON e.id = r.entityid
+        LEFT JOIN {local_entities} pe
+            ON pe.id = e.parentid
+        LEFT JOIN {local_entities_address} ea
+            ON ea.entityidto = e.id
+        WHERE r.component = :component
+        AND r.area = :area
+        AND r.instanceid = :instanceid ";
 
         $params = [
             'component' => $this->component,
@@ -311,8 +337,10 @@ class entitiesrelation_handler {
         $fieldsdata = $DB->get_record_sql($sql, $params);
         if (!$fieldsdata) {
             $stdclass = new stdClass();
+            $cache->set($instanceid, $stdclass);
             return $stdclass;
         }
+        $cache->set($instanceid, $fieldsdata);
         return $fieldsdata;
     }
 
@@ -323,16 +351,19 @@ class entitiesrelation_handler {
      */
     public function get_entityid_by_instanceid(int $instanceid): int {
         global $DB;
-        $sql = "SELECT r.entityid
-                 FROM {local_entities_relations} r
-                 WHERE r.component = '{$this->component}'
-                 AND r.area = '{$this->area}'
-                 AND r.instanceid = {$instanceid}";
-        $entityid = $DB->get_field_sql($sql);
-        if (empty($entityid)) {
-            return 0;
+
+        $cache = cache::make('local_entities', 'cachedentities');
+        $data = $cache->get($instanceid);
+        if (
+            $data !== false
+            && isset($data->id)
+        ) {
+            return $data->id;
         }
-        return (int) $entityid;
+
+        $data = $this->get_instance_data($instanceid);
+
+        return (int)($data->id ?? 0);
     }
 
     /**
@@ -461,17 +492,20 @@ class entitiesrelation_handler {
     public function save_to_db(stdClass $data) {
         global $DB;
         $DB->insert_record('local_entities_relations', $data);
+        cache_helper::purge_by_event('purgecachedentities');
     }
 
     /**
      * Update relation DB
      *
      * @param stdClass $data
-     * @return int
+     * @return
      */
     public function update_db(stdClass $data) {
         global $DB;
-        $DB->update_record('local_entities_relations', $data);
+        $id = $DB->update_record('local_entities_relations', $data);
+        cache_helper::purge_by_event('purgecachedentities');
+        return $id;
     }
     /**
      * Checks if record exists

@@ -41,6 +41,7 @@ $string['address_streetnumber'] = 'Street number';
 $string['affiliated'] = 'Affiliated locations';
 $string['backtolist'] = 'Back to entity manager';
 $string['belongs_to'] = 'Belongs to';
+$string['cachedef_cachedentities'] = 'Cache to store entities';
 $string['calendar'] = 'Calendar';
 $string['categories'] = 'Categories';
 $string['categories:description'] = 'Set the default category from the list of the customfieldcategories visible on the edit page';
