@@ -47,7 +47,6 @@ if (empty($entityid)) {
     $PAGE->set_url(new moodle_url('/local/entities/edit.php', ['id' => $entityid]));
 }
 
-
 // Return URL to return to if form is cancelled.
 $entitiesurl = new moodle_url('/local/entities/entities.php');
 $returnurl = $entitiesurl->out(false);
