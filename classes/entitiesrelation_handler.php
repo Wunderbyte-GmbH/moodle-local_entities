@@ -26,7 +26,6 @@ namespace local_entities;
 
 use cache;
 use cache_helper;
-use core\local\guzzle\cache_handler;
 
 defined('MOODLE_INTERNAL') || die();
 define('LOCAL_ENTITIES_FORM_ENTITYID', 'local_entities_entityid_');
@@ -37,9 +36,7 @@ define('LOCAL_ENTITIES_FORM_NAME', 'local_entities_entityname_');
 global $CFG;
 require_once("$CFG->libdir/formslib.php");
 
-use core_form\external\dynamic_form;
 use moodle_exception;
-use moodle_recordset;
 use MoodleQuickForm;
 use stdClass;
 
@@ -51,7 +48,6 @@ use stdClass;
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class entitiesrelation_handler {
-
     /** @var string $component */
     public $component = '';
 
@@ -87,12 +83,12 @@ class entitiesrelation_handler {
      *
      */
     public function instance_form_definition(
-            MoodleQuickForm &$mform,
-            int $index = 0,
-            bool $showheader = true,
-            ?string $headerlangidentifier = null,
-            ?string $headerlangcomponent = null,
-            int $entityid = 0
+        MoodleQuickForm &$mform,
+        int $index = 0,
+        bool $showheader = true,
+        ?string $headerlangidentifier = null,
+        ?string $headerlangcomponent = null,
+        int $entityid = 0
     ) {
         global $PAGE;
 
@@ -105,9 +101,12 @@ class entitiesrelation_handler {
         }
 
         if ($showheader) {
-            $mform->addElement('header', 'entitiesrelation',
+            $mform->addElement(
+                'header',
+                'entitiesrelation',
                 '<i class="fa fa-fw fa-building" aria-hidden="true"></i>&nbsp;' .
-                $header);
+                $header
+            );
             $mform->setExpanded('entitiesrelation', false);
         }
 
@@ -121,7 +120,7 @@ class entitiesrelation_handler {
             'multiple' => false,
             'noselectionstring' => get_string('none', 'local_entities'),
             'ajax' => 'local_entities/form_entities_selector',
-            'valuehtmlcallback' => function($value) {
+            'valuehtmlcallback' => function ($value) {
                 global $OUTPUT;
                 if (empty($value)) {
                     return get_string('none', 'local_entities');
@@ -142,10 +141,12 @@ class entitiesrelation_handler {
         ];
 
         $element = $mform->addElement(
-            'autocomplete', LOCAL_ENTITIES_FORM_ENTITYID . $index,
+            'autocomplete',
+            LOCAL_ENTITIES_FORM_ENTITYID . $index,
             get_string('er_entitiesname', 'local_entities'),
             [],
-            $options);
+            $options
+        );
 
         if (!empty($entityid)) {
             $element->setValue($entityid);
@@ -154,35 +155,16 @@ class entitiesrelation_handler {
         $elements[] = $mform->addElement('hidden', LOCAL_ENTITIES_FORM_ENTITYAREA . $index, 'optiondate');
         $mform->setType(LOCAL_ENTITIES_FORM_ENTITYAREA . $index, PARAM_TEXT);
 
-        // TODO: Time table feature is currently not working, we need to fix this in a future release.
+        // Todo: Time table feature is currently not working, we need to fix this in a future release.
         // phpcs:ignore Squiz.PHP.CommentedOutCode.Found
         /* $elements[] = $mform->addElement('button', 'openmodal_' . $index, get_string('opentimetable', 'local_entities')); */
 
         $PAGE->requires->js_call_amd('local_entities/handler', 'init');
 
-        // TODO: Check if this can be removed safely.
+        // Todo: Check if this can be removed safely.
         /* $PAGE->requires->css('/local/entities/js/main.css'); */ // phpcs:ignore Squiz.PHP.CommentedOutCode.Found
 
         return $elements;
-    }
-
-    /**
-     * Alernative function which adds the elements to the elements array.
-     * @param MoodleQuickForm $mform
-     * @param array $elements
-     * @param int $instanceid
-     * @param null|string $headerlangidentifier
-     * @param null|string $headerlangcomponent
-     * @return array
-     */
-    public function instance_form_definition_elements(
-        MoodleQuickForm &$mform,
-        array &$elements,
-        int $instanceid = 0,
-        ?string $headerlangidentifier = null,
-        ?string $headerlangcomponent = null) {
-
-        // This is never used, can we remove it?
     }
 
     /**
@@ -204,7 +186,6 @@ class entitiesrelation_handler {
         }
 
         foreach ($entityidkeys as $entityidkey) {
-
             if (empty($data[$entityidkey])) {
                 // If there is no entityid value found, we don't need to validate.
                 continue;
@@ -212,12 +193,14 @@ class entitiesrelation_handler {
 
             $area = $data[$entityidkey] == "local_entities_entityid_0" ? 'option' : 'optiondate';
             // Now determine if there are conflicts.
-            $conflicts = entities::return_conflicts($data[$entityidkey],
-            $data['datestobook'] ?? [],
-            $data['optionid'] ?? 0, $area);
+            $conflicts = entities::return_conflicts(
+                $data[$entityidkey],
+                $data['datestobook'] ?? [],
+                $data['optionid'] ?? 0,
+                $area
+            );
 
             if (!empty($conflicts['conflicts'])) {
-
                 $errors[$entityidkey] = get_string('errorwiththefollowingdates', 'local_entities');
 
                 foreach ($conflicts['conflicts'] as $conflict) {
@@ -511,16 +494,18 @@ class entitiesrelation_handler {
      * Checks if record exists
      *
      * @param stdClass $data
-     * @return void
+     * @return bool
      */
-    public function er_record_exists(stdClass &$data) {
+    public function er_record_exists(stdClass &$data): bool {
         global $DB;
         $select = sprintf("component = :component AND area = :area AND %s = :instanceid", $DB->sql_compare_text('instanceid'));
-        if ($id = $DB->get_field_select('local_entities_relations', 'id', $select, [
+        if (
+            $id = $DB->get_field_select('local_entities_relations', 'id', $select, [
                 'component' => $this->component,
                 'area' => $this->area,
                 'instanceid' => $data->instanceid,
-        ])) {
+            ])
+        ) {
             $data->id = $id;
             return true;
         }
@@ -694,17 +679,19 @@ class entitiesrelation_handler {
         // Initialize return value.
         $success = true;
 
-        // TODO: In the future, we'll also need to delete relations for optiondates.
+        // Todo: In the future, we'll also need to delete relations for optiondates.
 
         // Get all currently existing entities relations of the booking instance.
         $existingoptions = $DB->get_records('booking_options', ['bookingid' => $bookingid], '', 'id');
         if (!empty($existingoptions)) {
             foreach ($existingoptions as $existingoption) {
-                if (!$DB->delete_records('local_entities_relations', [
+                if (
+                    !$DB->delete_records('local_entities_relations', [
                     'component' => 'mod_booking',
                     'area' => 'option',
                     'instanceid' => $existingoption->id,
-                ])) {
+                    ])
+                ) {
                     $success = false;
                 }
             }
@@ -757,8 +744,10 @@ class entitiesrelation_handler {
             return true;
         }
 
-        if ($olditem['entityid'] != $newitem['entityid']
-            || $olditem['entityarea'] != $newitem['entityarea']) {
+        if (
+            $olditem['entityid'] != $newitem['entityid']
+            || $olditem['entityarea'] != $newitem['entityarea']
+        ) {
                 return false;
         }
         return true;
