@@ -1,3 +1,10 @@
+## Version 0.4.5 (2026010700)
+* Improvement: Add entities cache.
+
+## Version 0.4.4 (2024111100)
+* Improvement: Show picture instead of calendar.
+* Improvement: Changed entities view for pictures.
+
 ## Version 0.4.1 (2024091700)
 * Bugfix: Temporary github handling to avoid failing actions
 
