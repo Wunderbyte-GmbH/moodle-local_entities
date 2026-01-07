@@ -62,7 +62,8 @@ class local_entities_renderer extends plugin_renderer_base {
                 '<button class="btn btn--plain btn--smaller btn--primary btn_edit"
                     title="' . get_string('delete', 'local_entities') .
                     '" rel="nofollow" data-method="delete"
-                    data-target="#deleteModal-' . $parent . '" data-toggle="modal">
+                    data-target="#deleteModal-' . $parent . '" data-bs-target="#deleteModal-' . $parent . '"
+                    data-toggle="modal" data-bs-toggle="modal">
                         <i class="fa fa-trash"></i>&nbsp;' . get_string('delete', 'local_entities') .
                 '</button>';
 
@@ -74,7 +75,7 @@ class local_entities_renderer extends plugin_renderer_base {
                             <div class="modal-header">
                                 <h5 class="modal-title" id="exampleModalLabel">' .
                                 get_string('deleteentity', 'local_entities') . '</h5>
-                                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
+                                <button type="button" class="btn-close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
@@ -82,7 +83,7 @@ class local_entities_renderer extends plugin_renderer_base {
                                 <p>' . get_string('deleteentityconfirm' , 'local_entities') . '</p>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal" data-bs-dismiss="modal"
                                         id="close-modal">' . get_string('cancel') . '</button>
                                 <a href="' . new moodle_url($CFG->wwwroot . '/local/entities/entities.php',
                                 [
@@ -119,7 +120,8 @@ class local_entities_renderer extends plugin_renderer_base {
                 '<button class="btn btn--plain btn--smaller btn--primary btn_edit"
                     title="' . get_string('delete', 'local_entities') .
                     '" rel="nofollow" data-method="delete"
-                    data-target="#deleteModal-' . $parent . '" data-toggle="modal">
+                    data-target="#deleteModal-' . $parent . '" data-bs-target="#deleteModal-' . $parent . '"
+                    data-toggle="modal" data-bs-toggle="modal">
                         <i class="fa fa-trash"></i>&nbsp;' . get_string('delete', 'local_entities') .
                 '</button>';
 
@@ -131,7 +133,7 @@ class local_entities_renderer extends plugin_renderer_base {
                             <div class="modal-header">
                                 <h5 class="modal-title" id="exampleModalLabel">' .
                                 get_string('deleteentity', 'local_entities') . '</h5>
-                                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
+                                <button type="button" class="btn-close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
@@ -139,7 +141,7 @@ class local_entities_renderer extends plugin_renderer_base {
                                 <p>' . get_string('deleteentityconfirm' , 'local_entities') . '</p>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal" data-bs-dismiss="modal"
                                         id="close-modal">' . get_string('cancel') . '</button>
                                 <a href="' . new moodle_url($CFG->wwwroot . '/local/entities/entities.php',
                                 [
@@ -211,7 +213,7 @@ class local_entities_renderer extends plugin_renderer_base {
             $html .= "<li  class='list-group-item p-0 ps-2'>";
 
             $html .= "<span class='' href='#parent-". $parent
-            ."' data-toggle='collapse' aria-expanded='false'>" . $name . "</span>";
+            ."' data-toggle='collapse' data-bs-toggle='collapse' aria-expanded='false'>" . $name . "</span>";
             $html .= "<div class='pull-right'><span class='btn btn-primary py-0 fa-plus fa' data-action='addentity'
             data-entityname='" .$name. "'  data-entityid='" .$parent. "'></span></div>";
 
