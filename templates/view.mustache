@@ -53,7 +53,8 @@
                             class="fa fa-edit" aria-hidden="true"></i>&nbsp;{{#str}}edit{{/str}}</a>
                     <button class="btn btn-sm btn-danger ms-auto"
                             title="{{#str}}delete{{/str}}" rel="nofollow" data-method="delete"
-                            data-target="#deleteModal-{{id}}" data-toggle="modal"><i
+                            data-target="#deleteModal-{{id}}" data-bs-target="#deleteModal-{{id}}"
+                            data-toggle="modal" data-bs-toggle="modal"><i
                             class="fa fa-trash"></i>&nbsp;{{#str}}delete{{/str}}</button>
                 </div>
                 <!-- Modal -->
@@ -63,7 +64,12 @@
                             <div class="modal-header">
                                 <h5 class="modal-title" id="exampleModalLabel">{{#str}}
                                     deleteentity , local_entities{{/str}}</h5>
-                                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
+                                <button
+                                    type="button"
+                                    class="btn-close"
+                                    data-dismiss="modal" data-bs-dismiss="modal"
+                                    aria-label="Close"
+                                >
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
@@ -71,7 +77,7 @@
                                 <p>{{#str}}deleteentityconfirm , local_entities{{/str}}</p>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal" data-bs-dismiss="modal"
                                         id="close-modal">{{#str}}cancel{{/str}}</button>
                                 <a href="{{delurl}}" rel="nofollow" class="btn btn-danger">{{#str}}
                                     delete{{/str}}</a>
