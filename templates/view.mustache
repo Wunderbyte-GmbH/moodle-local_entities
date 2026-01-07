@@ -47,11 +47,11 @@
                 {{{description}}}
             </span>
             {{#canedit}}
-                <div class="text-left ">
+                <div class="text-start ">
                     <a class="btn btn-sm btn-primary" title="Ressource bearbeiten"
                        href="{{editurl}}"><i
                             class="fa fa-edit" aria-hidden="true"></i>&nbsp;{{#str}}edit{{/str}}</a>
-                    <button class="btn btn-sm btn-danger ml-auto"
+                    <button class="btn btn-sm btn-danger ms-auto"
                             title="{{#str}}delete{{/str}}" rel="nofollow" data-method="delete"
                             data-target="#deleteModal-{{id}}" data-toggle="modal"><i
                             class="fa fa-trash"></i>&nbsp;{{#str}}delete{{/str}}</button>
@@ -90,10 +90,10 @@
             <div class=" card shadow mb-3">
                 <div class="card-body">
                     <h2 class="card-title mb-4">{{metacategory}}</h2>
-                    <div class="row row-cols-xl-1 card-text ml-2">
+                    <div class="row row-cols-xl-1 card-text ms-2">
                         {{#metadata}}
                             <div class="col-auto d-inline-flex mb-3 ">
-                                <div class=" mr-2">
+                                <div class=" me-2">
                                     <i class="fa fa-info-circle fa-fw icon-uxs text-muted"></i>
                                 </div>
                                 <div class=" ">
@@ -135,7 +135,7 @@
             <div class="card-body">
             {{^showpictureinsteadofcalendar}}
                 <div>
-                    <h2 class="d-inline-block mr-3 mb-4">{{#str}}calendar , local_entities{{/str}} </h2>
+                    <h2 class="d-inline-block me-3 mb-4">{{#str}}calendar , local_entities{{/str}} </h2>
                 {{#showcalendar}}
                     <a href="{{calendarurl}}" target="_blank"><i class="fa fa-external-link"></i> {{#str}}
                         opencalendarfullsize , local_entities{{/str}}</a>
@@ -165,10 +165,10 @@
                 <div class=" card shadow mb-3" data-content="contacts">
                     <div class="card-body">
                         <h2 class="card-title mb-4">{{#str}}contacts , local_entities{{/str}}</h2>
-                        <div class="row row-cols-xl-1 card-text ml-2 ">
+                        <div class="row row-cols-xl-1 card-text ms-2 ">
                             {{#contactscleaned}}
                                 <div class="col-auto d-inline-flex mb-3 ">
-                                    <div class="mr-2">
+                                    <div class="me-2">
                                         <i class="fa fa-id-card fa-fw icon-uxs text-muted"></i>
                                     </div>
                                     <div class=" ">
@@ -187,8 +187,8 @@
                         <h2 class="card-title mb-4">{{#str}}address , local_entities{{/str}}</h2>
                         <div class="row row-cols-xl-1 card-text">
                             {{#addresscleaned}}
-                                <div class="col-auto d-inline-flex mb-3 ml-2">
-                                    <div class="mr-2">
+                                <div class="col-auto d-inline-flex mb-3 ms-2">
+                                    <div class="me-2">
                                         <i class="fa fa-map-marker fa-fw icon-uxs text-muted"></i>
                                     </div>
                                     <div>
