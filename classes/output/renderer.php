@@ -73,8 +73,8 @@ class local_entities_renderer extends plugin_renderer_base {
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="exampleModalLabel">' .
-                                get_string('deleteentity' , 'local_entities') . '</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                get_string('deleteentity', 'local_entities') . '</h5>
+                                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
@@ -130,8 +130,8 @@ class local_entities_renderer extends plugin_renderer_base {
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="exampleModalLabel">' .
-                                get_string('deleteentity' , 'local_entities') . '</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                get_string('deleteentity', 'local_entities') . '</h5>
+                                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
