@@ -96,7 +96,7 @@ class local_entities_renderer extends plugin_renderer_base {
                 </div>';
 
             $html .= "<h4>" . $name . "</h4>";
-            $html .= "<ul class='pl-4 border-0'>";
+            $html .= "<ul class='ps-4 border-0'>";
             foreach ($records as $entity) {
                 $html .= $this->get_submenuitem($entity->id, $entity->name);
             }
@@ -208,21 +208,21 @@ class local_entities_renderer extends plugin_renderer_base {
         $html = '';
         $records = \local_entities\entities::list_all_subentities($parent);
         if ($records) {
-            $html .= "<li  class='list-group-item p-0 pl-2'>";
+            $html .= "<li  class='list-group-item p-0 ps-2'>";
 
             $html .= "<span class='' href='#parent-". $parent
             ."' data-toggle='collapse' aria-expanded='false'>" . $name . "</span>";
             $html .= "<div class='pull-right'><span class='btn btn-primary py-0 fa-plus fa' data-action='addentity'
             data-entityname='" .$name. "'  data-entityid='" .$parent. "'></span></div>";
 
-            $html .= "<ul class='pl-4 border-0 collapse' id='parent-".$parent."'>";
+            $html .= "<ul class='ps-4 border-0 collapse' id='parent-".$parent."'>";
             foreach ($records as $entity) {
                 $html .= $this->get_submenuitem_select($entity->id, $entity->name);
             }
             $html .= "</ul>";
             $html .= "</li>";
         } else {
-            $html .= "<li class='list-group-item p-0 pl-2'>";
+            $html .= "<li class='list-group-item p-0 ps-2'>";
             $html .= "<span class=''>" . $name . "</span>";
             $html .= "<div class='pull-right'><span class='btn btn-primary py-0 fa-plus fa' data-action='addentity'
             data-entityname='" .$name. "'  data-entityid='" .$parent. "'></span></div>";
@@ -238,7 +238,7 @@ class local_entities_renderer extends plugin_renderer_base {
      */
     public function list_entities_select(): string {
         $html = '<ul class="list-group group-root my-4">';
-        $html .= "<li  class='list-group-item p-0 pl-2'><span class='btn btn-primary py-0' data-action='addentity'
+        $html .= "<li  class='list-group-item p-0 ps-2'><span class='btn btn-primary py-0' data-action='addentity'
         data-entityname='none'  data-entityid='-1'>No entity</span></li>";
         $records = \local_entities\entities::list_all_parent_entities();
         foreach ($records as $entity) {
