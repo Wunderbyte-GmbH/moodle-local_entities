@@ -482,9 +482,9 @@ class entitiesrelation_handler {
      * Update relation DB
      *
      * @param stdClass $data
-     * @return
+     * @return bool
      */
-    public function update_db(stdClass $data) {
+    public function update_db(stdClass $data): bool {
         global $DB;
         $id = $DB->update_record('local_entities_relations', $data);
         cache_helper::purge_by_event('purgecachedentities');
