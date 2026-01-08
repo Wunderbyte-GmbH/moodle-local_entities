@@ -33,7 +33,6 @@ use moodle_url;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class entitydate {
-
     /**
      * Item id
      *
@@ -110,15 +109,17 @@ class entitydate {
      * @param ?moodle_url $link
      * @param ?string $bgcolor
      */
-    public function __construct(int $itemid,
-                                string $component,
-                                string $area,
-                                string $name,
-                                int $starttime,
-                                int $endtime,
-                                int $status,
-                                ?moodle_url $link = null,
-                                ?string $bgcolor = null) {
+    public function __construct(
+        int $itemid,
+        string $component,
+        string $area,
+        string $name,
+        int $starttime,
+        int $endtime,
+        int $status,
+        ?moodle_url $link = null,
+        ?string $bgcolor = null
+    ) {
         $this->itemid = $itemid;
         $this->component = $component;
         $this->area = $area;

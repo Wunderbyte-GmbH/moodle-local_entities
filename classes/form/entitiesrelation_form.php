@@ -41,7 +41,6 @@ use local_entities\entitiesrelation_handler;
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class entitiesrelation_form extends dynamic_form {
-
     /**
      * {@inheritdoc}
      * @see moodleform::definition()

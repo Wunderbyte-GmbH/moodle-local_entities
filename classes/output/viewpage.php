@@ -34,7 +34,6 @@ use templatable;
  * @package local_entities
  */
 class viewpage implements renderable, templatable {
-
     /**
      * An array of headings
      *

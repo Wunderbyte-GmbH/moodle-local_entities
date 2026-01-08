@@ -40,7 +40,7 @@ function xmldb_local_entities_upgrade($oldversion) {
         $table = new xmldb_table('local_entities');
 
         // End of fix #190.
-        $pricefactor = new xmldb_field('pricefactor',  XMLDB_TYPE_NUMBER, '10, 2', null, null, null, '1', null);
+        $pricefactor = new xmldb_field('pricefactor', XMLDB_TYPE_NUMBER, '10, 2', null, null, null, '1', null);
 
         // Conditionally launch add field semesterid.
         if (!$dbman->field_exists($table, $pricefactor)) {
@@ -52,7 +52,6 @@ function xmldb_local_entities_upgrade($oldversion) {
     }
 
     if ($oldversion < 2022072200) {
-
         $localentitiesaddress = new xmldb_table('local_entities_address');
 
         $country = new xmldb_field('country', XMLDB_TYPE_CHAR, '255', null, null, null, null, 'entityidto');
@@ -81,7 +80,6 @@ function xmldb_local_entities_upgrade($oldversion) {
     }
 
     if ($oldversion < 2022072800) {
-
         // Changing type of field name on table local_entities to char.
         $table = new xmldb_table('local_entities');
         $field = new xmldb_field('name', XMLDB_TYPE_CHAR, '255', null, null, null, null, 'id');
@@ -96,7 +94,6 @@ function xmldb_local_entities_upgrade($oldversion) {
     }
 
     if ($oldversion < 2022100700) {
-
         // Changing type of field name on table local_entities to char.
         $table = new xmldb_table('local_entities');
         $field = new xmldb_field('cfitemid', XMLDB_TYPE_INTEGER, '10', null, null, null, null, 'sortorder');
@@ -111,7 +108,6 @@ function xmldb_local_entities_upgrade($oldversion) {
     }
 
     if ($oldversion < 2022101100) {
-
         $table = new xmldb_table('local_entities_address');
 
         // Define field maplink to be added to local_entities_address.
@@ -135,7 +131,6 @@ function xmldb_local_entities_upgrade($oldversion) {
     }
 
     if ($oldversion < 2022101300) {
-
         $table = new xmldb_table('local_entities');
 
         // Define field shortname to be added to local_entities.
@@ -151,7 +146,6 @@ function xmldb_local_entities_upgrade($oldversion) {
     }
 
     if ($oldversion < 2022101400) {
-
         // Define field component to be added to local_entities_relations.
         $table = new xmldb_table('local_entities_relations');
         $field = new xmldb_field('component', XMLDB_TYPE_CHAR, '255', null, null, null, null, 'entityid');
@@ -169,7 +163,6 @@ function xmldb_local_entities_upgrade($oldversion) {
     }
 
     if ($oldversion < 2022101401) {
-
         // Rename field modulename on table local_entities_relations to area.
         $table = new xmldb_table('local_entities_relations');
         $field = new xmldb_field('modulename', XMLDB_TYPE_CHAR, '30', null, null, null, null, 'component');
@@ -185,7 +178,6 @@ function xmldb_local_entities_upgrade($oldversion) {
     }
 
     if ($oldversion < 2022101403) {
-
         // Define index modinstance (not unique) to be added to local_entities_relations.
         $table = new xmldb_table('local_entities_relations');
         $index = new xmldb_index('idx_componentareainstanceid', XMLDB_INDEX_NOTUNIQUE, ['component', 'area', 'instanceid']);
@@ -207,7 +199,6 @@ function xmldb_local_entities_upgrade($oldversion) {
     }
 
     if ($oldversion < 2022103001) {
-
         // Define field openinghours to be added to local_entities.
         $table = new xmldb_table('local_entities');
 
@@ -273,7 +264,6 @@ function xmldb_local_entities_upgrade($oldversion) {
     }
 
     if ($oldversion < 2024062501) {
-
         // Define field floor to be added to local_entities_address.
         $table = new xmldb_table('local_entities_address');
         $field = new xmldb_field('floor', XMLDB_TYPE_CHAR, '255', null, null, null, null, 'mapembed');

@@ -35,11 +35,10 @@ use core_customfield\field_controller;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class entities_handler extends \core_customfield\handler {
-
     /**
      * @var entities_handler
      */
-    static protected $singleton;
+    protected static $singleton;
 
     /**
      * @var \context
@@ -202,7 +201,6 @@ class entities_handler extends \core_customfield\handler {
      * @param array $data
      */
     public function restore_instance_data_from_backup(\restore_task $task, array $data) {
-
     }
 
     /**
