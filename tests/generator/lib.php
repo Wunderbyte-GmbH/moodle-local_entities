@@ -36,7 +36,7 @@ class local_entities_generator extends testing_module_generator {
 
         $data = (object)(array) $data;
         $sm = new settings_manager();
-        $id = $sm->create_entity($data);
+        $id = $sm->update_or_createentity($data);
         return $id;
     }
 }
