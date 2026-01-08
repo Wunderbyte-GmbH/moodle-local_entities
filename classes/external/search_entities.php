@@ -36,7 +36,6 @@ require_once($CFG->libdir . '/externallib.php');
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class search_entities extends external_api {
-
     /**
      * Describes the external function parameters.
      *
@@ -113,7 +112,7 @@ class search_entities extends external_api {
     public static function execute_returns(): external_single_structure {
 
         return new external_single_structure([
-            'list' => new external_multiple_structure (
+            'list' => new external_multiple_structure(
                 new external_single_structure([
                     'id' => new external_value(\core_user::get_property_type('id'), 'ID of the user'),
                     'name' => new external_value(PARAM_TEXT, 'The fullname of the entity'),
@@ -123,7 +122,10 @@ class search_entities extends external_api {
                         new external_single_structure([
                             'name' => new external_value(PARAM_TEXT, 'Name of the extrafield.'),
                             'value' => new external_value(PARAM_TEXT, 'Value of the extrafield.'),
-                        ]), 'List of extra fields', VALUE_OPTIONAL),
+                        ]),
+                        'List of extra fields',
+                        VALUE_OPTIONAL
+                    ),
                 ])
             ),
         ]);

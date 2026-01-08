@@ -44,7 +44,6 @@ require_once("$CFG->libdir/externallib.php");
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class csv_import {
-
     /**
      * @var string
      */
@@ -222,7 +221,6 @@ class csv_import {
         entities::clean_up_entities_db();
 
         return true;
-
     }
 
     /**
@@ -289,7 +287,6 @@ class csv_import {
         $additionalkeys = array_keys($this->additionalcolumns);
 
         foreach ($csvrecord as $key => $value) {
-
             if (empty($value)) {
                 unset($csvrecord[$key]);
             } else if (in_array($key, $additionalkeys)) {
@@ -305,7 +302,6 @@ class csv_import {
 
                 // Now we have to check if this value is a text area. This has to be treated differently.
                 if ($DB->get_field('customfield_field', 'type', ['shortname' => $key, 'type' => 'textarea'])) {
-
                     $csvrecord['customfield_' . $key . '_editor'] = ['text' => $value, 'format' => FORMAT_HTML];
                 } else {
                     // Else, we set the prefix and obmit the old record.

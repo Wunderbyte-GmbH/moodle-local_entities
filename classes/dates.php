@@ -35,7 +35,6 @@ global $CFG;
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class dates {
-
     /**
      * Helper function to format option dates. If they are on the same day, show date only once.
      * Else show both dates.
@@ -45,8 +44,12 @@ class dates {
      * @param bool $showweekdays if true, weekdays will be shown
      * @return string the prettified string from start to end date
      */
-    public static function prettify_dates_start_end(int $starttimestamp, int $endtimestamp,
-        string $lang = 'en', bool $showweekdays = true): string {
+    public static function prettify_dates_start_end(
+        int $starttimestamp,
+        int $endtimestamp,
+        string $lang = 'en',
+        bool $showweekdays = true
+    ): string {
 
         $prettifiedstring = '';
 
@@ -57,7 +60,7 @@ class dates {
             $weekdayformat = '';
         }
 
-        switch($lang) {
+        switch ($lang) {
             case 'de':
                 $stringstartdate = date($weekdayformat . 'd.m.Y', $starttimestamp);
                 $stringenddate = date($weekdayformat . 'd.m.Y', $endtimestamp);

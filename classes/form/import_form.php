@@ -48,7 +48,6 @@ use stdClass;
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class import_form extends dynamic_form {
-
     /**
      * {@inheritdoc}
      * @see moodleform::definition()
@@ -58,8 +57,13 @@ class import_form extends dynamic_form {
         global $CFG;
 
         $mform = $this->_form;
-        $mform->addElement('filepicker', 'csvfile', get_string('csvfile', 'booking'), null,
-                ['maxbytes' => $CFG->maxbytes, 'accepted_types' => '*']);
+        $mform->addElement(
+            'filepicker',
+            'csvfile',
+            get_string('csvfile', 'booking'),
+            null,
+            ['maxbytes' => $CFG->maxbytes, 'accepted_types' => '*']
+        );
         $mform->addRule('csvfile', null, 'required', null, 'client');
 
         $choices = csv_import_reader::get_delimiter_list();
@@ -94,7 +98,6 @@ class import_form extends dynamic_form {
      * @return void
      */
     protected function check_access_for_dynamic_submission(): void {
-
     }
 
     /**
@@ -190,5 +193,4 @@ class import_form extends dynamic_form {
         $data = parent::get_data();
         return $data;
     }
-
 }

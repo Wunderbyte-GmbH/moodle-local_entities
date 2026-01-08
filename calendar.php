@@ -25,7 +25,7 @@
 
 use local_entities\local\views\secondary;
 
-require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
+require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 
 // Get the id of the page to be displayed.
 $id = required_param('id', PARAM_INT);

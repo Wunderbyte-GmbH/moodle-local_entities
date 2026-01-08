@@ -69,12 +69,12 @@ class reoccuringevent {
         if (isset($eventarray['starttime'])) {
             $this->starttime = $eventarray['starttime'];
         } else {
-            $this->starttime = $eventarray['starthours']. ':' .$eventarray['startminutes'];
+            $this->starttime = $eventarray['starthours'] . ':' . $eventarray['startminutes'];
         }
         if (isset($eventarray['endtime'])) {
             $this->endtime = $eventarray['endtime'];
         } else {
-            $this->endtime = $eventarray['endhours']. ':' .$eventarray['endminutes'];
+            $this->endtime = $eventarray['endhours'] . ':' . $eventarray['endminutes'];
         }
         // Record misc properties.
         foreach ($eventarray as $name => $value) {
@@ -126,10 +126,10 @@ class reoccuringevent {
         $formevent = new stdClass();
         foreach ($events as $event) {
             $formevent->daysofweek[$i] = explode(',', $event->daysOfWeek);
-            $start = explode(':' , $event->startTime);
+            $start = explode(':', $event->startTime);
             $formevent->starthours[$i] = $start[0];
             $formevent->startminutes[$i] = $start[1];
-            $end = explode(':' , $event->endTime);
+            $end = explode(':', $event->endTime);
             $formevent->endhours[$i] = $end[0];
             $formevent->endminutes[$i] = $end[1];
             $i++;

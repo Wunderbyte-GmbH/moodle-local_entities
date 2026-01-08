@@ -59,7 +59,6 @@ $PAGE->set_secondary_navigation(true);
 $settingsmanager = new settings_manager();
 
 if (!empty($entityid)) {
-
     if (!$DB->record_exists('local_entities', ['id' => $entityid])) {
         $PAGE->set_title(get_string('error:entitydoesnotexist', 'local_entities'));
         $PAGE->set_heading(get_string('error:entitydoesnotexist', 'local_entities'));
@@ -77,7 +76,6 @@ if (!empty($entityid)) {
     $mform = new edit_dynamic_form(null, null, 'post', '', [], true, $data);
 
     $mform->set_data($entity);
-
 } else {
     $mform = new edit_dynamic_form(null, null, 'post', '', [], true, ['entityid' => 0]);
 }
@@ -93,7 +91,9 @@ echo $OUTPUT->header();
 $PAGE->requires->js_call_amd(
     'local_entities/dynamiceditform',
     'init',
-    ['#local_entities_formcontainer', edit_dynamic_form::class], $entityid);
+    ['#local_entities_formcontainer', edit_dynamic_form::class],
+    $entityid
+);
 
 echo html_writer::div($mform->render(), '', [
     'id' => 'local_entities_formcontainer',
