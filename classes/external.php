@@ -36,7 +36,6 @@ use local_entities\settings_manager;
  * Class local_entities_external
  */
 class local_entities_external extends external_api {
-
     /**
      * Describes the parameters for list_all_parent_entities.
      * This query doesn't need any parameters, so the array is empty.
@@ -45,7 +44,7 @@ class local_entities_external extends external_api {
      */
     public static function list_all_parent_entities_parameters(): external_function_parameters {
         return new external_function_parameters(
-                [// No parameters in this query.
+            [// No parameters in this query.
                 ]
         );
     }
@@ -72,14 +71,14 @@ class local_entities_external extends external_api {
      */
     public static function list_all_parent_entities_returns(): external_multiple_structure {
         return new external_multiple_structure(
-                new external_single_structure(
-                        [
+            new external_single_structure(
+                [
                                 'id' => new external_value(PARAM_INT, 'id of the entity', VALUE_REQUIRED),
                                 'name' => new external_value(PARAM_RAW, 'name of the entity', VALUE_REQUIRED),
                                 'description' => new external_value(PARAM_RAW, 'description of the entity', VALUE_OPTIONAL),
                                 'type' => new external_value(PARAM_RAW, 'type of the entity', VALUE_OPTIONAL),
                         ]
-                )
+            )
         );
     }
 
@@ -90,15 +89,18 @@ class local_entities_external extends external_api {
      */
     public static function update_entity_parameters(): external_function_parameters {
         return new external_function_parameters(
-                [
+            [
                         'id' => new external_value(PARAM_INT, VALUE_REQUIRED),
                         'data' => new external_multiple_structure(
-                                new external_single_structure(
-                                        [
+                            new external_single_structure(
+                                [
                                                 'name' => new external_value(PARAM_ALPHANUMEXT, 'data name'),
                                                 'value' => new external_value(PARAM_RAW, 'data value'),
                                         ]
-                                ), 'Name of the column where to pass to the new value.', VALUE_DEFAULT, []
+                            ),
+                            'Name of the column where to pass to the new value.',
+                            VALUE_DEFAULT,
+                            []
                         ),
                 ]
         );
@@ -159,7 +161,7 @@ class local_entities_external extends external_api {
      */
     public static function update_entity_returns(): external_single_structure {
         return new external_single_structure(
-                [
+            [
                         'updated' => new external_value(PARAM_BOOL, 'did things get updated?'),
                         'warnings' => new external_warnings(),
                 ]
@@ -173,7 +175,7 @@ class local_entities_external extends external_api {
      */
     public static function delete_entity_parameters(): external_function_parameters {
         return new external_function_parameters(
-                [
+            [
                         'id' => new external_value(PARAM_INT, VALUE_REQUIRED),
                 ]
         );
@@ -190,10 +192,12 @@ class local_entities_external extends external_api {
         global $DB;
         $context = \context_system::instance();
         require_capability('local/entities:delete', $context);
-        $params = self::validate_parameters(self::delete_entity_parameters(),
-        [
+        $params = self::validate_parameters(
+            self::delete_entity_parameters(),
+            [
             'id' => $id,
-        ]);
+            ]
+        );
 
         $entitysettingsmanager = new settings_manager($params['id']);
         $entitysettingsmanager->delete();
@@ -281,7 +285,7 @@ class local_entities_external extends external_api {
      */
     public static function list_all_subentities_parameters(): external_function_parameters {
         return new external_function_parameters(
-                [
+            [
                         'parentid' => new external_value(PARAM_INT, VALUE_REQUIRED),
                 ]
         );
@@ -306,14 +310,14 @@ class local_entities_external extends external_api {
      */
     public static function list_all_subentities_returns(): external_multiple_structure {
         return new external_multiple_structure(
-                new external_single_structure(
-                        [
+            new external_single_structure(
+                [
                                 'id' => new external_value(PARAM_INT, 'id of the entity', VALUE_REQUIRED),
                                 'name' => new external_value(PARAM_RAW, 'name of the entity', VALUE_REQUIRED),
                                 'description' => new external_value(PARAM_RAW, 'description of the entity', VALUE_OPTIONAL),
                                 'type' => new external_value(PARAM_RAW, 'type of the entity', VALUE_OPTIONAL),
                         ]
-                )
+            )
         );
     }
 

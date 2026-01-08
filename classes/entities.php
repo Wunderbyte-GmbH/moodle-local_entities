@@ -222,10 +222,8 @@ class entities {
         // Create an array for the calls we'll execute afterwards.
         $calls = [];
         foreach ($records as $record) {
-
             // We want to have one call per component.
             if (!isset($calls[$record->component])) {
-
                 $calls[$record->component][$record->area] = [$record->instanceid];
             } else if (isset($calls[$record->component][$record->area])) {
                 $calls[$record->component][$record->area][] = $record->instanceid;
@@ -236,7 +234,6 @@ class entities {
 
         $datearray = [];
         foreach ($calls as $component => $areas) {
-
             // Finally, we assemble the array and return it.
             $providerclass = static::get_service_provider_classname($component);
 
@@ -266,13 +263,13 @@ class entities {
                 $calendarevent->title = $event->name;
                 $start = new DateTime();
                 $start->setTimestamp($event->starttime);
-                $calendarevent->start = $start->format('Y-m-d'). 'T' .$start->format('H:i:s');
+                $calendarevent->start = $start->format('Y-m-d') . 'T' . $start->format('H:i:s');
             }
             if ($event->endtime) {
                 $calendarevent->title = $event->name;
                 $end = new DateTime();
                 $end->setTimestamp($event->endtime);
-                $calendarevent->end = $end->format('Y-m-d'). 'T' .$end->format('H:i:s');
+                $calendarevent->end = $end->format('Y-m-d') . 'T' . $end->format('H:i:s');
             }
 
             $calendarevent->url = !empty($event->link) ? $event->link->out(false) : '';
@@ -290,10 +287,12 @@ class entities {
      * @param string $noconflictarea
      * @return array
      */
-    public static function return_conflicts(int $entityid,
+    public static function return_conflicts(
+        int $entityid,
         array $datestobook = [],
         $noconflictid = 0,
-        $noconflictarea = '') {
+        $noconflictarea = ''
+    ) {
 
         // First, if there is nothing to compare, we have no conflict.
         if (count($datestobook) < 1) {
@@ -335,9 +334,11 @@ class entities {
                         continue;
                     }
 
-                    if (($datetobook->starttime >= $bookeddate->starttime && $datetobook->starttime < $bookeddate->endtime)
+                    if (
+                        ($datetobook->starttime >= $bookeddate->starttime && $datetobook->starttime < $bookeddate->endtime)
                         || ($datetobook->endtime > $bookeddate->starttime && $datetobook->endtime < $bookeddate->endtime)
-                        || ($datetobook->starttime <= $bookeddate->starttime && $datetobook->endtime >= $bookeddate->endtime)) {
+                        || ($datetobook->starttime <= $bookeddate->starttime && $datetobook->endtime >= $bookeddate->endtime)
+                    ) {
                             $tempconflicts[] = $datetobook;
                     }
                 }
@@ -390,7 +391,8 @@ class entities {
             UNION
             SELECT DISTINCT entityidto
             FROM {local_entities_address}
-            WHERE entityidto NOT IN (SELECT id FROM {local_entities})");
+            WHERE entityidto NOT IN (SELECT id FROM {local_entities})"
+        );
 
         // We also delete orphaned custom fields and images (plugin files).
         if (!empty($records)) {
@@ -407,15 +409,23 @@ class entities {
         $DB->delete_records_select('local_entities', "name IS NULL OR name = ''");
 
         // This has to happen BEFORE we delete associated addresses, contacts and relations!
-        $DB->delete_records_select('local_entities',
-            'parentid <> 0 AND parentid NOT IN (SELECT id FROM {local_entities})');
+        $DB->delete_records_select(
+            'local_entities',
+            'parentid <> 0 AND parentid NOT IN (SELECT id FROM {local_entities})'
+        );
 
         // Now we can delete relations, contacts and addresses of already deleted entities.
-        $DB->delete_records_select('local_entities_relations',
-            'entityid NOT IN (SELECT id FROM {local_entities})');
-        $DB->delete_records_select('local_entities_contacts',
-            'entityidto NOT IN (SELECT id FROM {local_entities})');
-        $DB->delete_records_select('local_entities_address',
-            'entityidto NOT IN (SELECT id FROM {local_entities})');
+        $DB->delete_records_select(
+            'local_entities_relations',
+            'entityid NOT IN (SELECT id FROM {local_entities})'
+        );
+        $DB->delete_records_select(
+            'local_entities_contacts',
+            'entityidto NOT IN (SELECT id FROM {local_entities})'
+        );
+        $DB->delete_records_select(
+            'local_entities_address',
+            'entityidto NOT IN (SELECT id FROM {local_entities})'
+        );
     }
 }
