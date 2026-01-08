@@ -48,7 +48,6 @@ use stdClass;
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class edit_dynamic_form extends dynamic_form {
-
     /**
      * @var array $standardhandlers - These handlers add customfields to all the entities.
      */
@@ -74,7 +73,7 @@ class edit_dynamic_form extends dynamic_form {
         $none = get_string("none", "local_entities");
 
         $mform = $this->_form;
-        $data = (Object)$this->_ajaxformdata;
+        $data = (object)$this->_ajaxformdata;
 
         $entityid = $this->_customdata['entityid'] ?? $data->entityid ?? $data->id ?? 0;
 
@@ -110,8 +109,13 @@ class edit_dynamic_form extends dynamic_form {
             'format' => FORMAT_HTML,
         ];
 
-        $mform->addElement('editor', 'description', get_string('entity_description', 'local_entities'),
-            '', $editoroptions);
+        $mform->addElement(
+            'editor',
+            'description',
+            get_string('entity_description', 'local_entities'),
+            '',
+            $editoroptions
+        );
 
         // Repeated elements.
         $repeatedopeninghours = [];
@@ -119,39 +123,73 @@ class edit_dynamic_form extends dynamic_form {
         // Options to store help button texts etc.
         $repeateoptions = [];
 
-        $openinghourslabel = \html_writer::tag('b', get_string('openinghours', 'local_entities') . ' {no}',
-            ['class' => 'openinghourslabel']);
+        $openinghourslabel = \html_writer::tag(
+            'b',
+            get_string('openinghours', 'local_entities') . ' {no}',
+            ['class' => 'openinghourslabel']
+        );
         $repeatedopeninghours[] = $mform->createElement('static', 'openinghourslabel', $openinghourslabel);
         $dayofweekoptions = [
             'tags' => false,
             'multiple' => true,
         ];
-        $repeatedopeninghours[] = $mform->createElement('select', 'daysofweek', get_string('daysofweek', 'local_entities'),
-        fullcalendar_helper::get_weekdays(),
-        $dayofweekoptions);
+        $repeatedopeninghours[] = $mform->createElement(
+            'select',
+            'daysofweek',
+            get_string('daysofweek', 'local_entities'),
+            fullcalendar_helper::get_weekdays(),
+            $dayofweekoptions
+        );
 
         $hours = fullcalendar_helper::get_hours_select();
         $minutes = fullcalendar_helper::get_minutes_select();
 
-        $repeatedopeninghours[] = $mform->createElement('select', 'starthours', get_string('starthours', 'local_entities'),
-        $hours);
-        $repeatedopeninghours[] = $mform->createElement('select', 'startminutes', get_string('startminutes', 'local_entities'),
-        $minutes);
+        $repeatedopeninghours[] = $mform->createElement(
+            'select',
+            'starthours',
+            get_string('starthours', 'local_entities'),
+            $hours
+        );
+        $repeatedopeninghours[] = $mform->createElement(
+            'select',
+            'startminutes',
+            get_string('startminutes', 'local_entities'),
+            $minutes
+        );
 
-        $repeatedopeninghours[] = $mform->createElement('select', 'endhours', get_string('endhours', 'local_entities'),
-        $hours);
-        $repeatedopeninghours[] = $mform->createElement('select', 'endminutes', get_string('endminutes', 'local_entities'),
-        $minutes);
+        $repeatedopeninghours[] = $mform->createElement(
+            'select',
+            'endhours',
+            get_string('endhours', 'local_entities'),
+            $hours
+        );
+        $repeatedopeninghours[] = $mform->createElement(
+            'select',
+            'endminutes',
+            get_string('endminutes', 'local_entities'),
+            $minutes
+        );
 
         $numberofopeninghours = !empty($data->openinghours) && is_array(json_decode($data->openinghours)) ?
             count(json_decode($data->openinghours)) : 1;
 
-        $repeatedopeninghours[] = $mform->createElement('submit', 'deleteopeninghours',
-        get_string('deleteopeninghours', 'local_entities'));
+        $repeatedopeninghours[] = $mform->createElement(
+            'submit',
+            'deleteopeninghours',
+            get_string('deleteopeninghours', 'local_entities')
+        );
 
-        $this->repeat_elements($repeatedopeninghours, $numberofopeninghours,
-            $repeateoptions, 'openinghour', 'addopeninghours', 1,
-            get_string('addopeninghours', 'local_entities'), true, 'deleteopeninghours');
+        $this->repeat_elements(
+            $repeatedopeninghours,
+            $numberofopeninghours,
+            $repeateoptions,
+            'openinghour',
+            'addopeninghours',
+            1,
+            get_string('addopeninghours', 'local_entities'),
+            true,
+            'deleteopeninghours'
+        );
 
         $mform->addElement('text', 'maxallocation', get_string('maxallocation', 'local_entities'));
         $mform->setType('maxallocation', PARAM_INT);
@@ -189,45 +227,45 @@ class edit_dynamic_form extends dynamic_form {
         $mform->addElement('hidden', 'addresscount', $addresscount);
         $mform->setType('addresscount', PARAM_INT);
         for ($i = 0; $i < $addresscount; $i++) {
-            $mform->addElement('hidden', 'addressid_'.$i, null);
-            $mform->setType('addressid_'.$i, PARAM_INT);
+            $mform->addElement('hidden', 'addressid_' . $i, null);
+            $mform->setType('addressid_' . $i, PARAM_INT);
             $mform->addElement('header', 'address', get_string('address', 'local_entities'));
-            $mform->addElement('text', 'country_'.$i, get_string('address_country', 'local_entities'));
-            $mform->setType('country_'.$i, PARAM_TEXT);
-            $mform->addElement('text', 'city_'.$i, get_string('address_city', 'local_entities'));
-            $mform->setType('city_'.$i, PARAM_TEXT);
-            $mform->addElement('text', 'postcode_'.$i, get_string('address_postcode', 'local_entities'));
-            $mform->setType('postcode_'.$i, PARAM_INT);
-            $mform->addElement('text', 'streetname_'.$i, get_string('address_streetname', 'local_entities'));
-            $mform->setType('streetname_'.$i, PARAM_TEXT);
-            $mform->addElement('text', 'streetnumber_'.$i, get_string('address_streetnumber', 'local_entities'));
-            $mform->setType('streetnumber_'.$i, PARAM_TEXT);
-            $mform->addElement('text', 'floor_'.$i, get_string('address_floor', 'local_entities'));
-            $mform->setType('floor_'.$i, PARAM_TEXT);
-            $mform->addElement('text', 'entrance_'.$i, get_string('address_entrance', 'local_entities'));
-            $mform->setType('entrance_'.$i, PARAM_TEXT);
-            $mform->addElement('text', 'map_link_'.$i, get_string('address_map_link', 'local_entities'));
-            $mform->setType('map_link_'.$i, PARAM_TEXT);
-            $mform->addElement('textarea', 'map_embed_'.$i, get_string('address_map_embed', 'local_entities'));
-            $mform->setType('map_embed_'.$i, PARAM_TEXT);
+            $mform->addElement('text', 'country_' . $i, get_string('address_country', 'local_entities'));
+            $mform->setType('country_' . $i, PARAM_TEXT);
+            $mform->addElement('text', 'city_' . $i, get_string('address_city', 'local_entities'));
+            $mform->setType('city_' . $i, PARAM_TEXT);
+            $mform->addElement('text', 'postcode_' . $i, get_string('address_postcode', 'local_entities'));
+            $mform->setType('postcode_' . $i, PARAM_INT);
+            $mform->addElement('text', 'streetname_' . $i, get_string('address_streetname', 'local_entities'));
+            $mform->setType('streetname_' . $i, PARAM_TEXT);
+            $mform->addElement('text', 'streetnumber_' . $i, get_string('address_streetnumber', 'local_entities'));
+            $mform->setType('streetnumber_' . $i, PARAM_TEXT);
+            $mform->addElement('text', 'floor_' . $i, get_string('address_floor', 'local_entities'));
+            $mform->setType('floor_' . $i, PARAM_TEXT);
+            $mform->addElement('text', 'entrance_' . $i, get_string('address_entrance', 'local_entities'));
+            $mform->setType('entrance_' . $i, PARAM_TEXT);
+            $mform->addElement('text', 'map_link_' . $i, get_string('address_map_link', 'local_entities'));
+            $mform->setType('map_link_' . $i, PARAM_TEXT);
+            $mform->addElement('textarea', 'map_embed_' . $i, get_string('address_map_embed', 'local_entities'));
+            $mform->setType('map_embed_' . $i, PARAM_TEXT);
         }
 
         // Contact BLOCK.
         // Later Iteration Add more than one contact.
 
         $contactscount = 1;
-        $mform->addElement('hidden', 'contactscount', $contactscount );
+        $mform->addElement('hidden', 'contactscount', $contactscount);
         $mform->setType('contactscount', PARAM_INT);
         for ($j = 0; $j < $contactscount; $j++) {
-            $mform->addElement('hidden', 'contactsid_'.$j, null);
-            $mform->setType('contactsid_'.$j, PARAM_INT);
+            $mform->addElement('hidden', 'contactsid_' . $j, null);
+            $mform->setType('contactsid_' . $j, PARAM_INT);
             $mform->addElement('header', 'htmlbody', get_string('contacts', 'local_entities'));
-            $mform->addElement('text', 'givenname_'.$j, get_string('contacts_givenname', 'local_entities'));
-            $mform->setType('givenname_'.$j, PARAM_TEXT);
-            $mform->addElement('text', 'surname_'.$j, get_string('contacts_surname', 'local_entities'));
-            $mform->setType('surname_'.$j, PARAM_TEXT);
-            $mform->addElement('text', 'mail_'.$j, get_string('contacts_mail', 'local_entities'));
-            $mform->setType('mail_'.$j, PARAM_TEXT);
+            $mform->addElement('text', 'givenname_' . $j, get_string('contacts_givenname', 'local_entities'));
+            $mform->setType('givenname_' . $j, PARAM_TEXT);
+            $mform->addElement('text', 'surname_' . $j, get_string('contacts_surname', 'local_entities'));
+            $mform->setType('surname_' . $j, PARAM_TEXT);
+            $mform->addElement('text', 'mail_' . $j, get_string('contacts_mail', 'local_entities'));
+            $mform->setType('mail_' . $j, PARAM_TEXT);
         }
 
         // Adds all Standard categories defined in settings to the form.
@@ -267,7 +305,6 @@ class edit_dynamic_form extends dynamic_form {
      * @return void
      */
     protected function check_access_for_dynamic_submission(): void {
-
     }
 
     /**
@@ -315,8 +352,10 @@ class edit_dynamic_form extends dynamic_form {
                     $eventarray['startminutes'] = sprintf("%02d", $data->startminutes[$i]);
                     $eventarray['endhours'] = sprintf("%02d", $data->endhours[$i]);
                     $eventarray['endminutes'] = sprintf("%02d", $data->endminutes[$i]);
-                    if ($eventarray['starthours'] . $eventarray['startminutes'] !=
-                        $eventarray['endhours'] . $eventarray['endminutes']) {
+                    if (
+                        $eventarray['starthours'] . $eventarray['startminutes'] !=
+                        $eventarray['endhours'] . $eventarray['endminutes']
+                    ) {
                         $events[] = new reoccuringevent($eventarray);
                     }
                 }
@@ -336,9 +375,15 @@ class edit_dynamic_form extends dynamic_form {
                 file_postupdate_standard_filemanager($data, 'image', $options, $context, 'local_entities', 'image', $result);
             }
             if (isset($draftitemid)) {
-                file_save_draft_area_files($draftitemid, $context->id,
-                'local_entities', 'entitycontent',
-                $data->id, ['subdirs' => true], $description);
+                file_save_draft_area_files(
+                    $draftitemid,
+                    $context->id,
+                    'local_entities',
+                    'entitycontent',
+                    $data->id,
+                    ['subdirs' => true],
+                    $description
+                );
             }
         }
         if (!empty($this->standardhandlers) && !empty($data->id)) {
@@ -368,7 +413,7 @@ class edit_dynamic_form extends dynamic_form {
         if (!empty($this->_customdata['entityid'])) {
             $data = \local_entities\settings_manager::get_settings_forform($this->_customdata['entityid']);
         } else {
-            $data = (Object)$this->_ajaxformdata;
+            $data = (object)$this->_ajaxformdata;
         }
 
         $data->addresscount = 1;
@@ -439,8 +484,15 @@ class edit_dynamic_form extends dynamic_form {
         $defaults->descriptionformat = FORMAT_HTML;
 
         if (!empty($defaults->id)) {
-            file_prepare_standard_editor($defaults, 'description',
-                $options, $context, 'local_entities', 'entitycontent', $defaults->id);
+            file_prepare_standard_editor(
+                $defaults,
+                'description',
+                $options,
+                $context,
+                'local_entities',
+                'entitycontent',
+                $defaults->id
+            );
 
             $options = ['maxbytes' => 204800, 'maxfiles' => 1, 'accepted_types' => ['jpg, png']];
             $defaults->picture = file_prepare_standard_filemanager(
@@ -450,7 +502,8 @@ class edit_dynamic_form extends dynamic_form {
                 $context,
                 'local_entities',
                 'image',
-                $defaults->id);
+                $defaults->id
+            );
         }
 
         $description = $defaults->description;

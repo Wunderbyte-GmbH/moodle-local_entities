@@ -33,16 +33,16 @@ namespace local_entities;
  */
 class entity {
     /**
-     * @var $_data
+     * @var $data
      */
-    private $_data;
+    private $data;
 
     /**
      * entity constructor.
      * @param mixed $data
      */
     public function __construct($data) {
-        $this->_data = $data;
+        $this->data = $data;
     }
 
     /**
@@ -53,8 +53,8 @@ class entity {
      * @return mixed
      */
     public function __get($item) {
-        if (isset($this->_data->$item)) {
-            return $this->_data->$item;
+        if (isset($this->data->$item)) {
+            return $this->data->$item;
         }
     }
 
