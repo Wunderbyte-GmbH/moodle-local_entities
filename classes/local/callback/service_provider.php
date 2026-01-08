@@ -33,7 +33,6 @@ namespace local_entities\local\callback;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 interface service_provider {
-
     /**
      * This function takes a list of ids and returns a list of dates in the entitydate format.
      * As one plugin can use multiple different handlers...

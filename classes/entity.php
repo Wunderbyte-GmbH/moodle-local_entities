@@ -32,7 +32,6 @@ namespace local_entities;
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class entity {
-
     /**
      * @var $_data
      */

@@ -40,18 +40,18 @@ if ($hassiteconfig) {
     if (!empty($categories)) {
         $settings->add(
             new admin_setting_configmultiselect(
-            $componentname .'/categories',
-            get_string('categories', $componentname),
-            get_string('categories:description', $componentname),
-            [],
-            $categories
+                $componentname . '/categories',
+                get_string('categories', $componentname),
+                get_string('categories:description', $componentname),
+                [],
+                $categories
             )
         );
     }
 
     $settings->add(
         new admin_setting_configcheckbox(
-            $componentname .'/fallback_image_parent',
+            $componentname . '/fallback_image_parent',
             get_string('fallback_image_parent', $componentname),
             get_string('fallback_image_parent:description', $componentname),
             1
@@ -60,7 +60,7 @@ if ($hassiteconfig) {
 
     $settings->add(
         new admin_setting_configcheckbox(
-            $componentname .'/fallback_address_parent',
+            $componentname . '/fallback_address_parent',
             get_string('fallback_address_parent', $componentname),
             get_string('fallback_address_parent:description', $componentname),
             1
@@ -69,7 +69,7 @@ if ($hassiteconfig) {
 
     $settings->add(
         new admin_setting_configcheckbox(
-            $componentname .'/fallback_contacts_parent',
+            $componentname . '/fallback_contacts_parent',
             get_string('fallback_contacts_parent', $componentname),
             get_string('fallback_contacts_parent:description', $componentname),
             1
@@ -78,7 +78,7 @@ if ($hassiteconfig) {
 
     $settings->add(
         new admin_setting_configcheckbox(
-            $componentname .'/show_calendar_on_details_page',
+            $componentname . '/show_calendar_on_details_page',
             get_string('show_calendar_on_details_page', $componentname),
             get_string('show_calendar_on_details_page:description', $componentname),
             0
@@ -87,7 +87,7 @@ if ($hassiteconfig) {
 
     $settings->add(
         new admin_setting_configcheckbox(
-            $componentname .'/usesubentitynamesforfilter',
+            $componentname . '/usesubentitynamesforfilter',
             get_string('usesubentitynamesforfilter', $componentname),
             get_string('usesubentitynamesforfilter:description', $componentname),
             0
@@ -96,7 +96,7 @@ if ($hassiteconfig) {
 
     $settings->add(
         new admin_setting_configcheckbox(
-            $componentname .'/showpictureinsteadofcalendar',
+            $componentname . '/showpictureinsteadofcalendar',
             get_string('showpictureinsteadofcalendar', $componentname),
             get_string('showpictureinsteadofcalendar:description', $componentname),
             0

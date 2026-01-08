@@ -35,7 +35,6 @@ use stdClass;
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class settings_manager {
-
     /** @var int $id */
     private $id;
 
@@ -65,7 +64,7 @@ class settings_manager {
         $data->id = $id;
         // Unset empty hidden customfields (otherwise persistence error is thrown).
         foreach ($data as $key => $property) {
-            if (strpos( $key , 'customfield' ) === 0) {
+            if (strpos($key, 'customfield') === 0) {
                 if (!$property) {
                     unset($data->{$key});
                 }
@@ -126,7 +125,8 @@ class settings_manager {
             $data->parentid = 0;
         }
         // Addresscount is unrelyable...
-        if (empty($data->country_0)
+        if (
+            empty($data->country_0)
             && empty($data->city_0)
             && empty($data->postcode_0)
             && empty($data->streetname_0)
@@ -134,16 +134,19 @@ class settings_manager {
             && empty($data->floor_0)
             && empty($data->entrance_0)
             && empty($data->maplink_0)
-            && empty($data->mapembed_0)) {
+            && empty($data->mapembed_0)
+        ) {
                 $data->addresscount = 0;
         } else {
             $data->addresscount = 1;
         }
 
         // Addresscount is unrelyable...
-        if (empty($data->givenname_0)
+        if (
+            empty($data->givenname_0)
             && empty($data->surname_0)
-            && empty($data->mail_0)) {
+            && empty($data->mail_0)
+        ) {
                 $data->contactscount = 0;
         } else {
             $data->contactscount = 1;

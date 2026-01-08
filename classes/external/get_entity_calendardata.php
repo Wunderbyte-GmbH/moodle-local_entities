@@ -45,14 +45,13 @@ require_once($CFG->libdir . '/externallib.php');
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class get_entity_calendardata extends external_api {
-
     /**
      * Describes the paramters for get_faq_data.
      *
      * @return external_function_parameters
      */
     public static function execute_parameters(): external_function_parameters {
-        return new external_function_parameters ([
+        return new external_function_parameters([
             'id' => new external_value(PARAM_INT, 'entity id', VALUE_REQUIRED),
         ]);
     }

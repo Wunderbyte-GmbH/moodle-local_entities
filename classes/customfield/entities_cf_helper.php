@@ -105,7 +105,7 @@ class entities_cf_helper {
         GROUP BY itemid, name';
         $stdcategories = array_flip(\local_entities\settings_manager::get_standardcategories());
         $categories = $DB->get_records_sql_menu($sql, [self::CFAREA, self::CFCOMPONENT]);
-        $altcategories = array_diff_key($categories , $stdcategories);
+        $altcategories = array_diff_key($categories, $stdcategories);
         return $altcategories;
     }
 

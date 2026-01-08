@@ -37,7 +37,6 @@ use local_entities_external;
  * Tests are parameterised, i.e. there's a data provider for each
  */
 final class external_test extends \advanced_testcase {
-
     /**
      * data for unit tests of update_entity that are expected to run without exceptions
      *

@@ -26,7 +26,7 @@
 use local_entities\local\views\secondary;
 // We even want to show entities when logged out!
 // phpcs:ignore moodle.Files.RequireLogin.Missing
-require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
+require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 require_once("{$CFG->dirroot}/local/entities/lib.php");
 
 global $DB;
@@ -114,7 +114,8 @@ foreach ($handlers as $handler) {
             continue;
         }
         $cat = $data->get_field()->get_category()->get('name');
-        $meta = new stdClass();;
+        $meta = new stdClass();
+        ;
         $meta->key = $data->get_field()->get('name');
         $meta->value = $data->get_value();
 
@@ -153,7 +154,6 @@ $parenthasaddress = false; // Initialize.
 if (!empty($entity->parentid)) {
     $parent = \local_entities\settings_manager::get_settings($entity->parentid);
     if (!empty($parent)) {
-
         $entity->parent = $parent;
         $entity->parent->link = new \moodle_url("/local/entities/view.php", ["id" => $parent->id]);
         $parenthasaddress = !empty($parent->address);
@@ -173,8 +173,14 @@ if (!empty($entity->parentid)) {
 }
 
 $entity->metadata = $metadata;
-$entity->description = file_rewrite_pluginfile_urls($entity->description, 'pluginfile.php',
-$context->id, 'local_entity', 'description', null);
+$entity->description = file_rewrite_pluginfile_urls(
+    $entity->description,
+    'pluginfile.php',
+    $context->id,
+    'local_entity',
+    'description',
+    null
+);
 
 $entity->picture = !empty($url) ? $url : null;
 $entity->hasaddress = !empty($entity->address);
@@ -208,7 +214,7 @@ $entity->canedit = has_capability('local/entities:edit', \context_system::instan
 $entity->showpictureinsteadofcalendar = get_config('local_entities', 'showpictureinsteadofcalendar');
 $entity->editurl = new moodle_url('/local/entities/edit.php', [ 'id' => $id]);
 $entity->calendarurl = new moodle_url('/local/entities/calendar.php', [ 'id' => $id]);
-$entity->delurl = new moodle_url('/local/entities/entities.php', [ 'del' => $id , 'sesskey' => $USER->sesskey]);
+$entity->delurl = new moodle_url('/local/entities/entities.php', [ 'del' => $id, 'sesskey' => $USER->sesskey]);
 
 echo $OUTPUT->render_from_template('local_entities/view', $entity);
 
