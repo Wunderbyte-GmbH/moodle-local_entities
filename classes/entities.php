@@ -411,8 +411,8 @@ class entities {
         // This has to happen BEFORE we delete associated addresses, contacts and relations!
         $DB->delete_records_select(
             'local_entities',
-            'parentid <> 0 AND parentid NOT IN (SELECT id FROM {local_entities})'
-        );
+            'parentid <> 0 AND parentid NOT IN (SELECT id FROM (SELECT id FROM {local_entities}) t)'
+        ); // Extra subquery to avoid "You can't specify target table for update in FROM clause" error under MySQL.
 
         // Now we can delete relations, contacts and addresses of already deleted entities.
         $DB->delete_records_select(
