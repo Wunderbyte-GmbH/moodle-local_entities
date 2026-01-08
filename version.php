@@ -26,8 +26,8 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'local_entities';
-$plugin->release = '0.4.5';
-$plugin->version = 2026010700;
-$plugin->requires = 2020061500;
-$plugin->supported = [401, 405];
+$plugin->release = '0.4.6';
+$plugin->version = 2026010800;
+$plugin->requires = 2024100700; // Requires this Moodle version. Current: Moodle 4.5.
+$plugin->supported = [405, 501];
 $plugin->maturity = MATURITY_ALPHA;

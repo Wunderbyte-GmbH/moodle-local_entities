@@ -1,3 +1,6 @@
+## Version 0.4.6 (2026010800)
+* Improvement: Make entities ready for Bootstrap 5 (introduced in Moodle 5).
+
 ## Version 0.4.5 (2026010700)
 * Improvement: Add entities cache.
 
