@@ -186,7 +186,7 @@ class entities {
      *
      * This is to return all categories and fields from the database
      *
-     * @return Object
+     * @return stdClass
      */
     public function get_categories() {
         $categories = new stdClass();
@@ -197,7 +197,7 @@ class entities {
      *
      * This is to set categories and fields from the database
      *
-     * @return Object
+     * @return stdClass
      */
     public function set_categories() {
         $categories = new stdClass();

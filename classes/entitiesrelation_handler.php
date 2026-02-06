@@ -269,7 +269,7 @@ class entitiesrelation_handler {
             'instanceid' => $instanceid,
         ]);
 
-        cache_helper::purge_by_event('purgecachedentities');
+        cache_helper::invalidate_by_event('purgecachedentities', ["$this->component-$this->area-$instanceid"]);
     }
 
     /**
@@ -281,7 +281,7 @@ class entitiesrelation_handler {
         global $DB;
 
         $cache = cache::make('local_entities', 'cachedentities');
-        $data = $cache->get($instanceid);
+        $data = $cache->get("$this->component-$this->area-$instanceid");
         if ($data !== false) {
             return $data;
         }
@@ -320,10 +320,10 @@ class entitiesrelation_handler {
         $fieldsdata = $DB->get_record_sql($sql, $params);
         if (!$fieldsdata) {
             $stdclass = new stdClass();
-            $cache->set($instanceid, $stdclass);
+            $cache->set("$this->component-$this->area-$instanceid", $stdclass);
             return $stdclass;
         }
-        $cache->set($instanceid, $fieldsdata);
+        $cache->set("$this->component-$this->area-$instanceid", $fieldsdata);
         return $fieldsdata;
     }
 
@@ -336,7 +336,7 @@ class entitiesrelation_handler {
         global $DB;
 
         $cache = cache::make('local_entities', 'cachedentities');
-        $data = $cache->get($instanceid);
+        $data = $cache->get("$this->component-$this->area-$instanceid");
         if (
             $data !== false
             && isset($data->id)

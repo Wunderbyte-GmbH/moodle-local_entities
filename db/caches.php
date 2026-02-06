@@ -28,7 +28,7 @@ defined('MOODLE_INTERNAL') || die;
 $definitions = [
     'cachedentities' => [
         'mode' => cache_store::MODE_APPLICATION,
-        'simplekeys' => true,
+        'simplekeys' => false, // Important: So we can use key-pattern "$component-$area-$instanceid".
         'staticacceleration' => true,
         'staticaccelerationsize' => 1000,
         'invalidationevents' => ['purgecachedentities'],
