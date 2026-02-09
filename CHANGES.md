@@ -1,3 +1,9 @@
+## Version 0.4.7 (2026020900)
+* Bugfix: Area was missing in entities cache leading to wrong relations.
+* Bugfix: Fix bug in edit_dynamic_form.
+* Bugfix: Fix bug with MySQL.
+* Tests: Added new behat scenario.
+
 ## Version 0.4.6 (2026010800)
 * Improvement: Make entities ready for Bootstrap 5 (introduced in Moodle 5).
 
