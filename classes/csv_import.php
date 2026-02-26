@@ -127,7 +127,7 @@ class csv_import {
 
         $delimiter = $this->delimiter;
         $enclosure = '"'; // TODO: It should be possible to configure this like delimiter.
-        $encoding = 'utf-8'; // TODO: It should be possible to configure this like delimiter.
+        $encoding = null; // TODO: It should be possible to configure this like delimiter.
 
         // Currently not implemented.
         // phpcs:ignore Squiz.PHP.CommentedOutCode.Found
@@ -164,6 +164,18 @@ class csv_import {
             // Import every entitiy.
 
             $csvrecord = array_combine($fieldnames, $line);
+            // As an injection protection, there is sometimes a ' added as first character.
+            // We need to remove that.
+            foreach ($csvrecord as $key => $value) {
+                if (
+                    is_string($value) &&
+                    strlen($value) > 1 &&
+                    $value[0] === "'" &&
+                    in_array($value[1], ['=', '+', '-', '@'])
+                ) {
+                    $csvrecord[$key] = substr($value, 1);
+                }
+            }
 
             $this->validate_data($csvrecord, $i);
 
