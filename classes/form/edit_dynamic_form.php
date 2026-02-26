@@ -330,11 +330,11 @@ class edit_dynamic_form extends dynamic_form {
         // We copy the whole element.
         $recordentity = $data;
         // But need to override a few values.
-        $recordentity->id = $data->id;
+        $recordentity->id = $data->id ?? null;
         $recordentity->name = $data->name;
         $recordentity->shortname = $data->shortname;
-        $recordentity->sortorder = intval($data->sortorder);
-        $recordentity->parentid = intval($data->parentid);
+        $recordentity->sortorder = intval($data->sortorder ?? 0);
+        $recordentity->parentid = intval($data->parentid ?? 0);
         $recordentity->description = $data->description['text'] ?? $data->description ?? '';
         $recordentity->openinghours = $data->openinghours ?? '';
         $recordentity->status = $data->status ?? 0;

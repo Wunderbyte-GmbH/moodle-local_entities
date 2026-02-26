@@ -291,14 +291,14 @@ class settings_manager {
         $addressdata = new stdClass();
         $addressdata->id = isset($data->{'addressid_' . $i}) ? $data->{'addressid_' . $i} : 0;
         $addressdata->country = $data->{'country_' . $i};
-        $addressdata->city = $data->{'city_' . $i};
-        $addressdata->postcode = $data->{'postcode_' . $i};
-        $addressdata->streetname = $data->{'streetname_' . $i};
-        $addressdata->streetnumber = $data->{'streetnumber_' . $i};
-        $addressdata->floor = $data->{'floor_' . $i};
-        $addressdata->entrance = $data->{'entrance_' . $i};
-        $addressdata->maplink = $data->{'map_link_' . $i};
-        $addressdata->mapembed = $data->{'map_embed_' . $i};
+        $addressdata->city = $data->{'city_' . $i} ?? '';
+        $addressdata->postcode = $data->{'postcode_' . $i} ?? '';
+        $addressdata->streetname = $data->{'streetname_' . $i} ?? '';
+        $addressdata->streetnumber = $data->{'streetnumber_' . $i} ?? '';
+        $addressdata->floor = $data->{'floor_' . $i} ?? '';
+        $addressdata->entrance = $data->{'entrance_' . $i} ?? '';
+        $addressdata->maplink = $data->{'map_link_' . $i} ?? '';
+        $addressdata->mapembed = $data->{'map_embed_' . $i} ?? '';
 
         return $addressdata;
     }
