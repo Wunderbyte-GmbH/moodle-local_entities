@@ -340,6 +340,7 @@ class settings_manager {
         $formdata->status = $record->status;
         $formdata->openinghours = $record->openinghours;
         $formdata->cfitemid = $record->cfitemid;
+        $formdata->maxallocation = $record->maxallocation;
         // Address.
         $i = 0;
         if ($record->address[0]) {
