@@ -48,7 +48,7 @@ final class csv_import_test extends \advanced_testcase {
         // The csv_import class relies on csv_import_reader from csvlib.class.php.
         require_once($CFG->libdir . '/csvlib.class.php');
 
-        $fixturepath = $CFG->dirroot . '/local/entities/tests/fixtures/usiwienentitiesimport.csv';
+        $fixturepath = $CFG->dirroot . '/local/entities/tests/fixtures/entitiesimport.csv';
         $csvcontent = file_get_contents($fixturepath);
 
         $this->assertNotFalse($csvcontent);
@@ -63,14 +63,14 @@ final class csv_import_test extends \advanced_testcase {
         $entitycount = $DB->count_records('local_entities');
         $this->assertGreaterThan(0, $entitycount);
 
-        $citywave = $DB->get_record('local_entities', ['shortname' => 'CITYWAVE']);
+        $citywave = $DB->get_record('local_entities', ['shortname' => 'ENT019']);
         $this->assertNotFalse($citywave);
 
-        $address = $DB->get_record('local_entities_address', ['entityidto' => $citywave->id, 'city' => 'Wien']);
+        $address = $DB->get_record('local_entities_address', ['entityidto' => $citywave->id, 'city' => 'Bristol']);
         $this->assertNotFalse($address);
-        $this->assertSame('Schwarzenbergplatz', $address->streetname);
+        $this->assertSame('Willow Avenue 20', $address->streetname);
 
         $ent = entities::list_all_entities();
-        $this->assertCount(370, $ent);
+        $this->assertCount(150, $ent);
     }
 }
