@@ -108,3 +108,21 @@
         order: 3;
     }
 }
+/* Cancelled booking option events in the entity calendar */
+.entities-cancelled-prefix {
+    color: #dc3545;
+    font-weight: bold;
+}
+
+/* Allow event titles to wrap instead of being truncated */
+#entity-calendar .fc-event-title {
+    white-space: normal;
+    overflow: visible;
+}
+
+/* Align time to the top so it sits level with the first line of a wrapped title */
+#entity-calendar .fc-daygrid-event {
+    display: flex;
+    align-items: baseline;
+    height: 100%;
+}

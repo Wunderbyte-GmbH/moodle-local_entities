@@ -274,6 +274,10 @@ class entities {
 
             $calendarevent->url = !empty($event->link) ? $event->link->out(false) : '';
             $calendarevent->backgroundColor = !empty($event->bgcolor) ? $event->bgcolor : $bgcolor;
+            if (!empty($event->status) && $event->status == 1) {
+                $calendarevent->classNames = ['entities-cancelled'];
+                $calendarevent->title = '[' . get_string('cancelled', 'local_entities') . '] ' . $calendarevent->title;
+            }
             $calendarevents[] = $calendarevent;
         }
         return $calendarevents;

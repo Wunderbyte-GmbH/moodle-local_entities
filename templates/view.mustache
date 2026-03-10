@@ -229,8 +229,10 @@
 
 {{#showcalendar}}
     {{#js}}
-        require(['local_entities/fullcalendardata'], function(calendar) {
-        calendar.init("{{id}}", "de");
+        require(['local_entities/config'], function() {
+            require(['local_entities/fullcalendardata'], function(calendar) {
+                calendar.init("{{id}}", "{{locale}}");
+            });
         });
     {{/js}}
 {{/showcalendar}}

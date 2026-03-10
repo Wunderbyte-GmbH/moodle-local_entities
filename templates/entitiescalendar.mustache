@@ -30,7 +30,9 @@
 <div id="entity-calendar"></div>
 
 {{#js}}
-    require(['local_entities/fullcalendardata'], function(calendar) {
-        calendar.init("{{id}}", "{{locale}}");
+    require(['local_entities/config'], function() {
+        require(['local_entities/fullcalendardata'], function(calendar) {
+            calendar.init("{{id}}", "{{locale}}");
+        });
     });
 {{/js}}
