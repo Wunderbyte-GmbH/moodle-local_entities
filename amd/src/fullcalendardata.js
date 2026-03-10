@@ -100,7 +100,23 @@ const renderCalendar = (events) => {
         },
         closeHint: "Schlie\xDFen",
         timeHint: "Uhrzeit",
-        eventHint: "Ereignis"
+        eventHint: "Ereignis",
+        eventDidMount: function(info) {
+            if (info.event.classNames.includes('entities-cancelled')) {
+                var titleEl = info.el.querySelector('.fc-event-title');
+                if (titleEl) {
+                    var fullTitle = titleEl.textContent;
+                    var bracketEnd = fullTitle.indexOf('] ');
+                    if (bracketEnd !== -1) {
+                        var prefix = fullTitle.substring(0, bracketEnd + 2);
+                        var rest = fullTitle.substring(bracketEnd + 2);
+                        titleEl.innerHTML =
+                            '<span class="entities-cancelled-prefix">' + prefix + '</span>' +
+                            rest;
+                    }
+                }
+            }
+        }
       });
       calendar.render();
 };

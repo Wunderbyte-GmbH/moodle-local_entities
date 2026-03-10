@@ -43,6 +43,7 @@ $string['backtolist'] = 'Back to entity manager';
 $string['belongs_to'] = 'Belongs to';
 $string['cachedef_cachedentities'] = 'Cache to store entities';
 $string['calendar'] = 'Calendar';
+$string['cancelled'] = 'CANCELLED';
 $string['categories'] = 'Categories';
 $string['categories:description'] = 'Set the default category from the list of the customfieldcategories visible on the edit page';
 $string['conflictingshortnames'] = 'There is a conflict between the column names in the table and the used customfield shortanmes. Please change this shortname: {$a}';
