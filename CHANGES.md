@@ -1,3 +1,10 @@
+## Version 0.4.8 (2026032600)
+* Improvement: Entities calendar - show cancelled events with [Cancelled]-string.
+* Bugfix: Make sure that -1 in maxallocation does not break the system because of spreadsheet injection prevention.
+* Bugfix: Fix default values if no data provided.
+* Bugfix: Maxallocation was not shown on the form.
+* Tests: New test_process_data_imports_semicolon_fixture() method.
+
 ## Version 0.4.7 (2026020900)
 * Bugfix: Area was missing in entities cache leading to wrong relations.
 * Bugfix: Fix bug in edit_dynamic_form.
