@@ -19,7 +19,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-import ModalFactory from 'core/modal_factory';
+import ModalSaveCancel from 'core/modal_save_cancel';
 import ModalEvents from 'core/modal_events';
 import Templates from 'core/templates';
 import {get_strings as getStrings} from 'core/str';
@@ -61,13 +61,14 @@ export const init = () => {
         // eslint-disable-next-line promise/no-nesting
         Templates.renderForPromise('local_entities/entitiescalendar', json).then(({html, js}) => {
             // eslint-disable-next-line promise/no-nesting
-            ModalFactory.create({
-                type: ModalFactory.types.SAVE_CANCEL,
-                large: 'true'
+            ModalSaveCancel.create({
+                title: strings[0],
+                body: html,
+                buttons: {
+                    save: strings[1],
+                },
+                large: true,
             }).then(modal => {
-                modal.setTitle(strings[0]);
-                modal.setBody(html);
-                modal.setSaveButtonText(strings[1]);
                 modal.getRoot().on(ModalEvents.save + " "
                 + ModalEvents.outsideClick + " "
                 + ModalEvents.hidden, function() {
