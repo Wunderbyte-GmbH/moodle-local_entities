@@ -1,3 +1,6 @@
+## Version 0.4.9 (2026043000)
+* Improvement: replaced modal factory with core modal.
+
 ## Version 0.4.8 (2026032600)
 * Improvement: Entities calendar - show cancelled events with [Cancelled]-string.
 * Bugfix: Make sure that -1 in maxallocation does not break the system because of spreadsheet injection prevention.
