@@ -55,23 +55,34 @@ class search_entities extends external_api {
      * @return array
      */
     public static function execute(string $query): array {
-        global $DB, $CFG;
+        global $DB;
 
         $params = self::validate_parameters(self::execute_parameters(), [
             'query' => $query,
         ]);
-        $query = strtolower($params['query']);
+
+        $context = \context_system::instance();
+        self::validate_context($context);
+        require_capability('local/entities:view', $context);
+
+        $queryclean = strtolower($params['query']);
 
         $sql = "SELECT e.*, COALESCE(e2.name, '') as parentname FROM {local_entities} e
         LEFT JOIN {local_entities} e2 ON e.parentid = e2.id
-        WHERE LOWER(e.name) LIKE '%{$query}%'
-        OR COALESCE(LOWER(e2.name), '') LIKE '%{$query}%'
+        WHERE LOWER(e.name) LIKE :query1
+        OR COALESCE(LOWER(e2.name), '') LIKE :query2
         ORDER BY
             CASE
                 WHEN e.parentid = 0 THEN e.id
             ELSE e.parentid
         END ASC, e.id ASC";
-        $rs = $DB->get_recordset_sql($sql);
+
+        $sqlparams = [
+            'query1' => '%' . $queryclean . '%',
+            'query2' => '%' . $queryclean . '%',
+        ];
+
+        $rs = $DB->get_recordset_sql($sql, $sqlparams);
         $count = 0;
         $list = [];
         $extrafields = ['parentname'];
