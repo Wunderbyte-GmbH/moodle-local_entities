@@ -69,8 +69,9 @@ class search_entities extends external_api {
 
         $sql = "SELECT e.*, COALESCE(e2.name, '') as parentname FROM {local_entities} e
         LEFT JOIN {local_entities} e2 ON e.parentid = e2.id
-        WHERE LOWER(e.name) LIKE :query1
-        OR COALESCE(LOWER(e2.name), '') LIKE :query2
+        WHERE (LOWER(e.name) LIKE :query1
+        OR COALESCE(LOWER(e2.name), '') LIKE :query2)
+        AND (e.entitytype = 'location' OR e.entitytype IS NULL)
         ORDER BY
             CASE
                 WHEN e.parentid = 0 THEN e.id

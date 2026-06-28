@@ -39,11 +39,31 @@ $string['address_postcode'] = 'Postleitzahl';
 $string['address_streetname'] = 'Straßenname';
 $string['address_streetnumber'] = 'Haus-Nr.';
 $string['affiliated'] = 'Zugehörige Orte';
+$string['allocationmode'] = 'Buchungsmodus';
+$string['allocationmode_capacity'] = 'Kapazität (Summe der Teilnehmer)';
+$string['allocationmode_exclusive'] = 'Exklusive Ressource (pro Reservierung belegt)';
+$string['allocationmode_help'] = 'Exklusive Ressource: Die Entity ist pro Reservierung belegt, unabhängig von der Teilnehmerzahl (z. B. ein Raum oder Platz, der zu einem Zeitpunkt nur einmal genutzt werden kann). Die erlaubte Anzahl gleichzeitiger Reservierungen wird unter „Maximale gleichzeitige Reservierungen" festgelegt.
+
+Kapazität: Überlappende Buchungen sind erlaubt, solange die Summe der Teilnehmer „Maximale Anzahl möglicher Buchungen" nicht übersteigt.
+
+Keine (Standard): Überschneidungen auf dieser Entity werden gar nicht geprüft.';
+$string['allocationmode_none'] = 'Keine Überschneidungsprüfung';
+$string['availableinsublocations'] = 'In Unterorten verfügbar';
+$string['availableinsublocations_help'] = 'Nur für Equipment. Wenn aktiviert, wird dieser Gegenstand auch für Buchungen von Unterorten (Nachfahren seines Heimat-Orts) angeboten, nicht nur am Heimat-Ort selbst.';
 $string['backtolist'] = 'Zurück zum Entity-Manager';
 $string['belongs_to'] = 'Gehört zu';
 $string['cachedef_cachedentities'] = 'Cache um Entities zu speichern';
+$string['cachedef_entitydates'] = 'Cache um Entity-Daten zu speichern';
 $string['calendar'] = 'Kalender';
 $string['cancelled'] = 'ABGESAGT';
+$string['capacitysource'] = 'Belegung gezählt nach';
+$string['capacitysource_help'] = 'Nur im Kapazitäts-Modus. Legt fest, wie viel eine Buchung von dieser Entity verbraucht:
+
+Teilnehmer (max. Buchungen): Die Teilnehmer-Obergrenze der Option wird gegen die Kapazität gezählt (z. B. Personen im Raum, ein Bungee-Seil pro Person).
+
+Manuelle Stückzahl: Eine explizit eingegebene Zahl wird gezählt (z. B. Beamer, Tandem) — unabhängig von der Teilnehmerzahl.';
+$string['capacitysource_manual'] = 'Manuelle Stückzahl';
+$string['capacitysource_maxanswers'] = 'Teilnehmer (max. Buchungen)';
 $string['categories'] = 'Entity Kategorien';
 $string['conflictingshortnames'] = 'Es gibt einen Konflikt zwischen den verwendenten Kurznamen der benutzerdefinierten Felder und der Tabellennamen. Bitte ändern Sie diesen Kurznamen: {$a}';
 $string['contacts'] = 'Kontakte';
@@ -73,12 +93,19 @@ $string['entity_openinghours'] = "Öffnungszeiten";
 $string['entity_order'] = 'Sortier-Reihenfolge';
 $string['entity_parent'] = 'Entity-Parent';
 $string['entity_title'] = 'Entity';
+$string['entitytype'] = 'Entity-Typ';
+$string['entitytype_equipment'] = 'Equipment / Ressource';
+$string['entitytype_help'] = 'Ort: Räume und Plätze in der Standort-Hierarchie, die in Raum-Auswahlen angeboten werden. Equipment: buchbare Ressourcen (z. B. Beamer, Bälle), die über parentid unter einem Ort hängen; sie werden zusätzlich zum Raum angeboten, wenn ein Ort gewählt wird.';
+$string['entitytype_location'] = 'Ort';
 $string['entitylist'] = 'Entity Liste';
 $string['entitysetup_heading'] = 'Entity erstellen oder bearbeiten';
+$string['equipmentquantity'] = 'Anzahl: {$a}';
 $string['er_entitiesname'] = 'Entity';
 $string['er_placeholder'] = '... suche';
 $string['error:entitydoesnotexist'] = "FEHLER: Die Entity existiert nicht!";
 $string['errorwiththefollowingdates'] = 'Es gibt einen Konflikt mit den folgenden Buchungen:';
+$string['conflictexclusive'] = 'Die Ressource „{$a}" ist zu den gewünschten Zeiten bereits gebucht und kann nicht doppelt gebucht werden. Konfliktbuchungen:';
+$string['conflictcapacity'] = 'Nicht genügend freie Kapazität für „{$a->name}" zu den gewünschten Zeiten: angefragt wurden {$a->requested}, die Gesamtkapazität beträgt aber {$a->capacity}. Bereits belegt durch diese überschneidenden Buchungen:';
 $string['examplecsv'] = '<div class="alert alert-info">
     <p><b>Beispiel für eine CSV-Datei:</b></p>
     <p class="text-monospace">
@@ -99,6 +126,8 @@ $string['import'] = "Entities importieren";
 $string['map'] = 'Karte';
 $string['maxallocation'] = 'Maximale Anzahl möglicher Buchungen.';
 $string['maxallocation_help'] = '0 für kein Limit, -1 bedeutet nicht buchbar';
+$string['maxconcurrent'] = 'Maximale gleichzeitige Reservierungen';
+$string['maxconcurrent_help'] = 'Nur im exklusiven Modus: wie viele Reservierungen die Entity gleichzeitig belegen dürfen. 1 bedeutet, dass die Entity für einen bestimmten Zeitraum nur einmal gebucht werden kann.';
 $string['new_entity'] = 'Neue Entity';
 $string['none'] = 'Keine Entity';
 $string['notwithinopeninghours'] = 'Außerhalb der Öffnungszeiten';
@@ -110,6 +139,7 @@ $string['opentimetable'] = "Öffne Stundenplan";
 $string['pluginname'] = 'Entity-Manager';
 $string['pricefactor'] = 'Relativer Preisfaktor';
 $string['pricefactor_help'] = 'Relativer Preisfaktor: Kann für automatische Preisberechnung (z.B. mit dem Booking-Plugin) verwendet werden';
+$string['refreshequipment'] = 'Equipment für den gewählten Ort anzeigen';
 $string['show_calendar_on_details_page'] = 'Kalender auf der Detailseite anzeigen';
 $string['show_calendar_on_details_page:description'] = 'Wenn die Option gesetzt ist, wird der Kalender direkt auf der Detailseite angezeigt, ansonsten wird ein Link zur Kalenderseite angezeigt';
 $string['showpictureinsteadofcalendar'] = "Zeige Bild anstatt Kalender";

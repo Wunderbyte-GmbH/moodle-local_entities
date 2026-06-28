@@ -191,9 +191,51 @@ class edit_dynamic_form extends dynamic_form {
             'deleteopeninghours'
         );
 
+        $allocationmodes = [
+            'none' => get_string('allocationmode_none', 'local_entities'),
+            'exclusive' => get_string('allocationmode_exclusive', 'local_entities'),
+            'capacity' => get_string('allocationmode_capacity', 'local_entities'),
+        ];
+        $mform->addElement('select', 'allocationmode', get_string('allocationmode', 'local_entities'), $allocationmodes);
+        $mform->setDefault('allocationmode', 'none');
+        $mform->addHelpButton('allocationmode', 'allocationmode', 'local_entities');
+
+        $mform->addElement('text', 'maxconcurrent', get_string('maxconcurrent', 'local_entities'));
+        $mform->setType('maxconcurrent', PARAM_INT);
+        $mform->setDefault('maxconcurrent', 1);
+        $mform->addHelpButton('maxconcurrent', 'maxconcurrent', 'local_entities');
+        $mform->hideIf('maxconcurrent', 'allocationmode', 'neq', 'exclusive');
+
         $mform->addElement('text', 'maxallocation', get_string('maxallocation', 'local_entities'));
         $mform->setType('maxallocation', PARAM_INT);
         $mform->addHelpButton('maxallocation', 'maxallocation', 'local_entities');
+        $mform->hideIf('maxallocation', 'allocationmode', 'neq', 'capacity');
+
+        $capacitysources = [
+            'maxanswers' => get_string('capacitysource_maxanswers', 'local_entities'),
+            'manual' => get_string('capacitysource_manual', 'local_entities'),
+        ];
+        $mform->addElement('select', 'capacitysource', get_string('capacitysource', 'local_entities'), $capacitysources);
+        $mform->setDefault('capacitysource', 'maxanswers');
+        $mform->addHelpButton('capacitysource', 'capacitysource', 'local_entities');
+        $mform->hideIf('capacitysource', 'allocationmode', 'neq', 'capacity');
+
+        $entitytypes = [
+            'location' => get_string('entitytype_location', 'local_entities'),
+            'equipment' => get_string('entitytype_equipment', 'local_entities'),
+        ];
+        $mform->addElement('select', 'entitytype', get_string('entitytype', 'local_entities'), $entitytypes);
+        $mform->setDefault('entitytype', 'location');
+        $mform->addHelpButton('entitytype', 'entitytype', 'local_entities');
+
+        $mform->addElement(
+            'advcheckbox',
+            'availableinsublocations',
+            get_string('availableinsublocations', 'local_entities')
+        );
+        $mform->setDefault('availableinsublocations', 1);
+        $mform->addHelpButton('availableinsublocations', 'availableinsublocations', 'local_entities');
+        $mform->hideIf('availableinsublocations', 'entitytype', 'neq', 'equipment');
 
         $opts = [
             'multiple' => false,

@@ -39,11 +39,31 @@ $string['address_postcode'] = 'Postcode';
 $string['address_streetname'] = 'Street name';
 $string['address_streetnumber'] = 'Street number';
 $string['affiliated'] = 'Affiliated locations';
+$string['allocationmode'] = 'Booking mode';
+$string['allocationmode_capacity'] = 'Capacity (sum of participants)';
+$string['allocationmode_exclusive'] = 'Exclusive resource (occupied per reservation)';
+$string['allocationmode_help'] = 'Exclusive resource: the entity is occupied per reservation, regardless of the number of participants (e.g. a room or court that can only be used once at a time). The number of allowed concurrent reservations is set in "Max concurrent reservations".
+
+Capacity: overlapping bookings are allowed as long as the sum of their participants does not exceed "Max number of bookings on this entity".
+
+None (default): overlapping bookings on this entity are not checked at all.';
+$string['allocationmode_none'] = 'No overlap check';
+$string['availableinsublocations'] = 'Available in sub-locations';
+$string['availableinsublocations_help'] = 'Equipment only. If enabled, this item is also offered for bookings of sub-locations (descendants of its home location), not just its home location itself.';
 $string['backtolist'] = 'Back to entity manager';
 $string['belongs_to'] = 'Belongs to';
 $string['cachedef_cachedentities'] = 'Cache to store entities';
+$string['cachedef_entitydates'] = 'Cache to store entity dates';
 $string['calendar'] = 'Calendar';
 $string['cancelled'] = 'CANCELLED';
+$string['capacitysource'] = 'Capacity counted by';
+$string['capacitysource_help'] = 'Capacity mode only. Determines how much each booking consumes of this entity:
+
+Participants (max answers): the option\'s participant limit is counted against the capacity (e.g. people in a room, one bungee rope per person).
+
+Manual quantity: an explicitly entered number is counted (e.g. beamers, tandems) — independent of the number of participants.';
+$string['capacitysource_manual'] = 'Manual quantity';
+$string['capacitysource_maxanswers'] = 'Participants (max answers)';
 $string['categories'] = 'Categories';
 $string['categories:description'] = 'Set the default category from the list of the customfieldcategories visible on the edit page';
 $string['conflictingshortnames'] = 'There is a conflict between the column names in the table and the used customfield shortanmes. Please change this shortname: {$a}';
@@ -74,12 +94,19 @@ $string['entity_openinghours'] = "Opening hours";
 $string['entity_order'] = 'Sort order';
 $string['entity_parent'] = 'Entity parent';
 $string['entity_title'] = 'Entity';
+$string['entitytype'] = 'Entity type';
+$string['entitytype_equipment'] = 'Equipment / resource';
+$string['entitytype_help'] = 'Location: rooms and places used in the location hierarchy and offered in room pickers. Equipment: bookable resources (e.g. beamers, balls) hung under a location via its parent; they are offered in addition to the room when a location is chosen.';
+$string['entitytype_location'] = 'Location';
 $string['entitylist'] = 'Entity List';
 $string['entitysetup_heading'] = 'Edit or create entity';
+$string['equipmentquantity'] = 'Quantity: {$a}';
 $string['er_entitiesname'] = 'Entity';
 $string['er_placeholder'] = '... search';
 $string['error:entitydoesnotexist'] = "ERROR: Entity does not exist!";
 $string['errorwiththefollowingdates'] = 'There is a conflict with the following bookings:';
+$string['conflictexclusive'] = 'The resource "{$a}" is already booked at the requested times and cannot be booked twice. Conflicting bookings:';
+$string['conflictcapacity'] = 'Not enough free capacity for "{$a->name}" at the requested times: you requested {$a->requested}, but the total capacity is {$a->capacity}. It is already used by these overlapping bookings:';
 $string['examplecsv'] = '<div class="alert alert-info">
     <p><b>CSV example file:</b></p>
     <p class="text-monospace">
@@ -100,6 +127,8 @@ $string['import'] = "Import entities";
 $string['map'] = 'Map';
 $string['maxallocation'] = 'Max number of bookings on this entity';
 $string['maxallocation_help'] = '0 for no limit, -1 for not bookable.';
+$string['maxconcurrent'] = 'Max concurrent reservations';
+$string['maxconcurrent_help'] = 'Exclusive mode only: how many reservations may occupy this entity at the same time. 1 means the entity can only be booked once for any given time range.';
 $string['new_entity'] = 'New entity';
 $string['none'] = 'None';
 $string['notwithinopeninghours'] = 'Outside business hours';
@@ -111,6 +140,7 @@ $string['opentimetable'] = "Open timetable";
 $string['pluginname'] = 'Entity Manager';
 $string['pricefactor'] = 'Relative price factor';
 $string['pricefactor_help'] = 'Relative price factor: Can be used for automatic price calculations, e.g. in booking plugin';
+$string['refreshequipment'] = 'Show equipment for the selected location';
 $string['show_calendar_on_details_page'] = 'Show calendar on detail page';
 $string['show_calendar_on_details_page:description'] = 'If enabled the calendar will be shown on the detail page, otherwise there will be a link to the calendar page';
 $string['showpictureinsteadofcalendar'] = "Show Picture instead of calendar";

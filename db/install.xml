@@ -17,6 +17,11 @@
                 <FIELD NAME="cfitemid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" />
                 <FIELD NAME="openinghours" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Openinghours for this entitiy, in JSON format. Null if no restrictions."/>
                 <FIELD NAME="maxallocation" TYPE="int" LENGTH="10" NOTNULL="false" DEFAULT="0" SEQUENCE="false" COMMENT="How many bookings on one entity? 0 is no limit."/>
+                <FIELD NAME="allocationmode" TYPE="char" LENGTH="20" NOTNULL="false" DEFAULT="none" SEQUENCE="false" COMMENT="How concurrent bookings are evaluated: 'none' (no overlap check, default), 'exclusive' (count reservations against maxconcurrent) or 'capacity' (count participants against maxallocation)."/>
+                <FIELD NAME="maxconcurrent" TYPE="int" LENGTH="10" NOTNULL="false" DEFAULT="1" SEQUENCE="false" COMMENT="Exclusive mode only: max number of concurrent reservations on the entity. Default 1."/>
+                <FIELD NAME="capacitysource" TYPE="char" LENGTH="20" NOTNULL="false" DEFAULT="maxanswers" SEQUENCE="false" COMMENT="Capacity mode only: how the consumed amount per booking is determined - 'maxanswers' (participant count of the option) or 'manual' (explicitly entered quantity, e.g. equipment)."/>
+                <FIELD NAME="entitytype" TYPE="char" LENGTH="20" NOTNULL="false" DEFAULT="location" SEQUENCE="false" COMMENT="Kind of entity: 'location' (rooms/places, used in the location hierarchy and room pickers) or 'equipment' (bookable resources hung under a location via parentid)."/>
+                <FIELD NAME="availableinsublocations" TYPE="int" LENGTH="1" NOTNULL="false" DEFAULT="1" SEQUENCE="false" COMMENT="Equipment only: whether sub-locations (descendants of the equipment's home location) may also use this item."/>
             </FIELDS>
             <KEYS>
                 <KEY NAME="primary" TYPE="primary" FIELDS="id" />
@@ -66,6 +71,7 @@
                 <FIELD NAME="area" TYPE="char" LENGTH="30" NOTNULL="false" SEQUENCE="false" />
                 <FIELD NAME="instanceid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" />
                 <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" />
+                <FIELD NAME="quantity" TYPE="int" LENGTH="10" NOTNULL="false" DEFAULT="1" SEQUENCE="false" COMMENT="Capacity mode: consumed amount of the entity by this relation (participants or units). Default 1."/>
             </FIELDS>
             <KEYS>
                 <KEY NAME="primary" TYPE="primary" FIELDS="id" />

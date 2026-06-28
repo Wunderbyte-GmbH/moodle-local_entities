@@ -284,5 +284,63 @@ function xmldb_local_entities_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2024062501, 'local', 'entities');
     }
 
+    if ($oldversion < 2026061601) {
+        $table = new xmldb_table('local_entities');
+
+        // Booking/allocation mode for the entity. Default 'none' preserves the previous behaviour
+        // (no overlap checking) for existing entities.
+        $field = new xmldb_field('allocationmode', XMLDB_TYPE_CHAR, '20', null, null, null, 'none', 'maxallocation');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Max concurrent reservations used by the exclusive mode.
+        $field = new xmldb_field('maxconcurrent', XMLDB_TYPE_INTEGER, '10', null, null, null, '1', 'allocationmode');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Entities savepoint reached.
+        upgrade_plugin_savepoint(true, 2026061601, 'local', 'entities');
+    }
+
+    if ($oldversion < 2026061700) {
+        // Capacity mode: how the consumed amount per booking is determined.
+        $table = new xmldb_table('local_entities');
+        $field = new xmldb_field('capacitysource', XMLDB_TYPE_CHAR, '20', null, null, null, 'maxanswers', 'maxconcurrent');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Capacity mode: consumed amount of the entity by a single relation (participants or units).
+        $table = new xmldb_table('local_entities_relations');
+        $field = new xmldb_field('quantity', XMLDB_TYPE_INTEGER, '10', null, null, null, '1', 'timecreated');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Entities savepoint reached.
+        upgrade_plugin_savepoint(true, 2026061700, 'local', 'entities');
+    }
+
+    if ($oldversion < 2026061701) {
+        $table = new xmldb_table('local_entities');
+
+        // Kind of entity: 'location' (default) or 'equipment'.
+        $field = new xmldb_field('entitytype', XMLDB_TYPE_CHAR, '20', null, null, null, 'location', 'capacitysource');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Equipment: whether sub-locations may also use the item.
+        $field = new xmldb_field('availableinsublocations', XMLDB_TYPE_INTEGER, '1', null, null, null, '1', 'entitytype');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Entities savepoint reached.
+        upgrade_plugin_savepoint(true, 2026061701, 'local', 'entities');
+    }
+
     return true;
 }
