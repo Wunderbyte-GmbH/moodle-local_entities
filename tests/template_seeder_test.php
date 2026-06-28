@@ -166,8 +166,9 @@ final class template_seeder_test extends \advanced_testcase {
         $this->assertNotNull($condition);
         $this->assertEquals('select', $condition->get('type'));
         $options = $condition->get_configdata_property('options');
-        $this->assertStringContainsString('neu', $options);
-        $this->assertStringContainsString('defekt', $options);
+        // Options are seeded from plain Moodle language strings (site language at seed time).
+        $this->assertStringContainsString(get_string('tplcond_new', 'local_entities'), $options);
+        $this->assertStringContainsString(get_string('tplcond_defective', 'local_entities'), $options);
 
         $inventory = $this->field_by_shortname($equipitemid, 'eq_inventoryno');
         $this->assertNotNull($inventory);

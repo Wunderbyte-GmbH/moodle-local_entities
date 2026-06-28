@@ -122,30 +122,33 @@ class template_seeder {
     }
 
     /**
-     * Definition of the "Location" template. Field names use {mlang} so the active multilang
-     * filter renders them per language; without the filter the (German) raw text is shown.
+     * Shorthand for a plugin language string (resolved to the site language at seed time).
+     *
+     * @param string $key
+     * @return string
+     */
+    private static function str(string $key): string {
+        return get_string($key, 'local_entities');
+    }
+
+    /**
+     * Definition of the "Location" template. Names come from plain Moodle language strings, so they
+     * are stored in the site's language at seed time (German on a German platform, English otherwise).
      *
      * @return array
      */
     private static function location_definition(): array {
         return [
-            'name' => '{mlang de}Ort{mlang}{mlang other}Location{mlang}',
+            'name' => self::str('template_location'),
             'fields' => [
-                ['shortname' => 'loc_building', 'type' => 'text',
-                    'name' => '{mlang de}Gebäude{mlang}{mlang other}Building{mlang}'],
-                ['shortname' => 'loc_roomnumber', 'type' => 'text',
-                    'name' => '{mlang de}Raumnummer{mlang}{mlang other}Room number{mlang}'],
-                ['shortname' => 'loc_area', 'type' => 'text',
-                    'name' => '{mlang de}Fläche (m²){mlang}{mlang other}Area (m²){mlang}'],
-                ['shortname' => 'loc_seats', 'type' => 'text',
-                    'name' => '{mlang de}Sitzplätze{mlang}{mlang other}Seats{mlang}'],
-                ['shortname' => 'loc_amenities', 'type' => 'textarea',
-                    'name' => '{mlang de}Ausstattung{mlang}{mlang other}Amenities{mlang}'],
-                ['shortname' => 'loc_accessible', 'type' => 'checkbox',
-                    'name' => '{mlang de}Barrierefrei{mlang}{mlang other}Wheelchair accessible{mlang}',
+                ['shortname' => 'loc_building', 'type' => 'text', 'name' => self::str('tplfield_building')],
+                ['shortname' => 'loc_roomnumber', 'type' => 'text', 'name' => self::str('tplfield_roomnumber')],
+                ['shortname' => 'loc_area', 'type' => 'text', 'name' => self::str('tplfield_area')],
+                ['shortname' => 'loc_seats', 'type' => 'text', 'name' => self::str('tplfield_seats')],
+                ['shortname' => 'loc_amenities', 'type' => 'textarea', 'name' => self::str('tplfield_amenities')],
+                ['shortname' => 'loc_accessible', 'type' => 'checkbox', 'name' => self::str('tplfield_accessible'),
                     'configdata' => ['checkbydefault' => 0]],
-                ['shortname' => 'loc_notes', 'type' => 'textarea',
-                    'name' => '{mlang de}Hinweise{mlang}{mlang other}Notes{mlang}'],
+                ['shortname' => 'loc_notes', 'type' => 'textarea', 'name' => self::str('tplfield_notes')],
             ],
         ];
     }
@@ -156,27 +159,26 @@ class template_seeder {
      * @return array
      */
     private static function equipment_definition(): array {
+        $conditionoptions = implode("\n", [
+            self::str('tplcond_new'),
+            self::str('tplcond_good'),
+            self::str('tplcond_used'),
+            self::str('tplcond_defective'),
+        ]);
+
         return [
-            'name' => '{mlang de}Equipment{mlang}{mlang other}Equipment{mlang}',
+            'name' => self::str('template_equipment'),
             'fields' => [
-                ['shortname' => 'eq_inventoryno', 'type' => 'text',
-                    'name' => '{mlang de}Inventarnummer{mlang}{mlang other}Inventory number{mlang}',
+                ['shortname' => 'eq_inventoryno', 'type' => 'text', 'name' => self::str('tplfield_inventoryno'),
                     'configdata' => ['uniquevalues' => 1]],
-                ['shortname' => 'eq_manufacturer', 'type' => 'text',
-                    'name' => '{mlang de}Hersteller{mlang}{mlang other}Manufacturer{mlang}'],
-                ['shortname' => 'eq_model', 'type' => 'text',
-                    'name' => '{mlang de}Modell{mlang}{mlang other}Model{mlang}'],
-                ['shortname' => 'eq_serial', 'type' => 'text',
-                    'name' => '{mlang de}Seriennummer{mlang}{mlang other}Serial number{mlang}'],
-                ['shortname' => 'eq_purchasedate', 'type' => 'date',
-                    'name' => '{mlang de}Anschaffungsdatum{mlang}{mlang other}Purchase date{mlang}'],
-                ['shortname' => 'eq_condition', 'type' => 'select',
-                    'name' => '{mlang de}Zustand{mlang}{mlang other}Condition{mlang}',
-                    'configdata' => ['options' => "neu\ngut\ngebraucht\ndefekt"]],
-                ['shortname' => 'eq_responsible', 'type' => 'text',
-                    'name' => '{mlang de}Verantwortlich{mlang}{mlang other}Responsible{mlang}'],
-                ['shortname' => 'eq_notes', 'type' => 'textarea',
-                    'name' => '{mlang de}Hinweise{mlang}{mlang other}Notes{mlang}'],
+                ['shortname' => 'eq_manufacturer', 'type' => 'text', 'name' => self::str('tplfield_manufacturer')],
+                ['shortname' => 'eq_model', 'type' => 'text', 'name' => self::str('tplfield_model')],
+                ['shortname' => 'eq_serial', 'type' => 'text', 'name' => self::str('tplfield_serial')],
+                ['shortname' => 'eq_purchasedate', 'type' => 'date', 'name' => self::str('tplfield_purchasedate')],
+                ['shortname' => 'eq_condition', 'type' => 'select', 'name' => self::str('tplfield_condition'),
+                    'configdata' => ['options' => $conditionoptions]],
+                ['shortname' => 'eq_responsible', 'type' => 'text', 'name' => self::str('tplfield_responsible')],
+                ['shortname' => 'eq_notes', 'type' => 'textarea', 'name' => self::str('tplfield_notes')],
             ],
         ];
     }

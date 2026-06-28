@@ -60,7 +60,7 @@ ohne das heute verwirrende, separate „Categories"-Dropdown verstehen zu müsse
 | D1 | Vorlagen = **alternative** Kategorien (nicht Standard) | Typ-spezifisch; sonst erscheinen alle Felder auf allen Entities |
 | D2 | Seeding **idempotent**, einmalig, guarded per Config-Flag | Re-Upgrade darf admin-editierte Vorlagen nicht überschreiben/duplizieren |
 | D3 | Resultierende itemids in Config persistieren (`template_location_itemid`, `template_equipment_itemid`) | Für Auto-Bindung & Idempotenz-Check stabil referenzierbar; itemid ist global, daher nicht hartkodierbar |
-| D4 | Feldnamen mit **`{mlang}`**-Multilang-Tags seeden | Core-Customfield-Namen sind Klartext in der DB; {mlang} liefert DE/EN ohne Lang-Pack-Abhängigkeit |
+| D4 | Feldnamen via **echte Moodle-Lang-Strings** (`get_string` zur Seed-Zeit) | UMGESETZT (Georg): Namen werden in die Plattform-Sprache aufgelöst und so gespeichert (DE-Plattform → deutsch, sonst englisch). Kein `{mlang}`, keine Filter-Abhängigkeit. (Frühere {mlang}-Idee in den Code-Skizzen unten ist überholt.) |
 | D5 | **Auto-Default** von `cfitemid` aus `entitytype` im Edit-Formular (Phase 2) | Macht Vorlagen „unsichtbar nützlich"; manueller Override bleibt |
 | D6 | Bestehende Entities werden **nicht** angefasst | Non-destruktiv; nur neue Entities profitieren vom Auto-Default |
 | D7 | Gemeinsame Seeder-Klasse, aufgerufen aus `install.php` **und** `upgrade.php` | DRY; Fresh-Install + Bestandssite identisch behandelt |
@@ -364,9 +364,8 @@ zugleich eine kleine Korrektur des bisherigen (überraschenden) Verhaltens und
 
 - **O1 — Feldumfang:** Sind die Feldlisten in §4 so gewünscht, oder
   reduzieren/ergänzen (z. B. bei Ort: „Etage" existiert schon in Adresse → drin lassen?).
-- **O2 — Multilang vs. Site-Sprache:** {mlang}-Tags (D4) ODER Seeding in
-  Site-Default-Sprache? Hängt davon ab, ob der Multilang-Filter bei euren Kunden
-  standardmäßig aktiv ist.
+- **O2 — Multilang vs. Site-Sprache:** ENTSCHIEDEN (Georg): einfach Moodle-Lang-Strings,
+  Seeding in der Plattform-Sprache (DE → deutsch, sonst englisch). Kein {mlang}.
 - **O3 — Phase 2 jetzt oder später:** Auto-Bindung an `entitytype` direkt mitliefern
   (empfohlen, weil sie den Nutzen erst „magisch" macht) oder erst Seeding ausrollen?
 - **O4 — Bestandssites:** Sollen die Vorlagen auch auf bestehenden Sites per Upgrade
