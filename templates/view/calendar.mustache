@@ -1,0 +1,57 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template local_entities/view/calendar
+    Calendar-focused detail view: the availability calendar is rendered inline in the centre.
+    Reproduces the previous "show calendar on details page" layout.
+}}
+<div class="container-fluid shadow-bottom pb-3" data-viewtemplate="calendar">
+    <div class="row">
+        <div class="col-md-2">
+            {{#haspicture}}
+                <img class="img-fluid img-thumbnail" src="{{picture}}">
+            {{/haspicture}}
+            {{#haspdf}}
+                <iframe class="img-fluid img-thumbnail" src="{{picture}}"></iframe>
+            {{/haspdf}}
+        </div>
+        <div class="col-md-10">
+            {{> local_entities/view/parts/title }}
+        </div>
+    </div>
+</div>
+<div class="row pt-3" style="background-color:#eee;">
+    {{> local_entities/view/parts/sidebar_left }}
+    <div class="col-xl-6 col-lg-12 flex-fill mb-3" data-area="center">
+        <div class="card shadow mb-3">
+            <div class="card-body">
+                <div>
+                    <h2 class="d-inline-block me-3 mb-4">{{#str}}calendar , local_entities{{/str}} </h2>
+                    <a href="{{calendarurl}}" target="_blank"><i class="fa fa-external-link"></i> {{#str}}
+                        opencalendarfullsize , local_entities{{/str}}</a>
+                    <div id="entity-calendar"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{> local_entities/view/parts/sidebar_right }}
+</div>
+
+{{#js}}
+    require(['local_entities/config'], function() {
+        require(['local_entities/fullcalendardata'], function(calendar) {
+            calendar.init("{{id}}", "{{locale}}");
+        });
+    });
+{{/js}}

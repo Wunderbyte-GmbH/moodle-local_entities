@@ -101,6 +101,23 @@ $string['entitytype_location'] = 'Location';
 $string['entitylist'] = 'Entity List';
 $string['entitysetup_heading'] = 'Edit or create entity';
 $string['usecount'] = 'Used by';
+// Detail-view templates.
+$string['entities:changeviewtemplate'] = 'Change the entity detail view template';
+$string['activeviewtemplate'] = 'Detail view template';
+$string['activeviewtemplate:description'] = 'The layout used for every entity detail page. Managers can also switch and save it directly on a detail page.';
+$string['viewtemplate'] = 'View';
+$string['viewtemplatepreview'] = 'Preview – not saved';
+$string['saveview'] = 'Save as view';
+$string['saveviewfortype'] = 'Save as the view for all "{$a}" entities';
+$string['activeviewtemplatefortype'] = 'Detail view template – {$a}';
+$string['activeviewtemplatefortype:description'] = 'Template used for "{$a}" entities. Leave on the global default to inherit.';
+$string['inheritglobal'] = 'Use global default';
+$string['viewtemplate_classic'] = 'Classic';
+$string['viewtemplate_image'] = 'Image';
+$string['viewtemplate_calendar'] = 'Calendar';
+$string['viewtemplate_compact'] = 'Compact';
+$string['viewtemplate_map'] = 'Map';
+$string['nomapavailable'] = 'No location available for this entity.';
 $string['fieldtemplate'] = 'Field template';
 $string['fieldtemplate_help'] = 'A field template adds a set of extra fields to this entity (e.g. the Equipment template adds inventory number, condition …). Choose "None" to add no extra fields. Templates can be managed under Categories.';
 // Default field templates seeded at install (names are resolved to the site language at seed time).

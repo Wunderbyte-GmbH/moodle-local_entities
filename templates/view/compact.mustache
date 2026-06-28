@@ -1,0 +1,81 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template local_entities/view/compact
+    Compact, information-dense single-card view: small image, key metadata, contacts/address inline
+    and a link to the full calendar. A new alternative to the classic three-column layout.
+}}
+<div class="container-fluid pb-3" data-viewtemplate="compact">
+    <div class="card shadow">
+        <div class="row g-0">
+            {{#haspicture}}
+                <div class="col-md-3">
+                    <img class="img-fluid rounded-start h-100 w-100" style="object-fit: cover;" src="{{picture}}">
+                </div>
+            {{/haspicture}}
+            <div class="{{#haspicture}}col-md-9{{/haspicture}}{{^haspicture}}col-12{{/haspicture}}">
+                <div class="card-body">
+                    {{#parent}}
+                        <div class="small text-muted"><a href="{{link}}">{{name}}</a></div>
+                    {{/parent}}
+                    <h1 class="h3 mb-2">{{name}}</h1>
+                    <div class="mb-3">{{{description}}}</div>
+
+                    {{#hasmetadata}}
+                        <dl class="row mb-2">
+                            {{#metadata}}
+                                <dt class="col-sm-4 text-truncate">{{key}}</dt>
+                                <dd class="col-sm-8">{{{value}}}</dd>
+                            {{/metadata}}
+                        </dl>
+                    {{/hasmetadata}}
+
+                    <div class="d-flex flex-wrap gap-3 small mb-3">
+                        {{#hascontacts}}{{#contactscleaned}}
+                            <span><i class="fa fa-id-card text-muted me-1"></i>{{givenname}} {{surname}}
+                                <a href="mailto:{{mail}}">{{mail}}</a></span>
+                        {{/contactscleaned}}{{/hascontacts}}
+                        {{#hasaddress}}{{#addresscleaned}}
+                            <span><i class="fa fa-map-marker text-muted me-1"></i>{{streetname}} {{streetnumber}},
+                                {{postcode}} {{city}}</span>
+                        {{/addresscleaned}}{{/hasaddress}}
+                    </div>
+
+                    <div>
+                        <a href="{{calendarurl}}" class="btn btn-outline-info btn-sm" target="_blank">
+                            <i class="fa fa-calendar"></i> {{#str}}opencalendar , local_entities{{/str}}</a>
+                        {{#canedit}}
+                            <a href="{{editurl}}" class="btn btn-outline-secondary btn-sm">
+                                <i class="fa fa-edit"></i> {{#str}}edit{{/str}}</a>
+                        {{/canedit}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{{#hasaffiliation}}
+    <div class="container-fluid mt-3">
+        <div class="card shadow">
+            <div class="card-body">
+                <h2 class="card-title">{{#str}} affiliated, local_entities {{/str}}</h2>
+                <ul class="list-group list-group-flush">
+                    {{#affiliation}}
+                        <li class="list-group-item shadow-none border-0"><a href="{{link}}">{{name}}</a></li>
+                    {{/affiliation}}
+                </ul>
+            </div>
+        </div>
+    </div>
+{{/hasaffiliation}}

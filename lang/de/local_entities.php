@@ -100,6 +100,23 @@ $string['entitytype_location'] = 'Ort';
 $string['entitylist'] = 'Entity Liste';
 $string['entitysetup_heading'] = 'Entity erstellen oder bearbeiten';
 $string['usecount'] = 'Verwendet von';
+// Detail-Ansicht-Templates.
+$string['entities:changeviewtemplate'] = 'Template der Entity-Detailansicht ändern';
+$string['activeviewtemplate'] = 'Detailansicht-Template';
+$string['activeviewtemplate:description'] = 'Das Layout für jede Entity-Detailseite. Manager können es auch direkt auf einer Detailseite umschalten und speichern.';
+$string['viewtemplate'] = 'Ansicht';
+$string['viewtemplatepreview'] = 'Vorschau – nicht gespeichert';
+$string['saveview'] = 'Als Ansicht speichern';
+$string['saveviewfortype'] = 'Als Ansicht für alle „{$a}"-Entities speichern';
+$string['activeviewtemplatefortype'] = 'Detailansicht-Template – {$a}';
+$string['activeviewtemplatefortype:description'] = 'Template für „{$a}"-Entities. Auf globalem Standard belassen, um zu erben.';
+$string['inheritglobal'] = 'Globalen Standard verwenden';
+$string['viewtemplate_classic'] = 'Klassisch';
+$string['viewtemplate_image'] = 'Bild';
+$string['viewtemplate_calendar'] = 'Kalender';
+$string['viewtemplate_compact'] = 'Kompakt';
+$string['viewtemplate_map'] = 'Karte';
+$string['nomapavailable'] = 'Für diese Entity ist kein Standort hinterlegt.';
 $string['fieldtemplate'] = 'Feldvorlage';
 $string['fieldtemplate_help'] = 'Eine Feldvorlage fügt dieser Entity zusätzliche Felder hinzu (z. B. ergänzt die Equipment-Vorlage Inventarnummer, Zustand …). Mit „Keine" werden keine Zusatzfelder hinzugefügt. Vorlagen werden unter Kategorien verwaltet.';
 // Bei Installation geseedete Feldvorlagen (Namen werden zur Seed-Zeit in die Plattform-Sprache aufgelöst).

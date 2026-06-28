@@ -352,5 +352,15 @@ function xmldb_local_entities_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2026062500, 'local', 'entities');
     }
 
+    if ($oldversion < 2026062601) {
+        // Migrate the two legacy display checkboxes into the global active-view-template setting so
+        // existing sites keep their exact look (showpicture → image; show_calendar → calendar; else
+        // classic). Runs only while the new setting is unset.
+        \local_entities\output\entity_view::migrate_legacy_view_settings();
+
+        // Entities savepoint reached.
+        upgrade_plugin_savepoint(true, 2026062601, 'local', 'entities');
+    }
+
     return true;
 }

@@ -45,4 +45,14 @@ $definitions = [
         'staticacceleration' => true,
         'staticaccelerationsize' => 200,
     ],
+    // Geocoding results (OpenStreetMap/Nominatim) keyed by a hash of the address. Caches both hits
+    // and misses long-term so an address is geocoded at most once (respecting Nominatim's usage
+    // policy); the map view falls back to a plain link when no coordinates are available.
+    'geocode' => [
+        'mode' => cache_store::MODE_APPLICATION,
+        'simplekeys' => true,
+        'simpledata' => false,
+        'staticacceleration' => true,
+        'staticaccelerationsize' => 100,
+    ],
 ];

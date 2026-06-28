@@ -1,0 +1,40 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template local_entities/view/parts/switcher
+    On-page template switcher for managers: preview links + an explicit "save" action.
+    Context: { entityid, baseurl, ispreview, savekey, templates: [{key,name,icon,active,url}] }
+}}
+<div class="local-entities-viewswitcher card shadow-sm mb-3"
+     data-entityid="{{entityid}}" data-baseurl="{{baseurl}}" data-entitytype="{{entitytype}}">
+    <div class="card-body py-2 d-flex flex-wrap align-items-center gap-2">
+        <span class="me-2 text-muted"><i class="fa fa-eye"></i> {{#str}}viewtemplate, local_entities{{/str}}</span>
+        <div class="btn-group btn-group-sm" role="group" aria-label="{{#str}}viewtemplate, local_entities{{/str}}">
+            {{#templates}}
+                <a href="{{url}}"
+                   class="btn {{#active}}btn-primary{{/active}}{{^active}}btn-outline-secondary{{/active}}">
+                    <i class="fa fa-fw {{icon}}"></i> {{name}}
+                </a>
+            {{/templates}}
+        </div>
+        {{#ispreview}}
+            <span class="badge bg-warning text-dark ms-2">{{#str}}viewtemplatepreview, local_entities{{/str}}</span>
+            <button type="button" class="btn btn-sm btn-success ms-auto"
+                    data-action="save-view-template" data-template="{{savekey}}" data-entitytype="{{entitytype}}">
+                <i class="fa fa-save"></i> {{savelabel}}
+            </button>
+            <a href="{{baseurl}}" class="btn btn-sm btn-link">{{#str}}cancel{{/str}}</a>
+        {{/ispreview}}
+    </div>
+</div>

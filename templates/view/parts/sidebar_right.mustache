@@ -1,0 +1,77 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template local_entities/view/parts/sidebar_right
+    Shared right sidebar (contacts + address with optional embedded map).
+}}
+{{#hasrightsidebar}}
+    <div class="col-xl-3 col-lg-12" data-area="rightsidebar">
+        {{#hascontacts}}
+            <div class=" card shadow mb-3" data-content="contacts">
+                <div class="card-body">
+                    <h2 class="card-title mb-4">{{#str}}contacts , local_entities{{/str}}</h2>
+                    <div class="row row-cols-xl-1 card-text ms-2 ">
+                        {{#contactscleaned}}
+                            <div class="col-auto d-inline-flex mb-3 ">
+                                <div class="me-2">
+                                    <i class="fa fa-id-card fa-fw icon-uxs text-muted"></i>
+                                </div>
+                                <div class=" ">
+                                    <div class="bold">{{givenname}} {{surname}}</div>
+                                    <div class="text-muted"><a href="mailto:{{mail}}">{{mail}}</a></div>
+                                </div>
+                            </div>
+                        {{/contactscleaned}}
+                    </div>
+                </div>
+            </div>
+            {{/hascontacts}}
+            {{#hasaddress}}
+            <div class="card shadow mb-3" data-content="address">
+                <div class="card-body">
+                    <h2 class="card-title mb-4">{{#str}}address , local_entities{{/str}}</h2>
+                    <div class="row row-cols-xl-1 card-text">
+                        {{#addresscleaned}}
+                            <div class="col-auto d-inline-flex mb-3 ms-2">
+                                <div class="me-2">
+                                    <i class="fa fa-map-marker fa-fw icon-uxs text-muted"></i>
+                                </div>
+                                <div>
+                                    <div class="bold">{{streetname}} {{streetnumber}}</div>
+                                    {{#entrance}}
+                                    <div class="bold">{{#str}} address_entrance, local_entities {{/str}} {{.}}</div>
+                                    {{/entrance}}
+                                    {{#floor}}
+                                    <div class="bold">{{#str}} address_floor, local_entities {{/str}} {{.}}</div>
+                                    {{/floor}}
+                                    <div class="text-muted">{{postcode}} {{city}}</div>
+                                </div>
+                            </div>
+                                {{#mapembed}}
+                                    <div class="col-auto mb-3 mapcontainer entities">
+                                        {{{.}}}
+                                        {{#maplink}}
+                                            <a href="{{maplink}}" class="btn btn-primary" target="_blank" role="button">
+                                                {{#str}} openmap, local_entities {{/str}}
+                                            </a>
+                                        {{/maplink}}
+                                    </div>
+                                {{/mapembed}}
+                        {{/addresscleaned}}
+                    </div>
+                </div>
+            </div>
+        {{/hasaddress}}
+    </div>
+{{/hasrightsidebar}}
