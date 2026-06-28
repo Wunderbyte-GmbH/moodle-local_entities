@@ -342,5 +342,15 @@ function xmldb_local_entities_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2026061701, 'local', 'entities');
     }
 
+    if ($oldversion < 2026062500) {
+        // Seed the default, ready-to-use field templates (location & equipment) on existing sites.
+        // Idempotent and non-destructive: it only adds two new custom field categories and never
+        // touches existing entities.
+        \local_entities\local\templates\template_seeder::seed_default_templates();
+
+        // Entities savepoint reached.
+        upgrade_plugin_savepoint(true, 2026062500, 'local', 'entities');
+    }
+
     return true;
 }

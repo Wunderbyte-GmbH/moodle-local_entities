@@ -68,6 +68,7 @@ class edit_dynamic_form extends dynamic_form {
      * @see moodleform::definition()
      */
     public function definition() {
+        global $DB;
 
         // Get a list of all entities.
         $none = get_string("none", "local_entities");
@@ -255,11 +256,21 @@ class edit_dynamic_form extends dynamic_form {
         if (!empty($categories)) {
             $mform->registerNoSubmitButton('btn_cfcategoryid');
             $buttonargs = ['style' => 'visibility:hidden;'];
+            // Offer an explicit "no template" choice (0) so an entity can opt out of any template.
+            $categoryoptions = [0 => get_string('none', 'local_entities')] + $categories;
+            // Expose the type→template mapping so the JS can snap the template to the chosen entity
+            // type (location/equipment). Empty when a template was deleted / never seeded.
+            $selectattributes = [
+                'data-template-location' => (int) get_config('local_entities', 'template_location_itemid'),
+                'data-template-equipment' => (int) get_config('local_entities', 'template_equipment_itemid'),
+            ];
             $categoryselect = [
-                $mform->createElement('select', 'cfitemid', get_string('entity_category', 'local_entities'), $categories),
+                $mform->createElement('select', 'cfitemid', get_string('fieldtemplate', 'local_entities'),
+                    $categoryoptions, $selectattributes),
                 $mform->createElement('submit', 'btn_cfcategoryid', get_string('categories'), $buttonargs),
             ];
-            $mform->addGroup($categoryselect, 'tagsgroup', get_string('categories', 'local_entities'), [' '], false);
+            $mform->addGroup($categoryselect, 'tagsgroup', get_string('fieldtemplate', 'local_entities'), [' '], false);
+            $mform->addHelpButton('tagsgroup', 'fieldtemplate', 'local_entities');
             $mform->setType('btn_cfcategoryid', PARAM_NOTAGS);
         }
 
@@ -323,18 +334,35 @@ class edit_dynamic_form extends dynamic_form {
         $mform->setType('id', PARAM_INT);
 
         if (!empty($categories)) {
-            $arraykeys = array_flip($categories);
-            $cfitemid = reset($arraykeys);
-            // Adds the chosen category.
+            // Default to "no template" (0). A category is only applied when the user explicitly picks
+            // one (live no-submit reload), when it is passed in via customdata, or when the entity
+            // being edited already has one stored. We never auto-select the first category, which would
+            // silently attach a template to entities that never chose one (e.g. all pre-existing ones).
+            $cfitemid = 0;
             if (isset($this->_ajaxformdata['cfitemid'])) {
-                $cfitemid = $this->_ajaxformdata['cfitemid'];
-            } else if (isset($this->_customdata['cfitemid']) && $this->_customdata['cfitemid'] > 0) {
-                $cfitemid = $this->_customdata['cfitemid'];
+                $cfitemid = (int) $this->_ajaxformdata['cfitemid'];
+            } else if (!empty($this->_customdata['cfitemid'])) {
+                $cfitemid = (int) $this->_customdata['cfitemid'];
+            } else if (!empty($entityid)) {
+                $cfitemid = (int) ($DB->get_field('local_entities', 'cfitemid', ['id' => $entityid]) ?: 0);
+            } else {
+                // Brand-new entity, first load: default to the template that matches the (default)
+                // entity type, so the relevant fields appear without the user picking a template.
+                $entitytype = $this->_ajaxformdata['entitytype'] ?? 'location';
+                $configkey = ($entitytype === 'equipment')
+                    ? 'template_equipment_itemid' : 'template_location_itemid';
+                $cfitemid = (int) get_config('local_entities', $configkey);
             }
 
-            $this->customhandler = entities_handler::create((int) $cfitemid);
-            $this->customhandler->instance_form_definition($mform, (int) $entityid);
-            $this->customhandler->instance_form_before_set_data($data);
+            if ($cfitemid > 0) {
+                $this->customhandler = entities_handler::create($cfitemid);
+                $this->customhandler->instance_form_definition($mform, (int) $entityid);
+                $this->customhandler->instance_form_before_set_data($data);
+            }
+
+            // Keep the selector in sync with the template whose fields we actually rendered, so a
+            // new entity shows (and saves) the auto-selected template instead of defaulting to "none".
+            $mform->setDefault('cfitemid', $cfitemid);
         }
 
         // FORM BUTTONS.

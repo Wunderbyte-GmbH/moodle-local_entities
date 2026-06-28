@@ -105,7 +105,7 @@ if (isset($entity->cfitemid)) {
 }
 
 $metadata = [];
-$cat = "";
+$metagroups = [];
 foreach ($handlers as $handler) {
     $datas = $handler->get_instance_data($id, true);
 
@@ -113,21 +113,30 @@ foreach ($handlers as $handler) {
         if (empty($data->get_value())) {
             continue;
         }
-        $cat = $data->get_field()->get_category()->get('name');
-        $meta = new stdClass();
-        ;
-        $meta->key = $data->get_field()->get('name');
-        $meta->value = $data->get_value();
+        $field = $data->get_field();
+        $catid = $field->get_category()->get('id');
+        $catname = $field->get_category()->get('name');
 
+        $meta = new stdClass();
+        $meta->key = $field->get('name');
+        $meta->value = $data->get_value();
         if (is_array($meta->value)) {
             $meta->value = reset($meta->value);
         }
+
         $metadata[] = $meta;
+
+        // Group the fields by their category, so each category renders under its own heading
+        // (previously only the last category's name was shown for a flat list).
+        if (!isset($metagroups[$catid])) {
+            $metagroups[$catid] = (object)['name' => $catname, 'fields' => []];
+        }
+        $metagroups[$catid]->fields[] = $meta;
     }
 }
 $entity->hasmetadata = !empty($metadata);
-$entity->metacategory = $cat;
 $entity->metadata = $metadata;
+$entity->metagroups = array_values($metagroups);
 
 // Affiliated entities.
 $subentities = $DB->get_records('local_entities', ['parentid' => $id], 'name');
