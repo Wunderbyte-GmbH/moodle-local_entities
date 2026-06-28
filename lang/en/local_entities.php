@@ -100,6 +100,7 @@ $string['entitytype_help'] = 'Location: rooms and places used in the location hi
 $string['entitytype_location'] = 'Location';
 $string['entitylist'] = 'Entity List';
 $string['entitysetup_heading'] = 'Edit or create entity';
+$string['usecount'] = 'Used by';
 $string['fieldtemplate'] = 'Field template';
 $string['fieldtemplate_help'] = 'A field template adds a set of extra fields to this entity (e.g. the Equipment template adds inventory number, condition …). Choose "None" to add no extra fields. Templates can be managed under Categories.';
 $string['equipmentquantity'] = 'Quantity: {$a}';

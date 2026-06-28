@@ -99,6 +99,7 @@ $string['entitytype_help'] = 'Ort: Räume und Plätze in der Standort-Hierarchie
 $string['entitytype_location'] = 'Ort';
 $string['entitylist'] = 'Entity Liste';
 $string['entitysetup_heading'] = 'Entity erstellen oder bearbeiten';
+$string['usecount'] = 'Verwendet von';
 $string['fieldtemplate'] = 'Feldvorlage';
 $string['fieldtemplate_help'] = 'Eine Feldvorlage fügt dieser Entity zusätzliche Felder hinzu (z. B. ergänzt die Equipment-Vorlage Inventarnummer, Zustand …). Mit „Keine" werden keine Zusatzfelder hinzugefügt. Vorlagen werden unter Kategorien verwaltet.';
 $string['equipmentquantity'] = 'Anzahl: {$a}';
