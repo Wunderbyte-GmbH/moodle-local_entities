@@ -1,3 +1,11 @@
+## Version 0.5.0 (2026070100)
+* Improvement: Entity capacity & equipment — capacity source / allocation mode per entity type and entity-aware equipment relations (multi-save).
+* Improvement: Switchable entity view templates (classic / image / calendar / compact).
+* Improvement: Pre-installed entity field templates, auto-bound to the entity type; template names seeded from language strings.
+* Improvement: Hierarchical, paginated entities overview (wunderbyte_table).
+* Improvement: Targeted cache-invalidation helpers — entities::reset_caches() and entitiesrelation_handler::purge_dates_cache().
+* Tests: Extensive new coverage (equipment relations, external services, calendar helpers, entity CRUD, OSM geocoder); data providers made serialisable for @runInSeparateProcess.
+
 ## Version 0.4.9 (2026043000)
 * Improvement: replaced modal factory with core modal.
 
