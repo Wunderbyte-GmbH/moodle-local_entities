@@ -1,3 +1,7 @@
+## Version 0.5.0 (2026070300)
+* Improvement: Added German setup and usage documentation under /docs/de/DOKUMENTATION.md
+* Bugfix: Fix SQL security.
+
 ## Version 0.4.9 (2026043000)
 * Improvement: replaced modal factory with core modal.
 
