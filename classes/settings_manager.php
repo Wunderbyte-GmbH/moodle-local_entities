@@ -59,7 +59,13 @@ class settings_manager {
     public function create_entity(stdClass $data): int {
         global $DB;
         cache_helper::purge_by_event('purgecachedentities');
+        // The entities list (entities_table) is served from wunderbyte_table's rawdata cache,
+        // which only invalidates on this event — without it a new entity stays hidden there.
+        cache_helper::purge_by_event('changesinwunderbytetable');
         $id = $DB->insert_record('local_entities', $data);
+        // The request-static entity map must see the new entity within this request too
+        // (e.g. create + render in one call, PHPUnit).
+        entities::reset_caches();
         // Custom fields save needs id.
         $data->id = $id;
         // Unset empty hidden customfields (otherwise persistence error is thrown).
@@ -103,11 +109,16 @@ class settings_manager {
         );
         cache_helper::invalidate_by_event('setbackoptionsettings', $affectedoptionids);
         cache_helper::purge_by_event('purgecachedentities');
+        // Rename/reparent changes name, breadcrumb and tree order in the cached entities list.
+        cache_helper::purge_by_event('changesinwunderbytetable');
 
         // Make sure DB is clean.
         entities::clean_up_entities_db();
 
-        return $DB->update_record('local_entities', $data);
+        $result = $DB->update_record('local_entities', $data);
+        // The request-static entity map must reflect the change within this request too.
+        entities::reset_caches();
+        return $result;
     }
 
     /**
@@ -123,6 +134,21 @@ class settings_manager {
         $data->timemodified = time();
         if (!isset($data->parentid)) {
             $data->parentid = 0;
+        }
+
+        // Guard against hierarchy cycles: the parent must exist and must not lie in the entity's
+        // own subtree. The edit form validates this too, but data can also arrive via webservice
+        // or import, and a cycle would silently detach the subtree from every root.
+        $parentid = (int)$data->parentid;
+        if ($parentid > 0) {
+            $map = entities::get_entity_map();
+            if (!isset($map[$parentid])) {
+                throw new \moodle_exception('error:invalidparent', 'local_entities');
+            }
+            $entityid = (int)($data->id ?? 0);
+            if ($entityid > 0 && in_array($parentid, entities::get_descendant_ids($entityid), true)) {
+                throw new \moodle_exception('error:parentcycle', 'local_entities');
+            }
         }
         // Addresscount is unrelyable...
         if (
@@ -456,6 +482,16 @@ class settings_manager {
         $entity = \local_entities\entity::load($this->id);
         $cfitemid = $entity->__get('cfitemid') ?? 0;
         $this->delete_cfhandlers($cfitemid);
+
+        // Affected options must be read before the relations rows are deleted.
+        $affectedoptionids = $DB->get_fieldset_sql(
+            "SELECT DISTINCT instanceid FROM {local_entities_relations}
+             WHERE component = 'mod_booking'
+             AND area = 'option'
+             AND entityid = :entityid",
+            ['entityid' => $this->id]
+        );
+
         $DB->delete_records('local_entities', ['id' => $this->id]);
         $DB->delete_records('local_entities_address', ['entityidto' => $this->id]);
         $DB->delete_records('local_entities_contacts', ['entityidto' => $this->id]);
@@ -464,6 +500,14 @@ class settings_manager {
 
         // Make sure DB is clean.
         entities::clean_up_entities_db();
+
+        // Same invalidations as update_entity(): the deleted entity must disappear from cached
+        // option settings, the options table and the cached entities list.
+        cache_helper::purge_by_event('setbackoptionstable');
+        cache_helper::invalidate_by_event('setbackoptionsettings', $affectedoptionids);
+        cache_helper::purge_by_event('purgecachedentities');
+        cache_helper::purge_by_event('changesinwunderbytetable');
+        entities::reset_caches();
     }
 
     /**

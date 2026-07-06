@@ -26,17 +26,20 @@
     * none
 
     Context variables required for this template:
-    * fullname string Users full name
-    * email string user email field
+    * name string Entity name
+    * parentname string Full ancestor path (root / … / parent), empty for root entities
+    * depth int Nesting depth (0 for root); indents the name so the tree stays readable
 
     Example context (json):
     {
-
+        "name": "Raumbereich 1",
+        "parentname": "Hauptgebäude / Seminarraum 1",
+        "depth": 2
     }
 }}
 {{#name}}
 <span>
-    <span {{#parentname}}class="ps-2"{{/parentname}}>{{name}}</span>
-    <span><small>{{parentname}}</small></span>
+    <span {{#depth}}style="padding-left: {{depth}}em;"{{/depth}}>{{name}}</span>
+    <span><small class="text-muted">{{parentname}}</small></span>
 </span>
 {{/name}}

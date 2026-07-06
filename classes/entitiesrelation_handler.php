@@ -129,16 +129,17 @@ class entitiesrelation_handler {
                 if (empty($value)) {
                     return get_string('none', 'local_entities');
                 }
-                $entity = \local_entities\entity::load($value);
-                $parentname = "";
-                if ($entity->parentid) {
-                    $parententity = \local_entities\entity::load($entity->parentid);
-                    $parentname = $parententity->name;
+                // Full ancestor path (any depth), consistent with the suggestion list. No depth is
+                // passed on purpose: the selected value stands alone, indentation would be noise.
+                [, , $names] = \local_entities\entities::get_ancestor_path((int)$value);
+                if (empty($names)) {
+                    return get_string('none', 'local_entities');
                 }
+                $selfname = array_pop($names);
                 $entitydata = [
-                    'name' => $entity->name,
-                    'shortname' => $entity->name,
-                    'parentname' => $parentname,
+                    'name' => $selfname,
+                    'shortname' => $selfname,
+                    'parentname' => implode(' / ', $names),
                 ];
                 return $OUTPUT->render_from_template('local_entities/form-entities-selector-suggestion', $entitydata);
             },

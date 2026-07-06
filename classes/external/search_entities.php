@@ -47,7 +47,12 @@ class search_entities extends external_api {
     }
 
     /**
-     * Finds entities with the name matching the given query.
+     * Finds entities whose name (or any ancestor's name) matches the given query.
+     *
+     * The result is ordered depth-first (every entity directly after its parent, any nesting
+     * depth) and each entry carries its full ancestor path and depth, so the selector can
+     * render the hierarchy correctly. Matching against the whole path keeps search consistent
+     * with what the suggestion displays.
      *
      * @param string $query The search request.
      * @return array
@@ -63,51 +68,57 @@ class search_entities extends external_api {
         self::validate_context($context);
         require_capability('local/entities:view', $context);
 
-        $queryclean = strtolower($params['query']);
+        // Multibyte-safe lowercase (umlauts!), matching is done in PHP against the full path.
+        $queryclean = \core_text::strtolower(trim($params['query']));
 
-        $sql = "SELECT e.*, COALESCE(e2.name, '') as parentname FROM {local_entities} e
-        LEFT JOIN {local_entities} e2 ON e.parentid = e2.id
-        WHERE (LOWER(e.name) LIKE :query1
-        OR COALESCE(LOWER(e2.name), '') LIKE :query2)
-        AND (e.entitytype = 'location' OR e.entitytype IS NULL)
-        ORDER BY
-            CASE
-                WHEN e.parentid = 0 THEN e.id
-            ELSE e.parentid
-        END ASC, e.id ASC";
+        $records = $DB->get_records_select(
+            'local_entities',
+            "entitytype = 'location' OR entitytype IS NULL",
+            [],
+            '',
+            'id, name, shortname'
+        );
 
-        $sqlparams = [
-            'query1' => '%' . $queryclean . '%',
-            'query2' => '%' . $queryclean . '%',
-        ];
+        $map = \local_entities\entities::get_entity_map();
 
-        $rs = $DB->get_recordset_sql($sql, $sqlparams);
-        $count = 0;
-        $list = [];
-        $extrafields = ['parentname'];
+        $keyed = [];
+        foreach ($records as $record) {
+            [$depth, , $names] = \local_entities\entities::get_ancestor_path((int)$record->id, $map);
+            // The path runs root → self; the displayed context is everything but the entity itself.
+            $selfname = array_pop($names);
+            $path = implode(' / ', $names);
 
-        foreach ($rs as $record) {
+            if (
+                $queryclean !== ''
+                && strpos(\core_text::strtolower($path . ' / ' . $selfname), $queryclean) === false
+            ) {
+                continue;
+            }
+
             $entity = (object)[
                 'id' => $record->id,
                 'name' => $record->name,
                 'shortname' => $record->shortname,
-                'parentname' => $record->parentname,
-                'extrafields' => [],
+                'parentname' => $path,
+                'depth' => $depth,
+                'extrafields' => [
+                    // Sanitize the extra fields to prevent potential XSS exploit.
+                    (object)[
+                        'name' => 'parentname',
+                        'value' => s($path),
+                    ],
+                ],
             ];
 
-            foreach ($extrafields as $extrafield) {
-                // Sanitize the extra fields to prevent potential XSS exploit.
-                $entity->extrafields[] = (object)[
-                    'name' => $extrafield,
-                    'value' => s($record->$extrafield),
-                ];
-            }
-
-            $count++;
-            $list[$record->id] = $entity;
+            $keyed[] = [\local_entities\entities::get_tree_sortkey((int)$record->id, $map), $entity];
         }
 
-        $rs->close();
+        usort($keyed, static fn($a, $b) => strcmp($a[0], $b[0]));
+
+        $list = [];
+        foreach ($keyed as [, $entity]) {
+            $list[$entity->id] = $entity;
+        }
 
         return [
             'list' => $list,
@@ -127,7 +138,8 @@ class search_entities extends external_api {
                     'id' => new external_value(\core_user::get_property_type('id'), 'ID of the user'),
                     'name' => new external_value(PARAM_TEXT, 'The fullname of the entity'),
                     'shortname' => new external_value(PARAM_TEXT, 'The shortname of the entity', VALUE_OPTIONAL),
-                    'parentname' => new external_value(PARAM_TEXT, 'The shortname of the entity', VALUE_OPTIONAL),
+                    'parentname' => new external_value(PARAM_TEXT, 'Full ancestor path (root / … / parent)', VALUE_OPTIONAL),
+                    'depth' => new external_value(PARAM_INT, 'Nesting depth of the entity (0 for root)', VALUE_OPTIONAL),
                     'extrafields' => new external_multiple_structure(
                         new external_single_structure([
                             'name' => new external_value(PARAM_TEXT, 'Name of the extrafield.'),

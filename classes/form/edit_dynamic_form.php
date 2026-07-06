@@ -80,11 +80,22 @@ class edit_dynamic_form extends dynamic_form {
 
         $entities = [0 => $none];
 
-        $allentities = entities::list_all_entities();
-        foreach ($allentities as $entity) {
-            if ($entity->id != $entityid) {
-                $entities[$entity->id] = $entity->newname;
+        // Depth-first tree order with one indent prefix per level, so the hierarchy is readable
+        // (and searchable) at any depth. The entity itself and its whole subtree are excluded —
+        // choosing a descendant as parent would create a cycle.
+        $map = entities::get_entity_map();
+        $excluded = $entityid ? array_flip(entities::get_descendant_ids((int)$entityid)) : [];
+        $sorted = array_keys($map);
+        usort($sorted, static fn($a, $b) => strcmp(
+            entities::get_tree_sortkey((int)$a, $map),
+            entities::get_tree_sortkey((int)$b, $map)
+        ));
+        foreach ($sorted as $id) {
+            if (isset($excluded[$id])) {
+                continue;
             }
+            [$depth, , ] = entities::get_ancestor_path((int)$id, $map);
+            $entities[$id] = str_repeat('— ', max(0, $depth)) . format_string($map[$id]->name);
         }
 
         // Entity DETAILS.
@@ -528,6 +539,20 @@ class edit_dynamic_form extends dynamic_form {
      */
     public function validation($data, $files) {
         $errors = [];
+
+        // A parent inside the entity's own subtree (or the entity itself) would create a cycle.
+        // The select already excludes these, but the form can be submitted via webservice too.
+        $entityid = (int)($data['id'] ?? 0);
+        $parentid = (int)($data['parentid'] ?? 0);
+        if ($parentid > 0) {
+            $map = entities::get_entity_map();
+            if (!isset($map[$parentid])) {
+                $errors['parentid'] = get_string('error:invalidparent', 'local_entities');
+            } else if ($entityid > 0 && in_array($parentid, entities::get_descendant_ids($entityid), true)) {
+                $errors['parentid'] = get_string('error:parentcycle', 'local_entities');
+            }
+        }
+
         return $errors;
     }
 

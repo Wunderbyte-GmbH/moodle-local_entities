@@ -18,6 +18,7 @@ namespace local_entities\table;
 
 use context_system;
 use html_writer;
+use local_entities\entities;
 use local_wunderbyte_table\wunderbyte_table;
 use local_wunderbyte_table\output\table;
 use moodle_url;
@@ -39,10 +40,6 @@ use stdClass;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class entities_table extends wunderbyte_table {
-
-    /** @var array<int,object>|null Request cache of every entity (id => {name, parentid, sortorder}). */
-    protected $entitymap = null;
-
     /**
      * Loads the page of rows the database-agnostic way: a plain SELECT/FROM/WHERE (which already
      * carries the search and filter conditions), then orders the result into depth-first tree order
@@ -102,14 +99,10 @@ class entities_table extends wunderbyte_table {
 
         $keyed = [];
         foreach ($rows as $row) {
-            [$depth, $ids, $names] = $this->resolve_lineage((int)$row->id, $map);
+            [$depth, , $names] = $this->resolve_lineage((int)$row->id, $map);
             $row->entitydepth = $depth;
             $row->namepath = implode(' / ', $names);
-            $sortkey = '';
-            foreach ($ids as $pid) {
-                $sortkey .= sprintf('%010d-%010d/', (int)($map[$pid]->sortorder ?? 0), $pid);
-            }
-            $keyed[] = [$sortkey, $row];
+            $keyed[] = [entities::get_tree_sortkey((int)$row->id, $map), $row];
         }
 
         usort($keyed, static fn($a, $b) => strcmp($a[0], $b[0]));
@@ -122,36 +115,28 @@ class entities_table extends wunderbyte_table {
     }
 
     /**
-     * Lazily loads a lightweight map of all entities, used to resolve lineage for ordering/breadcrumb.
+     * Lightweight map of all entities, used to resolve lineage for ordering/breadcrumb.
+     *
+     * Thin delegate to the shared, request-cached {@see entities::get_entity_map()} (the single source
+     * of truth for the live hierarchy). Kept protected so any subclass override keeps working.
      *
      * @return array<int,object>
      */
     protected function get_entity_map(): array {
-        global $DB;
-        if ($this->entitymap === null) {
-            $this->entitymap = $DB->get_records('local_entities', null, '', 'id, name, parentid, sortorder');
-        }
-        return $this->entitymap;
+        return entities::get_entity_map();
     }
 
     /**
      * Walks an entity's parent chain.
+     *
+     * Thin delegate to the extracted {@see entities::get_ancestor_path()}; behaviour is unchanged.
      *
      * @param int $id
      * @param array<int,object> $map
      * @return array{0:int,1:int[],2:string[]} [depth, ancestor ids root-first incl. self, names root-first incl. self]
      */
     protected function resolve_lineage(int $id, array $map): array {
-        $ids = [];
-        $names = [];
-        $guard = 0;
-        $current = $id;
-        while ($current > 0 && isset($map[$current]) && $guard++ < 50) {
-            array_unshift($ids, $current);
-            array_unshift($names, format_string($map[$current]->name));
-            $current = (int)($map[$current]->parentid ?? 0);
-        }
-        return [count($ids) - 1, $ids, $names];
+        return entities::get_ancestor_path($id, $map);
     }
 
     /**

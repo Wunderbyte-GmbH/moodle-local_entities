@@ -88,7 +88,11 @@ $table->set_filter_sql($fields, $from, "1=1", '');
 $table->showcountlabel = true;
 
 // Paginated (20 per page), rendered server-side (no lazy spinner).
+// The admin list must always show the live entity set, so the shared wunderbyte_table rawdata
+// cache is bypassed here: entity writes can also happen on paths that don't purge it (e.g.
+// direct DB manipulation, other plugins), and this small table is cheap to query fresh.
 $table->pageable(true);
+$table->bypasscache = true;
 $table->out(20, false);
 
 echo $OUTPUT->footer();

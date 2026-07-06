@@ -40,6 +40,27 @@ defined('MOODLE_INTERNAL') || die();
  */
 class entities {
     /**
+     * Per-request cache of the full, lightweight entity map (id => {id, name, parentid, sortorder}).
+     *
+     * Deliberately request-scoped only: there is no reparent/rename event in local_entities, so a
+     * cross-request (application) cache could not be invalidated when the tree changes and would serve
+     * a stale hierarchy. A fresh read per request keeps every live derivation (paths, descendants,
+     * filter tree) correct immediately after a reparent.
+     *
+     * @var array<int,object>|null
+     */
+    protected static $entitymapcache = null;
+
+    /**
+     * Request-scoped cache of resolved entity image URLs (entityid => out(false) string or null).
+     * Filestorage lookups are comparatively expensive and table cells may resolve the same
+     * ancestors for many rows in one request.
+     *
+     * @var array<int,?string>
+     */
+    protected static $imageurlcache = [];
+
+    /**
      * entities constructor.
      */
     public function __construct() {
@@ -146,6 +167,10 @@ class entities {
     public static function update_entity(string $table, object $change): bool {
         global $DB;
         cache_helper::purge_by_event('purgecachedentities');
+        // The cached entities list (wunderbyte_table rawdata) shows name, breadcrumb and tree
+        // order, so any entity write through this path must invalidate it as well.
+        cache_helper::purge_by_event('changesinwunderbytetable');
+        self::$entitymapcache = null;
         return $DB->update_record($table, $change);
     }
 
@@ -175,6 +200,254 @@ class entities {
         return $DB->get_records_sql_menu($stmt, [
             $parentid,
         ]);
+    }
+
+    /**
+     * Lightweight map of every entity (id => {id, name, parentid, sortorder}), request-cached.
+     *
+     * This single small query is the basis for all live hierarchy derivations (ancestor path,
+     * descendants, filter tree). It is intentionally cached per request only — see
+     * {@see self::$entitymapcache} for why a cross-request cache would be unsafe here.
+     *
+     * @return array<int,object>
+     */
+    public static function get_entity_map(): array {
+        global $DB;
+        if (self::$entitymapcache === null) {
+            self::$entitymapcache = $DB->get_records('local_entities', null, '', 'id, name, parentid, sortorder');
+        }
+        return self::$entitymapcache;
+    }
+
+    /**
+     * Walks an entity's parent chain and returns its lineage, root-first and including the entity itself.
+     *
+     * Derived live from the entity map, so it always reflects the current tree (e.g. immediately after a
+     * reparent). A cycle/broken chain is bounded by a hard guard.
+     *
+     * @param int $id the entity id
+     * @param array<int,object>|null $map optional pre-loaded map; the shared request map is used when null
+     * @return array{0:int,1:int[],2:string[]} [depth, ancestor ids root-first incl. self, names root-first incl. self]
+     */
+    public static function get_ancestor_path(int $id, ?array $map = null): array {
+        $map = $map ?? self::get_entity_map();
+        $ids = [];
+        $names = [];
+        $guard = 0;
+        $current = $id;
+        while ($current > 0 && isset($map[$current]) && $guard++ < 50) {
+            array_unshift($ids, $current);
+            array_unshift($names, format_string($map[$current]->name));
+            $current = (int)($map[$current]->parentid ?? 0);
+        }
+        return [count($ids) - 1, $ids, $names];
+    }
+
+    /**
+     * Returns a string sort key that orders entities depth-first (every entity directly after its
+     * parent, siblings by sortorder then id). Comparing the keys with strcmp() yields the same tree
+     * order everywhere an entity list is shown (admin table, form selector, …), without DB-specific
+     * SQL. The key is built from the ancestor chain, so it works for any nesting depth.
+     *
+     * @param int $id the entity id
+     * @param array<int,object>|null $map optional pre-loaded map; the shared request map is used when null
+     * @return string
+     */
+    public static function get_tree_sortkey(int $id, ?array $map = null): string {
+        $map = $map ?? self::get_entity_map();
+        [, $ids, ] = self::get_ancestor_path($id, $map);
+        $sortkey = '';
+        foreach ($ids as $pid) {
+            $sortkey .= sprintf('%010d-%010d/', (int)($map[$pid]->sortorder ?? 0), $pid);
+        }
+        return $sortkey;
+    }
+
+    /**
+     * Resolves the display image of an entity: the first non-empty, non-PDF file in the entity's own
+     * 'image' file area, or — when the fallback_image_parent setting is on — the nearest ancestor's
+     * image (generalisation of the 1-level parent fallback used on the entity view page). Results are
+     * request-cached per entity id, so rendering many table rows stays cheap.
+     *
+     * @param int $entityid the entity id
+     * @param bool $usefallback whether to honour the fallback_image_parent setting (default true)
+     * @return \moodle_url|null
+     */
+    public static function get_image_url(int $entityid, bool $usefallback = true): ?\moodle_url {
+        if ($entityid <= 0) {
+            return null;
+        }
+        if (!array_key_exists($entityid, self::$imageurlcache)) {
+            self::$imageurlcache[$entityid] = self::resolve_own_image_url($entityid);
+        }
+        if (self::$imageurlcache[$entityid] !== null) {
+            return new \moodle_url(self::$imageurlcache[$entityid]);
+        }
+        if (!$usefallback || !get_config('local_entities', 'fallback_image_parent')) {
+            return null;
+        }
+        // Nearest ancestor first (the path is root-first and includes the entity itself).
+        [, $ids, ] = self::get_ancestor_path($entityid);
+        array_pop($ids);
+        foreach (array_reverse($ids) as $ancestorid) {
+            $url = self::get_image_url((int)$ancestorid, false);
+            if ($url !== null) {
+                return $url;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Uncached lookup of an entity's own image file URL (no fallback).
+     *
+     * @param int $entityid
+     * @return string|null the URL as string (for cheap caching), or null if the entity has none
+     */
+    protected static function resolve_own_image_url(int $entityid): ?string {
+        $fs = get_file_storage();
+        $files = $fs->get_area_files(\context_system::instance()->id, 'local_entities', 'image', $entityid);
+        foreach ($files as $file) {
+            if ($file->get_filesize() > 0 && $file->get_mimetype() !== 'application/pdf') {
+                return \moodle_url::make_pluginfile_url(
+                    \context_system::instance()->id,
+                    'local_entities',
+                    'image',
+                    $entityid,
+                    $file->get_filepath(),
+                    $file->get_filename()
+                )->out(false);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Returns the ids of an entity's whole subtree (the entity itself plus all descendants, any depth).
+     *
+     * This is the set a hierarchical filter expands a selected node into ("node X chosen ⇒ entityid IN
+     * descendants(X)"). Derived live from the entity map; cycles are guarded and an unknown/removed id
+     * yields an empty set.
+     *
+     * @param int $id the entity id (subtree root)
+     * @param array<int,object>|null $map optional pre-loaded map; the shared request map is used when null
+     * @return int[] subtree ids including $id, or [] if $id is invalid/unknown
+     */
+    public static function get_descendant_ids(int $id, ?array $map = null): array {
+        if ($id <= 0) {
+            return [];
+        }
+        $map = $map ?? self::get_entity_map();
+        if (!isset($map[$id])) {
+            return [];
+        }
+        $childindex = [];
+        foreach ($map as $eid => $entity) {
+            $childindex[(int)($entity->parentid ?? 0)][] = (int)$eid;
+        }
+        $result = [];
+        $seen = [];
+        $stack = [$id];
+        while (!empty($stack)) {
+            $current = (int)array_pop($stack);
+            if (isset($seen[$current])) {
+                continue;
+            }
+            $seen[$current] = true;
+            $result[] = $current;
+            foreach ($childindex[$current] ?? [] as $childid) {
+                if (!isset($seen[$childid])) {
+                    $stack[] = $childid;
+                }
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * Builds the tree of entities for a hierarchical filter panel, keeping only "occupied" nodes.
+     *
+     * Given the entity ids present in a result set (one entry per option occurrence, duplicates allowed),
+     * returns nested node objects for exactly the nodes whose subtree contains at least one option, plus
+     * the ancestors that connect them to a root. Each node carries a direct count and a subtree total, so
+     * the panel can label counts per level. Pure PHP over the live map — no DB-specific SQL, DB-portable.
+     *
+     * @param int[] $entityids entity ids present in the result set (duplicates drive the counts)
+     * @param array<int,object>|null $map optional pre-loaded map; the shared request map is used when null
+     * @return array<int,object> ordered root nodes, each {id, name, count, total, children[]} (recursive)
+     */
+    public static function get_filter_tree(array $entityids, ?array $map = null): array {
+        $map = $map ?? self::get_entity_map();
+        if (empty($map)) {
+            return [];
+        }
+
+        // Direct option count per entity id (how many options sit exactly on that node).
+        $directcounts = [];
+        foreach ($entityids as $eid) {
+            $eid = (int)$eid;
+            if ($eid > 0) {
+                $directcounts[$eid] = ($directcounts[$eid] ?? 0) + 1;
+            }
+        }
+
+        // Stable display order: sortorder, then name, then id — build a parentid => [childids] index.
+        $ordered = $map;
+        uasort($ordered, static function ($a, $b) {
+            $sa = (int)($a->sortorder ?? 0);
+            $sb = (int)($b->sortorder ?? 0);
+            if ($sa !== $sb) {
+                return $sa <=> $sb;
+            }
+            $namecmp = strcmp((string)($a->name ?? ''), (string)($b->name ?? ''));
+            return $namecmp !== 0 ? $namecmp : ((int)$a->id <=> (int)$b->id);
+        });
+        $childindex = [];
+        $roots = [];
+        foreach ($ordered as $eid => $entity) {
+            $pid = (int)($entity->parentid ?? 0);
+            $childindex[$pid][] = (int)$eid;
+            // A node with parentid 0 or a parent that no longer exists is treated as a root.
+            if ($pid === 0 || !isset($map[$pid])) {
+                $roots[] = (int)$eid;
+            }
+        }
+
+        $seen = [];
+        $build = function (int $id) use (&$build, $map, $childindex, $directcounts, &$seen) {
+            if (isset($seen[$id])) {
+                return null; // Cycle guard.
+            }
+            $seen[$id] = true;
+            $children = [];
+            $total = $directcounts[$id] ?? 0;
+            foreach ($childindex[$id] ?? [] as $childid) {
+                $childnode = $build($childid);
+                if ($childnode !== null) {
+                    $children[] = $childnode;
+                    $total += $childnode->total;
+                }
+            }
+            if ($total <= 0) {
+                return null; // Prune: node has no options anywhere in its subtree.
+            }
+            return (object)[
+                'id' => $id,
+                'name' => format_string($map[$id]->name ?? ''),
+                'count' => $directcounts[$id] ?? 0,
+                'total' => $total,
+                'children' => $children,
+            ];
+        };
+
+        $tree = [];
+        foreach ($roots as $rootid) {
+            $node = $build($rootid);
+            if ($node !== null) {
+                $tree[] = $node;
+            }
+        }
+        return $tree;
     }
 
     /**
@@ -348,6 +621,8 @@ class entities {
     public static function reset_caches(): void {
         self::$allocationmodecache = [];
         self::$capacitysourcecache = [];
+        self::$entitymapcache = null;
+        self::$imageurlcache = [];
     }
 
     /**
