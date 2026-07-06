@@ -27,7 +27,6 @@ namespace local_entities\local\views;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class view_templates {
-
     /** @var string The baseline template, byte-identical to the historical layout. */
     const DEFAULT_TEMPLATE = 'classic';
 

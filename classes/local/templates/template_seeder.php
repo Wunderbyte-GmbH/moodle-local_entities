@@ -33,7 +33,6 @@ use local_entities\customfield\entities_handler;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class template_seeder {
-
     /** @var string Config flag remembering that the defaults were seeded once (so re-upgrade is a no-op). */
     const SEEDED_FLAG = 'defaulttemplatesseeded';
 

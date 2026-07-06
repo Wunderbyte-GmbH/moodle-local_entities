@@ -30,7 +30,6 @@ use cache;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class osm_geocoder {
-
     /** @var string Sentinel cached for addresses that could not be geocoded (negative cache). */
     const NOT_FOUND = 'none';
 

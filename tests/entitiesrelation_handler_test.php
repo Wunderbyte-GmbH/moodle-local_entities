@@ -124,7 +124,7 @@ final class entitiesrelation_handler_test extends advanced_testcase {
         $this->resetAfterTest();
         $gen = $this->getDataGenerator()->get_plugin_generator('local_entities');
         $equipment = $this->create_equipment('Beamer');
-        $location = (int)$gen->create_entities(['name' => 'Room 1', 'shortname' => 'room1']); // default (non-equipment) type.
+        $location = (int)$gen->create_entities(['name' => 'Room 1', 'shortname' => 'room1']); // Default (non-equipment) type.
 
         $handler = new entitiesrelation_handler(self::COMPONENT, self::AREA);
         $handler->save_equipment_relations(self::INSTANCEID, [$equipment => 1, $location => 1]);

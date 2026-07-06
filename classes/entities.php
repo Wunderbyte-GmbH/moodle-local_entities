@@ -29,7 +29,6 @@ use DateTime;
 use moodle_url;
 use stdClass;
 use local_entities\calendar\reoccuringevent;
-defined('MOODLE_INTERNAL') || die();
 
 /**
  * Class entity
@@ -226,7 +225,7 @@ class entities {
      * reparent). A cycle/broken chain is bounded by a hard guard.
      *
      * @param int $id the entity id
-     * @param array<int,object>|null $map optional pre-loaded map; the shared request map is used when null
+     * @param object[]|null $map optional pre-loaded map; the shared request map is used when null
      * @return array{0:int,1:int[],2:string[]} [depth, ancestor ids root-first incl. self, names root-first incl. self]
      */
     public static function get_ancestor_path(int $id, ?array $map = null): array {
@@ -250,7 +249,7 @@ class entities {
      * SQL. The key is built from the ancestor chain, so it works for any nesting depth.
      *
      * @param int $id the entity id
-     * @param array<int,object>|null $map optional pre-loaded map; the shared request map is used when null
+     * @param object[]|null $map optional pre-loaded map; the shared request map is used when null
      * @return string
      */
     public static function get_tree_sortkey(int $id, ?array $map = null): string {
@@ -330,7 +329,7 @@ class entities {
      * yields an empty set.
      *
      * @param int $id the entity id (subtree root)
-     * @param array<int,object>|null $map optional pre-loaded map; the shared request map is used when null
+     * @param object[]|null $map optional pre-loaded map; the shared request map is used when null
      * @return int[] subtree ids including $id, or [] if $id is invalid/unknown
      */
     public static function get_descendant_ids(int $id, ?array $map = null): array {
@@ -373,7 +372,7 @@ class entities {
      * the panel can label counts per level. Pure PHP over the live map — no DB-specific SQL, DB-portable.
      *
      * @param int[] $entityids entity ids present in the result set (duplicates drive the counts)
-     * @param array<int,object>|null $map optional pre-loaded map; the shared request map is used when null
+     * @param object[]|null $map optional pre-loaded map; the shared request map is used when null
      * @return array<int,object> ordered root nodes, each {id, name, count, total, children[]} (recursive)
      */
     public static function get_filter_tree(array $entityids, ?array $map = null): array {
@@ -703,7 +702,7 @@ class entities {
             return max(0, (int)($formdata[LOCAL_ENTITIES_FORM_QUANTITY . $index] ?? 1));
         }
 
-        // 'maxanswers' source.
+        // The 'maxanswers' source.
         $maxanswers = (int)($formdata['maxanswers'] ?? 0);
         if ($maxanswers > 0) {
             return $maxanswers;
@@ -793,10 +792,10 @@ class entities {
 
         // The allocation mode decides how concurrent bookings on the entity are counted:
         // - 'exclusive': the entity is a resource that is occupied per reservation, independent of
-        //   the number of participants (e.g. a tennis court). Up to 'maxconcurrent' reservations
-        //   may overlap (default 1 = strictly exclusive).
+        // the number of participants (e.g. a tennis court). Up to 'maxconcurrent' reservations
+        // may overlap (default 1 = strictly exclusive).
         // - 'capacity': the consumed amounts (quantity per relation; participants or units) of the
-        //   overlapping bookings are summed against 'maxallocation' (total capacity / stock).
+        // overlapping bookings are summed against 'maxallocation' (total capacity / stock).
         $maxconcurrent = (int) ($entity->__get('maxconcurrent') ?? 1);
         if ($maxconcurrent < 1) {
             $maxconcurrent = 1;
@@ -808,7 +807,6 @@ class entities {
         $tempconflicts = [];
 
         foreach ($datestobook as $datetobook) {
-
             // Opening hours are checked regardless of the allocation mode.
             if (!empty($openinghours)) {
                 $openinghoursevents = reoccuringevent::json_to_events($openinghours);

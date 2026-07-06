@@ -34,8 +34,6 @@ use core_external\external_single_structure;
 use local_entities\entity;
 use local_entities\entities;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * get_entity_calendardata webservice
  * @copyright Wunderbyte GmbH <info@wunderbyte.at>

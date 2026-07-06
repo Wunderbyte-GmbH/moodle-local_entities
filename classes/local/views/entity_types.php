@@ -27,7 +27,6 @@ namespace local_entities\local\views;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class entity_types {
-
     /** @var string[] Known entity type keys (match the entitytype DB column values). */
     const TYPES = ['location', 'equipment'];
 

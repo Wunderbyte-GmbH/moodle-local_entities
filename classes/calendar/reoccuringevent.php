@@ -169,7 +169,7 @@ class reoccuringevent {
         }
         $startweekday = date('N', $eventtobook->starttime);
         $endweekday = date('N', $eventtobook->endtime);
-        // TODO: Maybe allow overlapping?
+        // Possible improvement: maybe allow overlapping?
         if ($startweekday != $endweekday) {
             return false;
         }

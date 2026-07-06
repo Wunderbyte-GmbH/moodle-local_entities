@@ -26,7 +26,6 @@ namespace local_entities\calendar;
 
 use DateTime;
 use stdClass;
-defined('MOODLE_INTERNAL') || die();
 
 /**
  * Class fullcalendar_helper

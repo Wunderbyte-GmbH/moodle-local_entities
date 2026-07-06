@@ -29,7 +29,6 @@ use local_entities\customfield\entities_handler;
  * @covers     \local_entities\local\templates\template_seeder
  */
 final class template_seeder_test extends \advanced_testcase {
-
     /**
      * Remove any already-seeded templates and their config so each test exercises a clean seed.
      *
@@ -40,13 +39,17 @@ final class template_seeder_test extends \advanced_testcase {
      */
     private function reset_seeded_state(): void {
         global $DB;
-        $categories = $DB->get_records('customfield_category',
-            ['component' => 'local_entities', 'area' => 'entities']);
+        $categories = $DB->get_records(
+            'customfield_category',
+            ['component' => 'local_entities', 'area' => 'entities']
+        );
         foreach ($categories as $category) {
             $DB->delete_records('customfield_field', ['categoryid' => $category->id]);
         }
-        $DB->delete_records('customfield_category',
-            ['component' => 'local_entities', 'area' => 'entities']);
+        $DB->delete_records(
+            'customfield_category',
+            ['component' => 'local_entities', 'area' => 'entities']
+        );
         unset_config('template_location_itemid', 'local_entities');
         unset_config('template_equipment_itemid', 'local_entities');
         unset_config(template_seeder::SEEDED_FLAG, 'local_entities');
@@ -127,8 +130,10 @@ final class template_seeder_test extends \advanced_testcase {
 
         template_seeder::seed_default_templates();
 
-        $categorycount = $DB->count_records('customfield_category',
-            ['component' => 'local_entities', 'area' => 'entities']);
+        $categorycount = $DB->count_records(
+            'customfield_category',
+            ['component' => 'local_entities', 'area' => 'entities']
+        );
         $fieldcount = $DB->count_records_sql(
             "SELECT COUNT(f.id) FROM {customfield_field} f
                JOIN {customfield_category} c ON c.id = f.categoryid
@@ -139,8 +144,10 @@ final class template_seeder_test extends \advanced_testcase {
         // Second run must be a no-op.
         template_seeder::seed_default_templates();
 
-        $this->assertEquals($categorycount, $DB->count_records('customfield_category',
-            ['component' => 'local_entities', 'area' => 'entities']));
+        $this->assertEquals($categorycount, $DB->count_records(
+            'customfield_category',
+            ['component' => 'local_entities', 'area' => 'entities']
+        ));
         $this->assertEquals($fieldcount, $DB->count_records_sql(
             "SELECT COUNT(f.id) FROM {customfield_field} f
                JOIN {customfield_category} c ON c.id = f.categoryid

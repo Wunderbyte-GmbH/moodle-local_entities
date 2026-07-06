@@ -126,8 +126,8 @@ class csv_import {
         $cir = new csv_import_reader($iid, 'modbooking');
 
         $delimiter = $this->delimiter;
-        $enclosure = '"'; // TODO: It should be possible to configure this like delimiter.
-        $encoding = null; // TODO: It should be possible to configure this like delimiter.
+        $enclosure = '"'; // Possible improvement: make this configurable like delimiter.
+        $encoding = null; // Possible improvement: make this configurable like delimiter.
 
         // Currently not implemented.
         // phpcs:ignore Squiz.PHP.CommentedOutCode.Found

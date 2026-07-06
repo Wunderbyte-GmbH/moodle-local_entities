@@ -29,7 +29,6 @@ namespace local_entities;
  * @covers     \local_entities\entities::get_entity_map
  */
 final class entities_test extends \advanced_testcase {
-
     /**
      * Static caches are process-global; clear them before each test so a prior test's entity map
      * cannot leak into this one.

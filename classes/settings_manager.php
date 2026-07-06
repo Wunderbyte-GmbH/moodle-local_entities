@@ -105,7 +105,7 @@ class settings_manager {
              AND area = 'option'
              AND entityid = :entityid",
             ['entityid' => $data->id]
-            // TODO: Needs to be updated when table is changed!
+            // Needs to be updated when table is changed!
         );
         cache_helper::invalidate_by_event('setbackoptionsettings', $affectedoptionids);
         cache_helper::purge_by_event('purgecachedentities');
@@ -180,7 +180,7 @@ class settings_manager {
 
         if (isset($data->id) && $data->id > 0) {
             $this->update_entity($data);
-            // TODO: Check if address id exists -> then update, else create new address.
+            // Possible improvement: check if address id exists -> then update, else create new address.
 
             for ($i = 0; $i < $data->addresscount; $i++) {
                 $this->update_address($data, $i);

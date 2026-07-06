@@ -111,5 +111,4 @@ if ($hassiteconfig) {
             0
         )
     );
-
 }

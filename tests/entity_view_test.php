@@ -31,7 +31,6 @@ use local_entities\local\views\view_templates;
  * @covers     \local_entities\local\views\view_templates
  */
 final class entity_view_test extends \advanced_testcase {
-
     /**
      * Every registered template renders without error and shows the entity, using the shared context.
      *
@@ -114,13 +113,13 @@ final class entity_view_test extends \advanced_testcase {
         entity_view::migrate_legacy_view_settings();
         $this->assertEquals('classic', get_config('local_entities', 'activeviewtemplate'));
 
-        // show_calendar=1 → calendar.
+        // Legacy show_calendar=1 → calendar.
         unset_config('activeviewtemplate', 'local_entities');
         set_config('show_calendar_on_details_page', 1, 'local_entities');
         entity_view::migrate_legacy_view_settings();
         $this->assertEquals('calendar', get_config('local_entities', 'activeviewtemplate'));
 
-        // showpicture=1 wins over show_calendar → image.
+        // Legacy showpicture=1 wins over show_calendar → image.
         unset_config('activeviewtemplate', 'local_entities');
         set_config('showpictureinsteadofcalendar', 1, 'local_entities');
         entity_view::migrate_legacy_view_settings();

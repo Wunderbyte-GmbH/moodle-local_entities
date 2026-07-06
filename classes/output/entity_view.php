@@ -37,7 +37,6 @@ use stdClass;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class entity_view {
-
     /**
      * Resolves the active view template key.
      *
@@ -50,8 +49,10 @@ class entity_view {
      * @return string the template key (without the 'local_entities/view/' prefix)
      */
     public static function resolve_active_template(string $preview = '', string $entitytype = ''): string {
-        if (view_templates::exists($preview)
-                && has_capability('local/entities:changeviewtemplate', context_system::instance())) {
+        if (
+            view_templates::exists($preview)
+                && has_capability('local/entities:changeviewtemplate', context_system::instance())
+        ) {
             return $preview;
         }
         // Type-specific choice wins over the global one (which stays the fallback for all types).
@@ -119,8 +120,12 @@ class entity_view {
      * @param string $entitytype the entity's type (saving applies to all entities of this type)
      * @return array|null
      */
-    public static function build_switcher(int $id, string $renderedkey, string $activekey,
-            string $entitytype = ''): ?array {
+    public static function build_switcher(
+        int $id,
+        string $renderedkey,
+        string $activekey,
+        string $entitytype = ''
+    ): ?array {
         if (!has_capability('local/entities:changeviewtemplate', context_system::instance())) {
             return null;
         }
@@ -273,8 +278,10 @@ class entity_view {
                     foreach ($files as $file) {
                         $filename = $file->get_filename();
                         if ($file->get_filesize() > 0) {
-                            $url = moodle_url::make_file_url('/pluginfile.php',
-                                '/1/local_entities/image/' . $parent->id . '/' . $filename);
+                            $url = moodle_url::make_file_url(
+                                '/pluginfile.php',
+                                '/1/local_entities/image/' . $parent->id . '/' . $filename
+                            );
                         }
                     }
                 }

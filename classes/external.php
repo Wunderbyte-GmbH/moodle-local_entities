@@ -225,7 +225,7 @@ class local_entities_external extends external_api {
      * @return string
      */
     private static function find_table(array $data): string {
-        // TODO find matching table.
+        // Find matching table.
         $field = '';
         foreach ($data as $item) {
             $field = $item['name'];

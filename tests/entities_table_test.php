@@ -28,7 +28,6 @@ use local_entities\table\entities_table;
  * @covers     \local_entities\table\entities_table::arrange_as_tree
  */
 final class entities_table_test extends \advanced_testcase {
-
     /**
      * arrange_as_tree() orders entities depth-first (parent → children) with the correct depth and a
      * root→self name path. This PHP ordering is what lets pagination keep the tree intact, and it is

@@ -91,7 +91,7 @@ class entities_table extends wunderbyte_table {
      * entity set, so a matching child keeps a correct depth/breadcrumb even when its ancestors were
      * filtered out of the result.
      *
-     * @param array<int,object> $rows rows keyed by entity id
+     * @param object[] $rows rows keyed by entity id
      * @return array<int,object> the same rows, ordered, each with ->entitydepth and ->namepath
      */
     public function arrange_as_tree(array $rows): array {
@@ -132,7 +132,7 @@ class entities_table extends wunderbyte_table {
      * Thin delegate to the extracted {@see entities::get_ancestor_path()}; behaviour is unchanged.
      *
      * @param int $id
-     * @param array<int,object> $map
+     * @param object[] $map
      * @return array{0:int,1:int[],2:string[]} [depth, ancestor ids root-first incl. self, names root-first incl. self]
      */
     protected function resolve_lineage(int $id, array $map): array {

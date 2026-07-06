@@ -112,16 +112,37 @@ final class reoccuringevent_test extends advanced_testcase {
             ['title' => 'Open', 'daysofweek' => '1', 'starttime' => '09:00', 'endtime' => '17:00']
         )];
 
-        $within = new entitydate(0, 'mod_booking', 'option', 'x',
-            $this->vienna_ts('2024-01-08 10:00:00'), $this->vienna_ts('2024-01-08 12:00:00'), 0);
+        $within = new entitydate(
+            0,
+            'mod_booking',
+            'option',
+            'x',
+            $this->vienna_ts('2024-01-08 10:00:00'),
+            $this->vienna_ts('2024-01-08 12:00:00'),
+            0
+        );
         $this->assertTrue(reoccuringevent::date_within_openinghours($monday, $within));
 
-        $beforeopen = new entitydate(0, 'mod_booking', 'option', 'x',
-            $this->vienna_ts('2024-01-08 08:00:00'), $this->vienna_ts('2024-01-08 10:00:00'), 0);
+        $beforeopen = new entitydate(
+            0,
+            'mod_booking',
+            'option',
+            'x',
+            $this->vienna_ts('2024-01-08 08:00:00'),
+            $this->vienna_ts('2024-01-08 10:00:00'),
+            0
+        );
         $this->assertFalse(reoccuringevent::date_within_openinghours($monday, $beforeopen));
 
-        $tuesday = new entitydate(0, 'mod_booking', 'option', 'x',
-            $this->vienna_ts('2024-01-09 10:00:00'), $this->vienna_ts('2024-01-09 12:00:00'), 0);
+        $tuesday = new entitydate(
+            0,
+            'mod_booking',
+            'option',
+            'x',
+            $this->vienna_ts('2024-01-09 10:00:00'),
+            $this->vienna_ts('2024-01-09 12:00:00'),
+            0
+        );
         $this->assertFalse(reoccuringevent::date_within_openinghours($monday, $tuesday));
 
         $notimes = new entitydate(0, 'mod_booking', 'option', 'x', 0, 0, 0);

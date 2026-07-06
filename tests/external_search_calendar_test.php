@@ -73,7 +73,7 @@ final class external_search_calendar_test extends advanced_testcase {
         $this->resetAfterTest();
         $this->setUser($this->getDataGenerator()->create_user());
 
-        // local/entities:view is granted to all authenticated users by default — prohibit it to assert the gate.
+        // Capability local/entities:view is granted to all authenticated users by default — prohibit it to assert the gate.
         $userrole = (int)$DB->get_field('role', 'id', ['shortname' => 'user'], MUST_EXIST);
         assign_capability('local/entities:view', CAP_PROHIBIT, $userrole, \context_system::instance()->id, true);
         accesslib_clear_all_caches_for_unit_testing();

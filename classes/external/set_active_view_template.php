@@ -33,7 +33,6 @@ use local_entities\local\views\view_templates;
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class set_active_view_template extends external_api {
-
     /**
      * Describes the parameters.
      *
@@ -42,8 +41,12 @@ class set_active_view_template extends external_api {
     public static function execute_parameters(): external_function_parameters {
         return new external_function_parameters([
             'template' => new external_value(PARAM_ALPHANUMEXT, 'The view template key to activate'),
-            'entitytype' => new external_value(PARAM_ALPHANUMEXT,
-                'Apply to all entities of this type; empty sets the global fallback', VALUE_DEFAULT, ''),
+            'entitytype' => new external_value(
+                PARAM_ALPHANUMEXT,
+                'Apply to all entities of this type; empty sets the global fallback',
+                VALUE_DEFAULT,
+                ''
+            ),
         ]);
     }
 
@@ -56,8 +59,10 @@ class set_active_view_template extends external_api {
      * @return array
      */
     public static function execute(string $template, string $entitytype = ''): array {
-        $params = self::validate_parameters(self::execute_parameters(),
-            ['template' => $template, 'entitytype' => $entitytype]);
+        $params = self::validate_parameters(
+            self::execute_parameters(),
+            ['template' => $template, 'entitytype' => $entitytype]
+        );
 
         $context = context_system::instance();
         self::validate_context($context);

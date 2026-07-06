@@ -276,8 +276,13 @@ class edit_dynamic_form extends dynamic_form {
                 'data-template-equipment' => (int) get_config('local_entities', 'template_equipment_itemid'),
             ];
             $categoryselect = [
-                $mform->createElement('select', 'cfitemid', get_string('fieldtemplate', 'local_entities'),
-                    $categoryoptions, $selectattributes),
+                $mform->createElement(
+                    'select',
+                    'cfitemid',
+                    get_string('fieldtemplate', 'local_entities'),
+                    $categoryoptions,
+                    $selectattributes
+                ),
                 $mform->createElement('submit', 'btn_cfcategoryid', get_string('categories'), $buttonargs),
             ];
             $mform->addGroup($categoryselect, 'tagsgroup', get_string('fieldtemplate', 'local_entities'), [' '], false);
