@@ -34,7 +34,25 @@ class behat_local_entities_generator extends behat_generator_base {
             'entities' => [
                 'datagenerator' => 'entities',
                 'required' => ['name'],
+                'switchids' => ['parent' => 'parentid'],
             ],
         ];
+    }
+
+    /**
+     * Resolve an entity name to its id (for the 'parent' reference column).
+     *
+     * @param string $name entity name
+     * @return int entity id
+     */
+    protected function get_parent_id(string $name): int {
+        global $DB;
+        // A top-level entity has no parent: the framework still calls this resolver for the (empty)
+        // 'parent' cell, so treat an empty reference as "no parent" (parentid 0) instead of looking
+        // up an entity named '' and failing with a missing-record exception.
+        if (trim($name) === '') {
+            return 0;
+        }
+        return (int)$DB->get_field('local_entities', 'id', ['name' => $name], MUST_EXIST);
     }
 }

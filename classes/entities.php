@@ -31,10 +31,6 @@ use stdClass;
 use local_entities\calendar\reoccuringevent;
 defined('MOODLE_INTERNAL') || die();
 
-global $CFG;
-
-require_once("$CFG->libdir/externallib.php");
-
 /**
  * Class entity
  *
@@ -181,6 +177,56 @@ class entities {
         ]);
     }
 
+    /**
+     * Returns the equipment available at a location, resolved over the location hierarchy.
+     *
+     * Equipment is an entity (entitytype='equipment') hung under its home location via parentid.
+     * A location offers its own equipment plus the equipment of its ancestor locations, the latter
+     * only when that equipment is flagged 'availableinsublocations'.
+     *
+     * @param int $locationid the location entity id
+     * @return array equipment entity records keyed by entity id
+     */
+    public static function get_equipment_for_location(int $locationid): array {
+        global $DB;
+
+        if ($locationid <= 0) {
+            return [];
+        }
+
+        // Build the location chain upwards: the location itself, then its ancestors.
+        $chain = [];
+        $current = $locationid;
+        $guard = 0;
+        while ($current > 0 && $guard++ < 50) {
+            if (array_key_exists($current, $chain)) {
+                break; // Cycle guard.
+            }
+            $location = $DB->get_record('local_entities', ['id' => $current], 'id, parentid');
+            if (empty($location)) {
+                break;
+            }
+            $chain[$current] = ($current === $locationid);
+            $current = (int)($location->parentid ?? 0);
+        }
+
+        $equipment = [];
+        foreach ($chain as $locid => $isself) {
+            foreach (self::list_all_subentities($locid) as $child) {
+                if (($child->entitytype ?? 'location') !== 'equipment') {
+                    continue;
+                }
+                // Own equipment is always available; ancestor equipment only if usable in sub-locations.
+                if (!$isself && empty($child->availableinsublocations)) {
+                    continue;
+                }
+                $equipment[(int)$child->id] = $child;
+            }
+        }
+
+        return $equipment;
+    }
+
 
     /**
      *
@@ -209,19 +255,42 @@ class entities {
      * ... connected to this entity.
      *
      * @param int $entityid
+     * @param bool $uselive if true, bypass the read cache and query live (for authoritative
+     *                      write-time checks such as the actual booking commit)
      * @return array
      */
-    public static function get_all_dates_for_entity(int $entityid): array {
+    public static function get_all_dates_for_entity(int $entityid, bool $uselive = false): array {
 
         global $DB;
+
+        $cache = \cache::make('local_entities', 'entitydates');
+
+        // Read accelerator for availability checks. Bypassed when an authoritative live result is
+        // required (booking commit), so a stale entry never causes a wrong booking.
+        if (!$uselive) {
+            $cached = $cache->get($entityid);
+            if ($cached !== false) {
+                return $cached;
+            }
+        }
 
         // First we retrieve all the ids and components connected to this entitiy.
 
         $records = $DB->get_records('local_entities_relations', ['entityid' => $entityid], 'component, area ASC');
 
-        // Create an array for the calls we'll execute afterwards.
+        // Create an array for the calls we'll execute afterwards, and remember the booked quantity
+        // per relation so we can attach it to the returned dates (capacity mode). The option-level
+        // relation (saved by the handler with full form data) is the source of truth for an option's
+        // consumed amount; its optiondate-level dates inherit it.
         $calls = [];
+        $quantitymap = [];
+        $optionlevelquantity = [];
         foreach ($records as $record) {
+            $quantitymap["$record->component-$record->area-$record->instanceid"] = (int)($record->quantity ?? 1);
+            if ($record->area === 'option') {
+                $optionlevelquantity[(int)$record->instanceid] = (int)($record->quantity ?? 1);
+            }
+
             // We want to have one call per component.
             if (!isset($calls[$record->component])) {
                 $calls[$record->component][$record->area] = [$record->instanceid];
@@ -242,7 +311,131 @@ class entities {
             $datearray = array_merge($datearray, $newdates);
         }
 
+        // Attach the consumed quantity to each date for capacity-based checks.
+        // Resolution mirrors the entity-override/fallback rule: an optiondate that links this entity
+        // directly (override) uses its own relation quantity; an optiondate that inherits the option
+        // entity (no own entity) uses the owning option's option-level relation quantity. The
+        // option-level relation is the source of truth, since the handler saved it with full form data.
+        foreach ($datearray as $date) {
+            $directkey = "{$date->component}-{$date->area}-{$date->itemid}";
+            $ownerid = self::extract_owner_id_from_link($date->link ?? null);
+
+            if ($date->area !== 'option' && $ownerid > 0 && isset($optionlevelquantity[$ownerid])) {
+                // Optiondate inheriting the option entity → use the option's consumed amount.
+                $date->quantity = $optionlevelquantity[$ownerid];
+            } else if (isset($quantitymap[$directkey])) {
+                // Option-level date, or an optiondate that overrides with its own entity relation.
+                $date->quantity = $quantitymap[$directkey];
+            }
+        }
+
+        $cache->set($entityid, $datearray);
+
         return $datearray;
+    }
+
+    /** @var array<int, string> Per-request cache of entity allocation modes, keyed by entityid. */
+    private static $allocationmodecache = [];
+
+    /** @var array<int, string> Per-request cache of entity capacity sources, keyed by entityid. */
+    private static $capacitysourcecache = [];
+
+    /**
+     * Reset static request caches (call from tests teardown).
+     *
+     * @return void
+     */
+    public static function reset_caches(): void {
+        self::$allocationmodecache = [];
+        self::$capacitysourcecache = [];
+    }
+
+    /**
+     * Purge the cached occupancy dates of a single entity.
+     *
+     * Low-level, entityid-keyed purge. The targeted, item-aware entry point used by consumers is
+     * entitiesrelation_handler::purge_dates_cache(), which resolves an item to its entity first.
+     *
+     * @param int $entityid
+     * @return void
+     */
+    public static function purge_dates_cache(int $entityid): void {
+        if ($entityid <= 0) {
+            return;
+        }
+        \cache::make('local_entities', 'entitydates')->delete($entityid);
+        unset(self::$allocationmodecache[$entityid]);
+        unset(self::$capacitysourcecache[$entityid]);
+    }
+
+    /**
+     * Returns the allocation (overlap-checking) mode of an entity.
+     *
+     * 'none' (default) means no overlap checking at all — the legacy behaviour. 'exclusive' counts
+     * concurrent reservations, 'capacity' counts participants. Result is request-cached so callers
+     * (e.g. per-slot availability checks) do not hit the DB repeatedly.
+     *
+     * @param int $entityid
+     * @return string one of 'none', 'exclusive', 'capacity'
+     */
+    public static function get_allocation_mode(int $entityid): string {
+        if ($entityid <= 0) {
+            return 'none';
+        }
+        if (!array_key_exists($entityid, self::$allocationmodecache)) {
+            $entity = entity::load($entityid);
+            $mode = $entity->__get('allocationmode');
+            self::$allocationmodecache[$entityid] = !empty($mode) ? (string)$mode : 'none';
+        }
+        return self::$allocationmodecache[$entityid];
+    }
+
+    /**
+     * Returns the capacity source of an entity: how the consumed amount per booking is determined.
+     *
+     * 'maxanswers' (default) = participant count of the option; 'manual' = an explicitly entered
+     * quantity (e.g. equipment units). Only relevant when allocationmode is 'capacity'. Request-cached.
+     *
+     * @param int $entityid
+     * @return string one of 'maxanswers', 'manual'
+     */
+    public static function get_capacity_source(int $entityid): string {
+        if ($entityid <= 0) {
+            return 'maxanswers';
+        }
+        if (!array_key_exists($entityid, self::$capacitysourcecache)) {
+            $entity = entity::load($entityid);
+            $source = $entity->__get('capacitysource');
+            self::$capacitysourcecache[$entityid] = !empty($source) ? (string)$source : 'maxanswers';
+        }
+        return self::$capacitysourcecache[$entityid];
+    }
+
+    /**
+     * Resolves the amount a booking consumes of an entity (capacity mode), from submitted form data.
+     *
+     * - 'maxanswers': the option's participant cap. An unlimited option (maxanswers <= 0) consumes the
+     *   entity's whole capacity, so it blocks any overlapping booking.
+     * - 'manual': the explicitly entered quantity field for this entity index.
+     *
+     * @param int $entityid
+     * @param array $formdata submitted booking option form data
+     * @param int $index entity field index (0 = option level)
+     * @return int consumed amount (>= 0)
+     */
+    public static function resolve_consumed_quantity(int $entityid, array $formdata, int $index = 0): int {
+        if (self::get_capacity_source($entityid) === 'manual') {
+            return max(0, (int)($formdata[LOCAL_ENTITIES_FORM_QUANTITY . $index] ?? 1));
+        }
+
+        // 'maxanswers' source.
+        $maxanswers = (int)($formdata['maxanswers'] ?? 0);
+        if ($maxanswers > 0) {
+            return $maxanswers;
+        }
+        // Unlimited option: consume the whole capacity so it blocks any overlap.
+        $entity = entity::load($entityid);
+        return max(1, (int)($entity->__get('maxallocation') ?? 0));
     }
 
     /**
@@ -303,55 +496,137 @@ class entities {
             return [];
         }
 
-        // Second we retrieve all the times already booked on this option.
-        $bookeddates = self::get_all_dates_for_entity($entityid);
+        // If overlap checking is disabled for this entity ('none', the default), there is never a
+        // conflict. Short-circuit before the expensive occupancy query so the legacy/default
+        // behaviour stays cheap.
+        $allocationmode = self::get_allocation_mode($entityid);
+        if ($allocationmode === 'none') {
+            return [];
+        }
 
-        // Third, if there is nothing to compare, we have no conflict.
+        // Retrieve all the times already booked on this entity (across all options and components).
+        // This is an authoritative write-time check, so we read live (bypass cache).
+        $bookeddates = self::get_all_dates_for_entity($entityid, true);
+
+        // If there is nothing to compare, we have no conflict.
         if (count($bookeddates) < 1) {
             return [];
         }
 
-        // Now we check every date one by one, if there is an overlapping with the existing timestamps.
-        // We might have a function to do just that, so we don't write it now.
+        $entity = entity::load($entityid);
+        $openinghours = $entity->__get('openinghours');
+
+        // The allocation mode decides how concurrent bookings on the entity are counted:
+        // - 'exclusive': the entity is a resource that is occupied per reservation, independent of
+        //   the number of participants (e.g. a tennis court). Up to 'maxconcurrent' reservations
+        //   may overlap (default 1 = strictly exclusive).
+        // - 'capacity': the consumed amounts (quantity per relation; participants or units) of the
+        //   overlapping bookings are summed against 'maxallocation' (total capacity / stock).
+        $maxconcurrent = (int) ($entity->__get('maxconcurrent') ?? 1);
+        if ($maxconcurrent < 1) {
+            $maxconcurrent = 1;
+        }
+        $maxallocation = (int) ($entity->__get('maxallocation') ?? 0);
 
         $conflicts = [];
-        $tempconflicts = [];
         $conflicts['openinghours'] = false;
+        $tempconflicts = [];
+
         foreach ($datestobook as $datetobook) {
-            $entity = entity::load($entityid);
-            $openinghours = $entity->__get('openinghours');
+
+            // Opening hours are checked regardless of the allocation mode.
             if (!empty($openinghours)) {
                 $openinghoursevents = reoccuringevent::json_to_events($openinghours);
                 if (!(reoccuringevent::date_within_openinghours($openinghoursevents, $datetobook))) {
                     $conflicts['openinghours'] = true;
                 }
             }
-            $maxallocations = $entity->__get('maxallocation');
-            if ($maxallocations > 0) {
-                foreach ($bookeddates as $bookeddate) {
-                    if ($datetobook->link->out() === $bookeddate->link->out()) {
-                        continue;
-                    }
 
-                    // Avoid conflicts with itself.
-                    if ($noconflictarea == $datetobook->area && $noconflictid == $datetobook->itemid) {
-                        continue;
-                    }
+            // The owning item (e.g. booking option) of the candidate date, taken from the shared
+            // link reference. An item must NEVER conflict with its own already-stored dates.
+            $candidateowner = self::extract_owner_id_from_link($datetobook->link ?? null);
 
-                    if (
-                        ($datetobook->starttime >= $bookeddate->starttime && $datetobook->starttime < $bookeddate->endtime)
-                        || ($datetobook->endtime > $bookeddate->starttime && $datetobook->endtime < $bookeddate->endtime)
-                        || ($datetobook->starttime <= $bookeddate->starttime && $datetobook->endtime >= $bookeddate->endtime)
-                    ) {
-                            $tempconflicts[] = $datetobook;
-                    }
+            // Count overlapping reservations (exclusive) and sum their consumed amounts (capacity).
+            $overlapping = 0;
+            $bookedquantity = 0;
+            foreach ($bookeddates as $bookeddate) {
+                // Same owning item (identified via the shared link reference): never a self-conflict.
+                $bookedowner = self::extract_owner_id_from_link($bookeddate->link ?? null);
+                if ($candidateowner > 0 && $candidateowner === $bookedowner) {
+                    continue;
+                }
+
+                // Generic fallback: skip the booked date of the very item being edited, when the
+                // caller identifies it explicitly via component area + item id.
+                if (
+                    !empty($noconflictarea)
+                    && $noconflictarea == $bookeddate->area
+                    && (int)$noconflictid === (int)$bookeddate->itemid
+                ) {
+                    continue;
+                }
+
+                if (self::entitydates_overlap($datetobook, $bookeddate)) {
+                    $overlapping++;
+                    $bookedquantity += max(0, (int)($bookeddate->quantity ?? 1));
                 }
             }
-            if (count($tempconflicts) > $maxallocations) {
-                $conflicts['conflicts'] = $tempconflicts;
+
+            if ($allocationmode === 'capacity') {
+                // Capacity mode: a candidate consumes its quantity; the entity is overbooked once the
+                // sum of overlapping consumed amounts plus the candidate exceeds the total capacity.
+                // maxallocation <= 0 means "no capacity limit" (unlimited).
+                $candidate = max(0, (int)($datetobook->quantity ?? 1));
+                $isconflict = ($maxallocation > 0) && (($bookedquantity + $candidate) > $maxallocation);
+            } else {
+                // Exclusive mode: the candidate itself counts as one reservation, so the entity is
+                // overbooked as soon as existing overlaps + 1 exceed the allowed concurrency.
+                $isconflict = ($overlapping + 1) > $maxconcurrent;
+            }
+
+            if ($isconflict) {
+                $tempconflicts[] = $datetobook;
             }
         }
+
+        if (!empty($tempconflicts)) {
+            $conflicts['conflicts'] = $tempconflicts;
+        }
+
         return $conflicts;
+    }
+
+    /**
+     * Check whether two entitydate-like objects overlap in time.
+     *
+     * @param object $a object exposing starttime and endtime
+     * @param object $b object exposing starttime and endtime
+     * @return bool true if the two time ranges overlap
+     */
+    private static function entitydates_overlap($a, $b): bool {
+        return ($a->starttime >= $b->starttime && $a->starttime < $b->endtime)
+            || ($a->endtime > $b->starttime && $a->endtime < $b->endtime)
+            || ($a->starttime <= $b->starttime && $a->endtime >= $b->endtime);
+    }
+
+    /**
+     * Extracts the owning item id (e.g. a booking option id) shared by an entitydate's link.
+     *
+     * Both the candidate dates and the already-booked dates of mod_booking carry an
+     * "optionid" parameter in their link, which uniquely identifies the owning booking option.
+     * This lets us reliably exclude an item's own dates from conflict detection even when the
+     * surrounding link parameters (userid, returnurl, ...) differ between the two sources.
+     *
+     * @param mixed $link a moodle_url (or null)
+     * @return int the owning option id, or 0 if it cannot be determined
+     */
+    private static function extract_owner_id_from_link($link): int {
+        if (empty($link) || !($link instanceof moodle_url)) {
+            return 0;
+        }
+
+        $params = $link->params();
+        return (int)($params['optionid'] ?? 0);
     }
 
     /**

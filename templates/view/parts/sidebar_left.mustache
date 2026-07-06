@@ -1,0 +1,63 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template local_entities/view/parts/sidebar_left
+    Shared left sidebar (custom field metadata grouped by category + affiliated entities).
+}}
+{{#hasleftsidebar}}
+<div class="col-xl-3 col-lg-12" data-area="leftsidebar">
+    {{#hasmetadata}}
+        {{#metagroups}}
+        <div class=" card shadow mb-3">
+            <div class="card-body">
+                <h2 class="card-title mb-4">{{name}}</h2>
+                <div class="row row-cols-xl-1 card-text ms-2">
+                    {{#fields}}
+                        <div class="col-auto d-inline-flex mb-3 ">
+                            <div class=" me-2">
+                                <i class="fa fa-info-circle fa-fw icon-uxs text-muted"></i>
+                            </div>
+                            <div class=" ">
+                                <div class="bold">{{key}}</div>
+                                <div class="text-muted">{{{value}}}</div>
+                            </div>
+                        </div>
+                    {{/fields}}
+                </div>
+            </div>
+        </div>
+        {{/metagroups}}
+    {{/hasmetadata}}
+    {{#hasaffiliation}}
+        <div class="card shadow mb-3">
+            <div class="card-body">
+                <h2 class="card-title">{{#str}} affiliated, local_entities {{/str}}</h2>
+                <ul class="list-group list-group-flush card-text">
+                    {{#affiliation}}
+                        <li class="list-group-item shadow-none border-0">
+                            <a href="{{link}}">{{name}}</a>
+                            {{#canedit}}
+                                <a class="btn btn-link pull-right pt-0 pb-0" title="{{#str}}edit{{/str}}"
+                                    href="{{editurl}}">
+                                    <i class="fa fa-edit" aria-hidden="true"></i>
+                                </a>
+                            {{/canedit}}
+                        </li>
+                    {{/affiliation}}
+                </ul>
+            </div>
+        </div>
+    {{/hasaffiliation}}
+</div>
+{{/hasleftsidebar}}

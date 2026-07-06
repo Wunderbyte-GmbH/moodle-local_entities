@@ -32,6 +32,8 @@ define('LOCAL_ENTITIES_FORM_ENTITYID', 'local_entities_entityid_');
 define('LOCAL_ENTITIES_FORM_ENTITYAREA', 'local_entities_entityarea_');
 define('LOCAL_ENTITIES_FORM_RELATIONID', 'local_entities_relationid_');
 define('LOCAL_ENTITIES_FORM_NAME', 'local_entities_entityname_');
+define('LOCAL_ENTITIES_FORM_QUANTITY', 'local_entities_quantity_');
+define('LOCAL_ENTITIES_FORM_EQUIPMENT', 'local_entities_equipment_');
 
 global $CFG;
 require_once("$CFG->libdir/formslib.php");
@@ -107,7 +109,9 @@ class entitiesrelation_handler {
                 '<i class="fa fa-fw fa-building" aria-hidden="true"></i>&nbsp;' .
                 $header
             );
-            $mform->setExpanded('entitiesrelation', false);
+            // No hard-coded collapse: the header's expand/collapse state is handled by the form
+            // (default collapse + central restore in mod_booking via restore_header_collapse_state),
+            // so it persists across no-submit reloads instead of always snapping shut.
         }
 
         $records = \local_entities\entities::list_all_parent_entities();
@@ -155,6 +159,40 @@ class entitiesrelation_handler {
         $elements[] = $mform->addElement('hidden', LOCAL_ENTITIES_FORM_ENTITYAREA . $index, 'optiondate');
         $mform->setType(LOCAL_ENTITIES_FORM_ENTITYAREA . $index, PARAM_TEXT);
 
+        // Equipment selection: when the chosen location has equipment available (resolved over the
+        // location hierarchy), offer a quantity field per equipment item. A no-submit button reloads
+        // the form so the equipment fields follow the chosen location (Moodle dynamic_form pattern).
+        if ($this->area === 'option') {
+            $refreshbtn = 'btn_local_entities_equipment_' . $index;
+            $mform->registerNoSubmitButton($refreshbtn);
+            $elements[] = $mform->addElement(
+                'submit',
+                $refreshbtn,
+                get_string('refreshequipment', 'local_entities'),
+                ['data-entityindex' => $index]
+            );
+            $mform->setType($refreshbtn, PARAM_NOTAGS);
+
+            // Read the chosen location from the form's own submitted data. In a dynamic_form the
+            // no-submit ("refresh equipment") round-trip delivers the values as $ajaxformdata, not
+            // via $_POST/$_GET, so the global optional_param() would see nothing and no equipment
+            // fields would render. MoodleQuickForm::optional_param() checks $ajaxformdata first and
+            // falls back to $_POST/$_GET, so it works both on a plain page load and on the AJAX reload.
+            $locationid = $mform->optional_param(LOCAL_ENTITIES_FORM_ENTITYID . $index, 0, PARAM_INT);
+            if ($locationid > 0) {
+                foreach (\local_entities\entities::get_equipment_for_location($locationid) as $equipment) {
+                    $fieldname = LOCAL_ENTITIES_FORM_EQUIPMENT . (int)$equipment->id;
+                    $elements[] = $mform->addElement(
+                        'text',
+                        $fieldname,
+                        get_string('equipmentquantity', 'local_entities', format_string($equipment->name))
+                    );
+                    $mform->setType($fieldname, PARAM_INT);
+                    $mform->setDefault($fieldname, 0);
+                }
+            }
+        }
+
         // Todo: Time table feature is currently not working, we need to fix this in a future release.
         // phpcs:ignore Squiz.PHP.CommentedOutCode.Found
         /* $elements[] = $mform->addElement('button', 'openmodal_' . $index, get_string('opentimetable', 'local_entities')); */
@@ -165,6 +203,41 @@ class entitiesrelation_handler {
         /* $PAGE->requires->css('/local/entities/js/main.css'); */ // phpcs:ignore Squiz.PHP.CommentedOutCode.Found
 
         return $elements;
+    }
+
+    /**
+     * Build a human-readable availability-conflict error for one entity (room or equipment).
+     *
+     * Names the affected resource and, in capacity mode, states the requested amount against the
+     * total capacity, so the user can tell which resource conflicts and why — not just that "there
+     * is a conflict". The overlapping bookings are listed with links and prettified date ranges.
+     *
+     * @param int $entityid the conflicting entity (location or equipment)
+     * @param int $requested the amount this booking tried to consume (participants or units)
+     * @param array $conflicts the conflicting entitydate objects from entities::return_conflicts()
+     * @return string the assembled HTML error message
+     */
+    private function format_conflict_error(int $entityid, int $requested, array $conflicts): string {
+        $entity = entity::load($entityid);
+        $name = format_string($entity->name);
+
+        if (entities::get_allocation_mode($entityid) === 'capacity') {
+            $message = get_string('conflictcapacity', 'local_entities', (object)[
+                'name' => $name,
+                'requested' => $requested,
+                'capacity' => (int)($entity->__get('maxallocation') ?? 0),
+            ]);
+        } else {
+            $message = get_string('conflictexclusive', 'local_entities', $name);
+        }
+
+        foreach ($conflicts as $conflict) {
+            $link = $conflict->link->out();
+            $message .= "<br><a href='$link'>" . format_string($conflict->name) . " (" .
+                dates::prettify_dates_start_end($conflict->starttime, $conflict->endtime, current_language()) . ")</a>";
+        }
+
+        return $message;
     }
 
     /**
@@ -192,25 +265,62 @@ class entitiesrelation_handler {
             }
 
             $area = $data[$entityidkey] == "local_entities_entityid_0" ? 'option' : 'optiondate';
+
+            // Capacity mode: tag the candidate dates with the amount this booking consumes of the
+            // entity (participants or an explicitly entered quantity), so return_conflicts can sum it.
+            $entityid = (int)$data[$entityidkey];
+            $index = (int)substr($entityidkey, strlen(LOCAL_ENTITIES_FORM_ENTITYID));
+            $consumed = entities::resolve_consumed_quantity($entityid, $data, $index);
+            foreach (($data['datestobook'] ?? []) as $datetobook) {
+                if (is_object($datetobook)) {
+                    $datetobook->quantity = $consumed;
+                }
+            }
+
             // Now determine if there are conflicts.
             $conflicts = entities::return_conflicts(
-                $data[$entityidkey],
+                $entityid,
                 $data['datestobook'] ?? [],
                 $data['optionid'] ?? 0,
                 $area
             );
 
             if (!empty($conflicts['conflicts'])) {
-                $errors[$entityidkey] = get_string('errorwiththefollowingdates', 'local_entities');
-
-                foreach ($conflicts['conflicts'] as $conflict) {
-                    $link = $conflict->link->out();
-                    $errors[$entityidkey] .= "<br><a href='$link'>$conflict->name (" .
-                        dates::prettify_dates_start_end($conflict->starttime, $conflict->endtime, current_language()) . ")</a>";
-                }
+                $errors[$entityidkey] = $this->format_conflict_error($entityid, $consumed, $conflicts['conflicts']);
             }
             if (!empty($conflicts['openinghours'])) {
                 $errors[$entityidkey] .= get_string('notwithinopeninghours', 'local_entities');
+            }
+        }
+
+        // Validate equipment chosen for the option's location (option level): each chosen equipment
+        // is re-verified against what is actually available for the location, then capacity-checked.
+        if ($equipmentkeys = preg_grep('/^' . LOCAL_ENTITIES_FORM_EQUIPMENT . '/', array_keys($data))) {
+            $locationid = (int)($data[LOCAL_ENTITIES_FORM_ENTITYID . 0] ?? 0);
+            $available = $locationid > 0 ? entities::get_equipment_for_location($locationid) : [];
+
+            foreach ($equipmentkeys as $eqkey) {
+                $eqid = (int)substr($eqkey, strlen(LOCAL_ENTITIES_FORM_EQUIPMENT));
+                $qty = (int)$data[$eqkey];
+                if ($eqid <= 0 || $qty <= 0 || !isset($available[$eqid])) {
+                    continue;
+                }
+
+                foreach (($data['datestobook'] ?? []) as $datetobook) {
+                    if (is_object($datetobook)) {
+                        $datetobook->quantity = $qty;
+                    }
+                }
+
+                $conflicts = entities::return_conflicts(
+                    $eqid,
+                    $data['datestobook'] ?? [],
+                    $data['optionid'] ?? 0,
+                    'option'
+                );
+                if (!empty($conflicts['conflicts'])) {
+                    $errors[$eqkey] = $this->format_conflict_error($eqid, $qty, $conflicts['conflicts']);
+                }
             }
         }
 
@@ -262,6 +372,11 @@ class entitiesrelation_handler {
      */
     public function delete_relation(int $instanceid): void {
         global $DB;
+
+        // Purge the entity occupancy cache BEFORE removing the relation, while we can still
+        // resolve the affected entity from it.
+        $this->purge_dates_cache($instanceid);
+
         $select = sprintf("component = :component AND area = :area AND %s = :instanceid", $DB->sql_compare_text('instanceid'));
         $DB->delete_records_select('local_entities_relations', $select, [
             'component' => $this->component,
@@ -270,6 +385,41 @@ class entitiesrelation_handler {
         ]);
 
         cache_helper::invalidate_by_event('purgecachedentities', ["$this->component-$this->area-$instanceid"]);
+    }
+
+    /**
+     * Purge the cached occupancy dates of the entity (or entities) linked to a given item.
+     *
+     * Resolves this handler's ($component, $area, $instanceid) to the linked entity id(s) and
+     * targeted-purges only those entity cache entries — never the whole cache. This is the entry
+     * point booking-side write paths should call (e.g. from purge_cache_for_answers /
+     * purge_cache_for_option) so that a booking change refreshes exactly the affected entity.
+     *
+     * @param int $instanceid item id; falls back to the handler's own instanceid when 0
+     * @return void
+     */
+    public function purge_dates_cache(int $instanceid = 0): void {
+        global $DB;
+
+        $instanceid = $instanceid > 0 ? $instanceid : (int)$this->instanceid;
+        if ($instanceid <= 0) {
+            return;
+        }
+
+        $entityids = $DB->get_fieldset_select(
+            'local_entities_relations',
+            'entityid',
+            'component = :component AND area = :area AND instanceid = :instanceid',
+            [
+                'component' => $this->component,
+                'area' => $this->area,
+                'instanceid' => $instanceid,
+            ]
+        );
+
+        foreach (array_unique(array_map('intval', $entityids)) as $entityid) {
+            entities::purge_dates_cache($entityid);
+        }
     }
 
     /**
@@ -309,7 +459,8 @@ class entitiesrelation_handler {
             ON ea.entityidto = e.id
         WHERE r.component = :component
         AND r.area = :area
-        AND r.instanceid = :instanceid ";
+        AND r.instanceid = :instanceid
+        AND (e.entitytype <> 'equipment' OR e.entitytype IS NULL) ";
 
         $params = [
             'component' => $this->component,
@@ -391,6 +542,35 @@ class entitiesrelation_handler {
         if (empty($data->{LOCAL_ENTITIES_FORM_RELATIONID . $index})) {
             $data->{LOCAL_ENTITIES_FORM_RELATIONID . $index} = isset($fromdb->relationid) ? $fromdb->relationid : 0;
         }
+
+        // Pre-fill the quantity fields of equipment already booked for this item (option level).
+        if ($this->area === 'option' && !empty($instanceid)) {
+            foreach ($this->get_equipment_relations((int)$instanceid) as $rel) {
+                $fieldname = LOCAL_ENTITIES_FORM_EQUIPMENT . (int)$rel->entityid;
+                if (empty($data->{$fieldname})) {
+                    $data->{$fieldname} = (int)($rel->quantity ?? 0);
+                }
+            }
+        }
+    }
+
+    /**
+     * Returns the equipment relations (entitytype='equipment') of an item.
+     *
+     * @param int $instanceid
+     * @return array relation records keyed by id
+     */
+    public function get_equipment_relations(int $instanceid): array {
+        global $DB;
+        $sql = "SELECT r.* FROM {local_entities_relations} r
+                JOIN {local_entities} e ON e.id = r.entityid
+                WHERE r.component = :component AND r.area = :area AND r.instanceid = :instanceid
+                  AND e.entitytype = 'equipment'";
+        return $DB->get_records_sql($sql, [
+            'component' => $this->component,
+            'area' => $this->area,
+            'instanceid' => $instanceid,
+        ]);
     }
 
     /**
@@ -437,11 +617,19 @@ class entitiesrelation_handler {
             $this->delete_relation($data->instanceid);
             return;
         }
+        // Capacity mode: snapshot the consumed amount (participants or entered quantity) so conflict
+        // checks of other bookings can sum it without querying the owning component.
+        $data->quantity = entities::resolve_consumed_quantity((int)$data->entityid, (array)$instance, $index);
         if ($this->er_record_exists($data)) {
-            return $this->update_db($data);
+            $result = $this->update_db($data);
         } else {
-            return $this->save_to_db($data);
+            $result = $this->save_to_db($data);
         }
+
+        // Also persist any equipment chosen for this location (option level).
+        $this->save_submitted_equipment($instance, $instanceid, $index);
+
+        return $result;
     }
 
     /**
@@ -467,6 +655,95 @@ class entitiesrelation_handler {
     }
 
     /**
+     * Syncs the equipment relations of an item (entity-aware, by entityid), leaving the item's
+     * location relation untouched. Equipment is stored as additional relations on the same
+     * (component, area, instanceid) with entitytype='equipment' and a per-relation quantity.
+     *
+     * @param int $instanceid
+     * @param array $equipment map of equipmentid => quantity (kept when quantity > 0)
+     * @return void
+     */
+    public function save_equipment_relations(int $instanceid, array $equipment): void {
+        global $DB;
+
+        $existing = $this->get_equipment_relations($instanceid);
+
+        $keep = [];
+        foreach ($equipment as $eqid => $qty) {
+            $eqid = (int)$eqid;
+            $qty = (int)$qty;
+            if ($eqid > 0 && $qty > 0) {
+                $keep[$eqid] = $qty;
+            }
+        }
+
+        foreach ($existing as $rel) {
+            $eqid = (int)$rel->entityid;
+            if (!isset($keep[$eqid])) {
+                // No longer chosen → remove this equipment relation.
+                $DB->delete_records('local_entities_relations', ['id' => $rel->id]);
+                entities::purge_dates_cache($eqid);
+                continue;
+            }
+            if ((int)($rel->quantity ?? 1) !== $keep[$eqid]) {
+                $rel->quantity = $keep[$eqid];
+                $DB->update_record('local_entities_relations', $rel);
+            }
+            entities::purge_dates_cache($eqid);
+            unset($keep[$eqid]);
+        }
+
+        // Insert newly chosen equipment.
+        foreach ($keep as $eqid => $qty) {
+            $DB->insert_record('local_entities_relations', (object)[
+                'entityid' => $eqid,
+                'component' => $this->component,
+                'area' => $this->area,
+                'instanceid' => $instanceid,
+                'timecreated' => time(),
+                'quantity' => $qty,
+            ]);
+            entities::purge_dates_cache($eqid);
+        }
+    }
+
+    /**
+     * Re-resolves and saves the equipment chosen in the form for the item's location.
+     *
+     * Equipment is offered/selected at option level. Each submitted equipment is re-verified against
+     * the equipment actually available for the chosen location (get_equipment_for_location), so a
+     * stale or tampered form cannot book equipment that is not offered there.
+     *
+     * @param stdClass $instance submitted form data
+     * @param int $instanceid
+     * @param int $index entity field index (location is at this index)
+     * @return void
+     */
+    private function save_submitted_equipment(stdClass $instance, int $instanceid, int $index): void {
+        if ($this->area !== 'option') {
+            return; // Equipment is selected at option level.
+        }
+
+        $locationid = (int)($instance->{LOCAL_ENTITIES_FORM_ENTITYID . $index} ?? 0);
+        $available = $locationid > 0 ? entities::get_equipment_for_location($locationid) : [];
+
+        $chosen = [];
+        foreach ((array)$instance as $key => $value) {
+            if (strpos($key, LOCAL_ENTITIES_FORM_EQUIPMENT) !== 0) {
+                continue;
+            }
+            $eqid = (int)substr($key, strlen(LOCAL_ENTITIES_FORM_EQUIPMENT));
+            $qty = (int)$value;
+            // Re-verify: only equipment actually available for the chosen location is accepted.
+            if ($eqid > 0 && $qty > 0 && isset($available[$eqid])) {
+                $chosen[$eqid] = $qty;
+            }
+        }
+
+        $this->save_equipment_relations($instanceid, $chosen);
+    }
+
+    /**
      * Saves relation data to DB
      *
      * @param stdClass $data
@@ -476,6 +753,7 @@ class entitiesrelation_handler {
         global $DB;
         $DB->insert_record('local_entities_relations', $data);
         cache_helper::purge_by_event('purgecachedentities');
+        entities::purge_dates_cache((int)($data->entityid ?? 0));
     }
 
     /**
@@ -488,6 +766,7 @@ class entitiesrelation_handler {
         global $DB;
         $id = $DB->update_record('local_entities_relations', $data);
         cache_helper::purge_by_event('purgecachedentities');
+        entities::purge_dates_cache((int)($data->entityid ?? 0));
         return $id;
     }
     /**
@@ -498,7 +777,15 @@ class entitiesrelation_handler {
      */
     public function er_record_exists(stdClass &$data): bool {
         global $DB;
-        $select = sprintf("component = :component AND area = :area AND %s = :instanceid", $DB->sql_compare_text('instanceid'));
+        // Match the single location relation of this item, never an equipment relation: equipment is
+        // stored as additional relations on the same (component, area, instanceid) and is managed
+        // separately (by entityid) via save_equipment_relations(). Excluding equipment here lets the
+        // location/room save update its own row even when equipment relations coexist.
+        $select = sprintf(
+            "component = :component AND area = :area AND %s = :instanceid
+             AND entityid IN (SELECT id FROM {local_entities} WHERE entitytype <> 'equipment' OR entitytype IS NULL)",
+            $DB->sql_compare_text('instanceid')
+        );
         if (
             $id = $DB->get_field_select('local_entities_relations', 'id', $select, [
                 'component' => $this->component,

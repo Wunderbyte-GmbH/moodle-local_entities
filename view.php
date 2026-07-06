@@ -24,6 +24,7 @@
  */
 
 use local_entities\local\views\secondary;
+use local_entities\output\entity_view;
 // We even want to show entities when logged out!
 // phpcs:ignore moodle.Files.RequireLogin.Missing
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
@@ -64,8 +65,6 @@ if (!empty($id) && !$DB->record_exists('local_entities', ['id' => $id])) {
     die();
 }
 
-// Add a class to the body that identifies this page.
-
 // Make the page name lowercase.
 $entity = \local_entities\settings_manager::get_settings($id);
 
@@ -82,141 +81,24 @@ $PAGE->requires->css('/local/entities/js/main.css');
 // Output the header.
 echo $OUTPUT->header();
 
-// Output the page content.
-$context = \context_system::instance();
+// Build the (template-agnostic) rendering context and render the active view template.
+$viewdata = entity_view::build_context($id);
+$entitytype = $viewdata->entitytype ?? '';
+$templatekey = entity_view::resolve_active_template(optional_param('template', '', PARAM_ALPHANUMEXT), $entitytype);
 
-$fs = get_file_storage();
-$files = $fs->get_area_files($context->id, 'local_entities', 'image', $id);
-$ispdf = false;
-foreach ($files as $file) {
-    $filename = $file->get_filename();
-    if ($file->get_filesize() > 0) {
-        $url = moodle_url::make_file_url('/pluginfile.php', '/1/local_entities/image/' . $id . '/' . $filename);
-        // Check if file is a pdf.
-        if ($file->get_mimetype() === "application/pdf") {
-            $ispdf = true;
-        }
-    }
-}
-
-$handlers = local_entities\customfield\entities_cf_helper::create_std_handlers();
-if (isset($entity->cfitemid)) {
-    $handlers[] = local_entities\customfield\entities_handler::create((int) $entity->cfitemid);
-}
-
-$metadata = [];
-$cat = "";
-foreach ($handlers as $handler) {
-    $datas = $handler->get_instance_data($id, true);
-
-    foreach ($datas as $data) {
-        if (empty($data->get_value())) {
-            continue;
-        }
-        $cat = $data->get_field()->get_category()->get('name');
-        $meta = new stdClass();
-        ;
-        $meta->key = $data->get_field()->get('name');
-        $meta->value = $data->get_value();
-
-        if (is_array($meta->value)) {
-            $meta->value = reset($meta->value);
-        }
-        $metadata[] = $meta;
-    }
-}
-$entity->hasmetadata = !empty($metadata);
-$entity->metacategory = $cat;
-$entity->metadata = $metadata;
-
-// Affiliated entities.
-$subentities = $DB->get_records('local_entities', ['parentid' => $id], 'name');
-$affiliation = [];
-if ($entity->hasaffiliation = !empty($subentities)) {
-    foreach ($subentities as $entry) {
-        $subentry = new stdClass();
-        $subentry->link = new \moodle_url("/local/entities/view.php", ["id" => $entry->id]);
-        $subentry->name = $entry->name;
-        $subentry->shortname = $entry->shortname;
-        $subentry->editurl = new moodle_url('/local/entities/edit.php', [ 'id' => $entry->id]);
-        $affiliation[] = $subentry;
-    }
-    $entity->affiliation = $affiliation;
-}
-
-// Parent entity.
-$imagefallback = get_config('local_entities', 'fallback_image_parent');
-$contactsfallback = get_config('local_entities', 'fallback_contacts_parent');
-$addressfallback = get_config('local_entities', 'fallback_address_parent');
-$parenthascontacts = false; // Initialize.
-$parenthasaddress = false; // Initialize.
-
-if (!empty($entity->parentid)) {
-    $parent = \local_entities\settings_manager::get_settings($entity->parentid);
-    if (!empty($parent)) {
-        $entity->parent = $parent;
-        $entity->parent->link = new \moodle_url("/local/entities/view.php", ["id" => $parent->id]);
-        $parenthasaddress = !empty($parent->address);
-        $parenthascontacts = !empty($parent->contacts);
-
-        if (!isset($url) && $imagefallback) {
-            $files = $fs->get_area_files($context->id, 'local_entities', 'image', $parent->id);
-
-            foreach ($files as $file) {
-                $filename = $file->get_filename();
-                if ($file->get_filesize() > 0) {
-                    $url = moodle_url::make_file_url('/pluginfile.php', '/1/local_entities/image/' . $parent->id . '/' . $filename);
-                }
-            }
-        }
-    }
-}
-
-$entity->metadata = $metadata;
-$entity->description = file_rewrite_pluginfile_urls(
-    $entity->description,
-    'pluginfile.php',
-    $context->id,
-    'local_entity',
-    'description',
-    null
+// Managers can switch the view template directly here: preview via link, then save it for this type.
+$switcher = entity_view::build_switcher(
+    $id,
+    $templatekey,
+    entity_view::resolve_active_template('', $entitytype),
+    $entitytype
 );
-
-$entity->picture = !empty($url) ? $url : null;
-$entity->hasaddress = !empty($entity->address);
-$entity->hascontacts = !empty($entity->contacts);
-
-// Different handling for PDFs and images.
-if ($ispdf) {
-    $entity->haspdf = !empty($entity->picture);
-} else {
-    $entity->haspicture = !empty($entity->picture);
+if ($switcher !== null) {
+    $PAGE->requires->js_call_amd('local_entities/viewswitcher', 'init');
+    echo $OUTPUT->render_from_template('local_entities/view/parts/switcher', $switcher);
 }
 
-if ($entity->hasaddress) {
-    $entity->addresscleaned = array_values($entity->address);
-} else if ($parenthasaddress && $addressfallback) {
-    $entity->hasaddress = $parenthasaddress;
-    $entity->addresscleaned = array_values($parent->address);
-}
-if ($entity->hascontacts) {
-    $entity->contactscleaned = array_values($entity->contacts);
-} else if ($parenthascontacts && $contactsfallback) {
-    $entity->hascontacts = $parenthascontacts;
-    $entity->contactscleaned = array_values($parent->contacts);
-}
-
-$entity->hasleftsidebar = $entity->hasmetadata || $entity->hasaffiliation;
-$entity->hasrightsidebar = $entity->hascontacts || $entity->hasaddress;
-
-$entity->showcalendar = get_config('local_entities', 'show_calendar_on_details_page');
-$entity->canedit = has_capability('local/entities:edit', \context_system::instance());
-$entity->showpictureinsteadofcalendar = get_config('local_entities', 'showpictureinsteadofcalendar');
-$entity->editurl = new moodle_url('/local/entities/edit.php', [ 'id' => $id]);
-$entity->calendarurl = new moodle_url('/local/entities/calendar.php', [ 'id' => $id]);
-$entity->delurl = new moodle_url('/local/entities/entities.php', [ 'del' => $id, 'sesskey' => $USER->sesskey]);
-
-echo $OUTPUT->render_from_template('local_entities/view', $entity);
+echo $OUTPUT->render_from_template('local_entities/view/' . $templatekey, $viewdata);
 
 // Now output the footer.
 echo $OUTPUT->footer();

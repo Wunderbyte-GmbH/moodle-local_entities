@@ -33,4 +33,26 @@ $definitions = [
         'staticaccelerationsize' => 1000,
         'invalidationevents' => ['purgecachedentities'],
     ],
+    // Per-entity occupancy dates (output of entities::get_all_dates_for_entity), keyed by entityid.
+    // Read-accelerator for availability checks (e.g. slot pickers). Purged explicitly and targeted
+    // via entitiesrelation_handler::purge_dates_cache() when an entity's occupancy changes. The
+    // authoritative booking-time checks read live (bypass this cache), so a stale entry only ever
+    // affects display freshness, never booking correctness.
+    'entitydates' => [
+        'mode' => cache_store::MODE_APPLICATION,
+        'simplekeys' => true,
+        'simpledata' => false,
+        'staticacceleration' => true,
+        'staticaccelerationsize' => 200,
+    ],
+    // Geocoding results (OpenStreetMap/Nominatim) keyed by a hash of the address. Caches both hits
+    // and misses long-term so an address is geocoded at most once (respecting Nominatim's usage
+    // policy); the map view falls back to a plain link when no coordinates are available.
+    'geocode' => [
+        'mode' => cache_store::MODE_APPLICATION,
+        'simplekeys' => true,
+        'simpledata' => false,
+        'staticacceleration' => true,
+        'staticaccelerationsize' => 100,
+    ],
 ];

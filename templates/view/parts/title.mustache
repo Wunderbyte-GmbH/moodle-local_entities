@@ -1,0 +1,60 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template local_entities/view/parts/title
+    Shared title block (parent link, name, description, edit/delete) for the entity view templates.
+}}
+{{#parent}}
+    <h5 class="">
+        <a class="text-muted" href="{{link}}">{{name}}</a>
+    </h5>
+{{/parent}}
+<h1 class=" ">{{#name}}{{.}}{{/name}}</h1>
+<span>
+    {{{description}}}
+</span>
+{{#canedit}}
+    <div class="text-start ">
+        <a class="btn btn-sm btn-primary" title="{{#str}}edit{{/str}}"
+           href="{{editurl}}"><i
+                class="fa fa-edit" aria-hidden="true"></i>&nbsp;{{#str}}edit{{/str}}</a>
+        <button class="btn btn-sm btn-danger ms-auto"
+                title="{{#str}}delete{{/str}}" rel="nofollow" data-method="delete"
+                data-target="#deleteModal-{{id}}" data-bs-target="#deleteModal-{{id}}"
+                data-toggle="modal" data-bs-toggle="modal"><i
+                class="fa fa-trash"></i>&nbsp;{{#str}}delete{{/str}}</button>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="deleteModal-{{id}}">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{{#str}}deleteentity , local_entities{{/str}}</h5>
+                    <button type="button" class="btn-close"
+                            data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>{{#str}}deleteentityconfirm , local_entities{{/str}}</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" data-bs-dismiss="modal"
+                            id="close-modal">{{#str}}cancel{{/str}}</button>
+                    <a href="{{delurl}}" rel="nofollow" class="btn btn-danger">{{#str}}delete{{/str}}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{{/canedit}}

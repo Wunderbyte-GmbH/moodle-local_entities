@@ -76,14 +76,32 @@ if ($hassiteconfig) {
         )
     );
 
+    // Global fallback detail-view template (used for any type without its own choice). Managers can
+    // also switch and save it directly on a detail page.
     $settings->add(
-        new admin_setting_configcheckbox(
-            $componentname . '/show_calendar_on_details_page',
-            get_string('show_calendar_on_details_page', $componentname),
-            get_string('show_calendar_on_details_page:description', $componentname),
-            0
+        new admin_setting_configselect(
+            $componentname . '/activeviewtemplate',
+            get_string('activeviewtemplate', $componentname),
+            get_string('activeviewtemplate:description', $componentname),
+            \local_entities\local\views\view_templates::DEFAULT_TEMPLATE,
+            \local_entities\local\views\view_templates::menu()
         )
     );
+
+    // Per-entity-type overrides: each type may use its own template; empty inherits the global fallback.
+    $typechoices = ['' => get_string('inheritglobal', $componentname)]
+        + \local_entities\local\views\view_templates::menu();
+    foreach (\local_entities\local\views\entity_types::all() as $type => $typename) {
+        $settings->add(
+            new admin_setting_configselect(
+                $componentname . '/activeviewtemplate_' . $type,
+                get_string('activeviewtemplatefortype', $componentname, $typename),
+                get_string('activeviewtemplatefortype:description', $componentname, $typename),
+                '',
+                $typechoices
+            )
+        );
+    }
 
     $settings->add(
         new admin_setting_configcheckbox(
@@ -94,12 +112,4 @@ if ($hassiteconfig) {
         )
     );
 
-    $settings->add(
-        new admin_setting_configcheckbox(
-            $componentname . '/showpictureinsteadofcalendar',
-            get_string('showpictureinsteadofcalendar', $componentname),
-            get_string('showpictureinsteadofcalendar:description', $componentname),
-            0
-        )
-    );
 }

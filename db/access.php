@@ -50,4 +50,12 @@ $capabilities = [
             'user' => CAP_ALLOW,
         ],
     ],
+    // Allows previewing and saving the global detail-view template (separate from full edit rights).
+    'local/entities:changeviewtemplate' => [
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => [
+            'manager' => CAP_ALLOW,
+        ],
+    ],
 ];

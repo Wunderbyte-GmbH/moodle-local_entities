@@ -81,6 +81,14 @@ $functions = [
                 'type' => 'read',
                 'ajax' => true,
         ],
+        'local_entities_set_active_view_template' => [
+                'classname' => 'local_entities\external\set_active_view_template',
+                'classpath' => '',
+                'description' => 'Save the global active detail-view template',
+                'type' => 'write',
+                'ajax' => true,
+                'capabilities' => 'local/entities:changeviewtemplate',
+        ],
 ];
 
 $services = [

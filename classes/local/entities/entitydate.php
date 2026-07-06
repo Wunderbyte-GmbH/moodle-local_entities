@@ -97,6 +97,13 @@ class entitydate {
     public $bgcolor;
 
     /**
+     * Consumed amount of the entity by this date (capacity mode): participants or units. Default 1.
+     *
+     * @var int
+     */
+    public $quantity = 1;
+
+    /**
      * Cunstructor.
      *
      * @param int $itemid
@@ -147,6 +154,7 @@ class entitydate {
         $item['status'] = $this->status;
         $item['link'] = $this->link;
         $item['bgcolor'] = $this->bgcolor;
+        $item['quantity'] = $this->quantity;
         return $item;
     }
 

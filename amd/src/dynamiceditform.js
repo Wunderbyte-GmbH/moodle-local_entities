@@ -45,6 +45,21 @@
             let button = document.querySelector('[name="btn_cfcategoryid"]');
             editform.processNoSubmitButton(button);
         }
+        if (e.target.name == 'entitytype') {
+            // Snap the field template to the one matching the chosen entity type, then reload the form
+            // through the existing category no-submit so the right fields appear automatically.
+            const cfselect = formContainer.querySelector('[name="cfitemid"]');
+            if (cfselect) {
+                const target = e.target.value == 'equipment'
+                    ? cfselect.dataset.templateEquipment
+                    : cfselect.dataset.templateLocation;
+                if (target !== undefined && target !== '' && target !== '0') {
+                    cfselect.value = target;
+                }
+                window.skipClientValidation = true;
+                editform.processNoSubmitButton(document.querySelector('[name="btn_cfcategoryid"]'));
+            }
+        }
     });
     editform.addEventListener(editform.events.FORM_SUBMITTED, (e) => {
         e.preventDefault();
