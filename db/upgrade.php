@@ -284,5 +284,60 @@ function xmldb_local_entities_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2024062501, 'local', 'entities');
     }
 
+    if ($oldversion < 2026070301) {
+        $table = new xmldb_table('local_entities');
+
+        // Booking/allocation mode for the entity. Default 'none' preserves the previous behaviour
+        // (no overlap checking) for existing entities.
+        $field = new xmldb_field('allocationmode', XMLDB_TYPE_CHAR, '20', null, null, null, 'none', 'maxallocation');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Max concurrent reservations used by the exclusive mode.
+        $field = new xmldb_field('maxconcurrent', XMLDB_TYPE_INTEGER, '10', null, null, null, '1', 'allocationmode');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Capacity mode: how the consumed amount per booking is determined.
+        $field = new xmldb_field('capacitysource', XMLDB_TYPE_CHAR, '20', null, null, null, 'maxanswers', 'maxconcurrent');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Kind of entity: 'location' (default) or 'equipment'.
+        $field = new xmldb_field('entitytype', XMLDB_TYPE_CHAR, '20', null, null, null, 'location', 'capacitysource');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Equipment: whether sub-locations may also use the item.
+        $field = new xmldb_field('availableinsublocations', XMLDB_TYPE_INTEGER, '1', null, null, null, '1', 'entitytype');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Capacity mode: consumed amount of the entity by a single relation (participants or units).
+        $table = new xmldb_table('local_entities_relations');
+        $field = new xmldb_field('quantity', XMLDB_TYPE_INTEGER, '10', null, null, null, '1', 'timecreated');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Seed the default, ready-to-use field templates (location & equipment) on existing sites.
+        // Idempotent and non-destructive: it only adds two new custom field categories and never
+        // touches existing entities.
+        \local_entities\local\templates\template_seeder::seed_default_templates();
+
+        // Migrate the two legacy display checkboxes into the global active-view-template setting so
+        // existing sites keep their exact look (showpicture → image; show_calendar → calendar; else
+        // classic). Runs only while the new setting is unset.
+        \local_entities\output\entity_view::migrate_legacy_view_settings();
+
+        // Entities savepoint reached.
+        upgrade_plugin_savepoint(true, 2026070301, 'local', 'entities');
+    }
+
     return true;
 }
