@@ -312,7 +312,11 @@ final class external_test extends \advanced_testcase {
                 ],
 
         ];
-        $expected = new \invalid_parameter_exception();
+        // Return the expected exception CLASS (a string), not a live exception object: under
+        // @runInSeparateProcess PHPUnit serialises the data set, and an exception's trace can hold
+        // closures/non-serialisable args, which aborts the whole suite. The exceptions test uses
+        // expectException() and ignores this value anyway.
+        $expected = \invalid_parameter_exception::class;
         return [$id, $data, $expected];
     }
 

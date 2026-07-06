@@ -28,10 +28,6 @@ use DateTime;
 use stdClass;
 defined('MOODLE_INTERNAL') || die();
 
-global $CFG;
-
-require_once("$CFG->libdir/externallib.php");
-
 /**
  * Class fullcalendar_helper
  *

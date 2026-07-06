@@ -98,13 +98,7 @@ class osm_geocoder {
     protected static function fetch_from_nominatim(string $query) {
         global $CFG;
 
-        // RFC3986 encoding (spaces as %20): Nominatim rejects the default '+'-encoded spaces with
-        // HTTP 400 "Nothing to search for.".
-        $url = 'https://nominatim.openstreetmap.org/search?' . http_build_query([
-            'format' => 'jsonv2',
-            'limit' => 1,
-            'q' => $query,
-        ], '', '&', PHP_QUERY_RFC3986);
+        $url = self::build_request_url($query);
 
         $curl = new \curl();
         $response = $curl->get($url, [], [
@@ -118,11 +112,40 @@ class osm_geocoder {
         if ($curl->get_errno() || empty($response) || (int)$httpcode !== 200) {
             return null; // Transient (network/HTTP error, rate limit) — caller will not cache this.
         }
-        // Nominatim returns a JSON array of matches; on errors/rate-limits it may return an object
-        // or non-JSON instead. A non-array means "not a valid result set" → treat as transient.
+        return self::parse_nominatim_response((string)$response);
+    }
+
+    /**
+     * Build the Nominatim request URL for a query (pure; no network).
+     *
+     * RFC3986 encoding (spaces as %20): Nominatim rejects the default '+'-encoded spaces with
+     * HTTP 400 "Nothing to search for.".
+     *
+     * @param string $query
+     * @return string
+     */
+    public static function build_request_url(string $query): string {
+        return 'https://nominatim.openstreetmap.org/search?' . http_build_query([
+            'format' => 'jsonv2',
+            'limit' => 1,
+            'q' => $query,
+        ], '', '&', PHP_QUERY_RFC3986);
+    }
+
+    /**
+     * Interpret a raw Nominatim response body (pure; no network).
+     *
+     * Nominatim returns a JSON array of matches; on errors/rate-limits it may return an object or
+     * non-JSON instead.
+     *
+     * @param string $response raw response body
+     * @return \stdClass|false|null coords on a usable match, false for a valid "no match"
+     *                              (→ negative-cache), null for a non-array/garbage response (→ transient)
+     */
+    public static function parse_nominatim_response(string $response) {
         $data = json_decode($response);
         if (!is_array($data)) {
-            return null;
+            return null; // Not a valid result set (object/garbage) → treat as transient, do not cache.
         }
         if (!isset($data[0]) || !is_object($data[0]) || !isset($data[0]->lat, $data[0]->lon)) {
             return false; // Valid response, but no usable match → cache as "not found".
