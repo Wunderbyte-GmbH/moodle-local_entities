@@ -9,6 +9,8 @@ Feature: Entities are shown as a searchable hierarchical list
       | Room A        | rooma     | location   | Main Building |
       | Beamer X      | beamerx   | equipment  | Room A        |
       | North Wing    | northwing | location   |               |
+    And the following config values are set as admin:
+      | usetreelist | 1 | local_entities |
     And I log in as "admin"
     And I change viewport size to "1366x10000"
 

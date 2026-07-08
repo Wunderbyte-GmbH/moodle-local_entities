@@ -34,6 +34,17 @@ if ($hassiteconfig) {
     $ADMIN->add('localplugins', new admin_category($componentname, get_string('pluginname', $componentname)));
     $ADMIN->add($componentname, $settings);
 
+    // Opt in to the new hierarchical wunderbyte_table entity list (tree filter, search, pagination).
+    // Off by default: the classic list stays the default until this is switched on.
+    $settings->add(
+        new admin_setting_configcheckbox(
+            $componentname . '/usetreelist',
+            get_string('usetreelist', $componentname),
+            get_string('usetreelist:description', $componentname),
+            0
+        )
+    );
+
     // Select Standard Categories from custom categories.
     $categories = \local_entities\customfield\entities_cf_helper::get_all_cf_categories();
 

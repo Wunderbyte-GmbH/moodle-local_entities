@@ -188,6 +188,8 @@ $string['usecount'] = 'Used by';
 $string['usesubentitynamesforfilter'] = 'For filters, use name of the actual sub-entity';
 $string['usesubentitynamesforfilter:description'] = 'Filters use the parent entity by default.
 If you activate this checkbox, then every single entity (sub-entity) will be shown in filter.';
+$string['usetreelist'] = 'Use the new hierarchical entity list';
+$string['usetreelist:description'] = 'Show the new entity overview (hierarchical tree filter, full-text search, pagination) instead of the classic list.';
 $string['view'] = 'View';
 $string['viewtemplate'] = 'View';
 $string['viewtemplate_calendar'] = 'Calendar';

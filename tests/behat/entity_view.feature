@@ -6,6 +6,8 @@ Feature: The entity detail page renders through the view-template resolver
     Given the following "local_entities > entities" exist:
       | name          | shortname |
       | View Test One | viewtest1 |
+    And the following config values are set as admin:
+      | usetreelist | 1 | local_entities |
     And I log in as "admin"
 
   @javascript

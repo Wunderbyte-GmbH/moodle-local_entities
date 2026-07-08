@@ -188,6 +188,8 @@ $string['usecount'] = 'Verwendet von';
 $string['usesubentitynamesforfilter'] = 'Filter: Namen von Sub-Entities verwenden';
 $string['usesubentitynamesforfilter:description'] = 'Filter nutzen standardmäßig den Namen der Parent-Entity.
 Wenn Sie dieses Häkchen aktivieren, dann wird jede einzelne Sub-Entity im Filter angezeigt.';
+$string['usetreelist'] = 'Neue hierarchische Entities-Liste verwenden';
+$string['usetreelist:description'] = 'Zeigt die neue Entities-Übersicht (hierarchischer Baumfilter, Volltextsuche, Pagination) statt der klassischen Liste.';
 $string['view'] = 'Ansehen';
 $string['viewtemplate'] = 'Ansicht';
 $string['viewtemplate_calendar'] = 'Kalender';
