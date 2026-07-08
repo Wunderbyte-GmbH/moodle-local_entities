@@ -15,6 +15,18 @@
     @template local_entities/view/calendar
     Calendar-focused detail view: the availability calendar is rendered inline in the centre.
     Reproduces the previous "show calendar on details page" layout.
+
+    Example context (json):
+    {
+        "name": "Room A.101",
+        "haspicture": false,
+        "haspdf": false,
+        "calendarurl": "https://example.com/calendar",
+        "id": 1,
+        "locale": "en",
+        "hasleftsidebar": false,
+        "hasrightsidebar": false
+    }
 }}
 <div class="container-fluid shadow-bottom pb-3" data-viewtemplate="calendar">
     <div class="row">

@@ -15,7 +15,15 @@
     @template local_entities/view/parts/map
     Shared map block. Renders, in order of preference: a manually pasted embed, an OpenStreetMap
     embed geocoded from the address, or a plain "open map" link. Expects the entity context with
-    {{#mapdata}} (embedhtml | osmembedurl + osmlink | maplink).
+    mapdata (embedhtml | osmembedurl + osmlink | maplink).
+
+    Example context (json):
+    {
+        "mapdata": {
+            "osmembedurl": "https://www.openstreetmap.org/export/embed.html",
+            "osmlink": "https://www.openstreetmap.org/"
+        }
+    }
 }}
 {{#mapdata}}
     {{#embedhtml}}

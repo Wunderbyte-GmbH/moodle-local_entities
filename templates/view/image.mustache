@@ -15,6 +15,16 @@
     @template local_entities/view/image
     Image-focused detail view: large picture/PDF in the centre (replaces the calendar).
     Reproduces the previous "show picture instead of calendar" layout.
+
+    Example context (json):
+    {
+        "name": "Room A.101",
+        "haspicture": true,
+        "picture": "https://placehold.co/600x400",
+        "haspdf": false,
+        "hasleftsidebar": false,
+        "hasrightsidebar": false
+    }
 }}
 <div class="container-fluid shadow-bottom pb-3" data-viewtemplate="image">
     <div class="row">

@@ -15,6 +15,30 @@
     @template local_entities/view/parts/switcher
     On-page template switcher for managers: preview links + an explicit "save" action.
     Context: { entityid, baseurl, ispreview, savekey, templates: [{key,name,icon,active,url}] }
+
+    Example context (json):
+    {
+        "entityid": 1,
+        "baseurl": "https://example.com/view",
+        "entitytype": "location",
+        "templates": [
+            {
+                "url": "https://example.com/view?t=classic",
+                "active": true,
+                "icon": "fa-th-large",
+                "name": "Classic"
+            },
+            {
+                "url": "https://example.com/view?t=compact",
+                "active": false,
+                "icon": "fa-list",
+                "name": "Compact"
+            }
+        ],
+        "ispreview": true,
+        "savekey": "classic",
+        "savelabel": "Save as default"
+    }
 }}
 <div class="local-entities-viewswitcher card shadow-sm mb-3"
      data-entityid="{{entityid}}" data-baseurl="{{baseurl}}" data-entitytype="{{entitytype}}">

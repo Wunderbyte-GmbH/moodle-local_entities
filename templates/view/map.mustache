@@ -14,6 +14,20 @@
 {{!
     @template local_entities/view/map
     Map-focused detail view: the location map (OpenStreetMap, geocoded from the address) is the hero.
+
+    Example context (json):
+    {
+        "name": "Room A.101",
+        "haspicture": false,
+        "haspdf": false,
+        "hasmap": true,
+        "mapdata": {
+            "osmembedurl": "https://www.openstreetmap.org/export/embed.html",
+            "osmlink": "https://www.openstreetmap.org/"
+        },
+        "hasleftsidebar": false,
+        "hasrightsidebar": false
+    }
 }}
 <div class="container-fluid shadow-bottom pb-3" data-viewtemplate="map">
     <div class="row">

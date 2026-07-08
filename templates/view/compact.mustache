@@ -15,6 +15,30 @@
     @template local_entities/view/compact
     Compact, information-dense single-card view: small image, key metadata, contacts/address inline
     and a link to the full calendar. A new alternative to the classic three-column layout.
+
+    Example context (json):
+    {
+        "name": "Room A.101",
+        "description": "<p>Main lecture hall.</p>",
+        "haspicture": true,
+        "picture": "https://placehold.co/300x300",
+        "parent": {
+            "link": "https://example.com/parent",
+            "name": "Building A"
+        },
+        "hasmetadata": true,
+        "metadata": [
+            {
+                "key": "Capacity",
+                "value": "30"
+            }
+        ],
+        "hascontacts": false,
+        "hasaddress": false,
+        "calendarurl": "https://example.com/calendar",
+        "canedit": false,
+        "hasaffiliation": false
+    }
 }}
 <div class="container-fluid pb-3" data-viewtemplate="compact">
     <div class="card shadow">
@@ -29,7 +53,7 @@
                     {{#parent}}
                         <div class="small text-muted"><a href="{{link}}">{{name}}</a></div>
                     {{/parent}}
-                    <h1 class="h3 mb-2">{{name}}</h1>
+                    {{#name}}<h1 class="h3 mb-2">{{name}}</h1>{{/name}}
                     <div class="mb-3">{{{description}}}</div>
 
                     {{#hasmetadata}}

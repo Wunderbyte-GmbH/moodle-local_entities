@@ -15,6 +15,17 @@
     @template local_entities/view/classic
     Classic three-column detail view: image thumbnail + title, sidebars (metadata/affiliation and
     contacts/address) and a centre block linking to the full calendar. This is the baseline layout.
+
+    Example context (json):
+    {
+        "name": "Room A.101",
+        "haspicture": true,
+        "picture": "https://placehold.co/200x200",
+        "haspdf": false,
+        "calendarurl": "https://example.com/calendar",
+        "hasleftsidebar": false,
+        "hasrightsidebar": false
+    }
 }}
 <div class="container-fluid shadow-bottom pb-3" data-viewtemplate="classic">
     <div class="row">

@@ -14,13 +14,27 @@
 {{!
     @template local_entities/view/parts/title
     Shared title block (parent link, name, description, edit/delete) for the entity view templates.
+
+    Example context (json):
+    {
+        "name": "Room A.101",
+        "description": "<p>Main lecture hall.</p>",
+        "parent": {
+            "link": "https://example.com/parent",
+            "name": "Building A"
+        },
+        "canedit": true,
+        "editurl": "https://example.com/edit",
+        "delurl": "https://example.com/delete",
+        "id": 1
+    }
 }}
 {{#parent}}
     <h5 class="">
         <a class="text-muted" href="{{link}}">{{name}}</a>
     </h5>
 {{/parent}}
-<h1 class=" ">{{#name}}{{.}}{{/name}}</h1>
+{{#name}}<h1>{{.}}</h1>{{/name}}
 <span>
     {{{description}}}
 </span>
