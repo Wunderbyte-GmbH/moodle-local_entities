@@ -152,7 +152,8 @@ class entities_table extends wunderbyte_table {
 
         $link = html_writer::link(
             new moodle_url('/local/entities/view.php', ['id' => $row->id]),
-            html_writer::tag('i', '', ['class' => "fa fa-fw $icon me-1 text-muted"]) . format_string($row->name)
+            html_writer::tag('i', '', ['class' => "fa fa-fw $icon me-1 text-muted", 'aria-hidden' => 'true'])
+                . format_string($row->name)
         );
 
         // The namepath is "root / … / self"; the breadcrumb is everything but the entity itself.
@@ -178,9 +179,9 @@ class entities_table extends wunderbyte_table {
      */
     public function col_entitytype($row): string {
         if (($row->entitytype ?? 'location') === 'equipment') {
-            return html_writer::span(get_string('entitytype_equipment', 'local_entities'), 'badge bg-info text-dark');
+            return html_writer::span(get_string('entitytype_equipment', 'local_entities'), 'badge text-bg-info');
         }
-        return html_writer::span(get_string('entitytype_location', 'local_entities'), 'badge bg-secondary');
+        return html_writer::span(get_string('entitytype_location', 'local_entities'), 'badge text-bg-secondary');
     }
 
     /**
@@ -191,8 +192,12 @@ class entities_table extends wunderbyte_table {
      */
     public function col_usecount($row): string {
         $count = (int)($row->usecount ?? 0);
-        $class = $count > 0 ? 'badge bg-primary' : 'badge bg-light text-muted';
-        return html_writer::span($count, $class);
+        $class = $count > 0 ? 'badge text-bg-primary' : 'badge text-bg-light';
+        // The bare number badge carries meaning by colour and position; give it an accessible label
+        // so screen readers announce what the number is about, not just "2".
+        return html_writer::span($count, $class, [
+            'aria-label' => get_string('usecount', 'local_entities') . ': ' . $count,
+        ]);
     }
 
     /**
@@ -208,14 +213,14 @@ class entities_table extends wunderbyte_table {
         $buttons = '';
         $buttons .= html_writer::link(
             new moodle_url('/local/entities/view.php', ['id' => $row->id]),
-            html_writer::tag('i', '', ['class' => 'fa fa-search-plus']),
+            html_writer::tag('i', '', ['class' => 'fa fa-search-plus', 'aria-hidden' => 'true']),
             ['class' => 'btn btn-sm btn-outline-secondary me-1', 'title' => get_string('view', 'local_entities')]
         );
 
         if (has_capability('local/entities:edit', $context)) {
             $buttons .= html_writer::link(
                 new moodle_url('/local/entities/edit.php', ['id' => $row->id]),
-                html_writer::tag('i', '', ['class' => 'fa fa-edit']),
+                html_writer::tag('i', '', ['class' => 'fa fa-edit', 'aria-hidden' => 'true']),
                 ['class' => 'btn btn-sm btn-outline-secondary me-1', 'title' => get_string('edit', 'local_entities')]
             );
         }
