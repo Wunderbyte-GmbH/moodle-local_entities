@@ -4,10 +4,15 @@ Feature: Baisc functionality of local_entities works as expected
   Background:
     Given the following "custom field categories" exist:
       | name      | component      | area     | itemid |
-      | CustomCat | local_entities | entities | 0      |
+      | CustomCat | local_entities | entities | 999    |
     And the following "custom fields" exist:
       | name   | category  | type | shortname |
       | Sport1 | CustomCat | text | spt1      |
+    # The entity form only renders customfields whose category itemid is selected as a standard
+    # category. itemid 0 is skipped by an empty() guard, and low itemids (1, 2, …) collide with the
+    # seeded field templates, so use a dedicated, collision-free itemid and select it here.
+    And the following config values are set as admin:
+      | categories | 999 | local_entities |
     And the following "local_entities > entities" exist:
       | name    | shortname | pricefactor | maxallocation | openinghours |
       ##| Entity1 | entity1   | 1           | 10            | [{"title":"openinghours","daysOfWeek":"2,5,6","startTime":"10:11","endTime":"15:12"}] |
