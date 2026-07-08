@@ -1,3 +1,9 @@
+## Version 0.5.2 (2026070800)
+* CI: Install the local_wunderbyte_table dependency so the plugin CI (PHPUnit/Behat) resolves the entities table and rawdata cache.
+* Improvement: Add Mustache example contexts to the entity view templates and guard the title heading against empty output (Mustache lint).
+* Accessibility: Fix low-contrast entity type and use-count badges in the overview (text-bg-* auto-contrast), label the use-count badge and hide decorative icons from screen readers.
+* Improvement: Keep the classic entity list as the default; the new hierarchical wunderbyte_table list (tree filter, search, pagination) is now opt-in via the local_entities/usetreelist setting.
+
 ## Version 0.5.1 (2026070301)
 * New Feature: Multilevel tree filter for entities with hierarchical display (parent select shows the full hierarchy, cycles are rejected).
 * New Feature: Entity image resolver with ancestor fallback for hover cards.
