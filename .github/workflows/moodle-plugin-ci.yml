@@ -14,7 +14,8 @@ jobs:
       moodle_branches: "MOODLE_500_STABLE MOODLE_501_STABLE"  # Optional: Only test specific Moodle versions
 
       # If you need to install additional plugins as dependencies
-      # extra_plugin_runners: |
+      extra_plugin_runners: |
+        moodle-plugin-ci add-plugin Wunderbyte-GmbH/moodle-local_wunderbyte_table
 
       # mustache_ignore_names: ''
 
@@ -73,7 +74,8 @@ jobs:
       moodle_branches: "MOODLE_405_STABLE"  # Optional: Only test specific Moodle versions
 
       # If you need to install additional plugins as dependencies
-      # extra_plugin_runners: |
+      extra_plugin_runners: |
+        moodle-plugin-ci add-plugin Wunderbyte-GmbH/moodle-local_wunderbyte_table
 
       # mustache_ignore_names: ''
 
