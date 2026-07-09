@@ -58,8 +58,11 @@ export const init = () => {
  * @param {Array} equipmentLocations location entity ids that have equipment
  */
 export const initEquipmentToggle = (index, equipmentLocations) => {
-    const select = document.getElementById('id_local_entities_entityid_' + index);
-    const button = document.getElementById('id_btn_local_entities_equipment_' + index);
+    // Locate the elements by their stable form NAME, not by id: Moodle appends a random
+    // uniqueid suffix to element ids (e.g. id_..._GUjZixIAqtNWwgs) on 5.x, so a hardcoded
+    // id_..._<index> lookup returns null and the toggle would never wire up.
+    const select = document.querySelector('[name="local_entities_entityid_' + index + '"]');
+    const button = document.querySelector('[name="btn_local_entities_equipment_' + index + '"]');
 
     if (!select || !button) {
         return;
@@ -70,6 +73,10 @@ export const initEquipmentToggle = (index, equipmentLocations) => {
 
     const apply = () => {
         const hasequipment = equipmentSet.has(String(select.value || ''));
+        // The server-side initial hide puts d-none on BOTH the button element (its class
+        // attribute) and the .fitem row, so toggle both — clearing only the row would leave
+        // the button itself hidden and not interactable.
+        button.classList.toggle('d-none', !hasequipment);
         wrapper.classList.toggle('d-none', !hasequipment);
     };
 
