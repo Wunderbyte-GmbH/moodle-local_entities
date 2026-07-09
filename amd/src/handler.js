@@ -46,6 +46,38 @@ export const init = () => {
 };
 
 /**
+ * Toggle the "show equipment for the selected location" no-submit button.
+ *
+ * The button is only relevant when the chosen location actually has equipment. The set of
+ * equipment-bearing location ids is resolved server-side and passed in here, so the button can be
+ * shown or hidden purely client-side as the location changes - without a no-submit round-trip and
+ * without an extra web service call. The whole form row (the .fitem wrapper) is toggled, matching
+ * the server-side initial hide done via the element's extra class.
+ *
+ * @param {Number} index the entity relation index (the option-level entity is index 0)
+ * @param {Array} equipmentLocations location entity ids that have equipment
+ */
+export const initEquipmentToggle = (index, equipmentLocations) => {
+    const select = document.getElementById('id_local_entities_entityid_' + index);
+    const button = document.getElementById('id_btn_local_entities_equipment_' + index);
+
+    if (!select || !button) {
+        return;
+    }
+
+    const wrapper = button.closest('.fitem') || button.parentElement;
+    const equipmentSet = new Set((equipmentLocations || []).map(String));
+
+    const apply = () => {
+        const hasequipment = equipmentSet.has(String(select.value || ''));
+        wrapper.classList.toggle('d-none', !hasequipment);
+    };
+
+    apply();
+    select.addEventListener('change', apply);
+};
+
+/**
  *
  * @param {entityid} entityid
  */

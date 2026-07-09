@@ -114,12 +114,6 @@ class entitiesrelation_handler {
             // so it persists across no-submit reloads instead of always snapping shut.
         }
 
-        $records = \local_entities\entities::list_all_parent_entities();
-
-        $select = [0 => get_string('none', 'local_entities')];
-        foreach ($records as $record) {
-            $select[$record->id] = $record->name;
-        }
         $options = [
             'multiple' => false,
             'noselectionstring' => get_string('none', 'local_entities'),
@@ -164,22 +158,41 @@ class entitiesrelation_handler {
         // location hierarchy), offer a quantity field per equipment item. A no-submit button reloads
         // the form so the equipment fields follow the chosen location (Moodle dynamic_form pattern).
         if ($this->area === 'option') {
-            $refreshbtn = 'btn_local_entities_equipment_' . $index;
-            $mform->registerNoSubmitButton($refreshbtn);
-            $elements[] = $mform->addElement(
-                'submit',
-                $refreshbtn,
-                get_string('refreshequipment', 'local_entities'),
-                ['data-entityindex' => $index]
-            );
-            $mform->setType($refreshbtn, PARAM_NOTAGS);
-
             // Read the chosen location from the form's own submitted data. In a dynamic_form the
             // no-submit ("refresh equipment") round-trip delivers the values as $ajaxformdata, not
             // via $_POST/$_GET, so the global optional_param() would see nothing and no equipment
             // fields would render. MoodleQuickForm::optional_param() checks $ajaxformdata first and
             // falls back to $_POST/$_GET, so it works both on a plain page load and on the AJAX reload.
             $locationid = $mform->optional_param(LOCAL_ENTITIES_FORM_ENTITYID . $index, 0, PARAM_INT);
+
+            // The "show equipment" no-submit button is only meaningful for locations that actually
+            // have equipment. Computing the equipment-bearing location set once lets us (a) hide the
+            // button on first paint for the common no-equipment case and (b) let JS reveal/hide it as
+            // the location changes — without a per-option query or an extra no-submit round-trip.
+            $equipmentlocations = \local_entities\entities::get_locations_with_equipment();
+            $hasequipment = $locationid > 0 && in_array($locationid, $equipmentlocations, true);
+
+            $refreshbtn = 'btn_local_entities_equipment_' . $index;
+            $mform->registerNoSubmitButton($refreshbtn);
+            $btnattributes = ['data-entityindex' => $index];
+            if (!$hasequipment) {
+                // The 'class' attribute maps to the element's extraclasses, which hides the whole form
+                // row (not just the input) from first render; btn styling is kept and JS toggles it.
+                $btnattributes['class'] = 'd-none';
+            }
+            $elements[] = $mform->addElement(
+                'submit',
+                $refreshbtn,
+                get_string('refreshequipment', 'local_entities'),
+                $btnattributes
+            );
+            $mform->setType($refreshbtn, PARAM_NOTAGS);
+
+            $PAGE->requires->js_call_amd('local_entities/handler', 'initEquipmentToggle', [
+                $index,
+                array_values($equipmentlocations),
+            ]);
+
             if ($locationid > 0) {
                 foreach (\local_entities\entities::get_equipment_for_location($locationid) as $equipment) {
                     $fieldname = LOCAL_ENTITIES_FORM_EQUIPMENT . (int)$equipment->id;

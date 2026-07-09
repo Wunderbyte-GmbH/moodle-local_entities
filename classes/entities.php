@@ -499,6 +499,49 @@ class entities {
         return $equipment;
     }
 
+    /**
+     * Returns the ids of all locations that have equipment available.
+     *
+     * This is the inverse of {@see self::get_equipment_for_location()} computed once for the whole
+     * site: a location offers equipment when it hosts equipment directly, or when an ancestor hosts
+     * equipment flagged 'availableinsublocations' (which then reaches every descendant location).
+     * Used to decide, without a per-option query or a no-submit round-trip, whether the "show
+     * equipment" control is relevant for the currently chosen location.
+     *
+     * @return int[] location entity ids that have equipment (unordered, no duplicates)
+     */
+    public static function get_locations_with_equipment(): array {
+        global $DB;
+
+        $equipment = $DB->get_records(
+            'local_entities',
+            ['entitytype' => 'equipment'],
+            '',
+            'id, parentid, availableinsublocations'
+        );
+        if (empty($equipment)) {
+            return [];
+        }
+
+        $map = self::get_entity_map();
+        $locations = [];
+        foreach ($equipment as $item) {
+            $home = (int)($item->parentid ?? 0);
+            if ($home <= 0) {
+                continue;
+            }
+            // The home location always offers its own equipment.
+            $locations[$home] = $home;
+            // Equipment usable in sub-locations also reaches every descendant of its home location.
+            if (!empty($item->availableinsublocations)) {
+                foreach (self::get_descendant_ids($home, $map) as $descid) {
+                    $locations[$descid] = $descid;
+                }
+            }
+        }
+
+        return array_values($locations);
+    }
 
     /**
      *
