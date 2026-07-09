@@ -1,3 +1,6 @@
+## Version 0.5.3 (2026070900)
+* Improvement: In the booking option form, the "Show equipment for the selected location" button is now hidden unless the chosen location actually has equipment. Visibility is resolved from a single site-wide lookup and toggled client-side as the location changes, so no extra request or form reload is needed.
+
 ## Version 0.5.2 (2026070800)
 * CI: Install the local_wunderbyte_table dependency so the plugin CI (PHPUnit/Behat) resolves the entities table and rawdata cache.
 * Improvement: Add Mustache example contexts to the entity view templates and guard the title heading against empty output (Mustache lint).
