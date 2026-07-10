@@ -367,6 +367,11 @@ class settings_manager {
         $formdata->openinghours = $record->openinghours;
         $formdata->cfitemid = $record->cfitemid;
         $formdata->maxallocation = $record->maxallocation;
+        $formdata->allocationmode = $record->allocationmode;
+        $formdata->maxconcurrent = $record->maxconcurrent;
+        $formdata->capacitysource = $record->capacitysource;
+        $formdata->entitytype = $record->entitytype;
+        $formdata->availableinsublocations = $record->availableinsublocations;
         // Address.
         $i = 0;
         if ($record->address[0]) {
