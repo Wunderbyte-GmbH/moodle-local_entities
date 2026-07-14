@@ -1,3 +1,7 @@
+## Version 0.5.3 (2026070902)
+* Bugfix: Fix the equipment toggle never revealing the "Show equipment for the selected location" button on Moodle 5.x — locate the location select and no-submit button by their stable form name instead of hardcoded element ids (which now carry a random uniqueid suffix), and clear d-none on both the button and its .fitem row.
+* Bugfix: Fix loading DB data to the entity settings form.
+
 ## Version 0.5.3 (2026070900)
 * Improvement: In the booking option form, the "Show equipment for the selected location" button is now hidden unless the chosen location actually has equipment. Visibility is resolved from a single site-wide lookup and toggled client-side as the location changes, so no extra request or form reload is needed.
 
