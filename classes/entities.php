@@ -769,14 +769,14 @@ class entities {
             $calendarevent = $event;
             $calendarevent->allDay = false;
             $calendarevent->extendedProps['department'] = 'test';
-            if ($event->starttime) {
-                $calendarevent->title = $event->name;
+            if (!empty($event->starttime)) {
+                $calendarevent->title = $event->title;
                 $start = new DateTime();
                 $start->setTimestamp($event->starttime);
                 $calendarevent->start = $start->format('Y-m-d') . 'T' . $start->format('H:i:s');
             }
-            if ($event->endtime) {
-                $calendarevent->title = $event->name;
+            if (!empty($event->endtime)) {
+                $calendarevent->title = $event->title;
                 $end = new DateTime();
                 $end->setTimestamp($event->endtime);
                 $calendarevent->end = $end->format('Y-m-d') . 'T' . $end->format('H:i:s');
