@@ -17,6 +17,7 @@
 namespace local_entities;
 
 use advanced_testcase;
+use local_entities_generator;
 
 /**
  * Tests for the equipment-relation persistence of entitiesrelation_handler (entity-aware multi-save).
@@ -41,6 +42,7 @@ final class entitiesrelation_handler_test extends advanced_testcase {
      * @return int
      */
     private function create_equipment(string $name): int {
+        /** @var local_entities_generator $gen */
         $gen = $this->getDataGenerator()->get_plugin_generator('local_entities');
         return (int)$gen->create_entities([
             'name' => $name,
@@ -68,6 +70,8 @@ final class entitiesrelation_handler_test extends advanced_testcase {
      */
     public function test_save_and_get_equipment_relations(): void {
         $this->resetAfterTest();
+        $this->setAdminUser();
+
         $eq1 = $this->create_equipment('Beamer');
         $eq2 = $this->create_equipment('Whiteboard');
 
@@ -86,6 +90,8 @@ final class entitiesrelation_handler_test extends advanced_testcase {
      */
     public function test_resave_updates_removes_and_inserts(): void {
         $this->resetAfterTest();
+        $this->setAdminUser();
+
         $eq1 = $this->create_equipment('Beamer');
         $eq2 = $this->create_equipment('Whiteboard');
         $eq3 = $this->create_equipment('Mikrofon');
@@ -108,6 +114,8 @@ final class entitiesrelation_handler_test extends advanced_testcase {
      */
     public function test_save_ignores_invalid_entries(): void {
         $this->resetAfterTest();
+        $this->setAdminUser();
+
         $eq1 = $this->create_equipment('Beamer');
 
         $handler = new entitiesrelation_handler(self::COMPONENT, self::AREA);
@@ -122,6 +130,9 @@ final class entitiesrelation_handler_test extends advanced_testcase {
      */
     public function test_get_equipment_relations_excludes_non_equipment(): void {
         $this->resetAfterTest();
+        $this->setAdminUser();
+
+        /** @var local_entities_generator $gen */
         $gen = $this->getDataGenerator()->get_plugin_generator('local_entities');
         $equipment = $this->create_equipment('Beamer');
         $location = (int)$gen->create_entities(['name' => 'Room 1', 'shortname' => 'room1']); // Default (non-equipment) type.
@@ -139,6 +150,8 @@ final class entitiesrelation_handler_test extends advanced_testcase {
      */
     public function test_relations_are_instance_scoped(): void {
         $this->resetAfterTest();
+        $this->setAdminUser();
+
         $eq1 = $this->create_equipment('Beamer');
 
         $handler = new entitiesrelation_handler(self::COMPONENT, self::AREA);

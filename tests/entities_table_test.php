@@ -16,6 +16,7 @@
 
 namespace local_entities;
 
+use local_entities_generator;
 use local_entities\table\entities_table;
 
 /**
@@ -38,7 +39,9 @@ final class entities_table_test extends \advanced_testcase {
     public function test_arrange_as_tree_orders_depth_first(): void {
         global $DB;
         $this->resetAfterTest();
+        $this->setAdminUser();
 
+        /** @var local_entities_generator $gen */
         $gen = $this->getDataGenerator()->get_plugin_generator('local_entities');
         $root = $gen->create_entities(['name' => 'Root', 'shortname' => 'root']);
         $childa = $gen->create_entities(['name' => 'ChildA', 'shortname' => 'ca', 'parentid' => $root]);

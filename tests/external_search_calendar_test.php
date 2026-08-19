@@ -143,9 +143,12 @@ final class external_search_calendar_test extends advanced_testcase {
      */
     public function test_get_entity_calendardata_works_when_logged_out(): void {
         $this->resetAfterTest();
-        $this->setUser(0);
-
+        // It is necessary to have elevated privileges to create an entity.
+        $this->setAdminUser();
         $id = $this->make_entity('Public Entity', 'publicentity', 'location');
+
+        // Force user logout.
+        require_logout();
         $result = external\get_entity_calendardata::execute($id);
 
         $this->assertSame('', (string)$result['error']);

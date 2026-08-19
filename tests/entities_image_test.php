@@ -17,6 +17,7 @@
 namespace local_entities;
 
 use context_system;
+use local_entities_generator;
 
 /**
  * Tests for the entity image resolution used by hover cards (own image + ancestor fallback).
@@ -54,7 +55,9 @@ final class entities_image_test extends \advanced_testcase {
      */
     public function test_own_image_and_nearest_ancestor_fallback(): void {
         $this->resetAfterTest();
+        $this->setAdminUser();
 
+        /** @var local_entities_generator $gen */
         $gen = $this->getDataGenerator()->get_plugin_generator('local_entities');
         $root = $gen->create_entities(['name' => 'Root', 'shortname' => 'r', 'entitytype' => 'location']);
         $child = $gen->create_entities(

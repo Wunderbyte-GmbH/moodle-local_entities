@@ -16,6 +16,7 @@
 
 namespace local_entities;
 
+use local_entities_generator;
 use core_external\external_api;
 use local_entities\external\search_entities;
 
@@ -40,6 +41,7 @@ final class search_entities_test extends \advanced_testcase {
         $this->resetAfterTest();
         $this->setAdminUser();
 
+        /** @var local_entities_generator $gen */
         $gen = $this->getDataGenerator()->get_plugin_generator('local_entities');
         $roota = $gen->create_entities(['name' => 'Alpha', 'shortname' => 'a', 'entitytype' => 'location']);
         $gen->create_entities(['name' => 'Beta', 'shortname' => 'b', 'entitytype' => 'location']);
@@ -78,6 +80,7 @@ final class search_entities_test extends \advanced_testcase {
         $this->resetAfterTest();
         $this->setAdminUser();
 
+        /** @var local_entities_generator $gen */
         $gen = $this->getDataGenerator()->get_plugin_generator('local_entities');
         $root = $gen->create_entities(['name' => 'Hauptgebäude', 'shortname' => 'hg', 'entitytype' => 'location']);
         $child = $gen->create_entities(

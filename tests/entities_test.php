@@ -16,6 +16,8 @@
 
 namespace local_entities;
 
+use local_entities_generator;
+
 /**
  * Unit tests for the live hierarchy derivations that back the multilevel entity filter.
  *
@@ -50,6 +52,11 @@ final class entities_test extends \advanced_testcase {
      */
     private function make_entity(string $name, int $parentid = 0, ?int $sortorder = null): int {
         global $DB;
+
+        $this->resetAfterTest(true);
+        $this->setAdminUser();
+
+        /** @var local_entities_generator $gen */
         $gen = $this->getDataGenerator()->get_plugin_generator('local_entities');
         $id = $gen->create_entities([
             'name' => $name,

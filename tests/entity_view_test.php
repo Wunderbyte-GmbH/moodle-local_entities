@@ -17,6 +17,7 @@
 namespace local_entities;
 
 use context_system;
+use local_entities_generator;
 use local_entities\output\entity_view;
 use local_entities\local\views\view_templates;
 
@@ -42,6 +43,7 @@ final class entity_view_test extends \advanced_testcase {
         $this->setAdminUser();
         $PAGE->set_context(context_system::instance());
 
+        /** @var local_entities_generator $gen */
         $gen = $this->getDataGenerator()->get_plugin_generator('local_entities');
         $id = $gen->create_entities(['name' => 'Render Test E', 'shortname' => 'rendertest']);
 
@@ -86,6 +88,7 @@ final class entity_view_test extends \advanced_testcase {
      */
     public function test_resolver_per_entity_type(): void {
         $this->resetAfterTest();
+        $this->setAdminUser();
         set_config('activeviewtemplate', 'classic', 'local_entities');
         set_config('activeviewtemplate_equipment', 'compact', 'local_entities');
 
@@ -105,6 +108,7 @@ final class entity_view_test extends \advanced_testcase {
      */
     public function test_legacy_settings_migration_maps_each_combination(): void {
         $this->resetAfterTest();
+        $this->setAdminUser();
 
         // 0/0 → classic.
         unset_config('activeviewtemplate', 'local_entities');
@@ -133,6 +137,8 @@ final class entity_view_test extends \advanced_testcase {
      */
     public function test_legacy_migration_is_idempotent(): void {
         $this->resetAfterTest();
+        $this->setAdminUser();
+
         set_config('activeviewtemplate', 'compact', 'local_entities');
         set_config('showpictureinsteadofcalendar', 1, 'local_entities');
         entity_view::migrate_legacy_view_settings();
@@ -169,6 +175,7 @@ final class entity_view_test extends \advanced_testcase {
      */
     public function test_osm_geocoder(): void {
         $this->resetAfterTest();
+        $this->setAdminUser();
 
         $query = \local_entities\local\osm_geocoder::build_query([
             'streetname' => 'Hauptstrasse', 'streetnumber' => '1',

@@ -17,6 +17,7 @@
 namespace local_entities;
 
 use advanced_testcase;
+use local_entities_generator;
 
 /**
  * Tests for entity CRUD via settings_manager + entity::load.
@@ -34,8 +35,10 @@ final class settings_manager_test extends advanced_testcase {
     public function test_crud_round_trip(): void {
         global $DB;
         $this->resetAfterTest();
+        $this->setAdminUser();
 
         // Create (via the plugin generator, which uses settings_manager::update_or_createentity).
+        /** @var local_entities_generator $gen */
         $gen = $this->getDataGenerator()->get_plugin_generator('local_entities');
         $id = (int)$gen->create_entities([
             'name' => 'Original Name',
@@ -78,7 +81,9 @@ final class settings_manager_test extends advanced_testcase {
      */
     public function test_parentid_cycle_guard(): void {
         $this->resetAfterTest();
+        $this->setAdminUser();
 
+        /** @var local_entities_generator $gen */
         $gen = $this->getDataGenerator()->get_plugin_generator('local_entities');
         $root = $gen->create_entities(['name' => 'Root', 'shortname' => 'r', 'entitytype' => 'location']);
         $child = $gen->create_entities(
@@ -132,8 +137,10 @@ final class settings_manager_test extends advanced_testcase {
      */
     public function test_entity_writes_purge_wunderbyte_rawdata_cache(): void {
         $this->resetAfterTest();
+        $this->setAdminUser();
 
         $cache = \cache::make('local_wunderbyte_table', 'cachedrawdata');
+        /** @var local_entities_generator $gen */
         $gen = $this->getDataGenerator()->get_plugin_generator('local_entities');
 
         // Create.
