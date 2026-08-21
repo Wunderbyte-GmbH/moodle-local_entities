@@ -8,7 +8,7 @@ Feature: Configure the entity calendar display
     Given the following "local_entities > entities" exist:
       | name    | shortname | pricefactor | maxallocation | daysofweek                        | starthours | startminutes | endhours    | endminutes |
       | Entity1 | entity1   | 1           | 10            | [["1","2","6","7"],["2","3","4"]] | ["13","6"] | ["0","0"]    | ["16","11"] | ["0","0"]  |
-    And I change viewport size to "1366x10000"
+    And I change viewport size to "1366x3000"
 
   @javascript
   Scenario Outline: Entites Calendar view: various calendarfirstday and calendartimeformat settings have been applied and verified
@@ -27,6 +27,18 @@ Feature: Configure the entity calendar display
     And "//div[@id='entity-calendar']//thead[@role='presentation']/tr[@role='row']/th[1][contains(concat(' ', normalize-space(@class), ' '), ' fc-day-<css1st> ')]//a[normalize-space(.)='<1stday>']" "xpath_element" should exist
     And "//div[@id='entity-calendar']//thead[@role='presentation']/tr[@role='row']/th[last()][contains(concat(' ', normalize-space(@class), ' '), ' fc-day-<csslast> ')]//a[normalize-space(.)='<lastday>']" "xpath_element" should exist
     And I should see "<hours1>" in the "#entity-calendar" "css_element"
+    And I should see "<hours2>" in the "#entity-calendar" "css_element"
+    ## Resize the viewport to a smaller size to validate that the calendar view is responsive and that the hours are hidden and replaced with links to popups.
+    And I change viewport size to "1024x3000"
+    And I should not see "<hours1>" in the "#entity-calendar" "css_element"
+    And I should not see "<hours2>" in the "#entity-calendar" "css_element"
+    And I should see "+ weitere 1" in the "#entity-calendar" "css_element"
+    And I should see "+ weitere 2" in the "#entity-calendar" "css_element"
+    And I click on "+ weitere 1" "text" in the "#entity-calendar" "css_element"
+    And I should see "<hours1>" in the "#entity-calendar" "css_element"
+    ## Close popup
+    And I press the escape key
+    And I click on "+ weitere 2" "text" in the "#entity-calendar" "css_element"
     And I should see "<hours2>" in the "#entity-calendar" "css_element"
 
     Examples:
