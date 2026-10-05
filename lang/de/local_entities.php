@@ -157,6 +157,7 @@ $string['opentimetable'] = 'Öffne Stundenplan';
 $string['pluginname'] = 'Entity-Manager';
 $string['pricefactor'] = 'Relativer Preisfaktor';
 $string['pricefactor_help'] = 'Relativer Preisfaktor: Kann für automatische Preisberechnung (z.B. mit dem Booking-Plugin) verwendet werden';
+$string['privacy:metadata'] = 'Das Entity-Manager-Plugin speichert keine personenbezogenen Daten.';
 $string['refreshequipment'] = 'Equipment für den gewählten Ort anzeigen';
 $string['saveview'] = 'Als Ansicht speichern';
 $string['saveviewfortype'] = 'Als Ansicht für alle „{$a}"-Entities speichern';

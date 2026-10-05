@@ -158,6 +158,7 @@ $string['opentimetable'] = 'Open timetable';
 $string['pluginname'] = 'Entity Manager';
 $string['pricefactor'] = 'Relative price factor';
 $string['pricefactor_help'] = 'Relative price factor: Can be used for automatic price calculations, e.g. in booking plugin';
+$string['privacy:metadata'] = 'The Entity Manager plugin does not store any personal data.';
 $string['refreshequipment'] = 'Show equipment for the selected location';
 $string['saveview'] = 'Save as view';
 $string['saveviewfortype'] = 'Save as the view for all "{$a}" entities';
