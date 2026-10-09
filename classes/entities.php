@@ -621,7 +621,9 @@ class entities {
             // Finally, we assemble the array and return it.
             $providerclass = static::get_service_provider_classname($component);
 
-            $newdates = component_class_callback($providerclass, 'return_array_of_entity_dates', [$areas]);
+            // The entity id lets the provider tell a location apart from equipment: a date that has its
+            // own location overrides the location of its option, but not the equipment of its option.
+            $newdates = component_class_callback($providerclass, 'return_array_of_entity_dates', [$areas, $entityid]);
 
             $datearray = array_merge($datearray, $newdates);
         }
