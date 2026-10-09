@@ -778,9 +778,14 @@ class entitiesrelation_handler {
      */
     public function update_db(stdClass $data): bool {
         global $DB;
+        // The relation may move to another entity: the dates cache of the entity it leaves is stale too.
+        $previousentityid = (int)$DB->get_field('local_entities_relations', 'entityid', ['id' => $data->id]);
         $id = $DB->update_record('local_entities_relations', $data);
         cache_helper::purge_by_event('purgecachedentities');
         entities::purge_dates_cache((int)($data->entityid ?? 0));
+        if ($previousentityid > 0 && $previousentityid !== (int)($data->entityid ?? 0)) {
+            entities::purge_dates_cache($previousentityid);
+        }
         return $id;
     }
     /**
