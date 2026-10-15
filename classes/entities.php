@@ -768,17 +768,21 @@ class entities {
         $bgcolor = $bgcolor ?? get_config('local_entities', 'calendarcolor');
         $calendarevents = [];
         foreach ($datearray as $event) {
-            $calendarevent = $event;
+            // A plain copy: the entitydate class declares no calendar properties and the objects
+            // may come from the entitydates cache.
+            $calendarevent = (object)get_object_vars($event);
             $calendarevent->allDay = false;
             $calendarevent->extendedProps['department'] = 'test';
+            // Opening hours carry a title, entitydates of the providers a name.
+            $title = $event->title ?? $event->name ?? '';
             if (!empty($event->starttime)) {
-                $calendarevent->title = $event->name;
+                $calendarevent->title = $title;
                 $start = new DateTime();
                 $start->setTimestamp($event->starttime);
                 $calendarevent->start = $start->format('Y-m-d') . 'T' . $start->format('H:i:s');
             }
             if (!empty($event->endtime)) {
-                $calendarevent->title = $event->name;
+                $calendarevent->title = $title;
                 $end = new DateTime();
                 $end->setTimestamp($event->endtime);
                 $calendarevent->end = $end->format('Y-m-d') . 'T' . $end->format('H:i:s');
@@ -793,6 +797,57 @@ class entities {
             $calendarevents[] = $calendarevent;
         }
         return $calendarevents;
+    }
+
+    /**
+     * Drops the dates the given user may not see and marks the hidden ones that remain.
+     *
+     * The provider output - and with it the entitydates cache - is the same for every user: hidden
+     * items (e.g. invisible booking options) are included with entitydate::$invisible set together
+     * with the capability and context that reveal them. This is the one place where visibility is
+     * decided, so it runs per request for the viewing user, after the cache. Occupancy checks must
+     * not call it: a hidden item still occupies its entity.
+     *
+     * @param array $datearray entitydates as returned by get_all_dates_for_entity()
+     * @param ?int $userid user to check, defaults to the current user (also when logged out)
+     * @return array the visible entitydates; hidden ones that the user may see are copies, greyed
+     *               out and prefixed with "[Invisible]" in the user's language
+     */
+    public static function filter_dates_for_user(array $datearray, ?int $userid = null): array {
+        $visible = [];
+        foreach ($datearray as $date) {
+            if (empty($date->invisible)) {
+                $visible[] = $date;
+                continue;
+            }
+            if (!self::user_can_see_invisible_date($date, $userid)) {
+                continue;
+            }
+            // A copy, so the cached object stays user-agnostic.
+            $date = clone $date;
+            $date->name = '[' . get_string('invisible', 'local_entities') . '] ' . $date->name;
+            $date->bgcolor = '#808080';
+            $visible[] = $date;
+        }
+        return $visible;
+    }
+
+    /**
+     * Whether a user holds the capability that reveals a hidden date.
+     *
+     * @param object $date an entitydate with $invisible set
+     * @param ?int $userid defaults to the current user
+     * @return bool
+     */
+    private static function user_can_see_invisible_date(object $date, ?int $userid = null): bool {
+        if (empty($date->requiredcapability) || empty($date->contextid)) {
+            return false;
+        }
+        $context = \context::instance_by_id((int)$date->contextid, IGNORE_MISSING);
+        if (!$context) {
+            return false;
+        }
+        return has_capability($date->requiredcapability, $context, $userid);
     }
 
     /**
