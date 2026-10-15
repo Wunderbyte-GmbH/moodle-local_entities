@@ -140,6 +140,7 @@ $string['fieldtemplate'] = 'Feldvorlage';
 $string['fieldtemplate_help'] = 'Eine Feldvorlage fügt dieser Entity zusätzliche Felder hinzu (z. B. ergänzt die Equipment-Vorlage Inventarnummer, Zustand …). Mit „Keine" werden keine Zusatzfelder hinzugefügt. Vorlagen werden unter Kategorien verwaltet.';
 $string['import'] = 'Entities importieren';
 $string['inheritglobal'] = 'Globalen Standard verwenden';
+$string['invisible'] = 'Unsichtbar';
 $string['map'] = 'Karte';
 $string['maxallocation'] = 'Maximale Anzahl möglicher Buchungen.';
 $string['maxallocation_help'] = '0 für kein Limit, -1 bedeutet nicht buchbar';

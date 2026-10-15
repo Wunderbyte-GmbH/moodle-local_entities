@@ -141,6 +141,7 @@ $string['fieldtemplate'] = 'Field template';
 $string['fieldtemplate_help'] = 'A field template adds a set of extra fields to this entity (e.g. the Equipment template adds inventory number, condition …). Choose "None" to add no extra fields. Templates can be managed under Categories.';
 $string['import'] = 'Import entities';
 $string['inheritglobal'] = 'Use global default';
+$string['invisible'] = 'Invisible';
 $string['map'] = 'Map';
 $string['maxallocation'] = 'Max number of bookings on this entity';
 $string['maxallocation_help'] = '0 for no limit, -1 for not bookable.';

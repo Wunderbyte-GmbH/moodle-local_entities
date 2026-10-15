@@ -78,7 +78,9 @@ class get_entity_calendardata extends external_api {
         $openinghours = json_decode($openinghours, false) ?? [];
 
         $openinghours = entities::prepare_datearray_for_calendar($openinghours, '#64a44e');
+        // The dates are cached across users, so the per-viewer visibility is applied here.
         $relationdata = entities::get_all_dates_for_entity($params['id']) ?? [];
+        $relationdata = entities::filter_dates_for_user($relationdata);
         $relationdata = entities::prepare_datearray_for_calendar($relationdata, 'red');
         $calendardata['json'] = json_encode([...$openinghours, ...$relationdata]);
 

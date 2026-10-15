@@ -104,6 +104,32 @@ class entitydate {
     public $quantity = 1;
 
     /**
+     * Whether the item is hidden from regular users (e.g. an invisible booking option).
+     *
+     * The providers return hidden items like any other, because their dates are cached across
+     * users and a hidden item still occupies its entity. Whether a viewer gets to see the date is
+     * decided per request by entities::filter_dates_for_user() with the capability below.
+     *
+     * @var bool
+     */
+    public $invisible = false;
+
+    /**
+     * Capability that lets a user see this date although it is invisible, e.g.
+     * 'mod/booking:canseeinvisibleoptions'. Without one, an invisible date is shown to nobody.
+     *
+     * @var ?string
+     */
+    public $requiredcapability = null;
+
+    /**
+     * Id of the context in which $requiredcapability is checked.
+     *
+     * @var ?int
+     */
+    public $contextid = null;
+
+    /**
      * Cunstructor.
      *
      * @param int $itemid
@@ -155,7 +181,23 @@ class entitydate {
         $item['link'] = $this->link;
         $item['bgcolor'] = $this->bgcolor;
         $item['quantity'] = $this->quantity;
+        $item['invisible'] = $this->invisible;
+        $item['requiredcapability'] = $this->requiredcapability;
+        $item['contextid'] = $this->contextid;
         return $item;
+    }
+
+    /**
+     * Marks the date as hidden from regular users and names the capability that reveals it.
+     *
+     * @param string $capability capability that lets a user see the date, e.g. 'mod/booking:canseeinvisibleoptions'
+     * @param int $contextid id of the context the capability is checked in
+     * @return void
+     */
+    public function set_invisible(string $capability, int $contextid): void {
+        $this->invisible = true;
+        $this->requiredcapability = $capability;
+        $this->contextid = $contextid;
     }
 
     /**

@@ -154,4 +154,143 @@ final class external_search_calendar_test extends advanced_testcase {
         $this->assertSame('', (string)$result['error']);
         $this->assertSame([], json_decode((string)$result['json']));
     }
+
+    /**
+     * filter_dates_for_user keeps visible dates, shows an invisible date only to a user holding
+     * the named capability (greyed and prefixed, on a copy), and shows an invisible date without
+     * a capability to nobody.
+     *
+     * @covers \local_entities\entities::filter_dates_for_user
+     */
+    public function test_filter_dates_for_user(): void {
+        $this->resetAfterTest();
+
+        $visible = new local\entities\entitydate(1, 'local_entities', 'test', 'Visible', 100, 200, 0);
+        $hidden = new local\entities\entitydate(2, 'local_entities', 'test', 'Hidden', 100, 200, 0, null, '#4285F4');
+        $hidden->set_invisible('moodle/site:config', \context_system::instance()->id);
+        $hiddenforall = new local\entities\entitydate(3, 'local_entities', 'test', 'Nobody', 100, 200, 0);
+        $hiddenforall->invisible = true;
+        $dates = [$visible, $hidden, $hiddenforall];
+
+        $this->setAdminUser();
+        $foradmin = entities::filter_dates_for_user($dates);
+        $this->assertSame([1, 2], array_map(fn($d) => $d->itemid, $foradmin));
+        $this->assertSame('[Invisible] Hidden', $foradmin[1]->name);
+        $this->assertSame('#808080', $foradmin[1]->bgcolor);
+        $this->assertSame('Hidden', $hidden->name, 'The cached object must not be changed.');
+        $this->assertSame('#4285F4', $hidden->bgcolor);
+
+        $student = $this->getDataGenerator()->create_user();
+        $this->setUser($student);
+        $forstudent = entities::filter_dates_for_user($dates);
+        $this->assertSame([1], array_map(fn($d) => $d->itemid, $forstudent));
+
+        // An explicit user id works from any session.
+        $this->setAdminUser();
+        $this->assertSame([1], array_map(fn($d) => $d->itemid, entities::filter_dates_for_user($dates, $student->id)));
+
+        require_logout();
+        $this->assertSame([1], array_map(fn($d) => $d->itemid, entities::filter_dates_for_user($dates)));
+    }
+
+    /**
+     * The calendar of an entity shows the dates of an invisible booking option only to users who
+     * may see invisible options, regardless of who filled the entity dates cache: filled by an
+     * admin, a student and a logged out visitor still do not get the invisible date; filled by a
+     * student, the admin still gets it. Links never carry the id of the user who filled the cache.
+     *
+     * @covers \local_entities\external\get_entity_calendardata
+     * @covers \local_entities\entities::filter_dates_for_user
+     */
+    public function test_get_entity_calendardata_invisible_options_per_viewer(): void {
+        global $CFG;
+        if (!\core_component::get_component_directory('mod_booking')) {
+            $this->markTestSkipped('mod_booking is the provider of invisible dates.');
+        }
+        $this->resetAfterTest();
+        $this->setAdminUser();
+        require_once($CFG->dirroot . '/mod/booking/lib.php');
+
+        $course = $this->getDataGenerator()->create_course();
+        $student = $this->getDataGenerator()->create_user();
+        $this->getDataGenerator()->enrol_user($student->id, $course->id, 'student');
+        $booking = $this->getDataGenerator()->create_module('booking', [
+            'course' => $course->id,
+            'name' => 'Calendar booking',
+            'eventtype' => 'Test event',
+            'bookedtext' => ['text' => 'text'],
+            'waitingtext' => ['text' => 'text'],
+            'notifyemail' => ['text' => 'text'],
+            'statuschangetext' => ['text' => 'text'],
+            'deletedtext' => ['text' => 'text'],
+            'pollurltext' => ['text' => 'text'],
+            'pollurlteacherstext' => ['text' => 'text'],
+            'notificationtext' => ['text' => 'text'],
+            'userleave' => ['text' => 'text'],
+            'tags' => '',
+            'showviews' => ['mybooking,myoptions,optionsiamresponsiblefor,showall,showactive,myinstitution'],
+        ]);
+        $entityid = $this->make_entity('Seminar room', 'seminarroom', 'location');
+
+        /** @var \mod_booking_generator $bookinggenerator */
+        $bookinggenerator = $this->getDataGenerator()->get_plugin_generator('mod_booking');
+        foreach (['Public course' => 0, 'Secret course' => 1] as $text => $invisible) {
+            $record = new \stdClass();
+            $record->bookingid = $booking->id;
+            $record->text = $text;
+            $record->invisible = $invisible;
+            $record->chooseorcreatecourse = 1;
+            $record->courseid = $course->id;
+            $record->description = $text;
+            $record->optiondateid_1 = "0";
+            $record->daystonotify_1 = "0";
+            $record->coursestarttime_1 = strtotime('2050-03-01 10:00:00');
+            $record->courseendtime_1 = strtotime('2050-03-01 12:00:00');
+            $record->local_entities_entityid_0 = $entityid;
+            $record->local_entities_entityid_1 = $entityid;
+            $record->local_entities_entityarea_1 = "optiondate";
+            $record->er_saverelationsforoptiondates = 1;
+            $bookinggenerator->create_option($record);
+        }
+        \mod_booking\singleton_service::destroy_instance();
+
+        $titles = function (array $result): array {
+            $this->assertSame('', (string)$result['error']);
+            $events = json_decode((string)$result['json']);
+            $this->assertIsArray($events);
+            $titles = array_map(fn($event) => $event->title, $events);
+            sort($titles);
+            return $titles;
+        };
+        $cache = \cache::make('local_entities', 'entitydates');
+
+        // Admin fills the cache.
+        $cache->purge();
+        $adminevents = json_decode((string)external\get_entity_calendardata::execute($entityid)['json']);
+        $this->assertSame(
+            ['Public course', '[Invisible] Secret course'],
+            $titles(['error' => '', 'json' => json_encode($adminevents)])
+        );
+        foreach ($adminevents as $event) {
+            $this->assertStringNotContainsString('userid=', $event->url, 'The link must not name a user.');
+            $this->assertStringContainsString('optionview.php', $event->url);
+        }
+        $this->assertNotFalse($cache->get($entityid), 'Precondition: the admin filled the cache.');
+
+        $this->setUser($student);
+        $this->assertSame(['Public course'], $titles(external\get_entity_calendardata::execute($entityid)));
+        require_logout();
+        $this->assertSame(['Public course'], $titles(external\get_entity_calendardata::execute($entityid)));
+
+        // Student fills the cache.
+        $cache->purge();
+        $this->setUser($student);
+        $this->assertSame(['Public course'], $titles(external\get_entity_calendardata::execute($entityid)));
+        $this->assertNotFalse($cache->get($entityid), 'Precondition: the student filled the cache.');
+        $this->setAdminUser();
+        $this->assertSame(
+            ['Public course', '[Invisible] Secret course'],
+            $titles(external\get_entity_calendardata::execute($entityid))
+        );
+    }
 }
