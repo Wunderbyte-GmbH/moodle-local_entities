@@ -1,3 +1,7 @@
+## Version 0.5.5 (2026101500)
+* Bugfix: The calendar of an entity showed the dates of invisible booking options to everybody or to nobody, depending on who opened the entity first: the entity dates cache (added with the capacity feature) stored the dates as the first viewer was allowed to see them. Providers now return hidden items for everybody, flagged with the capability that reveals them (new entitydate properties invisible, requiredcapability, contextid and entitydate::set_invisible()), and the calendar web service filters per viewer with the new entities::filter_dates_for_user(); logged out visitors never see them. Occupancy checks use the unfiltered dates, so an invisible option keeps blocking its room.
+* Bugfix: The entity calendar showed the dates of booking options without a title since 0.5.4 (the formatter read a title property that only opening hours have); it falls back to the name again and no longer writes calendar properties onto the cached date objects.
+
 ## Version 0.5.4 (2026081700)
 * Improvement: The entity calendar's week start (Monday/Sunday/Saturday) and time format (24-hour vs. am/pm) are now configurable via plugin settings; defaults: Monday, 24-hour.
 * Improvement: Added support for Moodle 5.2.
