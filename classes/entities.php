@@ -129,17 +129,18 @@ class entities {
      *
      * This is to return all parent entities from the database
      *
+     * @param bool $includepersons persons are no places and have no hierarchy: only the admin list wants them
      * @return array Object
      */
-    public static function list_all_parent_entities(): array {
+    public static function list_all_parent_entities(bool $includepersons = false): array {
         global $DB;
+        $personclause = $includepersons ? '' : " AND (entitytype IS NULL OR entitytype <> 'person')";
         return $DB->get_records_sql(
             "SELECT * FROM {local_entities}
-            WHERE parentid = '0'
+            WHERE parentid = '0'" . $personclause . "
             ORDER BY sortorder, name ASC"
         );
     }
-
 
     /**
      *
@@ -150,8 +151,30 @@ class entities {
     public static function list_all_parent_entities_select(): array {
         global $DB;
         $sql = "SELECT id, name FROM {local_entities} WHERE parentid = '0'
+            AND (entitytype IS NULL OR entitytype <> 'person')
             ORDER BY sortorder, name ASC";
         return $DB->get_records_sql_menu($sql);
+    }
+
+    /**
+     * Display name of an entity.
+     *
+     * A person has no name of its own, it shows the name of the Moodle user it represents.
+     *
+     * @param \stdClass $entity record with at least entitytype, userid and name
+     * @return string plain text, escape it when printing it as HTML
+     */
+    public static function get_display_name(\stdClass $entity): string {
+        global $DB;
+
+        if (($entity->entitytype ?? '') === 'person') {
+            $user = !empty($entity->userid)
+                ? $DB->get_record('user', ['id' => (int)$entity->userid, 'deleted' => 0])
+                : false;
+            return $user ? fullname($user) : '';
+        }
+
+        return (string)($entity->name ?? '');
     }
 
     /**
@@ -213,7 +236,7 @@ class entities {
     public static function get_entity_map(): array {
         global $DB;
         if (self::$entitymapcache === null) {
-            self::$entitymapcache = $DB->get_records('local_entities', null, '', 'id, name, parentid, sortorder');
+            self::$entitymapcache = $DB->get_records('local_entities', null, '', 'id, name, parentid, sortorder, entitytype');
         }
         return self::$entitymapcache;
     }
@@ -975,7 +998,7 @@ class entities {
         $records = $DB->get_records_sql(
             "SELECT DISTINCT id
             FROM {local_entities}
-            WHERE (name IS NULL OR name = '')
+            WHERE ((name IS NULL OR name = '') AND (entitytype IS NULL OR entitytype <> 'person'))
             OR (parentid <> 0 AND parentid NOT IN (SELECT id FROM {local_entities}))
             UNION
             SELECT DISTINCT entityid
@@ -1002,8 +1025,12 @@ class entities {
             }
         }
 
-        // Delete all entities with missing names.
-        $DB->delete_records_select('local_entities', "name IS NULL OR name = ''");
+        // Delete all entities with missing names. A person has no name of its own (its name is
+        // resolved from the user), so persons are kept.
+        $DB->delete_records_select(
+            'local_entities',
+            "(name IS NULL OR name = '') AND (entitytype IS NULL OR entitytype <> 'person')"
+        );
 
         // This has to happen BEFORE we delete associated addresses, contacts and relations!
         $DB->delete_records_select(
@@ -1023,6 +1050,10 @@ class entities {
         $DB->delete_records_select(
             'local_entities_address',
             'entityidto NOT IN (SELECT id FROM {local_entities})'
+        );
+        $DB->delete_records_select(
+            'local_entities_unavailability',
+            'entityid NOT IN (SELECT id FROM {local_entities})'
         );
     }
 }

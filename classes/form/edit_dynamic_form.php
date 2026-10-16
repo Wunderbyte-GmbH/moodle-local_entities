@@ -77,6 +77,11 @@ class edit_dynamic_form extends dynamic_form {
         $data = (object)$this->_ajaxformdata;
 
         $entityid = $this->_customdata['entityid'] ?? $data->entityid ?? $data->id ?? 0;
+        // Persons get a slim form: only the Moodle user the person represents.
+        if (($data->entitytype ?? '') === 'person') {
+            $this->definition_person($mform);
+            return;
+        }
 
         $entities = [0 => $none];
 
@@ -91,7 +96,7 @@ class edit_dynamic_form extends dynamic_form {
             entities::get_tree_sortkey((int)$b, $map)
         ));
         foreach ($sorted as $id) {
-            if (isset($excluded[$id])) {
+            if (isset($excluded[$id]) || ($map[$id]->entitytype ?? '') === 'person') {
                 continue;
             }
             [$depth, , ] = entities::get_ancestor_path((int)$id, $map);
@@ -417,15 +422,24 @@ class edit_dynamic_form extends dynamic_form {
         $recordentity = $data;
         // But need to override a few values.
         $recordentity->id = $data->id ?? null;
-        $recordentity->name = $data->name;
-        $recordentity->shortname = $data->shortname;
+        $recordentity->name = $data->name ?? '';
+        $recordentity->shortname = $data->shortname ?? '';
         $recordentity->sortorder = intval($data->sortorder ?? 0);
         $recordentity->parentid = intval($data->parentid ?? 0);
         $recordentity->description = $data->description['text'] ?? $data->description ?? '';
         $recordentity->openinghours = $data->openinghours ?? '';
         $recordentity->status = $data->status ?? 0;
-        $recordentity->pricefactor = floatval(str_replace(',', '.', $data->pricefactor));
-        $recordentity->cfitemid = intval($data->cfitemid);
+        $recordentity->pricefactor = floatval(str_replace(',', '.', (string)($data->pricefactor ?? 1)));
+        $recordentity->cfitemid = intval($data->cfitemid ?? 0);
+
+        if (($data->entitytype ?? '') === 'person') {
+            // A person is one resource with a single concurrent reservation and has no name of its
+            // Own: the name is resolved from the user when displayed.
+            $recordentity->name = '';
+            $recordentity->userid = intval($data->userid ?? 0);
+            $recordentity->allocationmode = 'exclusive';
+            $recordentity->maxconcurrent = 1;
+        }
 
         $events = [];
         $eventarray = [];
@@ -551,10 +565,27 @@ class edit_dynamic_form extends dynamic_form {
         $parentid = (int)($data['parentid'] ?? 0);
         if ($parentid > 0) {
             $map = entities::get_entity_map();
-            if (!isset($map[$parentid])) {
+            if (!isset($map[$parentid]) || ($map[$parentid]->entitytype ?? '') === 'person') {
                 $errors['parentid'] = get_string('error:invalidparent', 'local_entities');
             } else if ($entityid > 0 && in_array($parentid, entities::get_descendant_ids($entityid), true)) {
                 $errors['parentid'] = get_string('error:parentcycle', 'local_entities');
+            }
+        }
+
+        // A person represents one existing Moodle user, and each user can be a person only once.
+        if (($data['entitytype'] ?? '') === 'person') {
+            global $DB;
+            $userid = (int)($data['userid'] ?? 0);
+            if ($userid <= 0 || !$DB->record_exists('user', ['id' => $userid, 'deleted' => 0])) {
+                $errors['userid'] = get_string('error:personuserrequired', 'local_entities');
+            } else if (
+                $DB->record_exists_select(
+                    'local_entities',
+                    'entitytype = :type AND userid = :userid AND id <> :id',
+                    ['type' => 'person', 'userid' => $userid, 'id' => $entityid]
+                )
+            ) {
+                $errors['userid'] = get_string('error:personalreadyexists', 'local_entities');
             }
         }
 
@@ -636,5 +667,36 @@ class edit_dynamic_form extends dynamic_form {
         }
         $this->entityid = !empty($defaults->id) ? (int) $defaults->id : 0;
         return parent::set_data($defaults);
+    }
+
+    /**
+     * Slim form for entities of type person: only the Moodle user the person represents.
+     *
+     * @param \MoodleQuickForm $mform
+     * @return void
+     */
+    private function definition_person(\MoodleQuickForm $mform): void {
+        $mform->addElement('header', 'details', get_string('edit_details', 'local_entities'));
+
+        // The type travels with the form, so a submit rebuilds the same slim form.
+        $mform->addElement('hidden', 'entitytype', 'person');
+        $mform->setType('entitytype', PARAM_ALPHA);
+
+        $mform->addElement('hidden', 'id', null);
+        $mform->setType('id', PARAM_INT);
+
+        $options = [
+            'ajax' => 'core_user/form_user_selector',
+            'multiple' => false,
+            'valuehtmlcallback' => function ($userid) {
+                global $DB;
+                $user = $DB->get_record('user', ['id' => $userid, 'deleted' => 0]);
+                return $user ? s(fullname($user)) : false;
+            },
+        ];
+        $mform->addElement('autocomplete', 'userid', get_string('person_user', 'local_entities'), [], $options);
+        $mform->addRule('userid', null, 'required', null, 'client');
+
+        $this->add_action_buttons();
     }
 }

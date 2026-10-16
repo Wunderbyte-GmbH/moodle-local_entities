@@ -17,7 +17,7 @@
 namespace local_entities\local\views;
 
 /**
- * The available entity types (location / equipment).
+ * The available entity types.
  *
  * Central, small list so settings and the per-type view-template logic stay in sync and a future
  * type only needs to be added here (plus its entitytype_<type> language string).
@@ -28,7 +28,7 @@ namespace local_entities\local\views;
  */
 class entity_types {
     /** @var string[] Known entity type keys (match the entitytype DB column values). */
-    const TYPES = ['location', 'equipment'];
+    const TYPES = ['location', 'equipment', 'person'];
 
     /**
      * Returns the type keys → display names map.

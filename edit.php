@@ -34,6 +34,7 @@ require_login();
 
 $entityid = optional_param('id', 0, PARAM_INT);
 $categoryid = optional_param('catid', 0, PARAM_INT);
+$isperson = optional_param('type', '', PARAM_ALPHA) === 'person';
 $context = context_system::instance();
 require_capability('local/entities:edit', $context);
 
@@ -42,7 +43,7 @@ global $USER, $PAGE, $DB;
 // Set PAGE variables.
 $PAGE->set_context($context);
 if (empty($entityid)) {
-    $PAGE->set_url(new moodle_url('/local/entities/edit.php'));
+    $PAGE->set_url(new moodle_url('/local/entities/edit.php', $isperson ? ['type' => 'person'] : []));
 } else {
     $PAGE->set_url(new moodle_url('/local/entities/edit.php', ['id' => $entityid]));
 }
@@ -77,12 +78,26 @@ if (!empty($entityid)) {
 
     $mform->set_data($entity);
 } else {
-    $mform = new edit_dynamic_form(null, null, 'post', '', [], true, ['entityid' => 0]);
+    $mform = new edit_dynamic_form(
+        null,
+        null,
+        'post',
+        '',
+        [],
+        true,
+        $isperson ? ['entityid' => 0, 'entitytype' => 'person'] : ['entityid' => 0]
+    );
 }
 
-// Print the page header.
-$title = isset($data['id']) ? $data['name'] : get_string('new_entity', 'local_entities');
-$heading = isset($data['id']) ? $data['name'] : get_string('new_entity', 'local_entities');
+$entityname = $data['name'] ?? '';
+if (($data['entitytype'] ?? '') === 'person' && !empty($data['userid'])) {
+    // A person has no name of its own: show the name of the Moodle user.
+    $personuser = $DB->get_record('user', ['id' => (int)$data['userid'], 'deleted' => 0]);
+    $entityname = $personuser ? fullname($personuser) : '';
+}
+$newlabel = get_string($isperson ? 'new_person' : 'new_entity', 'local_entities');
+$title = isset($data['id']) ? $entityname : $newlabel;
+$heading = isset($data['id']) ? $entityname : $newlabel;
 
 $PAGE->set_title($title);
 $PAGE->set_heading($heading);

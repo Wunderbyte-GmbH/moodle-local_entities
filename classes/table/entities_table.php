@@ -102,7 +102,16 @@ class entities_table extends wunderbyte_table {
             [$depth, , $names] = $this->resolve_lineage((int)$row->id, $map);
             $row->entitydepth = $depth;
             $row->namepath = implode(' / ', $names);
-            $keyed[] = [entities::get_tree_sortkey((int)$row->id, $map), $row];
+            if (($row->entitytype ?? '') === 'person') {
+                // A person has no hierarchy: persons form one block after the location tree, sorted by
+                // last and first name (taken from the joined user, so no extra query per row).
+                $sortkey = '~'
+                    . \core_text::strtolower(trim(($row->lastname ?? '') . ' ' . ($row->firstname ?? '')))
+                    . '/' . sprintf('%010d', (int)$row->id);
+            } else {
+                $sortkey = entities::get_tree_sortkey((int)$row->id, $map);
+            }
+            $keyed[] = [$sortkey, $row];
         }
 
         usort($keyed, static fn($a, $b) => strcmp($a[0], $b[0]));
@@ -148,12 +157,21 @@ class entities_table extends wunderbyte_table {
      */
     public function col_name($row): string {
         $depth = (int)($row->entitydepth ?? 0);
-        $icon = ($row->entitytype ?? 'location') === 'equipment' ? 'fa-cube' : 'fa-map-marker';
+        $type = $row->entitytype ?? 'location';
+        $icon = ['equipment' => 'fa-cube', 'person' => 'fa-user'][$type] ?? 'fa-map-marker';
+
+        // A person has no name of its own: show its Moodle user and link to the edit page, as a
+        // person has no detail view.
+        $isperson = $type === 'person';
+        $label = $isperson ? s(entities::get_display_name($row)) : format_string($row->name);
+        $url = $isperson
+            ? new moodle_url('/local/entities/edit.php', ['id' => $row->id])
+            : new moodle_url('/local/entities/view.php', ['id' => $row->id]);
 
         $link = html_writer::link(
-            new moodle_url('/local/entities/view.php', ['id' => $row->id]),
+            $url,
             html_writer::tag('i', '', ['class' => "fa fa-fw $icon me-1 text-muted", 'aria-hidden' => 'true'])
-                . format_string($row->name)
+                . $label
         );
 
         // The namepath is "root / … / self"; the breadcrumb is everything but the entity itself.
@@ -164,8 +182,18 @@ class entities_table extends wunderbyte_table {
             $breadcrumb = html_writer::div(substr($namepath, 0, $pos), 'small text-muted');
         }
 
+        // A person additionally shows its username and email as a small second line. The email is
+        // personal data, so it is only shown to users who may edit entities.
+        $subline = '';
+        if ($isperson && has_capability('local/entities:edit', context_system::instance())) {
+            $identity = array_filter([s($row->username ?? ''), s($row->email ?? '')]);
+            if ($identity) {
+                $subline = html_writer::div(implode(' · ', $identity), 'small text-muted');
+            }
+        }
+
         return html_writer::div(
-            $link . $breadcrumb,
+            $link . $breadcrumb . $subline,
             '',
             ['style' => 'padding-left: ' . ($depth * 1.5) . 'rem;']
         );
@@ -178,6 +206,9 @@ class entities_table extends wunderbyte_table {
      * @return string
      */
     public function col_entitytype($row): string {
+        if (($row->entitytype ?? 'location') === 'person') {
+            return html_writer::span(get_string('entitytype_person', 'local_entities'), 'badge text-bg-success');
+        }
         if (($row->entitytype ?? 'location') === 'equipment') {
             return html_writer::span(get_string('entitytype_equipment', 'local_entities'), 'badge text-bg-info');
         }
@@ -250,8 +281,7 @@ class entities_table extends wunderbyte_table {
                 ['showactionbuttons' => $deletebutton]
             );
         }
-
-        return html_writer::div($buttons, 'd-flex');
+        return html_writer::div($buttons, 'd-flex align-items-center');
     }
 
     /**
