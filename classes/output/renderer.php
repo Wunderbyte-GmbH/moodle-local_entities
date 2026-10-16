@@ -105,7 +105,7 @@ class local_entities_renderer extends plugin_renderer_base {
             $html .= "<h4>" . $name . "</h4>";
             $html .= "<ul class='ps-4 border-0'>";
             foreach ($records as $entity) {
-                $html .= $this->get_submenuitem($entity->id, $entity->name);
+                $html .= $this->get_submenuitem($entity->id, $entity->name . $this->type_badge($entity->entitytype ?? null));
             }
             $html .= "</ul>";
             $html .= "</li>";
@@ -174,6 +174,21 @@ class local_entities_renderer extends plugin_renderer_base {
     }
 
     /**
+     * Small badge with the entity type, shown next to the name in the classic list.
+     *
+     * @param string|null $type entity type key, empty counts as location
+     * @return string html
+     */
+    private function type_badge(?string $type): string {
+        $type = $type ?: 'location';
+        $classes = ['person' => 'text-bg-success', 'equipment' => 'text-bg-info'];
+        return ' ' . \html_writer::span(
+            \local_entities\local\views\entity_types::name($type),
+            'badge ' . ($classes[$type] ?? 'text-bg-secondary')
+        );
+    }
+
+    /**
      * List entities.
      *
      * @return string
@@ -187,21 +202,35 @@ class local_entities_renderer extends plugin_renderer_base {
         . new moodle_url($CFG->wwwroot . '/local/entities/edit.php') .
            "' class='btn btn-smaller btn-primary pull-right mx-2'>" .
            '<i class="fa fa-plus"></i> ' .
-            get_string("addentity", "local_entities") . "</a><a href='"
+                        get_string("addentity", "local_entities") . "</a><a href='"
+            . new moodle_url($CFG->wwwroot . '/local/entities/edit.php', ['type' => 'person']) .
+               "' class='btn btn-smaller btn-primary pull-right mx-2'>" .
+               '<i class="fa fa-user-plus"></i> ' .
+                get_string("addperson", "local_entities") . "</a><a href='"
+
             . new moodle_url($CFG->wwwroot . '/local/entities/customfield.php') .
                "' class='btn btn-smaller btn-primary pull-right'>" .
                '<i class="fa fa-plus"></i> ' .
                 get_string("addcategory", "local_entities") . "</a></li>";
-        $records = \local_entities\entities::list_all_parent_entities();
+        $records = \local_entities\entities::list_all_parent_entities(true);
         foreach ($records as $entity) {
-            $html .= $this->get_submenuitem($entity->id, $entity->name);
+            // A person has no name of its own: show the Moodle user's name.
+            $name = $entity->entitytype === 'person'
+                ? s(\local_entities\entities::get_display_name($entity))
+                : $entity->name;
+            $html .= $this->get_submenuitem($entity->id, $name . $this->type_badge($entity->entitytype ?? null));
         }
 
         $html .= "<li class='list-group-item'><a href='"
          . new moodle_url($CFG->wwwroot . '/local/entities/edit.php') .
             "' class='btn btn-smaller btn-primary pull-right mx-2'>" .
             '<i class="fa fa-plus"></i> ' .
-             get_string("addentity", "local_entities") . "</a><a href='"
+                         get_string("addentity", "local_entities") . "</a><a href='"
+            . new moodle_url($CFG->wwwroot . '/local/entities/edit.php', ['type' => 'person']) .
+               "' class='btn btn-smaller btn-primary pull-right mx-2'>" .
+               '<i class="fa fa-user-plus"></i> ' .
+                get_string("addperson", "local_entities") . "</a><a href='"
+
              . new moodle_url($CFG->wwwroot . '/local/entities/customfield.php') .
                 "' class='btn btn-smaller btn-primary pull-right'>" .
                 '<i class="fa fa-plus"></i> ' .

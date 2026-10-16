@@ -126,3 +126,52 @@
     align-items: baseline;
     height: 100%;
 }
+
+/* Unavailability page: saved entries are solid, entries that are not saved yet are hatched. */
+.local-entities-unavailability .fc .fc-event.entities-unavail {
+    background-color: #b02a37;
+    border-color: #b02a37;
+    color: #fff;
+    cursor: pointer;
+}
+
+.local-entities-unavailability .fc .fc-event.entities-unavail .fc-event-main,
+.local-entities-unavailability .fc .fc-event.entities-unavail .fc-event-time,
+.local-entities-unavailability .fc .fc-event.entities-unavail .fc-event-title {
+    color: #fff;
+}
+
+/* An entry that belongs to a series gets a darker edge. */
+.local-entities-unavailability .fc .fc-event.entities-unavail-series {
+    border-left: 5px solid #6a1b23;
+}
+
+.local-entities-unavailability .fc .fc-event.entities-unavail-pending {
+    background: repeating-linear-gradient(45deg, #ffc078, #ffc078 6px, #ffe3bf 6px, #ffe3bf 12px);
+    border: 2px dashed #e8590c;
+    color: #212529;
+    cursor: pointer;
+}
+
+.local-entities-unavailability .fc .fc-event.entities-unavail-pending .fc-event-main,
+.local-entities-unavailability .fc .fc-event.entities-unavail-pending .fc-event-time,
+.local-entities-unavailability .fc .fc-event.entities-unavail-pending .fc-event-title {
+    color: #212529;
+}
+
+/* Unavailability page: days that are over cannot be changed, so they are shown grey. */
+.local-entities-unavailability .fc .fc-day-past {
+    background-color: #f1f3f5;
+    cursor: not-allowed;
+}
+
+/* Unavailability page: a whole day also tints its column in the week view and its cell in the month view. */
+.local-entities-unavailability .fc .fc-bg-event.entities-unavail-fill {
+    background: rgba(176, 42, 55, 0.18);
+    opacity: 1;
+}
+
+.local-entities-unavailability .fc .fc-bg-event.entities-unavail-fill-pending {
+    background: repeating-linear-gradient(45deg, #ffc07880, #ffc07880 6px, #ffe3bf80 6px, #ffe3bf80 12px);
+    opacity: 1;
+}

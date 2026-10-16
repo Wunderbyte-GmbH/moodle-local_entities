@@ -1,0 +1,81 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template local_entities/unavailability_page
+
+    Page on which the unavailability of an entity is managed. It looks the same for every entity.
+
+    Classes required for JS:
+    * none
+
+    Data attributes required for JS:
+    * data-region="unavailability-page"
+    * data-region="unavailability-entity-select"
+    * data-region="unavailability-calendar"
+    * data-region="unavailability-message"
+    * data-region="unavailability-dirty"
+    * data-action="unavailability-save"
+    * data-action="unavailability-discard"
+    * data-action="unavailability-addseries"
+
+    Context variables required for this template:
+    * heading - string, heading of the entity on display
+    * entityselect - object, empty if there is nothing to choose
+      * label - string, label of the selection
+      * url - string, address of the page, the id of the chosen entity is added as entityid
+      * options - list of id, name and selected
+
+    Example context (json):
+    {
+        "heading": "Unavailability of Room A",
+        "entityselect": {
+            "label": "Entity",
+            "url": "https://example.org/local/entities/unavailability.php",
+            "options": [
+                {"id": 1, "name": "Room A (Location)", "selected": true},
+                {"id": 2, "name": "Billy Teachy (Person)", "selected": false}
+            ]
+        }
+    }
+}}
+<div class="local-entities-unavailability" data-region="unavailability-page">
+    {{#entityselect}}
+        <div class="mb-4" data-region="unavailability-entity-select">
+            <label for="unavailability-entity" class="form-label">{{label}}</label>
+            <select id="unavailability-entity" class="form-select" data-url="{{url}}">
+                {{#options}}
+                    <option value="{{id}}"{{#selected}} selected{{/selected}}>{{name}}</option>
+                {{/options}}
+            </select>
+        </div>
+    {{/entityselect}}
+    <h3 class="h4 mb-2">{{heading}}</h3>
+    <p class="text-muted">{{#str}}unavailability_help, local_entities{{/str}}</p>
+    <div class="d-flex flex-wrap align-items-center gap-2 mb-3" data-region="unavailability-toolbar">
+        <button type="button" class="btn btn-primary" data-action="unavailability-save" disabled>
+            {{#str}}unavailability_save, local_entities{{/str}}
+        </button>
+        <button type="button" class="btn btn-secondary" data-action="unavailability-discard" disabled>
+            {{#str}}unavailability_discard, local_entities{{/str}}
+        </button>
+        <button type="button" class="btn btn-outline-secondary" data-action="unavailability-addseries">
+            {{#str}}unavailability_addseries, local_entities{{/str}}
+        </button>
+        <span class="ms-2 fw-bold d-none" data-region="unavailability-dirty">
+            {{#str}}unavailability_unsaved, local_entities{{/str}}
+        </span>
+    </div>
+    <div data-region="unavailability-message" aria-live="polite"></div>
+    <div data-region="unavailability-calendar"></div>
+</div>
