@@ -339,5 +339,94 @@ function xmldb_local_entities_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2026070301, 'local', 'entities');
     }
 
+    if ($oldversion < 2026101300) {
+        // Person entities: the Moodle user an entity of type "person" represents.
+        $table = new xmldb_table('local_entities');
+        $field = new xmldb_field('userid', XMLDB_TYPE_INTEGER, '10', null, null, null, null, 'availableinsublocations');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        $index = new xmldb_index('userid', XMLDB_INDEX_NOTUNIQUE, ['userid']);
+        if (!$dbman->index_exists($table, $index)) {
+            $dbman->add_index($table, $index);
+        }
+
+        // Entities savepoint reached.
+        upgrade_plugin_savepoint(true, 2026101300, 'local', 'entities');
+    }
+
+    if ($oldversion < 2026101301) {
+        // Unavailability of entities (e.g. persons): time ranges with an optional scope.
+        $table = new xmldb_table('local_entities_unavailability');
+
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('entityid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('starttime', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('endtime', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('component', XMLDB_TYPE_CHAR, '255', null, null, null, null);
+        $table->add_field('area', XMLDB_TYPE_CHAR, '30', null, null, null, null);
+        $table->add_field('instanceid', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+        $table->add_field('reason', XMLDB_TYPE_CHAR, '255', null, null, null, null);
+        $table->add_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, null, null, '0');
+        $table->add_field('timemodified', XMLDB_TYPE_INTEGER, '10', null, null, null, '0');
+        $table->add_field('usermodified', XMLDB_TYPE_INTEGER, '10', null, null, null, '0');
+
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+        $table->add_key('entityid', XMLDB_KEY_FOREIGN, ['entityid'], 'local_entities', ['id']);
+
+        $table->add_index('entity_time', XMLDB_INDEX_NOTUNIQUE, ['entityid', 'starttime', 'endtime']);
+        $table->add_index('scope', XMLDB_INDEX_NOTUNIQUE, ['component', 'area', 'instanceid']);
+
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        // Entities savepoint reached.
+        upgrade_plugin_savepoint(true, 2026101301, 'local', 'entities');
+    }
+
+    if ($oldversion < 2026101302) {
+        // Series of unavailability blocks: the recurrence rule and the reference from each block.
+        $table = new xmldb_table('local_entities_unavail_series');
+        if (!$dbman->table_exists($table)) {
+            $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+            $table->add_field('entityid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+            $table->add_field('component', XMLDB_TYPE_CHAR, '255', null, null, null, null);
+            $table->add_field('area', XMLDB_TYPE_CHAR, '30', null, null, null, null);
+            $table->add_field('instanceid', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+            $table->add_field('weekdays', XMLDB_TYPE_CHAR, '20', null, XMLDB_NOTNULL, null, null);
+            $table->add_field('allday', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0');
+            $table->add_field('daystart', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+            $table->add_field('dayend', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+            $table->add_field('validfrom', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+            $table->add_field('validuntil', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+            $table->add_field('timezone', XMLDB_TYPE_CHAR, '100', null, XMLDB_NOTNULL, null, null);
+            $table->add_field('reason', XMLDB_TYPE_CHAR, '255', null, null, null, null);
+            $table->add_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, null, null, '0');
+            $table->add_field('timemodified', XMLDB_TYPE_INTEGER, '10', null, null, null, '0');
+            $table->add_field('usermodified', XMLDB_TYPE_INTEGER, '10', null, null, null, '0');
+
+            $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+            $table->add_key('entityid', XMLDB_KEY_FOREIGN, ['entityid'], 'local_entities', ['id']);
+
+            $dbman->create_table($table);
+        }
+
+        // Reference from a block to its series.
+        $table = new xmldb_table('local_entities_unavailability');
+        $field = new xmldb_field('seriesid', XMLDB_TYPE_INTEGER, '10', null, null, null, null, 'usermodified');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        $index = new xmldb_index('seriesid', XMLDB_INDEX_NOTUNIQUE, ['seriesid']);
+        if (!$dbman->index_exists($table, $index)) {
+            $dbman->add_index($table, $index);
+        }
+
+        // Entities savepoint reached.
+        upgrade_plugin_savepoint(true, 2026101302, 'local', 'entities');
+    }
+
     return true;
 }

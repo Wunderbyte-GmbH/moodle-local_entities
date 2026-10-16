@@ -62,12 +62,33 @@ if (get_config('local_entities', 'usetreelist')) {
             ['class' => 'btn btn-primary me-2']
         );
         $toolbar .= html_writer::link(
+            new moodle_url('/local/entities/edit.php', ['type' => 'person']),
+            html_writer::tag('i', '', ['class' => 'fa fa-user-plus me-1']) . get_string('addperson', 'local_entities'),
+            ['class' => 'btn btn-primary me-2']
+        );
+        $toolbar .= html_writer::link(
             new moodle_url('/local/entities/customfield.php'),
             html_writer::tag('i', '', ['class' => 'fa fa-plus me-1']) . get_string('addcategory', 'local_entities'),
             ['class' => 'btn btn-outline-primary']
         );
         echo html_writer::div($toolbar, 'mb-3');
     }
+
+    // Type filter: one button per entity type, "All" shows everything.
+    $typefilter = optional_param('type', '', PARAM_ALPHA);
+    if (!\local_entities\local\views\entity_types::exists($typefilter)) {
+        $typefilter = '';
+    }
+    $typebuttons = '';
+    $typeoptions = ['' => get_string('all')] + \local_entities\local\views\entity_types::all();
+    foreach ($typeoptions as $typekey => $typename) {
+        $typebuttons .= html_writer::link(
+            new moodle_url('/local/entities/entities.php', $typekey === '' ? [] : ['type' => $typekey]),
+            $typename,
+            ['class' => 'btn btn-sm me-1 ' . ($typekey === $typefilter ? 'btn-primary' : 'btn-outline-secondary')]
+        );
+    }
+    echo html_writer::div($typebuttons, 'mb-3');
 
     // Hierarchical, searchable list of all entities.
     $table = new \local_entities\table\entities_table('local_entities_list');
@@ -78,16 +99,25 @@ if (get_config('local_entities', 'usetreelist')) {
         get_string('actions'),
     ]);
     $table->define_columns(['name', 'entitytype', 'usecount', 'actions']);
-    $table->define_fulltextsearchcolumns(['name', 'shortname']);
+    $table->define_fulltextsearchcolumns(['name', 'shortname', 'firstname', 'lastname']);
 
     // Plain, database-agnostic query; the depth-first tree order and pagination are applied in PHP by
     // entities_table::query_db(), so the hierarchy is preserved across pages without DB-specific SQL.
-    $fields = "e.id, e.name, e.shortname, e.parentid, e.entitytype,
+    $fields = "e.id, e.name, e.shortname, e.parentid, e.entitytype, e.userid, u.firstname, u.lastname, u.username, u.email,
         (SELECT COUNT(DISTINCT r.instanceid)
            FROM {local_entities_relations} r
           WHERE r.entityid = e.id AND r.area = 'option') AS usecount";
-    $from = "{local_entities} e";
-    $table->set_filter_sql($fields, $from, "1=1", '');
+    $from = "{local_entities} e LEFT JOIN {user} u ON u.id = e.userid";
+    $typewhere = '1=1';
+    $typeparams = [];
+    if ($typefilter !== '') {
+        // Older rows may still have no type set: those count as locations.
+        $typewhere = $typefilter === 'location'
+            ? '(e.entitytype = :entitytype OR e.entitytype IS NULL)'
+            : 'e.entitytype = :entitytype';
+        $typeparams['entitytype'] = $typefilter;
+    }
+    $table->set_filter_sql($fields, $from, $typewhere, '', $typeparams);
     $table->showcountlabel = true;
 
     // Paginated (20 per page), rendered server-side (no lazy spinner).

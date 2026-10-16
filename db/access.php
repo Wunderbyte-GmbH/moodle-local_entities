@@ -58,4 +58,13 @@ $capabilities = [
             'manager' => CAP_ALLOW,
         ],
     ],
+    // Allows managing the unavailability of all entities (other persons, places, equipment), e.g. for a secretariat.
+    'local/entities:manageunavailability' => [
+        'riskbitmask' => RISK_PERSONAL,
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => [
+            'manager' => CAP_ALLOW,
+        ],
+    ],
 ];
