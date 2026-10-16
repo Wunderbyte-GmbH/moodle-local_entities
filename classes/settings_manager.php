@@ -372,7 +372,7 @@ class settings_manager {
         $formdata->capacitysource = $record->capacitysource;
         $formdata->entitytype = $record->entitytype;
         $formdata->availableinsublocations = $record->availableinsublocations;
-        // Address.
+        $formdata->userid = $record->userid;
         $i = 0;
         if ($record->address[0]) {
             foreach ($record->address[0] as $address) {

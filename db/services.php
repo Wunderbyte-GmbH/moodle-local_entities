@@ -89,6 +89,20 @@ $functions = [
                 'ajax' => true,
                 'capabilities' => 'local/entities:changeviewtemplate',
         ],
+        'local_entities_get_unavailability' => [
+                'classname' => 'local_entities\external\get_unavailability',
+                'classpath' => '',
+                'description' => 'Loads the blocks and series of the unavailability of an entity for a time window',
+                'type' => 'read',
+                'ajax' => true,
+        ],
+        'local_entities_save_unavailability' => [
+                'classname' => 'local_entities\external\save_unavailability',
+                'classpath' => '',
+                'description' => 'Saves the changes to the unavailability of an entity, or returns the assignments that prevent it',
+                'type' => 'write',
+                'ajax' => true,
+        ],
 ];
 
 $services = [

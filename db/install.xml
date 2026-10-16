@@ -22,6 +22,7 @@
                 <FIELD NAME="capacitysource" TYPE="char" LENGTH="20" NOTNULL="false" DEFAULT="maxanswers" SEQUENCE="false" COMMENT="Capacity mode only: how the consumed amount per booking is determined - 'maxanswers' (participant count of the option) or 'manual' (explicitly entered quantity, e.g. equipment)."/>
                 <FIELD NAME="entitytype" TYPE="char" LENGTH="20" NOTNULL="false" DEFAULT="location" SEQUENCE="false" COMMENT="Kind of entity: 'location' (rooms/places, used in the location hierarchy and room pickers) or 'equipment' (bookable resources hung under a location via parentid)."/>
                 <FIELD NAME="availableinsublocations" TYPE="int" LENGTH="1" NOTNULL="false" DEFAULT="1" SEQUENCE="false" COMMENT="Equipment only: whether sub-locations (descendants of the equipment's home location) may also use this item."/>
+                <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Person only: the Moodle user this entity represents (entitytype 'person'). Null for locations and equipment."/>
             </FIELDS>
             <KEYS>
                 <KEY NAME="primary" TYPE="primary" FIELDS="id" />
@@ -29,6 +30,7 @@
             <INDEXES>
                 <INDEX NAME="cfitemid" UNIQUE="false" FIELDS="cfitemid"/>
                 <INDEX NAME="parentid" UNIQUE="false" FIELDS="parentid"/>
+                <INDEX NAME="userid" UNIQUE="false" FIELDS="userid"/>
             </INDEXES>
         </TABLE>
         <TABLE NAME="local_entities_address" COMMENT="Address connected to entities">
@@ -79,6 +81,55 @@
             <INDEXES>
                 <INDEX NAME="idx_componentareainstanceid" UNIQUE="false" FIELDS="component, area, instanceid"/>
             </INDEXES>
+        </TABLE>
+        <TABLE NAME="local_entities_unavailability" COMMENT="Time ranges in which an entity (e.g. a person) is not available">
+            <FIELDS>
+                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" />
+                <FIELD NAME="entityid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" />
+                <FIELD NAME="starttime" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Start of the unavailable range (unix timestamp)."/>
+                <FIELD NAME="endtime" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="End of the unavailable range (unix timestamp)."/>
+                <FIELD NAME="component" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" COMMENT="Scope: full name of the moodle component, e.g. mod_booking. Empty means the block applies everywhere."/>
+                <FIELD NAME="area" TYPE="char" LENGTH="30" NOTNULL="false" SEQUENCE="false" COMMENT="Scope: area inside the component, e.g. booking or option."/>
+                <FIELD NAME="instanceid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Scope: id of the instance inside the area."/>
+                <FIELD NAME="reason" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" />
+                <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="false" DEFAULT="0" SEQUENCE="false" />
+                <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="false" DEFAULT="0" SEQUENCE="false" />
+                <FIELD NAME="usermodified" TYPE="int" LENGTH="10" NOTNULL="false" DEFAULT="0" SEQUENCE="false" COMMENT="User who last changed the block."/>
+                <FIELD NAME="seriesid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Series this block belongs to (local_entities_unavail_series). Null for a single block."/>
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="id" />
+                <KEY NAME="entityid" TYPE="foreign" FIELDS="entityid" REFTABLE="local_entities" REFFIELDS="id"/>
+            </KEYS>
+            <INDEXES>
+                <INDEX NAME="entity_time" UNIQUE="false" FIELDS="entityid, starttime, endtime"/>
+                <INDEX NAME="scope" UNIQUE="false" FIELDS="component, area, instanceid"/>
+                <INDEX NAME="seriesid" UNIQUE="false" FIELDS="seriesid"/>
+            </INDEXES>
+        </TABLE>
+        <TABLE NAME="local_entities_unavail_series" COMMENT="Recurrence rule of a series of unavailability blocks">
+            <FIELDS>
+                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" />
+                <FIELD NAME="entityid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" />
+                <FIELD NAME="component" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" COMMENT="Scope of the series, same meaning as in local_entities_unavailability."/>
+                <FIELD NAME="area" TYPE="char" LENGTH="30" NOTNULL="false" SEQUENCE="false" />
+                <FIELD NAME="instanceid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" />
+                <FIELD NAME="weekdays" TYPE="char" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="Weekdays of the repetition, comma separated, 1 = Monday to 7 = Sunday."/>
+                <FIELD NAME="allday" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="1 = whole days, otherwise daystart to dayend."/>
+                <FIELD NAME="daystart" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Seconds since midnight, only if not allday."/>
+                <FIELD NAME="dayend" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Seconds since midnight, only if not allday."/>
+                <FIELD NAME="validfrom" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="First day of the series (start of that day)."/>
+                <FIELD NAME="validuntil" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Last day of the series (start of that day)."/>
+                <FIELD NAME="timezone" TYPE="char" LENGTH="100" NOTNULL="true" SEQUENCE="false" COMMENT="Timezone in which weekdays and times are meant."/>
+                <FIELD NAME="reason" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" />
+                <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="false" DEFAULT="0" SEQUENCE="false" />
+                <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="false" DEFAULT="0" SEQUENCE="false" />
+                <FIELD NAME="usermodified" TYPE="int" LENGTH="10" NOTNULL="false" DEFAULT="0" SEQUENCE="false" />
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="id" />
+                <KEY NAME="entityid" TYPE="foreign" FIELDS="entityid" REFTABLE="local_entities" REFFIELDS="id"/>
+            </KEYS>
         </TABLE>
     </TABLES>
   </XMLDB>
