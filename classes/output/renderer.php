@@ -214,6 +214,9 @@ class local_entities_renderer extends plugin_renderer_base {
                 get_string("addcategory", "local_entities") . "</a></li>";
         $records = \local_entities\entities::list_all_parent_entities(true);
         foreach ($records as $entity) {
+            if (!\local_entities\person_visibility::can_see($entity)) {
+                continue;
+            }
             // A person has no name of its own: show the Moodle user's name.
             $name = $entity->entitytype === 'person'
                 ? s(\local_entities\entities::get_display_name($entity))

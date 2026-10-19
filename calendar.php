@@ -39,6 +39,9 @@ require_once("{$CFG->dirroot}/local/entities/lib.php");
 // Set the page layout.
 require_login();
 require_capability('local/entities:view', \context_system::instance());
+if (!\local_entities\person_visibility::can_see_id($id)) {
+    throw new \moodle_exception('error:entitydoesnotexist', 'local_entities');
+}
 $PAGE->set_pagelayout('popup');
 
 $PAGE->requires->css('/local/entities/js/main.css');
