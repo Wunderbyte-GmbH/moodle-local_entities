@@ -117,6 +117,11 @@ if (get_config('local_entities', 'usetreelist')) {
             : 'e.entitytype = :entitytype';
         $typeparams['entitytype'] = $typefilter;
     }
+    // Persons are personal data: the list only shows the ones the user may see.
+    [$visiblewhere, $visibleparams] = \local_entities\person_visibility::sql_condition('e');
+    $typewhere = "({$typewhere}) AND {$visiblewhere}";
+    $typeparams += $visibleparams;
+
     $table->set_filter_sql($fields, $from, $typewhere, '', $typeparams);
     $table->showcountlabel = true;
 

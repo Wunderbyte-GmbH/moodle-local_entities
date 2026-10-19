@@ -118,7 +118,7 @@ class unavailability_access {
      * @param int|null $userid
      * @return int
      */
-    private static function resolve_userid(?int $userid): int {
+    public static function resolve_userid(?int $userid): int {
         global $USER;
 
         $userid = $userid ?? (int)($USER->id ?? 0);
