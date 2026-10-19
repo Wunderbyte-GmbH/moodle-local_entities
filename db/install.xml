@@ -131,5 +131,38 @@
                 <KEY NAME="entityid" TYPE="foreign" FIELDS="entityid" REFTABLE="local_entities" REFFIELDS="id"/>
             </KEYS>
         </TABLE>
+        <TABLE NAME="local_entities_people_pool" COMMENT="Named group of persons, e.g. examiners of one subject">
+            <FIELDS>
+                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" />
+                <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="Name of the pool, unique."/>
+                <FIELD NAME="description" TYPE="text" NOTNULL="false" SEQUENCE="false" />
+                <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="false" DEFAULT="0" SEQUENCE="false" />
+                <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="false" DEFAULT="0" SEQUENCE="false" />
+                <FIELD NAME="usermodified" TYPE="int" LENGTH="10" NOTNULL="false" DEFAULT="0" SEQUENCE="false" />
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="id" />
+            </KEYS>
+            <INDEXES>
+                <INDEX NAME="name" UNIQUE="true" FIELDS="name"/>
+            </INDEXES>
+        </TABLE>
+        <TABLE NAME="local_entities_people_pool_member" COMMENT="Persons (entities of type person) that belong to a people pool">
+            <FIELDS>
+                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" />
+                <FIELD NAME="poolid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" />
+                <FIELD NAME="entityid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Entity of type person."/>
+                <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="false" DEFAULT="0" SEQUENCE="false" />
+                <FIELD NAME="usermodified" TYPE="int" LENGTH="10" NOTNULL="false" DEFAULT="0" SEQUENCE="false" />
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="id" />
+                <KEY NAME="poolid" TYPE="foreign" FIELDS="poolid" REFTABLE="local_entities_people_pool" REFFIELDS="id"/>
+                <KEY NAME="entityid" TYPE="foreign" FIELDS="entityid" REFTABLE="local_entities" REFFIELDS="id"/>
+            </KEYS>
+            <INDEXES>
+                <INDEX NAME="pool_entity" UNIQUE="true" FIELDS="poolid, entityid"/>
+            </INDEXES>
+        </TABLE>
     </TABLES>
   </XMLDB>

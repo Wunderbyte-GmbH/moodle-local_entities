@@ -22,6 +22,7 @@ use core_privacy\local\request\approved_userlist;
 use core_privacy\local\request\userlist;
 use core_privacy\local\request\writer;
 use core_privacy\tests\provider_testcase;
+use local_entities\people_pool\people_pool_repository;
 use local_entities\persons;
 
 /**
@@ -71,8 +72,15 @@ final class provider_test extends provider_testcase {
         $collection = provider::get_metadata(new collection('local_entities'));
         $names = array_map(fn($item) => $item->get_name(), $collection->get_collection());
 
-        foreach (['local_entities', 'local_entities_unavailability', 'local_entities_unavail_series',
-            'local_entities_contacts'] as $table) {
+        $tables = [
+            'local_entities',
+            'local_entities_unavailability',
+            'local_entities_unavail_series',
+            'local_entities_people_pool',
+            'local_entities_people_pool_member',
+            'local_entities_contacts',
+        ];
+        foreach ($tables as $table) {
             $this->assertContains($table, $names);
         }
     }
@@ -210,5 +218,83 @@ final class provider_test extends provider_testcase {
         $this->assertFalse($DB->record_exists('local_entities', ['id' => $thirdid]));
         $this->assertSame(0, $DB->count_records('local_entities_unavailability'));
         $this->assertSame(0, $DB->count_records('local_entities_unavail_series'));
+    }
+
+    /**
+     * A user who only created a pool or put someone into a pool has data as well.
+     *
+     * @return void
+     */
+    public function test_a_user_who_changed_pools_has_data(): void {
+        $this->resetAfterTest();
+        $examiner = $this->getDataGenerator()->create_user();
+        $creator = $this->getDataGenerator()->create_user();
+        $adder = $this->getDataGenerator()->create_user();
+        $entityid = $this->create_person_with_unavailability($examiner, (int)$examiner->id);
+        $repo = new people_pool_repository();
+        $poolid = $repo->create('Greek', '', (int)$creator->id);
+        $repo->add_members($poolid, [$entityid], (int)$adder->id);
+
+        $this->assertNotEmpty(provider::get_contexts_for_userid((int)$creator->id)->get_contextids());
+        $this->assertNotEmpty(provider::get_contexts_for_userid((int)$adder->id)->get_contextids());
+        $userlist = new userlist(\context_system::instance(), 'local_entities');
+        provider::get_users_in_context($userlist);
+        $this->assertContains((int)$creator->id, array_map('intval', $userlist->get_userids()));
+        $this->assertContains((int)$adder->id, array_map('intval', $userlist->get_userids()));
+    }
+
+    /**
+     * The export names the pools of the person and the pools the user created or changed.
+     *
+     * @return void
+     */
+    public function test_export_has_the_pools(): void {
+        $this->resetAfterTest();
+        $examiner = $this->getDataGenerator()->create_user();
+        $entityid = $this->create_person_with_unavailability($examiner, (int)$examiner->id);
+        $repo = new people_pool_repository();
+        $poolid = $repo->create('Greek', '', (int)$examiner->id);
+        $repo->create('Latin', '', 2);
+        $repo->add_members($poolid, [$entityid], 2);
+        $context = \context_system::instance();
+
+        $this->export_context_data_for_user((int)$examiner->id, $context, 'local_entities');
+        $writer = writer::with_context($context);
+        $base = get_string('pluginname', 'local_entities');
+
+        $memberships = $writer->get_data([$base, get_string('privacypoolmemberships', 'local_entities')]);
+        $this->assertCount(1, $memberships->entries);
+        $this->assertSame('Greek', $memberships->entries[0]->name);
+
+        $changed = $writer->get_data([$base, get_string('privacychangedpools', 'local_entities')]);
+        $this->assertCount(1, $changed->entries);
+        $this->assertSame('Greek', $changed->entries[0]->name);
+    }
+
+    /**
+     * Erasing a user takes the person out of all pools and, for the others, removes only the id of the user.
+     *
+     * @return void
+     */
+    public function test_erasing_a_user_cleans_the_pools(): void {
+        global $DB;
+        $this->resetAfterTest();
+        $examiner = $this->getDataGenerator()->create_user();
+        $other = $this->getDataGenerator()->create_user();
+        $secretary = $this->getDataGenerator()->create_user();
+        $examinerid = $this->create_person_with_unavailability($examiner, (int)$examiner->id);
+        $otherid = $this->create_person_with_unavailability($other, (int)$other->id);
+        $repo = new people_pool_repository();
+        $poolid = $repo->create('Greek', '', (int)$secretary->id);
+        $repo->add_members($poolid, [$examinerid, $otherid], (int)$secretary->id);
+        $context = \context_system::instance();
+
+        provider::delete_data_for_user(new approved_contextlist($examiner, 'local_entities', [$context->id]));
+        $this->assertSame([$otherid], $repo->get_member_entityids($poolid));
+
+        provider::delete_data_for_user(new approved_contextlist($secretary, 'local_entities', [$context->id]));
+        $this->assertSame(0, (int)$DB->get_field('local_entities_people_pool', 'usermodified', ['id' => $poolid]));
+        $this->assertSame([$otherid], $repo->get_member_entityids($poolid), 'The membership of another person stays.');
+        $this->assertEquals(0, $DB->count_records_select('local_entities_people_pool_member', 'usermodified <> 0'));
     }
 }

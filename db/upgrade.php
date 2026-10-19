@@ -428,5 +428,43 @@ function xmldb_local_entities_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2026101302, 'local', 'entities');
     }
 
+    if ($oldversion < 2026101901) {
+        // Pools of persons.
+        $table = new xmldb_table('local_entities_people_pool');
+        if (!$dbman->table_exists($table)) {
+            $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+            $table->add_field('name', XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, null);
+            $table->add_field('description', XMLDB_TYPE_TEXT, null, null, null, null, null);
+            $table->add_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, null, null, '0');
+            $table->add_field('timemodified', XMLDB_TYPE_INTEGER, '10', null, null, null, '0');
+            $table->add_field('usermodified', XMLDB_TYPE_INTEGER, '10', null, null, null, '0');
+
+            $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+            $table->add_index('name', XMLDB_INDEX_UNIQUE, ['name']);
+
+            $dbman->create_table($table);
+        }
+
+        // Members of a pool.
+        $table = new xmldb_table('local_entities_people_pool_member');
+        if (!$dbman->table_exists($table)) {
+            $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+            $table->add_field('poolid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+            $table->add_field('entityid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+            $table->add_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, null, null, '0');
+            $table->add_field('usermodified', XMLDB_TYPE_INTEGER, '10', null, null, null, '0');
+
+            $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+            $table->add_key('poolid', XMLDB_KEY_FOREIGN, ['poolid'], 'local_entities_people_pool', ['id']);
+            $table->add_key('entityid', XMLDB_KEY_FOREIGN, ['entityid'], 'local_entities', ['id']);
+            $table->add_index('pool_entity', XMLDB_INDEX_UNIQUE, ['poolid', 'entityid']);
+
+            $dbman->create_table($table);
+        }
+
+        // Entities savepoint reached.
+        upgrade_plugin_savepoint(true, 2026101901, 'local', 'entities');
+    }
+
     return true;
 }
