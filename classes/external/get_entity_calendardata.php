@@ -33,6 +33,7 @@ use core_external\external_value;
 use core_external\external_single_structure;
 use local_entities\entity;
 use local_entities\entities;
+use local_entities\person_visibility;
 
 /**
  * get_entity_calendardata webservice
@@ -72,6 +73,12 @@ class get_entity_calendardata extends external_api {
         // deliberately public (loginrequired = false), so we set the context instead of validating
         // it - validate_context() would call require_login() and lock out logged out visitors.
         $PAGE->set_context(\context_system::instance());
+
+        // A person is personal data and follows the same rule as the detail page. The webservice is public,
+        // so for a visitor that may not see the person it is simply not there.
+        if (!person_visibility::can_see_id($params['id'])) {
+            return ['json' => '[]', 'error' => get_string('error:entitydoesnotexist', 'local_entities')];
+        }
 
         $entity = entity::load($params['id']);
         $openinghours = $entity->__get('openinghours') ?? '[]';

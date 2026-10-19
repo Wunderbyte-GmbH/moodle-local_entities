@@ -154,4 +154,63 @@ final class external_search_calendar_test extends advanced_testcase {
         $this->assertSame('', (string)$result['error']);
         $this->assertSame([], json_decode((string)$result['json']));
     }
+
+    /**
+     * The calendar of a person is personal data. Logged out, or as another user, the webservice
+     * answers as if there was no such entity, and gives no data.
+     */
+    public function test_get_entity_calendardata_hides_a_person_from_others(): void {
+        $this->resetAfterTest();
+        $this->setAdminUser();
+        $person = $this->getDataGenerator()->create_user();
+        $other = $this->getDataGenerator()->create_user();
+        $personid = persons::get_or_create_for_user((int)$person->id);
+
+        $this->setUser($other);
+        $result = external\get_entity_calendardata::execute($personid);
+        $this->assertSame(get_string('error:entitydoesnotexist', 'local_entities'), (string)$result['error']);
+        $this->assertSame([], json_decode((string)$result['json']));
+
+        require_logout();
+        $result = external\get_entity_calendardata::execute($personid);
+        $this->assertSame(get_string('error:entitydoesnotexist', 'local_entities'), (string)$result['error']);
+    }
+
+    /**
+     * The person itself and everyone with the right to manage all unavailability get the calendar of a
+     * person like that of any other entity.
+     */
+    public function test_get_entity_calendardata_serves_a_person_to_those_who_may_see_it(): void {
+        $this->resetAfterTest();
+        $this->setAdminUser();
+        $person = $this->getDataGenerator()->create_user();
+        $personid = persons::get_or_create_for_user((int)$person->id);
+
+        $this->setUser($person);
+        $result = external\get_entity_calendardata::execute($personid);
+        $this->assertSame('', (string)$result['error']);
+        $this->assertIsArray(json_decode((string)$result['json']));
+
+        $roleid = $this->getDataGenerator()->create_role();
+        assign_capability('local/entities:manageunavailability', CAP_ALLOW, $roleid, \context_system::instance()->id, true);
+        $secretary = $this->getDataGenerator()->create_user();
+        role_assign($roleid, $secretary->id, \context_system::instance()->id);
+        $this->setUser($secretary);
+        $result = external\get_entity_calendardata::execute($personid);
+        $this->assertSame('', (string)$result['error']);
+    }
+
+    /**
+     * Places stay public, also for a user that has no rights at all.
+     */
+    public function test_get_entity_calendardata_still_serves_places_to_everyone(): void {
+        $this->resetAfterTest();
+        $this->setAdminUser();
+        $id = $this->make_entity('Public Room', 'publicroom', 'location');
+        $this->setUser($this->getDataGenerator()->create_user());
+
+        $result = external\get_entity_calendardata::execute($id);
+
+        $this->assertSame('', (string)$result['error']);
+    }
 }

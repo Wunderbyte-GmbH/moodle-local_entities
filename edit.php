@@ -60,7 +60,7 @@ $PAGE->set_secondary_navigation(true);
 $settingsmanager = new settings_manager();
 
 if (!empty($entityid)) {
-    if (!$DB->record_exists('local_entities', ['id' => $entityid])) {
+    if (!\local_entities\person_visibility::can_see_id($entityid)) {
         $PAGE->set_title(get_string('error:entitydoesnotexist', 'local_entities'));
         $PAGE->set_heading(get_string('error:entitydoesnotexist', 'local_entities'));
         echo $OUTPUT->header();

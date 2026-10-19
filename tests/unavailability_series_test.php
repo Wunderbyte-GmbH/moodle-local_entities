@@ -638,4 +638,29 @@ final class unavailability_series_test extends \advanced_testcase {
             $ids(unavailability::get_series($entity, null, $this->ts($this->day(0) . ' 00:00')))
         );
     }
+
+    /**
+     * Deleting an entity also removes its unavailability and its series, so nothing is left behind.
+     *
+     * @return void
+     */
+    public function test_deleting_an_entity_removes_its_series(): void {
+        global $DB;
+        $this->resetAfterTest();
+        $this->setAdminUser();
+        /** @var \local_entities_generator $gen */
+        $gen = $this->getDataGenerator()->get_plugin_generator('local_entities');
+        $roomid = $gen->create_entities(['name' => 'Room B', 'shortname' => 'rb', 'entitytype' => 'location']);
+        $otherid = $gen->create_entities(['name' => 'Room C', 'shortname' => 'rc', 'entitytype' => 'location']);
+        unavailability::create_series($roomid, $this->rule(['validfrom' => time(), 'validuntil' => time() + 14 * DAYSECS]));
+        $keptrule = $this->rule(['validfrom' => time(), 'validuntil' => time() + 14 * DAYSECS]);
+        $kept = unavailability::create_series($otherid, $keptrule);
+        $this->assertNotEmpty($DB->get_records('local_entities_unavailability', ['entityid' => $roomid]));
+
+        (new \local_entities\settings_manager($roomid))->delete();
+
+        $this->assertSame(0, $DB->count_records('local_entities_unavail_series', ['entityid' => $roomid]));
+        $this->assertSame(0, $DB->count_records('local_entities_unavailability', ['entityid' => $roomid]));
+        $this->assertTrue($DB->record_exists('local_entities_unavail_series', ['id' => $kept]), 'Other entities keep theirs.');
+    }
 }

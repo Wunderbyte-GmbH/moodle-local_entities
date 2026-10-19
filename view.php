@@ -55,7 +55,7 @@ if (isloggedin()) {
     $PAGE->set_secondary_navigation(true);
 }
 
-if (!empty($id) && !$DB->record_exists('local_entities', ['id' => $id])) {
+if (empty($id) || !\local_entities\person_visibility::can_see_id($id)) {
     $PAGE->set_title(get_string('error:entitydoesnotexist', 'local_entities'));
     $PAGE->set_heading(get_string('error:entitydoesnotexist', 'local_entities'));
     echo $OUTPUT->header();
