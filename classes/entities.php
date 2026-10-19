@@ -1059,5 +1059,9 @@ class entities {
             'local_entities_unavail_series',
             'entityid NOT IN (SELECT id FROM {local_entities})'
         );
+        $DB->delete_records_select(
+            'local_entities_people_pool_member',
+            'entityid NOT IN (SELECT id FROM {local_entities})'
+        );
     }
 }

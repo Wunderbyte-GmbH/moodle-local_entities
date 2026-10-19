@@ -62,7 +62,11 @@ final class user_data {
                  UNION
                 SELECT usermodified FROM {local_entities_unavailability} WHERE usermodified > 0
                  UNION
-                SELECT usermodified FROM {local_entities_unavail_series} WHERE usermodified > 0";
+                SELECT usermodified FROM {local_entities_unavail_series} WHERE usermodified > 0
+                 UNION
+                SELECT usermodified FROM {local_entities_people_pool} WHERE usermodified > 0
+                 UNION
+                SELECT usermodified FROM {local_entities_people_pool_member} WHERE usermodified > 0";
         return array_map('intval', $DB->get_fieldset_sql($sql, ['type' => persons::TYPE]));
     }
 
@@ -78,15 +82,18 @@ final class user_data {
         return !empty(self::person_entityids($userid))
             || $DB->record_exists('local_entities', ['createdby' => $userid])
             || $DB->record_exists('local_entities_unavailability', ['usermodified' => $userid])
-            || $DB->record_exists('local_entities_unavail_series', ['usermodified' => $userid]);
+            || $DB->record_exists('local_entities_unavail_series', ['usermodified' => $userid])
+            || $DB->record_exists('local_entities_people_pool', ['usermodified' => $userid])
+            || $DB->record_exists('local_entities_people_pool_member', ['usermodified' => $userid]);
     }
 
     /**
      * The data of the user, as it is exported.
      *
      * @param int $userid
-     * @return array unavailability and series of the person of the user, created (entities the user
-     *               created), changed and changedseries (unavailability the user changed on other entities)
+     * @return array unavailability and series of the person of the user, memberships (pools the person is in),
+     *               created (entities the user created), changed and changedseries (unavailability the user
+     *               changed on other entities), changedpools (pools the user created or changed)
      */
     public static function export(int $userid): array {
         global $DB;
@@ -131,6 +138,21 @@ final class user_data {
                 'validfrom',
                 'id, entityid, validfrom, validuntil, timemodified'
             )),
+            'memberships' => array_values($DB->get_records_sql(
+                "SELECT m.id, p.name, m.timecreated
+                   FROM {local_entities_people_pool_member} m
+                   JOIN {local_entities_people_pool} p ON p.id = m.poolid
+                  WHERE m.entityid {$insql}
+               ORDER BY p.name",
+                $inparams
+            )),
+            'changedpools' => array_values($DB->get_records_select(
+                'local_entities_people_pool',
+                'usermodified = :userid',
+                ['userid' => $userid],
+                'name',
+                'id, name, timemodified'
+            )),
         ];
     }
 
@@ -155,5 +177,7 @@ final class user_data {
         $DB->set_field('local_entities', 'createdby', 0, ['createdby' => $userid]);
         $DB->set_field('local_entities_unavailability', 'usermodified', 0, ['usermodified' => $userid]);
         $DB->set_field('local_entities_unavail_series', 'usermodified', 0, ['usermodified' => $userid]);
+        $DB->set_field('local_entities_people_pool', 'usermodified', 0, ['usermodified' => $userid]);
+        $DB->set_field('local_entities_people_pool_member', 'usermodified', 0, ['usermodified' => $userid]);
     }
 }
