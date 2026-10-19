@@ -772,13 +772,13 @@ class entities {
             $calendarevent->allDay = false;
             $calendarevent->extendedProps['department'] = 'test';
             if (!empty($event->starttime)) {
-                $calendarevent->title = $event->title;
+                $calendarevent->title = $event->name;
                 $start = new DateTime();
                 $start->setTimestamp($event->starttime);
                 $calendarevent->start = $start->format('Y-m-d') . 'T' . $start->format('H:i:s');
             }
             if (!empty($event->endtime)) {
-                $calendarevent->title = $event->title;
+                $calendarevent->title = $event->name;
                 $end = new DateTime();
                 $end->setTimestamp($event->endtime);
                 $calendarevent->end = $end->format('Y-m-d') . 'T' . $end->format('H:i:s');
