@@ -19,6 +19,8 @@ namespace local_entities\table;
 use context_system;
 use html_writer;
 use local_entities\entities;
+use local_entities\pool\pool_access;
+use local_entities\pool\pool_repository;
 use local_wunderbyte_table\wunderbyte_table;
 use local_wunderbyte_table\output\table;
 use moodle_url;
@@ -40,6 +42,12 @@ use stdClass;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class entities_table extends wunderbyte_table {
+    /** @var int How many pools of a person the list shows, the rest is shown as a count. */
+    private const MAX_POOLS = 3;
+
+    /** @var string[][]|null Pool names by entity id, loaded when the first person row needs them. */
+    private ?array $poolnames = null;
+
     /**
      * Loads the page of rows the database-agnostic way: a plain SELECT/FROM/WHERE (which already
      * carries the search and filter conditions), then orders the result into depth-first tree order
@@ -193,10 +201,41 @@ class entities_table extends wunderbyte_table {
         }
 
         return html_writer::div(
-            $link . $breadcrumb . $subline,
+            $link . $breadcrumb . $subline . ($isperson ? $this->pool_badges((int)$row->id) : ''),
             '',
             ['style' => 'padding-left: ' . ($depth * 1.5) . 'rem;']
         );
+    }
+
+    /**
+     * The pools of a person as small badges: at most MAX_POOLS names, the rest as a count with all
+     * names as a hint. Only users who may manage pools see them.
+     *
+     * @param int $entityid
+     * @return string html, empty if the person is in no pool or the user may not see pools
+     */
+    private function pool_badges(int $entityid): string {
+        if (!pool_access::can_manage()) {
+            return '';
+        }
+        if ($this->poolnames === null) {
+            $this->poolnames = (new pool_repository())->find_pool_names_by_entity();
+        }
+
+        $names = $this->poolnames[$entityid] ?? [];
+        if (empty($names)) {
+            return '';
+        }
+
+        $badges = '';
+        foreach (array_slice($names, 0, self::MAX_POOLS) as $name) {
+            $badges .= html_writer::span(s($name), 'badge text-bg-light border me-1');
+        }
+        $rest = array_slice($names, self::MAX_POOLS);
+        if (!empty($rest)) {
+            $badges .= html_writer::span('+' . count($rest), 'badge text-bg-light border', ['title' => implode(', ', $rest)]);
+        }
+        return html_writer::div($badges, 'mt-1');
     }
 
     /**

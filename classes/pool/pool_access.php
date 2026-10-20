@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace local_entities\people_pool;
+namespace local_entities\pool;
 
 use local_entities\unavailability_access;
 
@@ -30,7 +30,7 @@ use local_entities\unavailability_access;
  * @copyright  2026 Wunderbyte GmbH <info@wunderbyte.at>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class people_pool_access {
+class pool_access {
     /**
      * May the user see and change pools?
      *

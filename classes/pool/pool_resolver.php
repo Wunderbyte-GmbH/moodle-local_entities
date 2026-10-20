@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace local_entities\people_pool;
+namespace local_entities\pool;
 
 use local_entities\persons;
 
@@ -29,12 +29,13 @@ use local_entities\persons;
  * @copyright  2026 Wunderbyte GmbH <info@wunderbyte.at>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class people_pool_resolver {
+class pool_resolver {
     /**
      * Returns the users that are members of at least one of the given pools.
      *
      * A user who is in several of the pools appears once. Deleted users and pools that do not
      * exist are left out without an error.
+     * Only pools of type person stand for users, members of other pools have no user and are not returned.
      *
      * @param int[] $poolids
      * @return int[] user ids, ascending
@@ -48,19 +49,23 @@ class people_pool_resolver {
         }
 
         [$insql, $params] = $DB->get_in_or_equal($poolids, SQL_PARAMS_NAMED, 'pool');
-        $params['type'] = persons::TYPE;
+        $params['pooltype'] = persons::TYPE;
+        $params['entitytype'] = persons::TYPE;
 
         $userids = $DB->get_fieldset_sql(
             "SELECT DISTINCT e.userid
-               FROM {local_entities_people_pool_member} m
+               FROM {local_entities_pool_member} m
+               JOIN {local_entities_pool} p ON p.id = m.poolid
                JOIN {local_entities} e ON e.id = m.entityid
                JOIN {user} u ON u.id = e.userid
               WHERE m.poolid $insql
-                AND e.entitytype = :type
+                AND p.pooltype = :pooltype
+                AND e.entitytype = :entitytype
                 AND u.deleted = 0
            ORDER BY e.userid",
             $params
         );
+
         return array_map('intval', $userids);
     }
 }

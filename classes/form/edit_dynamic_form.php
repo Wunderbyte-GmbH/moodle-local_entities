@@ -38,6 +38,10 @@ use local_entities\entities;
 use local_entities\customfield\entities_handler;
 use local_entities\calendar\fullcalendar_helper;
 use local_entities\calendar\reoccuringevent;
+use local_entities\pool\pool_access;
+use local_entities\pool\pool_facade;
+use local_entities\pool\pool_repository;
+use local_entities\pool\pool_service;
 use stdClass;
 
 
@@ -408,6 +412,8 @@ class edit_dynamic_form extends dynamic_form {
      * @return mixed
      */
     public function process_dynamic_submission() {
+        global $USER;
+
         $data = (object)$this->_ajaxformdata;
         $context = context_system::instance();
 
@@ -470,6 +476,13 @@ class edit_dynamic_form extends dynamic_form {
         $result = $settingsmanager->update_or_createentity($recordentity);
         if ($result && $result > 0) {
             $data->id = $result;
+            if (($data->entitytype ?? '') === 'person' && !empty($this->person_pool_options())) {
+                (new pool_service())->set_pools_of_entity(
+                    (int)$result,
+                    array_map('intval', (array)($data->pools ?? [])),
+                    (int)$USER->id
+                );
+            }
             $options = ['subdirs' => 0, 'maxbytes' => 204800, 'maxfiles' => 1, 'accepted_types' => '*'];
             if (isset($data->image_filemanager)) {
                 file_postupdate_standard_filemanager($data, 'image', $options, $context, 'local_entities', 'image', $result);
@@ -670,6 +683,23 @@ class edit_dynamic_form extends dynamic_form {
     }
 
     /**
+     * The pools a person can be put into on this form: the pools of type person, if the user may manage
+     * pools. Empty if there is nothing to choose, then the form has no pool field and changes no pools.
+     *
+     * @return string[] pool names, keyed by pool id
+     */
+    private function person_pool_options(): array {
+        if (!pool_access::can_manage()) {
+            return [];
+        }
+        $options = [];
+        foreach (pool_facade::list_pools('person') as $pool) {
+            $options[$pool['id']] = $pool['name'];
+        }
+        return $options;
+    }
+
+    /**
      * Slim form for entities of type person: only the Moodle user the person represents.
      *
      * @param \MoodleQuickForm $mform
@@ -696,6 +726,13 @@ class edit_dynamic_form extends dynamic_form {
         ];
         $mform->addElement('autocomplete', 'userid', get_string('person_user', 'local_entities'), [], $options);
         $mform->addRule('userid', null, 'required', null, 'client');
+
+        // Who may manage pools can put the person into pools right here.
+        $pooloptions = $this->person_pool_options();
+        if (!empty($pooloptions)) {
+            $mform->addElement('autocomplete', 'pools', get_string('pools', 'local_entities'), $pooloptions, ['multiple' => true]);
+            $mform->setType('pools', PARAM_INT);
+        }
 
         $this->add_action_buttons();
     }
