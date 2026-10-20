@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace local_entities\people_pool;
+namespace local_entities\pool;
 
 /**
  * The stable entry point of other plugins to the pools of persons.
@@ -27,18 +27,20 @@ namespace local_entities\people_pool;
  * @copyright  2026 Wunderbyte GmbH <info@wunderbyte.at>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class people_pool_facade {
+class pool_facade {
     /**
-     * Lists all pools, e.g. for a selection in a form.
+     * Lists pools, e.g. for a selection in a form.
      *
-     * @return array[] ordered by name, each ['id' => int, 'name' => string, 'membercount' => int]
+     * @param string $pooltype only pools of this type (for example person), empty for all
+     * @return array[] ordered by name, each ['id' => int, 'name' => string, 'pooltype' => string, 'membercount' => int]
      */
-    public static function list_pools(): array {
+    public static function list_pools(string $pooltype = ''): array {
         $pools = [];
-        foreach ((new people_pool_repository())->find_all() as $pool) {
+        foreach ((new pool_repository())->find_all($pooltype) as $pool) {
             $pools[] = [
                 'id' => (int)$pool->id,
                 'name' => (string)$pool->name,
+                'pooltype' => (string)$pool->pooltype,
                 'membercount' => (int)$pool->membercount,
             ];
         }
@@ -56,7 +58,7 @@ class people_pool_facade {
     public static function get_pool_names(array $poolids): array {
         $wanted = array_flip(array_map('intval', $poolids));
         $names = [];
-        foreach ((new people_pool_repository())->find_all() as $pool) {
+        foreach ((new pool_repository())->find_all() as $pool) {
             if (isset($wanted[(int)$pool->id])) {
                 $names[(int)$pool->id] = (string)$pool->name;
             }
@@ -71,6 +73,6 @@ class people_pool_facade {
      * @return int[] user ids, ascending, each user once
      */
     public static function get_userids_for_pools(array $poolids): array {
-        return (new people_pool_resolver())->get_userids($poolids);
+        return (new pool_resolver())->get_userids($poolids);
     }
 }

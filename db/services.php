@@ -103,6 +103,13 @@ $functions = [
                 'type' => 'write',
                 'ajax' => true,
         ],
+        'local_entities_delete_pool' => [
+                'classname' => 'local_entities\external\delete_pool',
+                'classpath' => '',
+                'description' => 'Deletes a pool of persons, the persons stay',
+                'type' => 'write',
+                'ajax' => true,
+        ],
 ];
 
 $services = [

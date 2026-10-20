@@ -22,7 +22,7 @@ use core_privacy\local\request\approved_userlist;
 use core_privacy\local\request\userlist;
 use core_privacy\local\request\writer;
 use core_privacy\tests\provider_testcase;
-use local_entities\people_pool\people_pool_repository;
+use local_entities\pool\pool_repository;
 use local_entities\persons;
 
 /**
@@ -76,8 +76,8 @@ final class provider_test extends provider_testcase {
             'local_entities',
             'local_entities_unavailability',
             'local_entities_unavail_series',
-            'local_entities_people_pool',
-            'local_entities_people_pool_member',
+            'local_entities_pool',
+            'local_entities_pool_member',
             'local_entities_contacts',
         ];
         foreach ($tables as $table) {
@@ -231,7 +231,7 @@ final class provider_test extends provider_testcase {
         $creator = $this->getDataGenerator()->create_user();
         $adder = $this->getDataGenerator()->create_user();
         $entityid = $this->create_person_with_unavailability($examiner, (int)$examiner->id);
-        $repo = new people_pool_repository();
+        $repo = new pool_repository();
         $poolid = $repo->create('Greek', '', (int)$creator->id);
         $repo->add_members($poolid, [$entityid], (int)$adder->id);
 
@@ -252,7 +252,7 @@ final class provider_test extends provider_testcase {
         $this->resetAfterTest();
         $examiner = $this->getDataGenerator()->create_user();
         $entityid = $this->create_person_with_unavailability($examiner, (int)$examiner->id);
-        $repo = new people_pool_repository();
+        $repo = new pool_repository();
         $poolid = $repo->create('Greek', '', (int)$examiner->id);
         $repo->create('Latin', '', 2);
         $repo->add_members($poolid, [$entityid], 2);
@@ -284,7 +284,7 @@ final class provider_test extends provider_testcase {
         $secretary = $this->getDataGenerator()->create_user();
         $examinerid = $this->create_person_with_unavailability($examiner, (int)$examiner->id);
         $otherid = $this->create_person_with_unavailability($other, (int)$other->id);
-        $repo = new people_pool_repository();
+        $repo = new pool_repository();
         $poolid = $repo->create('Greek', '', (int)$secretary->id);
         $repo->add_members($poolid, [$examinerid, $otherid], (int)$secretary->id);
         $context = \context_system::instance();
@@ -293,8 +293,8 @@ final class provider_test extends provider_testcase {
         $this->assertSame([$otherid], $repo->get_member_entityids($poolid));
 
         provider::delete_data_for_user(new approved_contextlist($secretary, 'local_entities', [$context->id]));
-        $this->assertSame(0, (int)$DB->get_field('local_entities_people_pool', 'usermodified', ['id' => $poolid]));
+        $this->assertSame(0, (int)$DB->get_field('local_entities_pool', 'usermodified', ['id' => $poolid]));
         $this->assertSame([$otherid], $repo->get_member_entityids($poolid), 'The membership of another person stays.');
-        $this->assertEquals(0, $DB->count_records_select('local_entities_people_pool_member', 'usermodified <> 0'));
+        $this->assertEquals(0, $DB->count_records_select('local_entities_pool_member', 'usermodified <> 0'));
     }
 }
