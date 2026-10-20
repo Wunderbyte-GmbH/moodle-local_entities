@@ -44,13 +44,21 @@ final class series_rule {
      * @param string $reason
      */
     private function __construct(
+        /** @var int[] 1 (Monday) to 7 (Sunday), unique and sorted */
         public readonly array $weekdays,
+        /** @var bool Whole days instead of a time of day */
         public readonly bool $allday,
+        /** @var int Seconds since midnight, 0 for all-day rules */
         public readonly int $daystart,
+        /** @var int Seconds since midnight, 0 for all-day rules */
         public readonly int $dayend,
+        /** @var int Midnight of the first day in the timezone of the rule */
         public readonly int $validfrom,
+        /** @var int Midnight of the last day in the timezone of the rule */
         public readonly int $validuntil,
+        /** @var string Timezone in which weekdays and times are meant */
         public readonly string $timezone,
+        /** @var string Reason shown to the user, may be empty */
         public readonly string $reason,
     ) {
     }

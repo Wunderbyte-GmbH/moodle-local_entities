@@ -38,8 +38,11 @@ final class scope_filter {
      * @param scope[] $scopes scopes whose blocks are selected
      */
     private function __construct(
+        /** @var bool No condition at all */
         private readonly bool $unrestricted,
+        /** @var bool Blocks that apply everywhere are selected */
         private readonly bool $includeglobal,
+        /** @var scope[] Scopes whose blocks are selected */
         private readonly array $scopes,
     ) {
     }
