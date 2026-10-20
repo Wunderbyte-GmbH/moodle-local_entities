@@ -64,9 +64,9 @@ final class user_data {
                  UNION
                 SELECT usermodified FROM {local_entities_unavail_series} WHERE usermodified > 0
                  UNION
-                SELECT usermodified FROM {local_entities_people_pool} WHERE usermodified > 0
+                SELECT usermodified FROM {local_entities_pool} WHERE usermodified > 0
                  UNION
-                SELECT usermodified FROM {local_entities_people_pool_member} WHERE usermodified > 0";
+                SELECT usermodified FROM {local_entities_pool_member} WHERE usermodified > 0";
         return array_map('intval', $DB->get_fieldset_sql($sql, ['type' => persons::TYPE]));
     }
 
@@ -83,8 +83,8 @@ final class user_data {
             || $DB->record_exists('local_entities', ['createdby' => $userid])
             || $DB->record_exists('local_entities_unavailability', ['usermodified' => $userid])
             || $DB->record_exists('local_entities_unavail_series', ['usermodified' => $userid])
-            || $DB->record_exists('local_entities_people_pool', ['usermodified' => $userid])
-            || $DB->record_exists('local_entities_people_pool_member', ['usermodified' => $userid]);
+            || $DB->record_exists('local_entities_pool', ['usermodified' => $userid])
+            || $DB->record_exists('local_entities_pool_member', ['usermodified' => $userid]);
     }
 
     /**
@@ -140,14 +140,14 @@ final class user_data {
             )),
             'memberships' => array_values($DB->get_records_sql(
                 "SELECT m.id, p.name, m.timecreated
-                   FROM {local_entities_people_pool_member} m
-                   JOIN {local_entities_people_pool} p ON p.id = m.poolid
+                   FROM {local_entities_pool_member} m
+                   JOIN {local_entities_pool} p ON p.id = m.poolid
                   WHERE m.entityid {$insql}
                ORDER BY p.name",
                 $inparams
             )),
             'changedpools' => array_values($DB->get_records_select(
-                'local_entities_people_pool',
+                'local_entities_pool',
                 'usermodified = :userid',
                 ['userid' => $userid],
                 'name',
@@ -177,7 +177,7 @@ final class user_data {
         $DB->set_field('local_entities', 'createdby', 0, ['createdby' => $userid]);
         $DB->set_field('local_entities_unavailability', 'usermodified', 0, ['usermodified' => $userid]);
         $DB->set_field('local_entities_unavail_series', 'usermodified', 0, ['usermodified' => $userid]);
-        $DB->set_field('local_entities_people_pool', 'usermodified', 0, ['usermodified' => $userid]);
-        $DB->set_field('local_entities_people_pool_member', 'usermodified', 0, ['usermodified' => $userid]);
+        $DB->set_field('local_entities_pool', 'usermodified', 0, ['usermodified' => $userid]);
+        $DB->set_field('local_entities_pool_member', 'usermodified', 0, ['usermodified' => $userid]);
     }
 }

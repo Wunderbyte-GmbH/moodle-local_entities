@@ -430,7 +430,7 @@ function xmldb_local_entities_upgrade($oldversion) {
 
     if ($oldversion < 2026101901) {
         // Pools of persons.
-        $table = new xmldb_table('local_entities_people_pool');
+        $table = new xmldb_table('local_entities_pool');
         if (!$dbman->table_exists($table)) {
             $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
             $table->add_field('name', XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, null);
@@ -446,7 +446,7 @@ function xmldb_local_entities_upgrade($oldversion) {
         }
 
         // Members of a pool.
-        $table = new xmldb_table('local_entities_people_pool_member');
+        $table = new xmldb_table('local_entities_pool_member');
         if (!$dbman->table_exists($table)) {
             $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
             $table->add_field('poolid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
@@ -455,7 +455,7 @@ function xmldb_local_entities_upgrade($oldversion) {
             $table->add_field('usermodified', XMLDB_TYPE_INTEGER, '10', null, null, null, '0');
 
             $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
-            $table->add_key('poolid', XMLDB_KEY_FOREIGN, ['poolid'], 'local_entities_people_pool', ['id']);
+            $table->add_key('poolid', XMLDB_KEY_FOREIGN, ['poolid'], 'local_entities_pool', ['id']);
             $table->add_key('entityid', XMLDB_KEY_FOREIGN, ['entityid'], 'local_entities', ['id']);
             $table->add_index('pool_entity', XMLDB_INDEX_UNIQUE, ['poolid', 'entityid']);
 
@@ -464,6 +464,29 @@ function xmldb_local_entities_upgrade($oldversion) {
 
         // Entities savepoint reached.
         upgrade_plugin_savepoint(true, 2026101901, 'local', 'entities');
+    }
+
+    if ($oldversion < 2026102002) {
+        // Pools became general: a pool has a type, the entity type of its members. The tables created
+        // with the first version of the pools lose "people" in their name and keep their data.
+        $renames = [
+            'local_entities_people_pool' => 'local_entities_pool',
+            'local_entities_people_pool_member' => 'local_entities_pool_member',
+        ];
+        foreach ($renames as $oldname => $newname) {
+            if ($dbman->table_exists($oldname) && !$dbman->table_exists($newname)) {
+                $dbman->rename_table(new xmldb_table($oldname), $newname);
+            }
+        }
+
+        $table = new xmldb_table('local_entities_pool');
+        $field = new xmldb_field('pooltype', XMLDB_TYPE_CHAR, '20', null, XMLDB_NOTNULL, null, 'person', 'name');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Entities savepoint reached.
+        upgrade_plugin_savepoint(true, 2026102002, 'local', 'entities');
     }
 
     return true;

@@ -1,0 +1,120 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template local_entities/pools_page
+
+    Page on which the pools are managed. It is built like the list of entities: a row of buttons to add
+    a pool of each type, a row of filters by type, and a table. Adding and editing happen in a dialog,
+    which the JavaScript opens.
+
+    Classes required for JS:
+    * none
+
+    Data attributes required for JS:
+    * data-region="pools"
+    * data-action="pool-add" with data-pooltype
+    * data-action="pool-edit" with data-id
+    * data-action="pool-delete" with data-id and data-name
+
+    Context variables required for this template:
+    * addbuttons - list of the buttons to add a pool
+      * type - string, type of the pool the button creates
+      * label - string, text of the button
+      * icon - string, Font Awesome class of the icon
+    * filters - list of the filters by type
+      * label - string, text of the filter
+      * url - string, address of the page with the filter
+      * active - bool, whether the filter is the one in use
+    * haspools - bool, whether there is at least one pool to show
+    * pools - list of the pools
+      * id - int, id of the pool
+      * name - string, name of the pool
+      * description - string, description, may be empty
+      * typelabel - string, name of the type of the pool
+      * icon - string, Font Awesome class of the icon of the type
+      * membercount - int, number of members
+
+    Example context (json):
+    {
+        "addbuttons": [{"type": "person", "label": "Add person pool", "icon": "fa-users"}],
+        "filters": [
+            {"label": "All", "url": "https://example.org/local/entities/pools.php", "active": true},
+            {"label": "Person pool", "url": "https://example.org/local/entities/pools.php?type=person", "active": false}
+        ],
+        "haspools": true,
+        "pools": [
+            {"id": 1, "name": "Examiners Greek", "description": "Exams in Greek", "typelabel": "Person pool",
+             "icon": "fa-users", "membercount": 8}
+        ]
+    }
+}}
+<div data-region="pools">
+    <p class="text-muted">{{#str}} pools_intro, local_entities {{/str}}</p>
+
+    <div class="mb-3">
+        {{#addbuttons}}
+            <button type="button" class="btn btn-primary me-2" data-action="pool-add" data-pooltype="{{type}}">
+                <i class="fa {{icon}} me-1" aria-hidden="true"></i>{{label}}
+            </button>
+        {{/addbuttons}}
+    </div>
+
+    <div class="mb-3">
+        {{#filters}}
+            <a class="btn btn-sm me-1 {{#active}}btn-primary{{/active}}{{^active}}btn-outline-secondary{{/active}}"
+               href="{{{url}}}">{{label}}</a>
+        {{/filters}}
+    </div>
+
+    {{^haspools}}
+        <div class="alert alert-info">{{#str}} pool_none, local_entities {{/str}}</div>
+    {{/haspools}}
+
+    {{#haspools}}
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">{{#str}} pool_name, local_entities {{/str}}</th>
+                    <th scope="col">{{#str}} pooltype, local_entities {{/str}}</th>
+                    <th scope="col">{{#str}} pool_members, local_entities {{/str}}</th>
+                    <th scope="col" class="text-end">{{#str}} pool_actions, local_entities {{/str}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#pools}}
+                    <tr>
+                        <td>
+                            <i class="fa {{icon}} me-2 text-muted" aria-hidden="true"></i><strong>{{name}}</strong>
+                            {{#description}}<div class="small text-muted ms-4">{{description}}</div>{{/description}}
+                        </td>
+                        <td><span class="badge bg-secondary">{{typelabel}}</span></td>
+                        <td><span class="badge bg-light text-dark">{{membercount}}</span></td>
+                        <td class="text-end text-nowrap">
+                            <button type="button" class="btn btn-sm btn-outline-secondary me-1"
+                                    data-action="pool-edit" data-id="{{id}}"
+                                    title="{{#str}} edit, core {{/str}}" aria-label="{{#str}} edit, core {{/str}}">
+                                <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-danger"
+                                    data-action="pool-delete" data-id="{{id}}" data-name="{{name}}"
+                                    title="{{#str}} delete, core {{/str}}" aria-label="{{#str}} delete, core {{/str}}">
+                                <i class="fa fa-trash" aria-hidden="true"></i>
+                            </button>
+                        </td>
+                    </tr>
+                {{/pools}}
+            </tbody>
+        </table>
+    {{/haspools}}
+</div>

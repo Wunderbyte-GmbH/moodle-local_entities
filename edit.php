@@ -28,6 +28,7 @@ require_once($CFG->dirroot . '/local/entities/lib.php');
 use local_entities\form\edit_dynamic_form;
 use local_entities\local\views\secondary;
 use local_entities\settings_manager;
+use local_entities\pool\pool_repository;
 
 // Force the user to login/create an account to access this page.
 require_login();
@@ -75,6 +76,9 @@ if (!empty($entityid)) {
 
     $data = (array)$entity;
     $mform = new edit_dynamic_form(null, null, 'post', '', [], true, $data);
+    if (($entity->entitytype ?? '') === 'person') {
+        $entity->pools = (new pool_repository())->find_poolids_of_entity($entityid);
+    }
 
     $mform->set_data($entity);
 } else {

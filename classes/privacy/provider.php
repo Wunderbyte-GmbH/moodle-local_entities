@@ -73,15 +73,15 @@ class provider implements
             'usermodified' => 'privacy:metadata:local_entities_unavail_series:usermodified',
         ], 'privacy:metadata:local_entities_unavail_series');
 
-        $collection->add_database_table('local_entities_people_pool', [
-            'name' => 'privacy:metadata:local_entities_people_pool:name',
-            'usermodified' => 'privacy:metadata:local_entities_people_pool:usermodified',
-        ], 'privacy:metadata:local_entities_people_pool');
+        $collection->add_database_table('local_entities_pool', [
+            'name' => 'privacy:metadata:local_entities_pool:name',
+            'usermodified' => 'privacy:metadata:local_entities_pool:usermodified',
+        ], 'privacy:metadata:local_entities_pool');
 
-        $collection->add_database_table('local_entities_people_pool_member', [
-            'entityid' => 'privacy:metadata:local_entities_people_pool_member:entityid',
-            'usermodified' => 'privacy:metadata:local_entities_people_pool_member:usermodified',
-        ], 'privacy:metadata:local_entities_people_pool_member');
+        $collection->add_database_table('local_entities_pool_member', [
+            'entityid' => 'privacy:metadata:local_entities_pool_member:entityid',
+            'usermodified' => 'privacy:metadata:local_entities_pool_member:usermodified',
+        ], 'privacy:metadata:local_entities_pool_member');
 
         $collection->add_database_table('local_entities_contacts', [
             'givenname' => 'privacy:metadata:local_entities_contacts:givenname',

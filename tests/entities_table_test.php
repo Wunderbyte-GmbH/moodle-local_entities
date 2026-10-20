@@ -17,6 +17,7 @@
 namespace local_entities;
 
 use local_entities_generator;
+use local_entities\pool\pool_repository;
 use local_entities\table\entities_table;
 
 /**
@@ -26,7 +27,7 @@ use local_entities\table\entities_table;
  * @category   test
  * @copyright  2026 Wunderbyte GmbH <info@wunderbyte.at>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @covers     \local_entities\table\entities_table::arrange_as_tree
+ * @covers     \local_entities\table\entities_table
  */
 final class entities_table_test extends \advanced_testcase {
     /**
@@ -68,5 +69,46 @@ final class entities_table_test extends \advanced_testcase {
         // The name path runs from the root down to the entity itself.
         $this->assertStringContainsString('Root / ChildA', $byname['Leaf']->namepath);
         $this->assertStringEndsWith('Leaf', $byname['Leaf']->namepath);
+    }
+
+    /**
+     * A person row shows at most three pools, the rest as a count with all names as a hint. Users who
+     * may not manage pools see none, and a place never shows pools.
+     *
+     * @return void
+     */
+    public function test_person_row_shows_a_limited_number_of_pools(): void {
+        global $DB;
+        $this->resetAfterTest();
+        $this->setAdminUser();
+        $user = $this->getDataGenerator()->create_user();
+        $personid = persons::get_or_create_for_user((int)$user->id);
+        $repo = new pool_repository();
+        foreach (['Pool A', 'Pool B', 'Pool C', 'Pool D', 'Pool E'] as $name) {
+            $repo->add_members($repo->create($name, '', 2), [$personid], 2);
+        }
+        $row = $DB->get_record('local_entities', ['id' => $personid]);
+        $row->entitydepth = 0;
+        $row->username = $user->username;
+        $row->email = $user->email;
+
+        $html = (new entities_table('test_entities_table'))->col_name($row);
+        foreach (['Pool A', 'Pool B', 'Pool C'] as $shown) {
+            $this->assertStringContainsString('>' . $shown . '<', $html);
+        }
+        $this->assertStringNotContainsString('>Pool D<', $html, 'Only three pools are written out.');
+        $this->assertStringContainsString('>+2<', $html);
+        $this->assertStringContainsString('title="Pool D, Pool E"', $html);
+
+        // Someone who may not manage pools sees none.
+        $this->setUser($this->getDataGenerator()->create_user());
+        $this->assertStringNotContainsString('Pool A', (new entities_table('test_entities_table'))->col_name($row));
+
+        // A place never shows pools.
+        $this->setAdminUser();
+        $place = $DB->get_record('local_entities', ['id' => $this->getDataGenerator()
+            ->get_plugin_generator('local_entities')->create_entities(['name' => 'Room', 'shortname' => 'rm'])]);
+        $place->entitydepth = 0;
+        $this->assertStringNotContainsString('badge text-bg-light', (new entities_table('test_entities_table'))->col_name($place));
     }
 }

@@ -17,6 +17,7 @@
 namespace local_entities\local\views;
 
 use core\navigation\views\secondary as core_secondary;
+use local_entities\pool\pool_access;
 
 /**
  * Class secondary_navigation_view.
@@ -49,6 +50,16 @@ class secondary extends core_secondary {
                 'entitieslist'
             );
         }
+        if (pool_access::can_manage()) {
+            $this->add(
+                get_string('pools', 'local_entities'),
+                '/local/entities/pools.php',
+                \navigation_node::TYPE_CUSTOM,
+                'pools',
+                'pools',
+                new \pix_icon('i/users', get_string('pools', 'local_entities'))
+            );
+        }
         if ($canedit) {
             $this->add(
                 get_string('categories', 'local_entities'),
@@ -56,22 +67,6 @@ class secondary extends core_secondary {
                 \navigation_node::TYPE_CUSTOM,
                 'categories',
                 'categories'
-            );
-            $this->add(
-                get_string('new_entity', 'local_entities'),
-                '/local/entities/edit.php',
-                \navigation_node::TYPE_CUSTOM,
-                'new_entity',
-                'new_entity',
-                new \pix_icon('t/add', get_string('new_entity', 'local_entities'))
-            );
-            $this->add(
-                get_string('addcategory', 'local_entities'),
-                new \moodle_url('/local/entities/customfield.php', ['id' => -1]),
-                \navigation_node::TYPE_CUSTOM,
-                'addcategory',
-                'addcategory',
-                new \pix_icon('t/add', get_string('addcategory', 'local_entities'))
             );
             $this->add(
                 get_string('import', 'local_entities'),

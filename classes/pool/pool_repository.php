@@ -14,40 +14,50 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace local_entities\people_pool;
+namespace local_entities\pool;
 
 use local_entities\persons;
 
 /**
- * Storage of the pools of persons and of their members.
+ * Storage of the pools and of their members.
  *
- * It reads and writes pools and members and guards the two rules of the data: a pool name is unique
- * and only persons can be members. Who may change pools and how pools are turned into users is
- * handled elsewhere.
+ * It reads and writes pools and members and guards the rules of the data: a pool name is unique, a
+ * pool has a type that is enabled, and only entities of the type of the pool can be members. Who may
+ * change pools and how pools are turned into users is handled elsewhere.
  *
  * @package    local_entities
  * @copyright  2026 Wunderbyte GmbH <info@wunderbyte.at>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class people_pool_repository {
+class pool_repository {
     /** @var string Table of the pools. */
-    private const POOLS = 'local_entities_people_pool';
+    private const POOLS = 'local_entities_pool';
 
     /** @var string Table of the members. */
-    private const MEMBERS = 'local_entities_people_pool_member';
+    private const MEMBERS = 'local_entities_pool_member';
 
     /**
-     * Returns all pools with the number of their members.
+     * Returns pools with the number of their members.
      *
+     * @param string $pooltype only pools of this type, empty for all
      * @return \stdClass[] pools ordered by name, keyed by id, with the extra field membercount
      */
-    public function find_all(): array {
+    public function find_all(string $pooltype = ''): array {
         global $DB;
+
+        $where = '1 = 1';
+        $params = [];
+        if ($pooltype !== '') {
+            $where = 'p.pooltype = :pooltype';
+            $params['pooltype'] = $pooltype;
+        }
 
         return $DB->get_records_sql(
             "SELECT p.*, (SELECT COUNT(1) FROM {" . self::MEMBERS . "} m WHERE m.poolid = p.id) AS membercount
                FROM {" . self::POOLS . "} p
-           ORDER BY p.name, p.id"
+              WHERE $where
+           ORDER BY p.name, p.id",
+            $params
         );
     }
 
@@ -84,15 +94,21 @@ class people_pool_repository {
      * @param string $name unique name, without case
      * @param string $description
      * @param int $usermodified user who creates the pool
+     * @param string $pooltype entity type of the members, must be enabled in {@see pool_types}
      * @return int id of the new pool
-     * @throws \moodle_exception if the name is empty, too long or already used
+     * @throws \moodle_exception if the name is empty, too long or already used, or the type is not enabled
      */
-    public function create(string $name, string $description, int $usermodified): int {
+    public function create(string $name, string $description, int $usermodified, string $pooltype = persons::TYPE): int {
         global $DB;
+
+        if (!pool_types::exists($pooltype)) {
+            throw new \moodle_exception('error:pooltypeinvalid', 'local_entities');
+        }
 
         $now = time();
         return (int)$DB->insert_record(self::POOLS, (object)[
             'name' => $this->checked_name($name),
+            'pooltype' => $pooltype,
             'description' => $description,
             'timecreated' => $now,
             'timemodified' => $now,
@@ -165,23 +181,47 @@ class people_pool_repository {
     }
 
     /**
+     * Returns the names of the pools of every entity that is in a pool, for a list that shows them.
+     *
+     * One query for all entities, so a list does not ask once per row.
+     *
+     * @return string[][] pool names, ordered by name, keyed by entity id
+     */
+    public function find_pool_names_by_entity(): array {
+        global $DB;
+
+        $records = $DB->get_records_sql(
+            "SELECT m.id, m.entityid, p.name
+               FROM {" . self::MEMBERS . "} m
+               JOIN {" . self::POOLS . "} p ON p.id = m.poolid
+           ORDER BY p.name, p.id"
+        );
+
+        $names = [];
+        foreach ($records as $record) {
+            $names[(int)$record->entityid][] = (string)$record->name;
+        }
+        return $names;
+    }
+
+    /**
      * Adds persons to a pool. Persons that are members already are left as they are.
      *
      * @param int $poolid
-     * @param int[] $entityids entities of type person
+     * @param int[] $entityids entities of the type of the pool
      * @param int $usermodified user who adds them
-     * @return int number of persons that were added
-     * @throws \moodle_exception if the pool does not exist or one of the entities is no person
+     * @return int number of entities that were adde
+     * @throws \moodle_exception if the pool does not exist or one of the entities has the wrong type
      */
     public function add_members(int $poolid, array $entityids, int $usermodified): int {
         global $DB;
 
-        $this->must_exist($poolid);
+        $pool = $this->must_exist($poolid);
         $entityids = array_values(array_unique(array_map('intval', $entityids)));
         if (empty($entityids)) {
             return 0;
         }
-        $this->must_be_persons($entityids);
+        $this->must_match_type($entityids, (string)$pool->pooltype);
 
         $new = array_diff($entityids, $this->get_member_entityids($poolid));
         $now = time();
@@ -230,35 +270,39 @@ class people_pool_repository {
     }
 
     /**
-     * Makes sure a pool exists.
+     * Returns a pool and makes sure it exists.
      *
      * @param int $id
-     * @return void
+     * @return \stdClass
      * @throws \moodle_exception
      */
-    private function must_exist(int $id): void {
-        global $DB;
-
-        if (!$DB->record_exists(self::POOLS, ['id' => $id])) {
+    private function must_exist(int $id): \stdClass {
+        $pool = $this->find($id);
+        if ($pool === null) {
             throw new \moodle_exception('error:poolnotfound', 'local_entities');
         }
+        return $pool;
     }
 
     /**
-     * Makes sure every given entity exists and is a person.
+     * Makes sure every given entity exists and has the type of the pool.
      *
      * @param int[] $entityids not empty, without duplicates
+     * @param string $pooltype
      * @return void
      * @throws \moodle_exception
      */
-    private function must_be_persons(array $entityids): void {
+    private function must_match_type(array $entityids, string $pooltype): void {
         global $DB;
 
         [$insql, $params] = $DB->get_in_or_equal($entityids, SQL_PARAMS_NAMED, 'ent');
-        $select = "id $insql AND entitytype = :type";
-        $found = $DB->count_records_select('local_entities', $select, $params + ['type' => persons::TYPE]);
+        $condition = pool_types::entity_condition($pooltype);
+        $found = (int)$DB->count_records_sql(
+            "SELECT COUNT(1) FROM {local_entities} e WHERE e.id $insql AND $condition",
+            $params + ['pooltype' => $pooltype]
+        );
         if ($found !== count($entityids)) {
-            throw new \moodle_exception('error:poolmembernotperson', 'local_entities');
+            throw new \moodle_exception('error:poolmemberwrongtype', 'local_entities');
         }
     }
 
