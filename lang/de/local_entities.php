@@ -253,7 +253,6 @@ $string['tplfield_responsible'] = 'Verantwortlich';
 $string['tplfield_roomnumber'] = 'Raumnummer';
 $string['tplfield_seats'] = 'Sitzplätze';
 $string['tplfield_serial'] = 'Seriennummer';
-$string['usecount'] = 'Verwendet von';
 $string['unavailability'] = 'Abwesenheiten';
 $string['unavailability_absent'] = 'Nicht verfügbar';
 $string['unavailability_addseries'] = 'Wiederkehrende Abwesenheit hinzufügen';
@@ -289,6 +288,7 @@ $string['unavailability_series_weekdays'] = 'Wochentage';
 $string['unavailability_unsaved'] = 'Sie haben nicht gespeicherte Änderungen.';
 $string['unavailability_until'] = 'Bis';
 $string['unavailabilityof'] = 'Abwesenheiten von {$a}';
+$string['usecount'] = 'Verwendet von';
 $string['usesubentitynamesforfilter'] = 'Filter: Namen von Sub-Entities verwenden';
 $string['usesubentitynamesforfilter:description'] = 'Filter nutzen standardmäßig den Namen der Parent-Entity.
 Wenn Sie dieses Häkchen aktivieren, dann wird jede einzelne Sub-Entity im Filter angezeigt.';

@@ -41,10 +41,15 @@ final class unavailability_changes {
      * @param int[] $deleteseries ids of series to delete
      */
     private function __construct(
+        /** @var time_range[] New single blocks */
         public readonly array $addblocks,
+        /** @var int[] Ids of blocks to remove */
         public readonly array $removeblockids,
+        /** @var series_rule[] Rules of new series */
         public readonly array $createseries,
+        /** @var series_rule[] New rules of existing series, keyed by series id */
         public readonly array $updateseries,
+        /** @var int[] Ids of series to delete */
         public readonly array $deleteseries,
     ) {
     }

@@ -253,7 +253,6 @@ $string['tplfield_responsible'] = 'Responsible';
 $string['tplfield_roomnumber'] = 'Room number';
 $string['tplfield_seats'] = 'Seats';
 $string['tplfield_serial'] = 'Serial number';
-$string['usecount'] = 'Used by';
 $string['unavailability'] = 'Unavailability';
 $string['unavailability_absent'] = 'Unavailable';
 $string['unavailability_addseries'] = 'Add recurring unavailability';
@@ -289,6 +288,7 @@ $string['unavailability_series_weekdays'] = 'Weekdays';
 $string['unavailability_unsaved'] = 'You have unsaved changes.';
 $string['unavailability_until'] = 'Until';
 $string['unavailabilityof'] = 'Unavailability of {$a}';
+$string['usecount'] = 'Used by';
 $string['usesubentitynamesforfilter'] = 'For filters, use name of the actual sub-entity';
 $string['usesubentitynamesforfilter:description'] = 'Filters use the parent entity by default.
 If you activate this checkbox, then every single entity (sub-entity) will be shown in filter.';
