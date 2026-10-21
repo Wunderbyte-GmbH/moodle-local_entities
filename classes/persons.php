@@ -104,6 +104,54 @@ class persons {
     }
 
     /**
+     * Returns the person entities of some users.
+     *
+     * One query for any number of users. Missing persons are NOT created, unless the caller asks for it
+     * explicitly: entities are made and edited in local_entities only, so a plugin that assigns persons must
+     * not create them on the side. Creating is meant for a one-time conversion of old data.
+     *
+     * @param int[] $userids
+     * @param bool $create create the person of a user who is none yet
+     * @return int[] entity ids, keyed by user id in the order of the list; users who are no person (and are
+     *               not created), do not exist or are deleted are missing
+     */
+    public static function get_entityids_for_users(array $userids, bool $create = false): array {
+        global $DB;
+
+        $userids = array_values(array_unique(array_filter(array_map('intval', $userids))));
+        if (empty($userids)) {
+            return [];
+        }
+
+        [$insql, $params] = $DB->get_in_or_equal($userids, SQL_PARAMS_NAMED, 'uid');
+        $params['persontype'] = self::TYPE;
+        $found = $DB->get_records_sql_menu(
+            "SELECT e.userid, MIN(e.id) AS id
+               FROM {local_entities} e
+               JOIN {user} u ON u.id = e.userid
+              WHERE e.entitytype = :persontype
+                AND u.deleted = 0
+                AND e.userid $insql
+           GROUP BY e.userid",
+            $params
+        );
+
+        $result = [];
+        foreach ($userids as $userid) {
+            if (isset($found[$userid])) {
+                $result[$userid] = (int)$found[$userid];
+            } else if ($create) {
+                try {
+                    $result[$userid] = self::get_or_create_for_user($userid);
+                } catch (\dml_missing_record_exception $e) {
+                    continue;
+                }
+            }
+        }
+        return $result;
+    }
+
+    /**
      * Returns the users that are a person, for a selection.
      *
      * Deleted users are left out. Only persons are listed, not all users of the site, so a selection

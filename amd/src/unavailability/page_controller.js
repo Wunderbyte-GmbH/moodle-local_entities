@@ -42,13 +42,15 @@ export class PageController {
      * Constructor.
      *
      * @param {HTMLElement} root the element of the page
-     * @param {Object} config entityid, locale, firstDay, hour12
-     * @param {Object} labels texts: today, week, month, allday, absent, notsaved, saved, conflicts
+     * @param {Object} config entityid, locale, firstDay, hour12, readonly
+     * @param {Object} labels texts: today, day, week, month, allday, absent, notsaved, saved, conflicts
      */
     constructor(root, config, labels) {
         this.root = root;
         this.config = config;
         this.labels = labels;
+        // A locked page only shows the calendar. There is nothing to save, so there are no buttons either.
+        this.readonly = Boolean(config.readonly);
         this.pending = new PendingChanges();
         this.loaded = null;
         this.busy = false;
@@ -76,6 +78,7 @@ export class PageController {
             locale: config.locale,
             firstDay: config.firstDay,
             hour12: config.hour12,
+            readonly: this.readonly,
         });
     }
 
@@ -83,10 +86,12 @@ export class PageController {
      * Starts the page.
      */
     start() {
-        this.saveButton.addEventListener('click', () => this.save());
-        this.discardButton.addEventListener('click', () => this.discard());
-        this.addSeriesButton.addEventListener('click', () => this.series.create());
-        window.addEventListener('beforeunload', (event) => this.warnAboutUnsavedChanges(event));
+        if (!this.readonly) {
+            this.saveButton.addEventListener('click', () => this.save());
+            this.discardButton.addEventListener('click', () => this.discard());
+            this.addSeriesButton.addEventListener('click', () => this.series.create());
+            window.addEventListener('beforeunload', (event) => this.warnAboutUnsavedChanges(event));
+        }
         this.view.render();
         this.updateToolbar();
     }
@@ -110,7 +115,7 @@ export class PageController {
      *
      * @param {number} from unix timestamp
      * @param {number} until unix timestamp
-     * @returns {Promise} resolves to {blocks, series}
+     * @returns {Promise} resolves to {blocks, series, occupations}
      */
     load(from, until) {
         if (this.loaded && from >= this.loaded.from && until <= this.loaded.until) {
@@ -206,6 +211,16 @@ export class PageController {
      * @param {Object} props kind and id of the entry
      */
     clickEntry(props) {
+        // An assignment cannot be changed here. It opens the page of what it belongs to.
+        if (props.kind === 'occupation') {
+            if (props.url) {
+                window.open(props.url, '_blank', 'noopener');
+            }
+            return;
+        }
+        if (this.readonly) {
+            return;
+        }
         const today = this.startOfToday();
         const isSeries = props.kind === 'pending-series' || props.kind === 'series-preview'
             || (props.kind === 'block' && props.seriesid);
@@ -277,6 +292,9 @@ export class PageController {
      */
     updateToolbar() {
         const dirty = this.pending.isDirty();
+        if (this.readonly) {
+            return;
+        }
         this.saveButton.disabled = !dirty || this.busy;
         this.discardButton.disabled = !dirty || this.busy;
         this.dirtyLabel.classList.toggle('d-none', !dirty);

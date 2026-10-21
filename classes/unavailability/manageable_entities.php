@@ -58,7 +58,7 @@ final class manageable_entities {
                 continue;
             }
             $name = $isperson ? fullname($record) : (string)$record->name;
-            if ($name === '' || !unavailability_access::can_manage_entity($record, $userid)) {
+            if ($name === '' || !unavailability_access::can_view_entity($record, $userid)) {
                 continue;
             }
 

@@ -22,6 +22,8 @@ use core_external\external_function_parameters;
 use core_external\external_multiple_structure;
 use core_external\external_single_structure;
 use core_external\external_value;
+use local_entities\unavailability\conflict_detector;
+use local_entities\unavailability\entities_occupation_source;
 use local_entities\unavailability\unavailability_reader;
 
 /**
@@ -63,7 +65,13 @@ class get_unavailability extends external_api {
         );
         self::validate_context(context_system::instance());
 
-        return (new unavailability_reader())->read($params['entityid'], $params['from'], $params['until']);
+        $result = (new unavailability_reader())->read($params['entityid'], $params['from'], $params['until']);
+        $result['occupations'] = (new conflict_detector(new entities_occupation_source()))->find(
+            $params['entityid'],
+            [['starttime' => $params['from'], 'endtime' => $params['until']]]
+        );
+
+        return $result;
     }
 
     /**
@@ -98,6 +106,18 @@ class get_unavailability extends external_api {
                     'reason' => new external_value(PARAM_TEXT, 'Reason, may be empty'),
                 ]),
                 'Series that are not over at the start of the window'
+            ),
+            'occupations' => new external_multiple_structure(
+                new external_single_structure([
+                    'starttime' => new external_value(PARAM_INT, 'Start (unix timestamp)'),
+                    'endtime' => new external_value(PARAM_INT, 'End (unix timestamp)'),
+                    'name' => new external_value(PARAM_TEXT, 'What the entity is assigned to'),
+                    'url' => new external_value(PARAM_RAW, 'Link to it, empty if there is none'),
+                    'component' => new external_value(PARAM_COMPONENT, 'Plugin the assignment comes from'),
+                    'area' => new external_value(PARAM_ALPHANUMEXT, 'Area inside the plugin'),
+                    'itemid' => new external_value(PARAM_INT, 'Id of the item'),
+                ]),
+                'Assignments of the entity that overlap the window'
             ),
         ]);
     }
