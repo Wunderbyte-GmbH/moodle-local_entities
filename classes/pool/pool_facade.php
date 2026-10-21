@@ -75,4 +75,14 @@ class pool_facade {
     public static function get_userids_for_pools(array $poolids): array {
         return (new pool_resolver())->get_userids($poolids);
     }
+
+    /**
+     * Returns the entities that stand behind the members of the given pools, of any type.
+     *
+     * @param int[] $poolids
+     * @return int[] entity ids, ascending, each entity once
+     */
+    public static function get_entityids_for_pools(array $poolids): array {
+        return (new pool_resolver())->get_entityids($poolids);
+    }
 }

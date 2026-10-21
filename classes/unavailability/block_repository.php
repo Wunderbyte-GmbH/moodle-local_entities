@@ -107,6 +107,45 @@ class block_repository {
     }
 
     /**
+     * Returns the entities, out of a list, that are blocked somewhere in a time range.
+     *
+     * Works for every entity type, a car can be blocked like a person. One query for any number of entities.
+     *
+     * @param int[] $entityids entities to check
+     * @param int $from start of the range (unix timestamp)
+     * @param int $until end of the range (unix timestamp)
+     * @param scope_filter $filter which scopes are selected
+     * @return int[] ids of the blocked entities
+     */
+    public function find_blocked_entityids(array $entityids, int $from, int $until, scope_filter $filter): array {
+        global $DB;
+
+        $entityids = array_values(array_unique(array_filter(array_map('intval', $entityids))));
+        if (empty($entityids) || $until <= $from) {
+            return [];
+        }
+
+        [$entitysql, $entityparams] = $DB->get_in_or_equal($entityids, SQL_PARAMS_NAMED, 'eid');
+        [$scopesql, $scopeparams] = $filter->to_sql('u', 'sc');
+        $params = [
+            'rangefrom' => $from,
+            'rangeuntil' => $until,
+        ] + $entityparams + $scopeparams;
+
+        $blocked = $DB->get_fieldset_sql(
+            "SELECT DISTINCT u.entityid
+               FROM {" . self::TABLE . "} u
+              WHERE u.entityid $entitysql
+                AND u.starttime < :rangeuntil
+                AND u.endtime > :rangefrom
+                AND $scopesql",
+            $params
+        );
+
+        return array_map('intval', $blocked);
+    }
+
+    /**
      * Replaces the blocks of one scope inside a time window and leaves everything outside untouched.
      *
      * Inside the window the stored blocks of this scope become exactly the given ranges. A stored

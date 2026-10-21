@@ -61,6 +61,28 @@ final class unavailability_page_test extends \advanced_testcase {
     }
 
     /**
+     * The page is read only when the self-editing of the type is locked, and editable otherwise. A manager is never
+     * read only.
+     *
+     * @return void
+     */
+    public function test_the_page_is_read_only_when_the_type_is_locked(): void {
+        $this->resetAfterTest();
+        $user = $this->getDataGenerator()->create_user();
+        $this->setAdminUser();
+        $entityid = persons::get_or_create_for_user((int)$user->id);
+
+        $this->setUser($user);
+        $this->assertFalse($this->export($entityid)['readonly']);
+
+        set_config('unavailabilitylock_person', 1, 'local_entities');
+        $this->assertTrue($this->export($entityid)['readonly']);
+
+        $this->setAdminUser();
+        $this->assertFalse($this->export($entityid)['readonly']);
+    }
+
+    /**
      * Someone who may manage several entities gets one list with all of them. The type is part of the
      * text, so a search finds both, and the entity on display is the chosen one.
      *

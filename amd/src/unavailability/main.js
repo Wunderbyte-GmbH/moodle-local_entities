@@ -36,6 +36,9 @@ const CORE_TEXTS = {
 // Texts of the page: name used in the code => string of this plugin.
 const PLUGIN_TEXTS = {
     allday: 'unavailability_allday',
+    day: 'unavailability_day',
+    showweek: 'unavailability_showweek',
+    showmonth: 'unavailability_showmonth',
     more: 'unavailability_more',
     absent: 'unavailability_absent',
     notsaved: 'unavailability_notsaved',
@@ -109,6 +112,8 @@ export const init = async(entityid, locale, firstDay, timeFormat) => {
             locale,
             firstDay: isNaN(parsedFirstDay) ? 1 : parsedFirstDay,
             hour12: parseInt(timeFormat, 10) === 12,
+            // The page is only shown, as the unavailability of this kind of entity is locked for the user.
+            readonly: root.dataset.readonly === '1',
         },
         labels
     );

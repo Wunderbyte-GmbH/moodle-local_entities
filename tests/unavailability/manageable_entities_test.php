@@ -163,4 +163,21 @@ final class manageable_entities_test extends \advanced_testcase {
         $this->setUser($this->getDataGenerator()->create_user());
         $this->assertSame([], (new manageable_entities())->find());
     }
+
+    /**
+     * A locked person still finds the own person in the list, as the page shows it read only.
+     *
+     * @return void
+     */
+    public function test_a_locked_person_still_finds_the_own_person(): void {
+        $this->resetAfterTest();
+        [$anna] = $this->create_entities();
+        set_config('unavailabilitylock_person', 1, 'local_entities');
+        $this->setUser($anna);
+
+        $this->assertSame(
+            [get_string('entitytype_person', 'local_entities') => ['Anna Adams']],
+            $this->names((new manageable_entities())->find())
+        );
+    }
 }

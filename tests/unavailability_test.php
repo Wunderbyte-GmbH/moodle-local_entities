@@ -246,6 +246,44 @@ final class unavailability_test extends \advanced_testcase {
     }
 
     /**
+     * One query tells which entities of a list are blocked, for every type, with the same scope rules.
+     *
+     * @return void
+     */
+    public function test_get_unavailable_entityids_for_any_type(): void {
+        $this->resetAfterTest();
+        $this->setAdminUser();
+        /** @var local_entities_generator $gen */
+        $gen = $this->getDataGenerator()->get_plugin_generator('local_entities');
+
+        $person = persons::get_or_create_for_user((int)$this->getDataGenerator()->create_user()->id);
+        $car = (int)$gen->create_entities(['name' => 'Car 1', 'shortname' => 'c1', 'entitytype' => 'equipment']);
+        $scoped = (int)$gen->create_entities(['name' => 'Car 2', 'shortname' => 'c2', 'entitytype' => 'equipment']);
+        $free = (int)$gen->create_entities(['name' => 'Car 3', 'shortname' => 'c3', 'entitytype' => 'equipment']);
+        $all = [$person, $car, $scoped, $free];
+
+        $this->block($person, 10, 12);
+        $this->block($car, 10, 12);
+        $this->block($scoped, 10, 12, $this->optionscope(7));
+
+        $result = unavailability::get_unavailable_entityids($all, $this->t(11), $this->t(13), []);
+        sort($result);
+        $expected = [$person, $car];
+        sort($expected);
+        $this->assertSame($expected, $result, 'A scoped block does not apply without its scope.');
+
+        $result = unavailability::get_unavailable_entityids($all, $this->t(11), $this->t(13), [$this->optionscope(7)]);
+        $expected = [$person, $car, $scoped];
+        sort($expected);
+        sort($result);
+        $this->assertSame($expected, $result);
+
+        $this->assertSame([], unavailability::get_unavailable_entityids($all, $this->t(12), $this->t(14), null));
+        $this->assertSame([], unavailability::get_unavailable_entityids($all, $this->t(11), $this->t(11), null));
+        $this->assertSame([], unavailability::get_unavailable_entityids([], $this->t(11), $this->t(13), null));
+    }
+
+    /**
      * Regression for the data loss when saving: blocks outside of the saved window stay.
      *
      * @return void

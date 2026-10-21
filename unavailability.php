@@ -46,7 +46,7 @@ if ($entityid <= 0) {
 }
 
 $entity = $DB->get_record('local_entities', ['id' => $entityid], '*', MUST_EXIST);
-unavailability_access::require_manage_entity($entity);
+unavailability_access::require_view_entity($entity);
 
 $PAGE->set_url(new moodle_url('/local/entities/unavailability.php', ['entityid' => $entityid]));
 $PAGE->set_pagelayout('standard');

@@ -21,10 +21,8 @@ use local_entities\persons;
 /**
  * The types a pool can have.
  *
- * The type of a pool is the entity type of its members: a pool of type person holds persons. Today
- * only persons are enabled. To enable another type, for example equipment for a pool of cars, add the
- * entity type to {@see self::ENABLED} and the texts pooltype_<type> and pool_add_<type> to the language
- * files.
+ * Persons and equipment are enabled. To enable another type, add the entity type to {@see self::ENABLED}
+ * and the texts pooltype_<type> and pool_add_<type> to the language files.
  *
  * @package    local_entities
  * @copyright  2026 Wunderbyte GmbH <info@wunderbyte.at>
@@ -32,10 +30,10 @@ use local_entities\persons;
  */
 final class pool_types {
     /** @var string[] The enabled types. */
-    private const ENABLED = [persons::TYPE];
+    private const ENABLED = [persons::TYPE, 'equipment'];
 
     /** @var string[] Icon (Font Awesome class) of each type. */
-    private const ICONS = [persons::TYPE => 'fa-users'];
+    private const ICONS = [persons::TYPE => 'fa-users', 'equipment' => 'fa-cube'];
 
     /**
      * Returns the enabled types with their names.

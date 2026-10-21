@@ -45,6 +45,25 @@ if ($hassiteconfig) {
         )
     );
 
+    // Lock the self-editing of the unavailability, per type of entity. Managers are never locked.
+    $settings->add(
+        new admin_setting_heading(
+            $componentname . '/unavailabilitylock_heading',
+            get_string('unavailabilitylock_heading', $componentname),
+            get_string('unavailabilitylock_heading_desc', $componentname)
+        )
+    );
+    foreach (['person', 'equipment', 'location'] as $locktype) {
+        $settings->add(
+            new admin_setting_configcheckbox(
+                $componentname . '/unavailabilitylock_' . $locktype,
+                get_string('unavailabilitylock_' . $locktype, $componentname),
+                get_string('unavailabilitylock_' . $locktype . '_desc', $componentname),
+                0
+            )
+        );
+    }
+
     // Select Standard Categories from custom categories.
     $categories = \local_entities\customfield\entities_cf_helper::get_all_cf_categories();
 

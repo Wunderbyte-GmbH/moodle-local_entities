@@ -18,6 +18,7 @@ namespace local_entities\output;
 
 use local_entities\entities;
 use local_entities\unavailability\manageable_entities;
+use local_entities\unavailability_access;
 
 /**
  * Builds the context for the page on which the unavailability of an entity is managed.
@@ -47,7 +48,8 @@ class unavailability_page {
      * Exports the context for the template.
      *
      * @param \renderer_base $output
-     * @return array heading, entityselect (label, url and options of the selection, or null)
+     * @return array heading, readonly (the page only shows, as the user may not change it), entityselect (label, url
+     *         and options of the selection, or null)
      */
     public function export_for_template(\renderer_base $output): array {
         global $DB;
@@ -56,6 +58,7 @@ class unavailability_page {
 
         $data = [
             'heading' => get_string('unavailabilityof', 'local_entities', entities::get_display_name($entity)),
+            'readonly' => !unavailability_access::can_manage_entity($entity),
             'entityselect' => null,
         ];
 

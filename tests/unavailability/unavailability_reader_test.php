@@ -111,6 +111,22 @@ final class unavailability_reader_test extends \advanced_testcase {
     }
 
     /**
+     * A person whose self-editing is locked can still read the own unavailability.
+     *
+     * @return void
+     */
+    public function test_a_locked_person_can_still_read(): void {
+        $this->resetAfterTest();
+        [$user, $entity] = $this->person();
+        set_config('unavailabilitylock_person', 1, 'local_entities');
+        $this->setUser($user);
+
+        $result = (new unavailability_reader())->read($entity, $this->t(0), $this->t(24));
+
+        $this->assertSame([], $result['blocks']);
+    }
+
+    /**
      * A window that is empty or longer than a year is refused, so one request can not read everything.
      *
      * @return void

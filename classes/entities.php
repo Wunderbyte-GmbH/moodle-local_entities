@@ -608,7 +608,7 @@ class entities {
         if (!$uselive) {
             $cached = $cache->get($entityid);
             if ($cached !== false) {
-                return $cached;
+                return array_merge($cached, self::get_assigned_dates($entityid));
             }
         }
 
@@ -671,7 +671,54 @@ class entities {
 
         $cache->set($entityid, $datearray);
 
-        return $datearray;
+        return array_merge($datearray, self::get_assigned_dates($entityid));
+    }
+
+    /**
+     * Occupations of an entity that the connected plugins know from assignments, for example a person who examines
+     * a slot of a booking.
+     *
+     * Read live and never cached with the dates of the relations, so that a new assignment counts at once and the
+     * cache does not have to be purged for it.
+     *
+     * @param int $entityid
+     * @return array dates in the entitydate format
+     */
+    private static function get_assigned_dates(int $entityid): array {
+        $dates = [];
+        foreach (self::get_resource_provider_classes() as $providerclass) {
+            $dates = array_merge(
+                $dates,
+                component_class_callback($providerclass, 'return_array_of_resource_dates', [$entityid], [])
+            );
+        }
+
+        return $dates;
+    }
+
+    /**
+     * The service providers of the plugins that are installed, which may tell about assigned resources.
+     *
+     * Only the class is looked up here. A provider that does not know the method of the assignments is simply
+     * asked nothing.
+     *
+     * @return string[] class names
+     */
+    private static function get_resource_provider_classes(): array {
+        static $classes = null;
+
+        if ($classes === null) {
+            $classes = [];
+            foreach (['mod', 'local'] as $plugintype) {
+                foreach (\core_component::get_plugin_list_with_class($plugintype, 'entities\\service_provider') as $class) {
+                    if (method_exists($class, 'return_array_of_resource_dates')) {
+                        $classes[] = $class;
+                    }
+                }
+            }
+        }
+
+        return $classes;
     }
 
     /** @var array<int, string> Per-request cache of entity allocation modes, keyed by entityid. */
