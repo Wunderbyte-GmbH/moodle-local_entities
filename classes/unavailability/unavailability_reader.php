@@ -58,7 +58,7 @@ final class unavailability_reader {
      * @return array blocks (list of id, starttime, endtime, reason, seriesid; seriesid is 0 for single
      *               blocks) and series (list of id, weekdays, allday, daystart, dayend, validfrom,
      *               validuntil, timezone, reason) that are not over at the start of the window
-     * @throws \required_capability_exception if the user may not manage the entity
+     * @throws \required_capability_exception if the user may not see the entity
      * @throws \invalid_parameter_exception if the window is empty or too long
      */
     public function read(int $entityid, int $from, int $until): array {
@@ -71,7 +71,7 @@ final class unavailability_reader {
         }
 
         $entity = $DB->get_record('local_entities', ['id' => $entityid], '*', MUST_EXIST);
-        unavailability_access::require_manage_entity($entity);
+        unavailability_access::require_view_entity($entity);
 
         $filter = scope_filter::global_and([]);
 

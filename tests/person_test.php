@@ -30,6 +30,7 @@ use local_entities\table\entities_table;
  * @copyright  2026 Wunderbyte GmbH <info@wunderbyte.at>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @covers     \local_entities\entities
+ * @covers     \local_entities\persons
  * @covers     \local_entities\form\edit_dynamic_form
  * @covers     \local_entities\table\entities_table
  */
@@ -274,5 +275,49 @@ final class person_test extends \advanced_testcase {
         $name = $table->col_name($persons[0]);
         $this->assertStringContainsString('Anna Adams', $name);
         $this->assertStringNotContainsString($anna->email, $name);
+    }
+
+    /**
+     * The persons of many users come back keyed by user in one go. Users who are no person are not created
+     * unless asked for, users who do not exist or are deleted are left out.
+     *
+     * @return void
+     */
+    public function test_entityids_for_users_in_one_go(): void {
+        $this->resetAfterTest();
+        $this->setAdminUser();
+        $known = $this->getDataGenerator()->create_user();
+        $other = $this->getDataGenerator()->create_user();
+        $gone = $this->getDataGenerator()->create_user();
+        $knownentity = $this->create_person($known);
+        $this->create_person($gone);
+        delete_user($gone);
+        $ask = [(int)$other->id, (int)$known->id, 0, 999999, (int)$gone->id, (int)$known->id];
+
+        $result = persons::get_entityids_for_users($ask);
+
+        $this->assertSame([(int)$known->id => $knownentity], $result);
+        $this->assertNull(persons::get_entityid_for_user((int)$other->id), 'Nothing is created by default.');
+        $this->assertSame([], persons::get_entityids_for_users([]));
+    }
+
+    /**
+     * Only when asked for, the missing person is created, once.
+     *
+     * @return void
+     */
+    public function test_entityids_for_users_can_create_missing_persons(): void {
+        $this->resetAfterTest();
+        $this->setAdminUser();
+        $known = $this->getDataGenerator()->create_user();
+        $other = $this->getDataGenerator()->create_user();
+        $knownentity = $this->create_person($known);
+
+        $result = persons::get_entityids_for_users([(int)$other->id, (int)$known->id, 999999], true);
+
+        $this->assertSame([(int)$other->id, (int)$known->id], array_keys($result));
+        $this->assertSame($knownentity, $result[(int)$known->id]);
+        $this->assertSame(persons::get_entityid_for_user((int)$other->id), $result[(int)$other->id]);
+        $this->assertSame($result, persons::get_entityids_for_users([(int)$other->id, (int)$known->id]));
     }
 }

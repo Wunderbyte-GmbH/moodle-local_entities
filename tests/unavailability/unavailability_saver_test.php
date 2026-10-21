@@ -231,6 +231,28 @@ final class unavailability_saver_test extends \advanced_testcase {
     }
 
     /**
+     * When the self-editing of persons is locked, a person can not save the own unavailability, and nothing is saved.
+     *
+     * @return void
+     */
+    public function test_a_locked_person_can_not_save(): void {
+        $this->resetAfterTest();
+        [$user, $entity] = $this->person();
+        set_config('unavailabilitylock_person', 1, 'local_entities');
+        $this->setUser($user);
+        $before = $this->counts($entity);
+
+        try {
+            $this->saver()->save($entity, unavailability_changes::from_array([
+                'addblocks' => [['starttime' => $this->t(8), 'endtime' => $this->t(10)]],
+            ]));
+            $this->fail('The save should have been refused.');
+        } catch (\required_capability_exception $e) {
+            $this->assertSame($before, $this->counts($entity));
+        }
+    }
+
+    /**
      * A series of another entity can neither be changed nor deleted, and nothing else is saved then.
      *
      * @return void

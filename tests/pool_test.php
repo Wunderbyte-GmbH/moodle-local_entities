@@ -270,6 +270,40 @@ final class pool_test extends \advanced_testcase {
     }
 
     /**
+     * The entities of pools are returned for every type, once each, without deleted users and missing pools.
+     *
+     * @return void
+     */
+    public function test_entityids_of_pools_for_every_type(): void {
+        $this->resetAfterTest();
+        $this->setAdminUser();
+        /** @var \local_entities_generator $gen */
+        $gen = $this->getDataGenerator()->get_plugin_generator('local_entities');
+        $repo = new pool_repository();
+        [, $one] = $this->create_person();
+        [, $two] = $this->create_person();
+        [$gone, $deleted] = $this->create_person();
+        $car = (int)$gen->create_entities(['name' => 'Car 1', 'shortname' => 'c1', 'entitytype' => 'equipment']);
+        $people = $repo->create('People', '', 2);
+        $other = $repo->create('Other people', '', 2);
+        $cars = $repo->create('Cars', '', 2, 'equipment');
+        $repo->add_members($people, [$two, $one, $deleted], 2);
+        $repo->add_members($other, [$one], 2);
+        $repo->add_members($cars, [$car], 2);
+        delete_user($gone);
+
+        $expected = [$one, $two];
+        sort($expected);
+        $this->assertSame($expected, pool_facade::get_entityids_for_pools([$people, $other, 999999]));
+        $this->assertSame([$car], pool_facade::get_entityids_for_pools([$cars]));
+        $both = [$one, $two, $car];
+        sort($both);
+        $this->assertSame($both, pool_facade::get_entityids_for_pools([$cars, $people]));
+        $this->assertSame([], pool_facade::get_entityids_for_pools([]));
+        $this->assertSame([], pool_facade::get_entityids_for_pools([0, 999999]));
+    }
+
+    /**
      * Only users with the right to manage the unavailability of everyone may see and change pools.
      *
      * @return void
@@ -339,7 +373,7 @@ final class pool_test extends \advanced_testcase {
         $this->assertSame('person', $repo->find($id)->pooltype);
         $this->assertSame('person', $repo->find($repo->create('Other', '', 2, 'person'))->pooltype);
 
-        foreach (['location', 'equipment', 'nonsense', ''] as $bad) {
+        foreach (['location', 'nonsense', ''] as $bad) {
             try {
                 $repo->create('Pool ' . $bad, '', 2, $bad);
                 $this->fail('A type that is not enabled must be refused.');
@@ -350,7 +384,44 @@ final class pool_test extends \advanced_testcase {
 
         $repo->update($id, 'Renamed', '', 2);
         $this->assertSame('person', $repo->find($id)->pooltype, 'Changing a pool does not change its type.');
-        $this->assertSame(['person' => get_string('pooltype_person', 'local_entities')], pool_types::all());
+        $this->assertSame(
+            [
+                'person' => get_string('pooltype_person', 'local_entities'),
+                'equipment' => get_string('pooltype_equipment', 'local_entities'),
+            ],
+            pool_types::all()
+        );
+    }
+
+    /**
+     * A pool of equipment holds equipment only, and offers equipment by name for the selection.
+     *
+     * @return void
+     */
+    public function test_equipment_pool(): void {
+        $this->resetAfterTest();
+        $this->setAdminUser();
+        /** @var \local_entities_generator $gen */
+        $gen = $this->getDataGenerator()->get_plugin_generator('local_entities');
+        $car = (int)$gen->create_entities(['name' => 'Car 1', 'shortname' => 'c1', 'entitytype' => 'equipment']);
+        $room = $this->create_place();
+        [, $person] = $this->create_person();
+        $repo = new pool_repository();
+
+        $id = $repo->create('Cars', '', 2, 'equipment');
+        $this->assertSame('equipment', $repo->find($id)->pooltype);
+        $repo->add_members($id, [$car], 2);
+        $this->assertSame('fa-cube', pool_types::icon('equipment'));
+        $this->assertSame([$car => 'Car 1'], pool_types::member_options('equipment'));
+
+        foreach ([$room, $person] as $wrong) {
+            try {
+                $repo->add_members($id, [$wrong], 2);
+                $this->fail('Only equipment may be a member of an equipment pool.');
+            } catch (\moodle_exception $e) {
+                $this->assertSame('error:poolmemberwrongtype', $e->errorcode);
+            }
+        }
     }
 
     /**

@@ -107,9 +107,33 @@ const fill = (event) => {
 };
 
 /**
+ * The entry of an assignment of the entity: a booked slot or an appointment, read only.
+ *
+ * It is never a whole day, so it is shown with its times. It opens the page of what it belongs to, if there is a link.
+ *
+ * @param {Object} occupation starttime, endtime, name, url
+ * @param {number} index position in the list, for the id
+ * @returns {Object} entry for the calendar
+ */
+const occupationEntry = (occupation, index) => ({
+    id: `occupation-${index}`,
+    title: occupation.name,
+    allDay: false,
+    start: toLocalDateTime(occupation.starttime),
+    end: toLocalDateTime(occupation.endtime),
+    classNames: occupation.url ? ['entities-occupation'] : ['entities-occupation', 'entities-occupation-nolink'],
+    extendedProps: {
+        kind: 'occupation',
+        url: occupation.url || '',
+        starttime: occupation.starttime,
+        endtime: occupation.endtime,
+    },
+});
+
+/**
  * Builds the entries of the calendar.
  *
- * @param {Object} loaded what the server returned: blocks and series
+ * @param {Object} loaded what the server returned: blocks, series and occupations
  * @param {PendingChanges} pending what the user changed since
  * @param {Object} labels texts: absent, notsaved
  * @param {Date} now the current time
@@ -170,5 +194,8 @@ export const buildEvents = (loaded, pending, labels, now = new Date()) => {
     }
 
     // Whole days also fill their column, so it is clear that the day is meant completely.
-    return events.concat(events.filter((event) => event.allDay).map(fill));
+    const filled = events.concat(events.filter((event) => event.allDay).map(fill));
+
+    // Assignments (booked slots, appointments) are shown as they are. They cannot be changed here.
+    return filled.concat((loaded.occupations || []).map((occupation, i) => occupationEntry(occupation, i)));
 };

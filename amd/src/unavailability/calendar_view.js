@@ -34,7 +34,7 @@ import {Calendar} from 'local_entities/fullcalendar';
  */
 const toSeconds = (date) => Math.floor(date.getTime() / 1000);
 
-// Length of a time slot in the week view. A click on a free slot marks one slot.
+// Length of a time slot in the day and week view. A click on a free slot marks one slot.
 const SLOT_MINUTES = 30;
 
 export default class CalendarView {
@@ -47,10 +47,11 @@ export default class CalendarView {
      * @param {Function} options.onSelect (startSeconds, endSeconds) a time range was dragged
      * @param {Function} options.onDayClick (startSeconds, endSeconds) a whole day was clicked
      * @param {Function} options.onEntryClick (extendedProps, element) an entry was clicked
-     * @param {Object} options.labels texts: today, week, month, allday, more
+     * @param {Object} options.labels texts: today, day, week, month, allday, more, showweek, showmonth
      * @param {string} options.locale language code
      * @param {number} options.firstDay first day of the week, 0 = Sunday
      * @param {boolean} options.hour12 12 hour clock instead of 24 hour
+     * @param {boolean} options.readonly nothing can be marked, the calendar only shows entries
      */
     constructor(element, options) {
         this.element = element;
@@ -62,7 +63,7 @@ export default class CalendarView {
      * Draws the calendar.
      */
     render() {
-        const {provider, onSelect, onDayClick, onEntryClick, labels, locale, firstDay, hour12} = this.options;
+        const {provider, onSelect, onDayClick, onEntryClick, labels, locale, firstDay, hour12, readonly} = this.options;
         const timeFormat = hour12
             ? {hour: 'numeric', minute: '2-digit', meridiem: 'short', hour12: true}
             : {hour: '2-digit', minute: '2-digit', hour12: false};
@@ -72,8 +73,8 @@ export default class CalendarView {
             locale,
             firstDay,
             initialView: 'timeGridWeek',
-            headerToolbar: {left: 'prev,next today', center: 'title', right: 'timeGridWeek,dayGridMonth'},
-            buttonText: {today: labels.today, week: labels.week, month: labels.month},
+            headerToolbar: {left: 'prev,next today', center: 'title', right: 'timeGridDay,timeGridWeek,dayGridMonth'},
+            buttonText: {today: labels.today, day: labels.day, week: labels.week, month: labels.month},
             allDayText: labels.allday,
             moreLinkText: labels.more,
             eventTimeFormat: timeFormat,
@@ -83,20 +84,22 @@ export default class CalendarView {
             scrollTime: '07:00:00',
             height: 700,
             nowIndicator: true,
-            // The number of a day or of a week opens that week, so one gets from the month to a week.
+            // The number of a day opens that day, the number of a week opens that week, so one gets from the month
+            // to a day or to a week.
             weekNumbers: true,
             weekNumberCalculation: 'ISO',
             weekText: labels.week,
             navLinks: true,
-            navLinkDayClick: 'timeGridWeek',
+            navLinkDayClick: 'timeGridDay',
             navLinkWeekClick: 'timeGridWeek',
-            selectable: true,
+            selectable: !readonly,
             selectMirror: true,
             selectMinDistance: 5,
             unselectAuto: false,
             editable: false,
             eventOverlap: true,
-            selectOverlap: true,
+            // A time range cannot be marked over an assignment of the entity: it is busy then.
+            selectOverlap: (event) => event.extendedProps.kind !== 'occupation',
             selectAllow: (info) => {
                 // Time that is over cannot be marked.
                 const today = new Date();
@@ -104,6 +107,20 @@ export default class CalendarView {
                 return info.end > today;
             },
             dayMaxEvents: true,
+            datesSet: (info) => {
+                // The title zooms out: from the day to its week, from the week to its month.
+                const zoomText = {timeGridDay: labels.showweek, timeGridWeek: labels.showmonth}[info.view.type];
+                const title = this.element.querySelector('.fc-toolbar-title');
+                if (title) {
+                    title.title = zoomText || '';
+                    title.style.cursor = zoomText ? 'pointer' : '';
+                }
+                // A button that was clicked keeps its focus frame, although another view is shown now.
+                const focused = document.activeElement;
+                if (focused && focused.classList.contains('fc-button') && this.element.contains(focused)) {
+                    focused.blur();
+                }
+            },
             events: (info, success, failure) => {
                 provider(toSeconds(info.start), toSeconds(info.end)).then(success).catch(failure);
             },
@@ -112,6 +129,9 @@ export default class CalendarView {
                 this.calendar.unselect();
             },
             dateClick: (info) => {
+                if (readonly) {
+                    return;
+                }
                 // A click on a day, in the month or in the all-day row, marks the whole day. A click on a
                 // time slot marks that slot, a longer time range is dragged.
                 const start = new Date(info.date);
@@ -128,6 +148,16 @@ export default class CalendarView {
             },
         });
         this.calendar.render();
+
+        this.element.addEventListener('click', (event) => {
+            if (!event.target.closest('.fc-toolbar-title')) {
+                return;
+            }
+            const zoomOut = {timeGridDay: 'timeGridWeek', timeGridWeek: 'dayGridMonth'}[this.calendar.view.type];
+            if (zoomOut) {
+                this.calendar.changeView(zoomOut);
+            }
+        });
     }
 
     /**

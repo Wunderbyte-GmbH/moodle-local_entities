@@ -159,6 +159,26 @@
     color: #212529;
 }
 
+/* Unavailability page: an assignment (booked slot, appointment) is purple and cannot be changed, only opened. */
+.local-entities-unavailability .fc .fc-event.entities-occupation {
+    background-color: #6f42c1;
+    border-color: #6f42c1;
+    border-left: 5px solid #432874;
+    color: #fff;
+    cursor: pointer;
+}
+
+.local-entities-unavailability .fc .fc-event.entities-occupation .fc-event-main,
+.local-entities-unavailability .fc .fc-event.entities-occupation .fc-event-time,
+.local-entities-unavailability .fc .fc-event.entities-occupation .fc-event-title {
+    color: #fff;
+}
+
+/* An assignment without a link is not clickable. */
+.local-entities-unavailability .fc .fc-event.entities-occupation-nolink {
+    cursor: default;
+}
+
 /* Unavailability page: days that are over cannot be changed, so they are shown grey. */
 .local-entities-unavailability .fc .fc-day-past {
     background-color: #f1f3f5;

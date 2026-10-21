@@ -71,6 +71,21 @@ class unavailability {
     }
 
     /**
+     * Returns the entities, out of a list, that are blocked somewhere in a time range.
+     *
+     * Works for every entity type. One query for any number of entities, so it is cheap to call for a whole pool.
+     *
+     * @param int[] $entityids entities to check
+     * @param int $from start of the range (unix timestamp)
+     * @param int $until end of the range (unix timestamp)
+     * @param array|null $scopes null for all blocks, otherwise the scopes that apply (see class doc)
+     * @return int[] ids of the blocked entities
+     */
+    public static function get_unavailable_entityids(array $entityids, int $from, int $until, ?array $scopes = null): array {
+        return (new block_repository())->find_blocked_entityids($entityids, $from, $until, scope_filter::from_nullable($scopes));
+    }
+
+    /**
      * Replaces the blocks of one scope inside a time window and leaves everything outside untouched.
      *
      * Inside the window the stored blocks of this scope become exactly the given blocks. A stored

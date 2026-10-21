@@ -31,6 +31,7 @@
 
     Context variables required for this template:
     * heading - string, heading of the entity on display
+    * readonly - bool, the unavailability of this kind of entity is locked for the user, the page only shows it
     * entityselect - object, empty if there is nothing to choose
       * label - string, label of the selection
       * url - string, address of the page, the id of the chosen entity is added as entityid
@@ -39,6 +40,7 @@
     Example context (json):
     {
         "heading": "Unavailability of Room A",
+        "readonly": false,
         "entityselect": {
             "label": "Entity",
             "url": "https://example.org/local/entities/unavailability.php",
@@ -49,7 +51,7 @@
         }
     }
 }}
-<div class="local-entities-unavailability" data-region="unavailability-page">
+<div class="local-entities-unavailability" data-region="unavailability-page" data-readonly="{{#readonly}}1{{/readonly}}{{^readonly}}0{{/readonly}}">
     {{#entityselect}}
         <div class="mb-4" data-region="unavailability-entity-select">
             <label for="unavailability-entity" class="form-label">{{label}}</label>
@@ -61,7 +63,13 @@
         </div>
     {{/entityselect}}
     <h3 class="h4 mb-2">{{heading}}</h3>
+    {{#readonly}}
+        <div class="alert alert-info" role="status" data-region="unavailability-locked">
+            {{#str}}unavailability_locked, local_entities{{/str}}
+        </div>
+    {{/readonly}}
     <p class="text-muted">{{#str}}unavailability_help, local_entities{{/str}}</p>
+    {{^readonly}}
     <div class="d-flex flex-wrap align-items-center gap-2 mb-3" data-region="unavailability-toolbar">
         <button type="button" class="btn btn-primary" data-action="unavailability-save" disabled>
             {{#str}}unavailability_save, local_entities{{/str}}
@@ -76,6 +84,7 @@
             {{#str}}unavailability_unsaved, local_entities{{/str}}
         </span>
     </div>
+    {{/readonly}}
     <div data-region="unavailability-message" aria-live="polite"></div>
     <div data-region="unavailability-calendar"></div>
 </div>

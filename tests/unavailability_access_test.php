@@ -224,4 +224,85 @@ final class unavailability_access_test extends \advanced_testcase {
         $this->setUser(0);
         $this->assertFalse(unavailability_access::can_open_page());
     }
+
+    /**
+     * A locked type takes the self-editing away: the person can still see the own unavailability, but not change it.
+     *
+     * @return void
+     */
+    public function test_a_locked_type_takes_self_editing_away_but_keeps_the_view(): void {
+        $this->resetAfterTest();
+        $user = $this->getDataGenerator()->create_user();
+        $other = $this->getDataGenerator()->create_user();
+        $own = $this->create_person($user);
+        $foreign = $this->create_person($other);
+        set_config('unavailabilitylock_person', 1, 'local_entities');
+        $this->setUser($user);
+
+        $this->assertTrue(unavailability_access::is_self_edit_locked('person'));
+        $this->assertFalse(unavailability_access::can_manage_entity($own));
+        $this->assertTrue(unavailability_access::can_view_entity($own));
+        $this->assertFalse(unavailability_access::can_view_entity($foreign), 'Only the own person can be seen.');
+        unavailability_access::require_view_entity($own);
+        $this->expectException(\required_capability_exception::class);
+        unavailability_access::require_manage_entity($own);
+    }
+
+    /**
+     * Without a lock nothing changes: the person manages the own unavailability and sees it.
+     *
+     * @return void
+     */
+    public function test_without_a_lock_view_and_manage_are_the_same(): void {
+        $this->resetAfterTest();
+        $user = $this->getDataGenerator()->create_user();
+        $own = $this->create_person($user);
+        $room = $this->create_location();
+        $this->setUser($user);
+
+        $this->assertFalse(unavailability_access::is_self_edit_locked('person'));
+        $this->assertTrue(unavailability_access::can_manage_entity($own));
+        $this->assertTrue(unavailability_access::can_view_entity($own));
+        $this->assertFalse(unavailability_access::can_view_entity($room));
+    }
+
+    /**
+     * The lock is per type: locked places do not lock persons, and the right to edit places is not enough for a locked
+     * place, but still lets the user see it.
+     *
+     * @return void
+     */
+    public function test_the_lock_is_per_type(): void {
+        $this->resetAfterTest();
+        $editor = $this->user_with(['local/entities:edit']);
+        $own = $this->create_person($editor);
+        $room = $this->create_location();
+        set_config('unavailabilitylock_location', 1, 'local_entities');
+        $this->setUser($editor);
+
+        $this->assertFalse(unavailability_access::can_manage_entity($room));
+        $this->assertTrue(unavailability_access::can_view_entity($room));
+        $this->assertTrue(unavailability_access::can_manage_entity($own), 'Locked places do not lock persons.');
+    }
+
+    /**
+     * Whoever may manage every entity is not locked, whatever is locked.
+     *
+     * @return void
+     */
+    public function test_managers_are_never_locked(): void {
+        $this->resetAfterTest();
+        $secretary = $this->user_with(['local/entities:manageunavailability']);
+        $person = $this->create_person($this->getDataGenerator()->create_user());
+        $room = $this->create_location();
+        foreach (['person', 'location', 'equipment'] as $type) {
+            set_config('unavailabilitylock_' . $type, 1, 'local_entities');
+        }
+        $this->setUser($secretary);
+
+        $this->assertTrue(unavailability_access::can_manage_entity($person));
+        $this->assertTrue(unavailability_access::can_manage_entity($room));
+        $this->assertTrue(unavailability_access::can_view_entity($person));
+        unavailability_access::require_manage_entity($person);
+    }
 }
