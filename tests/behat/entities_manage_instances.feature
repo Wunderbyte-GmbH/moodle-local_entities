@@ -53,7 +53,7 @@ Feature: Baisc functionality of local_entities works as expected
     And I press "Save changes"
     And I should see "Parent1" in the "#region-main" "css_element"
     ## Workaround to access "view" link for the child entity due to lack of identities in the DOM
-    And I click on "//h4[normalize-space(.)='E1Child1']/preceding-sibling::a[contains(@class,'btn_edit')][contains(normalize-space(.),'View')][1]" "xpath_element" in the "#region-main" "css_element"
+    And I click on "//h4[normalize-space(text()[1])='E1Child1']/preceding-sibling::a[contains(@class,'btn_edit')][contains(normalize-space(.),'View')][1]" "xpath_element" in the "#region-main" "css_element"
     ## Validate child entitiy's view page
     And I should see "E1Child1" in the "#region-main" "css_element"
     And I should see "Parent1" in the "#region-main" "css_element"
