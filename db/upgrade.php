@@ -339,7 +339,13 @@ function xmldb_local_entities_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2026070301, 'local', 'entities');
     }
 
-    if ($oldversion < 2026101300) {
+    if ($oldversion < 2026110401) {
+        // Persons, unavailability, pools and the daily limit were developed in parallel to the release
+        // 0.5.5 (2026102100) and first carried savepoints 2026101300 to 2026102800, all lower than that
+        // release. A site on 2026102100 skipped them and failed on the one step above it. All of these
+        // steps now run under one savepoint above the release; every operation checks what exists, so
+        // sites that already ran the old steps are not changed.
+
         // Person entities: the Moodle user an entity of type "person" represents.
         $table = new xmldb_table('local_entities');
         $field = new xmldb_field('userid', XMLDB_TYPE_INTEGER, '10', null, null, null, null, 'availableinsublocations');
@@ -352,11 +358,6 @@ function xmldb_local_entities_upgrade($oldversion) {
             $dbman->add_index($table, $index);
         }
 
-        // Entities savepoint reached.
-        upgrade_plugin_savepoint(true, 2026101300, 'local', 'entities');
-    }
-
-    if ($oldversion < 2026101301) {
         // Unavailability of entities (e.g. persons): time ranges with an optional scope.
         $table = new xmldb_table('local_entities_unavailability');
 
@@ -382,11 +383,6 @@ function xmldb_local_entities_upgrade($oldversion) {
             $dbman->create_table($table);
         }
 
-        // Entities savepoint reached.
-        upgrade_plugin_savepoint(true, 2026101301, 'local', 'entities');
-    }
-
-    if ($oldversion < 2026101302) {
         // Series of unavailability blocks: the recurrence rule and the reference from each block.
         $table = new xmldb_table('local_entities_unavail_series');
         if (!$dbman->table_exists($table)) {
@@ -424,11 +420,6 @@ function xmldb_local_entities_upgrade($oldversion) {
             $dbman->add_index($table, $index);
         }
 
-        // Entities savepoint reached.
-        upgrade_plugin_savepoint(true, 2026101302, 'local', 'entities');
-    }
-
-    if ($oldversion < 2026101901) {
         // Pools of persons.
         $table = new xmldb_table('local_entities_pool');
         if (!$dbman->table_exists($table)) {
@@ -462,11 +453,6 @@ function xmldb_local_entities_upgrade($oldversion) {
             $dbman->create_table($table);
         }
 
-        // Entities savepoint reached.
-        upgrade_plugin_savepoint(true, 2026101901, 'local', 'entities');
-    }
-
-    if ($oldversion < 2026102002) {
         // Pools became general: a pool has a type, the entity type of its members. The tables created
         // with the first version of the pools lose "people" in their name and keep their data.
         $renames = [
@@ -485,11 +471,6 @@ function xmldb_local_entities_upgrade($oldversion) {
             $dbman->add_field($table, $field);
         }
 
-        // Entities savepoint reached.
-        upgrade_plugin_savepoint(true, 2026102002, 'local', 'entities');
-    }
-
-    if ($oldversion < 2026102800) {
         // Each entity can limit the number of planned slots per day. Empty means no limit.
         $table = new xmldb_table('local_entities');
         $field = new xmldb_field('maxslotsperday', XMLDB_TYPE_INTEGER, '4', null, null, null, null, 'userid');
@@ -498,7 +479,7 @@ function xmldb_local_entities_upgrade($oldversion) {
         }
 
         // Entities savepoint reached.
-        upgrade_plugin_savepoint(true, 2026102800, 'local', 'entities');
+        upgrade_plugin_savepoint(true, 2026110401, 'local', 'entities');
     }
 
     return true;
