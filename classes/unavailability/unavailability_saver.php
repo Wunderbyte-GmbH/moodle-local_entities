@@ -17,6 +17,7 @@
 namespace local_entities\unavailability;
 
 use local_entities\unavailability_access;
+use local_entities\planning_period;
 
 /**
  * Saves the changes a user made on the unavailability page.
@@ -78,7 +79,10 @@ final class unavailability_saver {
 
         $this->require_series_of_entity($entityid, array_merge(array_keys($changes->updateseries), $changes->deleteseries));
 
-        $conflicts = $this->detector->find($entityid, $this->ranges_to_check($changes));
+        $ranges = $this->ranges_to_check($changes);
+        $this->require_within_planning_period($ranges);
+
+        $conflicts = $this->detector->find($entityid, $ranges);
         if (!empty($conflicts)) {
             return ['saved' => false, 'conflicts' => $conflicts];
         }
@@ -125,6 +129,25 @@ final class unavailability_saver {
             static fn(time_range $range): array => ['starttime' => $range->starttime, 'endtime' => $range->endtime],
             $ranges
         );
+    }
+
+    /**
+     * Refuses changes outside the planning period. Planners and admins are not limited.
+     *
+     * @param array $ranges list of ['starttime' => ..., 'endtime' => ...]
+     * @return void
+     * @throws \moodle_exception
+     */
+    private function require_within_planning_period(array $ranges): void {
+        $period = planning_period::for_user();
+        if ($period === null) {
+            return;
+        }
+        foreach ($ranges as $range) {
+            if (!planning_period::contains($period, (int)$range['starttime'], (int)$range['endtime'])) {
+                throw new \moodle_exception('planningperiod_outside', 'local_entities', '', planning_period::describe($period));
+            }
+        }
     }
 
     /**

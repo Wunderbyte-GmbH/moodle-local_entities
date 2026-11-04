@@ -64,6 +64,37 @@ if ($hassiteconfig) {
         );
     }
 
+    // The planning period: persons only see and change these days, planners and admins are not limited.
+    $settings->add(
+        new admin_setting_heading(
+            $componentname . '/planningperiod_heading',
+            get_string('planningperiod_heading', $componentname),
+            get_string('planningperiod_heading_desc', $componentname)
+        )
+    );
+    foreach (['start', 'end'] as $periodend) {
+        $settings->add(
+            new \local_entities\admin\setting_date(
+                $componentname . '/planningperiod_' . $periodend,
+                get_string('planningperiod_' . $periodend, $componentname),
+                get_string('planningperiod_' . $periodend . '_desc', $componentname),
+                ''
+            )
+        );
+    }
+
+    // Limit of slots per day for every entity without an own one. Empty or 0 for no limit.
+    $settings->add(
+        new admin_setting_configtext(
+            $componentname . '/' . \local_entities\daily_limit::CONFIG_DEFAULT,
+            get_string('dailylimit_default', $componentname),
+            get_string('dailylimit_default_desc', $componentname),
+            '2',
+            PARAM_INT,
+            4
+        )
+    );
+
     // Select Standard Categories from custom categories.
     $categories = \local_entities\customfield\entities_cf_helper::get_all_cf_categories();
 

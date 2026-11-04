@@ -23,6 +23,7 @@
 
 import {get_strings as getStrings} from 'core/str';
 import {init as entitySelect} from 'local_entities/unavailability/entity_select';
+import {init as dailyLimit} from 'local_entities/unavailability/daily_limit';
 
 // Texts of the page: name used in the code => string of Moodle core.
 const CORE_TEXTS = {
@@ -65,6 +66,7 @@ const PLUGIN_TEXTS = {
     seriesNoWeekday: 'unavailability_series_noweekday',
     seriesBadTime: 'unavailability_series_badtime',
     seriesBadPeriod: 'unavailability_series_badperiod',
+    outsidePeriod: 'unavailability_outsideperiod',
 };
 
 /**
@@ -114,8 +116,14 @@ export const init = async(entityid, locale, firstDay, timeFormat) => {
             hour12: parseInt(timeFormat, 10) === 12,
             // The page is only shown, as the unavailability of this kind of entity is locked for the user.
             readonly: root.dataset.readonly === '1',
+            // Persons only see and change the days of the planning period.
+            period: root.dataset.periodStart ? {
+                start: parseInt(root.dataset.periodStart, 10),
+                end: parseInt(root.dataset.periodEnd, 10),
+            } : null,
         },
         labels
     );
     controller.start();
+    dailyLimit(root, parseInt(entityid, 10));
 };

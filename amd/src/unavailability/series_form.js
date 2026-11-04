@@ -135,9 +135,10 @@ export const formFromRule = (rule) => ({
  * @param {Object} rule as built by ruleFromForm
  * @param {number} minFrom earliest first day, normally the start of today
  * @param {number|null} originalFrom the first day the series had before, it may stay even if it is over
- * @returns {string|null} 'noweekday', 'badtime', 'badperiod', or null if the rule is fine
+ * @param {Object|null} period start and end of the planning period (unix timestamps), null if there is no limit
+ * @returns {string|null} 'noweekday', 'badtime', 'badperiod', 'outsideperiod', or null if the rule is fine
  */
-export const checkRule = (rule, minFrom, originalFrom = null) => {
+export const checkRule = (rule, minFrom, originalFrom = null, period = null) => {
     if (rule.weekdays.length === 0) {
         return 'noweekday';
     }
@@ -146,6 +147,10 @@ export const checkRule = (rule, minFrom, originalFrom = null) => {
     }
     if (rule.validfrom === null || rule.validuntil === null || rule.validuntil < rule.validfrom) {
         return 'badperiod';
+    }
+    // The last day is the start of that day, so it has to begin before the end of the period.
+    if (period && (rule.validfrom < period.start || rule.validuntil >= period.end)) {
+        return 'outsideperiod';
     }
     if (rule.validfrom < minFrom && rule.validfrom !== originalFrom) {
         return 'badperiod';

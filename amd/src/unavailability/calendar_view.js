@@ -52,6 +52,7 @@ export default class CalendarView {
      * @param {number} options.firstDay first day of the week, 0 = Sunday
      * @param {boolean} options.hour12 12 hour clock instead of 24 hour
      * @param {boolean} options.readonly nothing can be marked, the calendar only shows entries
+     * @param {Object|null} options.period start and end of the planning period (unix timestamps), null if there is no limit
      */
     constructor(element, options) {
         this.element = element;
@@ -63,7 +64,7 @@ export default class CalendarView {
      * Draws the calendar.
      */
     render() {
-        const {provider, onSelect, onDayClick, onEntryClick, labels, locale, firstDay, hour12, readonly} = this.options;
+        const {provider, onSelect, onDayClick, onEntryClick, labels, locale, firstDay, hour12, readonly, period} = this.options;
         const timeFormat = hour12
             ? {hour: 'numeric', minute: '2-digit', meridiem: 'short', hour12: true}
             : {hour: '2-digit', minute: '2-digit', hour12: false};
@@ -73,6 +74,11 @@ export default class CalendarView {
             locale,
             firstDay,
             initialView: 'timeGridWeek',
+            // Only the days of the planning period are shown, starting with today or the first day of the period.
+            ...(period ? {
+                validRange: {start: new Date(period.start * 1000), end: new Date(period.end * 1000)},
+                initialDate: new Date(Math.min(Math.max(Date.now(), period.start * 1000), period.end * 1000 - 1)),
+            } : {}),
             headerToolbar: {left: 'prev,next today', center: 'title', right: 'timeGridDay,timeGridWeek,dayGridMonth'},
             buttonText: {today: labels.today, day: labels.day, week: labels.week, month: labels.month},
             allDayText: labels.allday,
@@ -145,6 +151,10 @@ export default class CalendarView {
             },
             eventClick: (info) => {
                 onEntryClick(info.event.extendedProps, info.el);
+            },
+            // A short entry cuts its text off, so the whole text shows when the mouse rests on it.
+            eventDidMount: (info) => {
+                info.el.title = [info.timeText, info.event.title].filter(Boolean).join(' · ');
             },
         });
         this.calendar.render();

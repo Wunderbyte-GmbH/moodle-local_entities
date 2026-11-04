@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {clipFrom, subtractRanges} from 'local_entities/unavailability/range_math';
+import {clipFrom, clipToPeriod, subtractRanges} from 'local_entities/unavailability/range_math';
 const r = (a, b) => ({starttime: a, endtime: b});
 
 assert.deepEqual(clipFrom(r(10, 20), 5), r(10, 20));
@@ -56,3 +56,8 @@ const s = local('2026-10-16T00:00:00'), e = local('2026-10-23T00:00:00');
 assert.equal(fromDateValue(toDateValue(s)), s);
 assert.equal(fromLastDayValue(toLastDayValue(e)), e);
 console.log('ok days');
+
+assert.deepEqual(clipToPeriod(r(10, 20), null), r(10, 20));
+assert.deepEqual(clipToPeriod(r(10, 20), {start: 12, end: 18}), r(12, 18));
+assert.equal(clipToPeriod(r(10, 20), {start: 20, end: 30}), null);
+console.log('ok period');

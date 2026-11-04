@@ -27,6 +27,7 @@
 import {openSeriesChoiceDialog} from 'local_entities/unavailability/series_choice_dialog';
 import {openSeriesDialog} from 'local_entities/unavailability/series_dialog';
 import {defaultRule} from 'local_entities/unavailability/series_form';
+import {fromDateValue, toDateValue} from 'local_entities/unavailability/range_math';
 
 export default class SeriesEditor {
     /**
@@ -39,14 +40,16 @@ export default class SeriesEditor {
      * @param {Function} options.startOfToday () => unix timestamp, start of today
      * @param {Function} options.findSeries (id) => the saved series, undefined if it is not loaded
      * @param {Function} options.onChange called after the remembered changes changed
+     * @param {Object|null} options.period start and end of the planning period, null if there is no limit
      */
-    constructor({pending, labels, locale, startOfToday, findSeries, onChange}) {
+    constructor({pending, labels, locale, startOfToday, findSeries, onChange, period = null}) {
         this.pending = pending;
         this.labels = labels;
         this.locale = locale;
         this.startOfToday = startOfToday;
         this.findSeries = findSeries;
         this.onChange = onChange;
+        this.period = period;
         this.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     }
 
@@ -54,7 +57,12 @@ export default class SeriesEditor {
      * Opens the dialog for a new series.
      */
     create() {
-        this.openRule(defaultRule(this.startOfToday(), this.timezone), null, {
+        const rule = defaultRule(Math.max(this.startOfToday(), this.period ? this.period.start : 0), this.timezone);
+        if (this.period) {
+            // The last day is the start of that day: the day before the end of the period at the latest.
+            rule.validuntil = Math.min(rule.validuntil, fromDateValue(toDateValue(this.period.end - 1)));
+        }
+        this.openRule(rule, null, {
             apply: (rule) => this.pending.createSeries(rule),
             remove: null,
         });
@@ -118,6 +126,7 @@ export default class SeriesEditor {
             timezone: this.timezone,
             minFrom: this.startOfToday(),
             originalFrom,
+            period: this.period,
             onApply: (entered) => this.done(() => actions.apply(entered)),
             onDelete: actions.remove ? () => this.done(actions.remove) : null,
         });

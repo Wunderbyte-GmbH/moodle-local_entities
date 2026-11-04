@@ -47,3 +47,15 @@ export const save = (entityid, changes) => Ajax.call([{
     methodname: 'local_entities_save_unavailability',
     args: {entityid, changes},
 }])[0];
+
+/**
+ * Saves the highest number of slots per day.
+ *
+ * @param {number} entityid
+ * @param {number} limit 0 for no limit
+ * @returns {Promise} resolves to {limit}, the stored limit, 0 for no limit
+ */
+export const saveDailyLimit = (entityid, limit) => Ajax.call([{
+    methodname: 'local_entities_save_daily_limit',
+    args: {entityid, limit},
+}])[0];

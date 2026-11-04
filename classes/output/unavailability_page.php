@@ -19,6 +19,8 @@ namespace local_entities\output;
 use local_entities\entities;
 use local_entities\unavailability\manageable_entities;
 use local_entities\unavailability_access;
+use local_entities\planning_period;
+use local_entities\daily_limit;
 
 /**
  * Builds the context for the page on which the unavailability of an entity is managed.
@@ -60,6 +62,26 @@ class unavailability_page {
             'heading' => get_string('unavailabilityof', 'local_entities', entities::get_display_name($entity)),
             'readonly' => !unavailability_access::can_manage_entity($entity),
             'entityselect' => null,
+        ];
+
+        // Persons only see the days of the planning period. Planners and admins are not limited.
+        $period = planning_period::for_user();
+        $data['planningperiod'] = $period === null ? null : [
+            'start' => $period->starttime,
+            'end' => $period->endtime,
+            'text' => get_string('unavailability_planningperiod', 'local_entities', planning_period::describe($period)),
+        ];
+
+        // The highest number of slots per day. It can be changed also when the type is locked. An empty field uses
+        // the default, which is shown as placeholder.
+        $default = daily_limit::get_default();
+        $data['dailylimit'] = [
+            'value' => daily_limit::get_own([$this->entityid])[$this->entityid] ?? null,
+            'placeholder' => $default === null
+                ? get_string('dailylimit_none', 'local_entities')
+                : get_string('dailylimit_default_placeholder', 'local_entities', $default),
+            'canchange' => daily_limit::can_change($entity),
+            'max' => daily_limit::MAX,
         ];
 
         // A selection only makes sense if there is something to choose.

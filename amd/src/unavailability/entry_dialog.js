@@ -104,11 +104,12 @@ const buildBody = (labels, entry, allDay, editable) => {
  * @param {Object} options.entry starttime and endtime (unix timestamps)
  * @param {boolean} options.editable false if the times cannot be changed, only deleted
  * @param {number} options.minStart earliest start that can be chosen (unix timestamp)
+ * @param {Object|null} options.period start and end of the planning period, null if there is no limit
  * @param {Function} options.onApply (starttime, endtime) the times were changed
  * @param {Function} options.onDelete the unavailability was deleted and the user confirmed it
  * @returns {Promise}
  */
-export const openEntryDialog = async({labels, entry, editable, minStart, onApply, onDelete}) => {
+export const openEntryDialog = async({labels, entry, editable, minStart, period = null, onApply, onDelete}) => {
     const modal = await ModalSaveCancel.create({
         title: labels.edit,
         body: buildBody(labels, entry, isWholeDays(entry.starttime, entry.endtime), editable),
@@ -145,6 +146,12 @@ export const openEntryDialog = async({labels, entry, editable, minStart, onApply
             || range.endtime <= range.starttime || range.starttime < minStart) {
             event.preventDefault();
             error.textContent = labels.invalidrange;
+            error.classList.remove('d-none');
+            return;
+        }
+        if (period && (range.starttime < period.start || range.endtime > period.end)) {
+            event.preventDefault();
+            error.textContent = labels.outsidePeriod;
             error.classList.remove('d-none');
             return;
         }

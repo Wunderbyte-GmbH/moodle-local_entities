@@ -69,4 +69,14 @@ t('the default rule is a valid starting point', () => {
     assert.deepEqual(formFromRule(rule).from, '2026-10-16');
     assert.deepEqual(formFromRule(rule).until, '2027-01-14');
 });
+t('series must lie within the planning period', () => {
+    const period = {start: local('2030-03-01T00:00'), end: local('2030-04-01T00:00')};
+    const rule = {weekdays: [1], allday: true, daystart: 0, dayend: 0,
+        validfrom: local('2030-03-04T00:00'), validuntil: local('2030-03-31T00:00'), timezone: 'x', reason: ''};
+    const today = local('2030-02-01T00:00');
+    assert.equal(checkRule(rule, today, null, period), null);
+    assert.equal(checkRule({...rule, validuntil: local('2030-04-01T00:00')}, today, null, period), 'outsideperiod');
+    assert.equal(checkRule({...rule, validfrom: local('2030-02-28T00:00')}, today, null, period), 'outsideperiod');
+    assert.equal(checkRule({...rule, validuntil: local('2030-04-01T00:00')}, today), null);
+});
 console.log(`${ok} tests passed (TZ=${process.env.TZ || 'default'})`);
