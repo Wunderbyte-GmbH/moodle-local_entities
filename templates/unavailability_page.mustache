@@ -41,6 +41,8 @@
     {
         "heading": "Unavailability of Room A",
         "readonly": false,
+        "dailylimit": {"value": 3, "placeholder": "Default: 2", "canchange": true, "max": 99},
+        "planningperiod": {"start": 1796079600, "end": 1798758000, "text": "Planning period: 01/12/2026 – 31/12/2026."},
         "entityselect": {
             "label": "Entity",
             "url": "https://example.org/local/entities/unavailability.php",
@@ -51,7 +53,9 @@
         }
     }
 }}
-<div class="local-entities-unavailability" data-region="unavailability-page" data-readonly="{{#readonly}}1{{/readonly}}{{^readonly}}0{{/readonly}}">
+<div class="local-entities-unavailability" data-region="unavailability-page"
+    data-readonly="{{#readonly}}1{{/readonly}}{{^readonly}}0{{/readonly}}"
+    {{#planningperiod}}data-period-start="{{start}}" data-period-end="{{end}}"{{/planningperiod}}>
     {{#entityselect}}
         <div class="mb-4" data-region="unavailability-entity-select">
             <label for="unavailability-entity" class="form-label">{{label}}</label>
@@ -68,6 +72,26 @@
             {{#str}}unavailability_locked, local_entities{{/str}}
         </div>
     {{/readonly}}
+    {{#planningperiod}}
+        <div class="alert alert-secondary" role="status" data-region="unavailability-planningperiod">{{text}}</div>
+    {{/planningperiod}}
+    {{#dailylimit}}
+        <form class="mb-3" data-region="unavailability-dailylimit" data-max="{{max}}" novalidate>
+            <label for="unavailability-dailylimit" class="form-label">{{#str}}dailylimit, local_entities{{/str}}</label>
+            <div class="d-flex flex-wrap align-items-center gap-2">
+                <div class="local-entities-dailylimit-field">
+                    <input type="number" id="unavailability-dailylimit" class="form-control" min="1" max="{{max}}" step="1"
+                        value="{{value}}" placeholder="{{placeholder}}"
+                        aria-describedby="unavailability-dailylimit-help"{{^canchange}} disabled{{/canchange}}>
+                </div>
+                {{#canchange}}
+                    <button type="submit" class="btn btn-outline-primary">{{#str}}dailylimit_save, local_entities{{/str}}</button>
+                {{/canchange}}
+                <span class="small" data-region="unavailability-dailylimit-status" aria-live="polite"></span>
+            </div>
+            <div id="unavailability-dailylimit-help" class="form-text">{{#str}}dailylimit_help, local_entities{{/str}}</div>
+        </form>
+    {{/dailylimit}}
     <p class="text-muted">{{#str}}unavailability_help, local_entities{{/str}}</p>
     {{^readonly}}
     <div class="d-flex flex-wrap align-items-center gap-2 mb-3" data-region="unavailability-toolbar">

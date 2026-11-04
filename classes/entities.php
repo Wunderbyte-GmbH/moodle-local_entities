@@ -675,8 +675,8 @@ class entities {
     }
 
     /**
-     * Occupations of an entity that the connected plugins know from assignments, for example a person who examines
-     * a slot of a booking.
+     * Occupations of an entity that other plugins know from assignments, for example a person who examines at a
+     * booked exam. The plugins tell them through the hook collect_occupations.
      *
      * Read live and never cached with the dates of the relations, so that a new assignment counts at once and the
      * cache does not have to be purged for it.
@@ -685,40 +685,9 @@ class entities {
      * @return array dates in the entitydate format
      */
     private static function get_assigned_dates(int $entityid): array {
-        $dates = [];
-        foreach (self::get_resource_provider_classes() as $providerclass) {
-            $dates = array_merge(
-                $dates,
-                component_class_callback($providerclass, 'return_array_of_resource_dates', [$entityid], [])
-            );
-        }
-
-        return $dates;
-    }
-
-    /**
-     * The service providers of the plugins that are installed, which may tell about assigned resources.
-     *
-     * Only the class is looked up here. A provider that does not know the method of the assignments is simply
-     * asked nothing.
-     *
-     * @return string[] class names
-     */
-    private static function get_resource_provider_classes(): array {
-        static $classes = null;
-
-        if ($classes === null) {
-            $classes = [];
-            foreach (['mod', 'local'] as $plugintype) {
-                foreach (\core_component::get_plugin_list_with_class($plugintype, 'entities\\service_provider') as $class) {
-                    if (method_exists($class, 'return_array_of_resource_dates')) {
-                        $classes[] = $class;
-                    }
-                }
-            }
-        }
-
-        return $classes;
+        $hook = new \local_entities\hook\collect_occupations($entityid);
+        \core\di::get(\core\hook\manager::class)->dispatch($hook);
+        return $hook->get_dates();
     }
 
     /** @var array<int, string> Per-request cache of entity allocation modes, keyed by entityid. */

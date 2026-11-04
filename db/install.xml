@@ -23,6 +23,7 @@
                 <FIELD NAME="entitytype" TYPE="char" LENGTH="20" NOTNULL="false" DEFAULT="location" SEQUENCE="false" COMMENT="Kind of entity: 'location' (rooms/places, used in the location hierarchy and room pickers) or 'equipment' (bookable resources hung under a location via parentid)."/>
                 <FIELD NAME="availableinsublocations" TYPE="int" LENGTH="1" NOTNULL="false" DEFAULT="1" SEQUENCE="false" COMMENT="Equipment only: whether sub-locations (descendants of the equipment's home location) may also use this item."/>
                 <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Person only: the Moodle user this entity represents (entitytype 'person'). Null for locations and equipment."/>
+                <FIELD NAME="maxslotsperday" TYPE="int" LENGTH="4" NOTNULL="false" SEQUENCE="false" COMMENT="Highest number of planned slots per day this entity takes on. Null for no limit."/>
             </FIELDS>
             <KEYS>
                 <KEY NAME="primary" TYPE="primary" FIELDS="id" />

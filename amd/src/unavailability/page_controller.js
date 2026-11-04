@@ -29,7 +29,7 @@ import MessageArea from 'local_entities/unavailability/message_area';
 import PendingChanges from 'local_entities/unavailability/pending_changes';
 import SeriesEditor from 'local_entities/unavailability/series_editor';
 import {buildEvents} from 'local_entities/unavailability/event_builder';
-import {clipFrom} from 'local_entities/unavailability/range_math';
+import {clipFrom, clipToPeriod} from 'local_entities/unavailability/range_math';
 import {openEntryDialog} from 'local_entities/unavailability/entry_dialog';
 
 const DAY = 86400;
@@ -42,7 +42,7 @@ export class PageController {
      * Constructor.
      *
      * @param {HTMLElement} root the element of the page
-     * @param {Object} config entityid, locale, firstDay, hour12, readonly
+     * @param {Object} config entityid, locale, firstDay, hour12, readonly, period (start and end, or null)
      * @param {Object} labels texts: today, day, week, month, allday, absent, notsaved, saved, conflicts
      */
     constructor(root, config, labels) {
@@ -51,6 +51,8 @@ export class PageController {
         this.labels = labels;
         // A locked page only shows the calendar. There is nothing to save, so there are no buttons either.
         this.readonly = Boolean(config.readonly);
+        // Persons only change the days of the planning period. Null if there is no limit.
+        this.period = config.period || null;
         this.pending = new PendingChanges();
         this.loaded = null;
         this.busy = false;
@@ -68,6 +70,7 @@ export class PageController {
             startOfToday: () => this.startOfToday(),
             findSeries: (id) => this.findSeries(id),
             onChange: () => this.afterChange(),
+            period: this.period,
         });
         this.view = new CalendarView(root.querySelector('[data-region="unavailability-calendar"]'), {
             provider: (from, until) => this.provideEvents(from, until),
@@ -79,6 +82,7 @@ export class PageController {
             firstDay: config.firstDay,
             hour12: config.hour12,
             readonly: this.readonly,
+            period: this.period,
         });
     }
 
@@ -164,7 +168,8 @@ export class PageController {
      */
     addRange(start, end, replaced = null) {
         const today = this.startOfToday();
-        const range = clipFrom({starttime: start, endtime: end}, today);
+        const clipped = clipFrom({starttime: start, endtime: end}, today);
+        const range = clipped ? clipToPeriod(clipped, this.period) : null;
         if (range) {
             const entries = this.takenRanges()
                 .filter((other) => !(replaced && other.kind === replaced.kind && other.id === replaced.id));
@@ -237,6 +242,7 @@ export class PageController {
                 entry: props,
                 editable: true,
                 minStart: today,
+                period: this.period,
                 onApply: (start, end) => this.changeBlock(props, start, end),
                 onDelete: () => {
                     this.pending.removeBlock(props.id);

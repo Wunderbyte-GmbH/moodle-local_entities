@@ -34,6 +34,22 @@ export const clipFrom = (range, from) => {
 };
 
 /**
+ * The part of a range that lies within a period.
+ *
+ * @param {Object} range starttime and endtime (unix timestamps)
+ * @param {Object|null} period start and end (unix timestamps), null if there is no limit
+ * @returns {Object|null} the remaining range, null if nothing remains
+ */
+export const clipToPeriod = (range, period) => {
+    if (!period) {
+        return range;
+    }
+    const starttime = Math.max(range.starttime, period.start);
+    const endtime = Math.min(range.endtime, period.end);
+    return endtime > starttime ? {starttime, endtime} : null;
+};
+
+/**
  * The parts of a range that are not covered by other ranges.
  *
  * @param {Object} range starttime and endtime (unix timestamps)

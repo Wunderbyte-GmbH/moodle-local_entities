@@ -100,12 +100,13 @@ const buildBody = (labels, locale, form, deletable) => `
  * @param {string} options.timezone timezone the rule is saved with
  * @param {number} options.minFrom earliest first day that can be chosen (unix timestamp)
  * @param {number|null} options.originalFrom first day of the series before, it may stay as it is
+ * @param {Object|null} options.period start and end of the planning period, null if there is no limit
  * @param {Function} options.onApply (rule) the rule was entered
  * @param {Function|null} options.onDelete the series was deleted and the user confirmed it, or null
  *                                         if the series cannot be deleted here
  * @returns {Promise}
  */
-export const openSeriesDialog = async({labels, locale, rule, timezone, minFrom, originalFrom, onApply, onDelete}) => {
+export const openSeriesDialog = async({labels, locale, rule, timezone, minFrom, originalFrom, period, onApply, onDelete}) => {
     const modal = await ModalSaveCancel.create({
         title: labels.series,
         body: buildBody(labels, locale, formFromRule(rule), onDelete !== null),
@@ -121,6 +122,7 @@ export const openSeriesDialog = async({labels, locale, rule, timezone, minFrom, 
         noweekday: labels.seriesNoWeekday,
         badtime: labels.seriesBadTime,
         badperiod: labels.seriesBadPeriod,
+        outsideperiod: labels.outsidePeriod,
     };
 
     field('allday').addEventListener('change', () => {
@@ -137,7 +139,7 @@ export const openSeriesDialog = async({labels, locale, rule, timezone, minFrom, 
             from: field('from').value,
             until: field('until').value,
         }, timezone);
-        const problem = checkRule(entered, minFrom, originalFrom);
+        const problem = checkRule(entered, minFrom, originalFrom, period);
         if (problem !== null) {
             event.preventDefault();
             error.textContent = messages[problem];

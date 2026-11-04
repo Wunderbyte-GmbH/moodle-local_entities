@@ -103,6 +103,13 @@ $functions = [
                 'type' => 'write',
                 'ajax' => true,
         ],
+        'local_entities_save_daily_limit' => [
+                'classname' => 'local_entities\external\save_daily_limit',
+                'classpath' => '',
+                'description' => 'Saves the highest number of planned slots per day of an entity',
+                'type' => 'write',
+                'ajax' => true,
+        ],
         'local_entities_delete_pool' => [
                 'classname' => 'local_entities\external\delete_pool',
                 'classpath' => '',

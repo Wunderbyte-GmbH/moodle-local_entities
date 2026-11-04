@@ -489,5 +489,17 @@ function xmldb_local_entities_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2026102002, 'local', 'entities');
     }
 
+    if ($oldversion < 2026102800) {
+        // Each entity can limit the number of planned slots per day. Empty means no limit.
+        $table = new xmldb_table('local_entities');
+        $field = new xmldb_field('maxslotsperday', XMLDB_TYPE_INTEGER, '4', null, null, null, null, 'userid');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Entities savepoint reached.
+        upgrade_plugin_savepoint(true, 2026102800, 'local', 'entities');
+    }
+
     return true;
 }

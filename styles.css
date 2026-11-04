@@ -195,3 +195,9 @@
     background: repeating-linear-gradient(45deg, #ffc07880, #ffc07880 6px, #ffe3bf80 6px, #ffe3bf80 12px);
     opacity: 1;
 }
+/* The field for the slots per day is wide enough to show its placeholder, for example "Default: 2". The width
+   sits on a box around the field, as some themes force every form field to the full width. */
+.local-entities-dailylimit-field {
+    flex: 0 0 12rem;
+    width: 12rem;
+}
