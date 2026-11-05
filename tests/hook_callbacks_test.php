@@ -36,7 +36,8 @@ final class hook_callbacks_test extends \advanced_testcase {
     private function menu_items(): array {
         $hook = new extend_user_menu();
         hook_callbacks::extend_user_menu($hook);
-        return $hook->get_navitems();
+        // Moodle 5.3 (MDL-88938) deprecated get_navitems() in favour of get_menu_items().
+        return method_exists($hook, 'get_menu_items') ? $hook->get_menu_items() : $hook->get_navitems();
     }
 
     /**
@@ -54,10 +55,29 @@ final class hook_callbacks_test extends \advanced_testcase {
         $items = $this->menu_items();
 
         $this->assertCount(1, $items);
-        $this->assertSame('link', $items[0]->itemtype);
-        $this->assertSame(get_string('unavailability', 'local_entities'), $items[0]->title);
-        $this->assertSame('/local/entities/unavailability.php', $items[0]->url->out_as_local_url(false));
-        $this->assertNotEmpty($items[0]->titleidentifier);
+        $item = $items[0];
+        $title = get_string('unavailability', 'local_entities');
+        $url = new \moodle_url('/local/entities/unavailability.php');
+
+        if ($item instanceof \stdClass) {
+            // Moodle 4.5 to 5.2: a plain object that the renderer turns into a link.
+            $this->assertSame('link', $item->itemtype);
+            $this->assertSame($title, $item->title);
+            $this->assertSame($url->out(false), $item->url->out(false));
+            $this->assertNotEmpty($item->titleidentifier);
+            $this->assertSame('i/calendar', $item->pix);
+            return;
+        }
+
+        // Moodle 5.3 and later: a link object. A call of the deprecated add_navitem() would
+        // leave a debugging message behind, which makes this test fail.
+        global $PAGE;
+        $this->assertInstanceOf(\core_user\output\user_action_menu\link::class, $item);
+        $data = $item->export_for_template($PAGE->get_renderer('core'));
+        $this->assertSame($title, $data['title']);
+        $this->assertSame($url->out(false), $data['url']);
+        $this->assertSame('i/calendar', $data['pixicon']['key']);
+        $this->assertDebuggingNotCalled();
     }
 
     /**

@@ -39,10 +39,27 @@ class hook_callbacks {
             return;
         }
 
+        $url = new \moodle_url('/local/entities/unavailability.php');
+        $title = get_string('unavailability', 'local_entities');
+
+        // Since Moodle 5.3 (MDL-88938) the items of the user menu are objects of their own classes, and
+        // add_navitem() with a plain object is deprecated: it shows a debugging notice on every page.
+        // We ask the hook what it offers instead of comparing version numbers.
+        if (method_exists($hook, 'add_menu_item')) {
+            $hook->add_menu_item(new \core_user\output\user_action_menu\link(
+                $url,
+                $title,
+                null,
+                new \pix_icon('i/calendar', '')
+            ));
+            return;
+        }
+
+        // Moodle 4.5 to 5.2.
         $item = new \stdClass();
         $item->itemtype = 'link';
-        $item->url = new \moodle_url('/local/entities/unavailability.php');
-        $item->title = get_string('unavailability', 'local_entities');
+        $item->url = $url;
+        $item->title = $title;
         $item->titleidentifier = 'unavailability,local_entities';
         $item->pix = 'i/calendar';
         $hook->add_navitem($item);
