@@ -1,3 +1,4 @@
+* Improvement: Added support for Moodle 5.3: the supported range in version.php is now 4.5 to 5.3, and the automated tests (PHPUnit, Behat, code checks) also run against Moodle 5.3.
 * Bugfix: Moodle 5.3: every page showed the debugging notice "core_user\hook\extend_user_menu::add_navitem has been deprecated since 5.3" for users who see the "Unavailability" link in the user menu (persons and managers of unavailability, with developer debugging on), which also made Behat tests fail on those pages, and the calendar icon of the link was missing. Moodle 5.3 replaced the plain objects of the user menu with menu item classes (MDL-88938); the link is now added through the new add_menu_item() where the hook offers it, and as before on Moodle 4.5 to 5.2.
 
 ## Version 0.5.6 (2026110401)
