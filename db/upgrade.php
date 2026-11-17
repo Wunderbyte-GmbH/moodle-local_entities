@@ -482,5 +482,26 @@ function xmldb_local_entities_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2026110401, 'local', 'entities');
     }
 
+    if ($oldversion < 2026111100) {
+        // A person confirms to be available the whole planning period, so having no unavailability is no oversight.
+        $table = new xmldb_table('local_entities_alwaysfree');
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('entityid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('periodstart', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('periodend', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('usermodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+        $table->add_key('entityid', XMLDB_KEY_FOREIGN, ['entityid'], 'local_entities', ['id']);
+        $table->add_key('usermodified', XMLDB_KEY_FOREIGN, ['usermodified'], 'user', ['id']);
+        $table->add_index('entity_period', XMLDB_INDEX_UNIQUE, ['entityid', 'periodstart', 'periodend']);
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        // Entities savepoint reached.
+        upgrade_plugin_savepoint(true, 2026111100, 'local', 'entities');
+    }
+
     return true;
 }

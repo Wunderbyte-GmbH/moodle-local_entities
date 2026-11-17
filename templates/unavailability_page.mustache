@@ -41,6 +41,7 @@
     {
         "heading": "Unavailability of Room A",
         "readonly": false,
+        "alwaysfree": {"checked": false, "canchange": true, "text": "Tick this if you have no absences in the planning period."},
         "dailylimit": {"value": 3, "placeholder": "Default: 2", "canchange": true, "max": 99},
         "planningperiod": {"start": 1796079600, "end": 1798758000, "text": "Planning period: 01/12/2026 – 31/12/2026."},
         "entityselect": {
@@ -75,6 +76,15 @@
     {{#planningperiod}}
         <div class="alert alert-secondary" role="status" data-region="unavailability-planningperiod">{{text}}</div>
     {{/planningperiod}}
+    {{#alwaysfree}}
+        <div class="form-check mb-3" data-region="unavailability-alwaysfree">
+            <input class="form-check-input" type="checkbox" id="unavailability-alwaysfree"
+                aria-describedby="unavailability-alwaysfree-help"{{#checked}} checked{{/checked}}{{^canchange}} disabled{{/canchange}}>
+            <label class="form-check-label" for="unavailability-alwaysfree">{{#str}}alwaysfree, local_entities{{/str}}</label>
+            <span class="small ms-2" data-region="unavailability-alwaysfree-status" aria-live="polite"></span>
+            <div id="unavailability-alwaysfree-help" class="form-text">{{text}}</div>
+        </div>
+    {{/alwaysfree}}
     {{#dailylimit}}
         <form class="mb-3" data-region="unavailability-dailylimit" data-max="{{max}}" novalidate>
             <label for="unavailability-dailylimit" class="form-label">{{#str}}dailylimit, local_entities{{/str}}</label>

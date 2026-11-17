@@ -23,13 +23,26 @@ Alternatively, you can run
 
 to complete the installation from the command line.
 
-After every kind of installation, you need to manually create a webservice token for your admin user. To do this, go here:
+## Webservice token ##
 
-    {your/moodle/dirroot}/admin/webservice/tokens.php
+For normal use of the plugin, no webservice token is needed. The plugin's own pages
+call its functions via AJAX with the normal login session.
 
-Make sure you have the webservices enabled on your system, otherwise this won't work.
+A token is only needed if an external system should access the service
+"Wunderbyte entities external" (shortname `local_entities_external`). In this case:
 
-    {your/moodle/dirroot}/admin/settings.php?section=optionalsubsystems
+1. Enable webservices:
+
+       {your/moodle/dirroot}/admin/settings.php?section=optionalsubsystems
+
+2. Enable a protocol, e.g. REST:
+
+       {your/moodle/dirroot}/admin/settings.php?section=webserviceprotocols
+
+3. Create a token for the service "Wunderbyte entities external". If possible, restrict
+   it to the IP address of the external system and give it an expiry date:
+
+       {your/moodle/dirroot}/admin/webservice/tokens.php
 
 
 ## License ##

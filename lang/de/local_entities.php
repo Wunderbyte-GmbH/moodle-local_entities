@@ -53,6 +53,11 @@ Kapazität: Überlappende Buchungen sind erlaubt, solange die Summe der Teilnehm
 
 Keine (Standard): Überschneidungen auf dieser Entity werden gar nicht geprüft.';
 $string['allocationmode_none'] = 'Keine Überschneidungsprüfung';
+$string['alwaysfree'] = 'Ich habe im gesamten Planungszeitraum Zeit';
+$string['alwaysfree_desc'] = 'Ankreuzen, wenn Sie im Planungszeitraum ({$a}) keine Abwesenheiten haben. Dann wissen die Planer, dass der leere Kalender gewollt ist.';
+$string['alwaysfree_noperiod'] = 'Es gibt keinen Planungszeitraum, daher gibt es nichts zu bestätigen.';
+$string['alwaysfree_removed'] = 'Die Bestätigung ist zurückgenommen.';
+$string['alwaysfree_saved'] = 'Bestätigt: im gesamten Planungszeitraum verfügbar.';
 $string['availableinsublocations'] = 'In Unterorten verfügbar';
 $string['availableinsublocations_help'] = 'Nur für Equipment. Wenn aktiviert, wird dieser Gegenstand auch für Buchungen von Unterorten (Nachfahren seines Heimat-Orts) angeboten, nicht nur am Heimat-Ort selbst.';
 $string['backtolist'] = 'Zurück zum Entity-Manager';
@@ -207,6 +212,12 @@ $string['privacy:metadata'] = 'Der Entity Manager speichert, welche Moodle-Benut
 $string['privacy:metadata:local_entities'] = 'Entities. Eine Person ist eine Entity, die für eine:n Moodle-Benutzer:in steht.';
 $string['privacy:metadata:local_entities:createdby'] = 'Der Benutzer, der die Entity angelegt hat.';
 $string['privacy:metadata:local_entities:userid'] = 'Der Moodle-Benutzer, für den eine Person-Entity steht.';
+$string['privacy:metadata:local_entities_alwaysfree'] = 'Die Bestätigung einer Person, im gesamten Planungszeitraum verfügbar zu sein.';
+$string['privacy:metadata:local_entities_alwaysfree:entityid'] = 'Die Person, die verfügbar ist.';
+$string['privacy:metadata:local_entities_alwaysfree:periodend'] = 'Das Ende des Planungszeitraums.';
+$string['privacy:metadata:local_entities_alwaysfree:periodstart'] = 'Der Beginn des Planungszeitraums.';
+$string['privacy:metadata:local_entities_alwaysfree:timecreated'] = 'Wann bestätigt wurde.';
+$string['privacy:metadata:local_entities_alwaysfree:usermodified'] = 'Wer bestätigt hat.';
 $string['privacy:metadata:local_entities_contacts'] = 'Kontakte einer Entity, zum Beispiel die Ansprechperson eines Raums. Sie sind nicht mit Moodle-Benutzer:innen verknüpft.';
 $string['privacy:metadata:local_entities_contacts:givenname'] = 'Der Vorname des Kontakts.';
 $string['privacy:metadata:local_entities_contacts:mail'] = 'Die E-Mail-Adresse des Kontakts.';

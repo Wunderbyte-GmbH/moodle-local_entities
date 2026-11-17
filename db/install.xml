@@ -166,5 +166,23 @@
                 <INDEX NAME="pool_entity" UNIQUE="true" FIELDS="poolid, entityid"/>
             </INDEXES>
         </TABLE>
+                <TABLE NAME="local_entities_alwaysfree" COMMENT="A person confirms to be available the whole planning period, so having no unavailability is no oversight">
+            <FIELDS>
+                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+                <FIELD NAME="entityid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+                <FIELD NAME="periodstart" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Start of the planning period the confirmation is for (unix timestamp)"/>
+                <FIELD NAME="periodend" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="End of the planning period the confirmation is for (unix timestamp)"/>
+                <FIELD NAME="usermodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Who confirmed"/>
+                <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+                <KEY NAME="entityid" TYPE="foreign" FIELDS="entityid" REFTABLE="local_entities" REFFIELDS="id"/>
+                <KEY NAME="usermodified" TYPE="foreign" FIELDS="usermodified" REFTABLE="user" REFFIELDS="id"/>
+            </KEYS>
+            <INDEXES>
+                <INDEX NAME="entity_period" UNIQUE="true" FIELDS="entityid, periodstart, periodend"/>
+            </INDEXES>
+        </TABLE>
     </TABLES>
   </XMLDB>

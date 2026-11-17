@@ -23,6 +23,7 @@
 
 import {get_strings as getStrings} from 'core/str';
 import {init as entitySelect} from 'local_entities/unavailability/entity_select';
+import {init as alwaysFree} from 'local_entities/unavailability/always_free';
 import {init as dailyLimit} from 'local_entities/unavailability/daily_limit';
 
 // Texts of the page: name used in the code => string of Moodle core.
@@ -125,5 +126,6 @@ export const init = async(entityid, locale, firstDay, timeFormat) => {
         labels
     );
     controller.start();
+    alwaysFree(root, parseInt(entityid, 10));
     dailyLimit(root, parseInt(entityid, 10));
 };

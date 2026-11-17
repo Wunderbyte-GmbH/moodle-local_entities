@@ -59,3 +59,15 @@ export const saveDailyLimit = (entityid, limit) => Ajax.call([{
     methodname: 'local_entities_save_daily_limit',
     args: {entityid, limit},
 }])[0];
+
+/**
+ * Gives or takes back the confirmation to be available the whole planning period.
+ *
+ * @param {number} entityid
+ * @param {boolean} confirmed
+ * @returns {Promise} resolves to {confirmed}, the stored state
+ */
+export const saveAlwaysFree = (entityid, confirmed) => Ajax.call([{
+    methodname: 'local_entities_save_always_free',
+    args: {entityid, confirmed},
+}])[0];

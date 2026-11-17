@@ -110,6 +110,13 @@ $functions = [
                 'type' => 'write',
                 'ajax' => true,
         ],
+        'local_entities_save_always_free' => [
+                'classname' => 'local_entities\external\save_always_free',
+                'classpath' => '',
+                'description' => 'Gives or takes back the confirmation of a person to be available the whole planning period',
+                'type' => 'write',
+                'ajax' => true,
+        ],
         'local_entities_delete_pool' => [
                 'classname' => 'local_entities\external\delete_pool',
                 'classpath' => '',

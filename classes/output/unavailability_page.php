@@ -21,6 +21,8 @@ use local_entities\unavailability\manageable_entities;
 use local_entities\unavailability_access;
 use local_entities\planning_period;
 use local_entities\daily_limit;
+use local_entities\always_free;
+use local_entities\persons;
 
 /**
  * Builds the context for the page on which the unavailability of an entity is managed.
@@ -82,6 +84,15 @@ class unavailability_page {
                 : get_string('dailylimit_default_placeholder', 'local_entities', $default),
             'canchange' => daily_limit::can_change($entity),
             'max' => daily_limit::MAX,
+        ];
+
+        // A person confirms to be available the whole planning period, so an empty calendar is no oversight. It is
+        // the period of the site, also for planners, who see the confirmation of the person.
+        $siteperiod = planning_period::get();
+        $data['alwaysfree'] = $siteperiod === null || ($entity->entitytype ?? '') !== persons::TYPE ? null : [
+            'checked' => always_free::is_confirmed($this->entityid),
+            'canchange' => unavailability_access::can_view_entity($entity),
+            'text' => get_string('alwaysfree_desc', 'local_entities', planning_period::describe($siteperiod)),
         ];
 
         // A selection only makes sense if there is something to choose.

@@ -105,7 +105,8 @@ class pool_service {
     public function set_pools_of_entity(int $entityid, array $poolids, int $usermodified): void {
         global $DB;
 
-        $wanted = array_values(array_unique(array_map('intval', $poolids)));
+        // An empty selection may still send a placeholder, which becomes 0: no pool has that id.
+        $wanted = array_values(array_unique(array_filter(array_map('intval', $poolids), static fn(int $id): bool => $id > 0)));
         $current = $this->repository->find_poolids_of_entity($entityid);
 
         $transaction = $DB->start_delegated_transaction();

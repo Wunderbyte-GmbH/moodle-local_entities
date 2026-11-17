@@ -58,6 +58,22 @@ Prüfer ist immer der Trainer der Option. Die Studierenden buchen in diesen Opti
 | IQ34 (P14) | Bei einem Storno bleiben die Zeilen in `_staff` mit Zeitpunkt des Stornos (`timecancelled`) erhalten, damit eine Regel auf „Buchung storniert“ den Protokollanten findet. Kalender, Verfügbarkeit und Optionsseite ignorieren stornierte Zeilen. Das gilt auch für ein einzelnes Storno in Booking. |
 | IQ35 | Mails nach dem Buchen über zwei Booking-Regeln auf „Buchungsoption gebucht“: an den Protokollanten (Bedingung „Protokollant der Prüfung“) und an den Prüfling (Bedingung „Nutzer aus dem Ereignis“, betroffener Nutzer). Keine Verzögerung nötig; später ggf. „4 Stunden vor Optionsstart“. |
 | IQ36 | Der Protokollant wird beim Buchen als Trainer/in ohne Bearbeitungsrecht in den Kurs der Option eingeschrieben, damit er die Online-Prüfung begleiten kann. Beim Storno wird er wieder ausgeschrieben, wenn die Extension ihn eingeschrieben hat und er dort keine andere gebuchte Prüfung mehr hat. |
+| IQ37 (2026-11-11) | Die Prüfungsplanung ist an Capabilities gebunden. `bookingextension/examplanning:plan` (Modul-Kontext, Standard: Manager und Trainer/in) erlaubt die Planungsseite einer Prüfung. Trainer der Option zu sein reicht allein nicht mehr. `bookingextension/examplanning:planall` (System, Standard: Manager) erlaubt die neue Admin-Seite. |
+| IQ38 (2026-11-11) | Neue Admin-Seite mit drei Buttons auf einem gemeinsamen Ablauf: **Try** prüft nur und gibt einen Report aus, **Verteilen** speichert die vorläufige Verteilung, **Buchen** bucht. Jeder Button prüft vorher vollständig. |
+| IQ39 (2026-11-11) | Alles oder nichts über **alle** Prüfungen eines Laufs. Ist ein Teilnehmer irgendwo nicht planbar oder buchbar, wird nichts gespeichert und nichts gebucht. Bei einem Fehler wird der ganze Lauf zurückgerollt. Die Prüfungen werden nacheinander in **einem** gemeinsamen Kalender verteilt, damit ein Protokollant oder Prüfer nicht in zwei Prüfungen zur selben Zeit landet. |
+| IQ40 (2026-11-11) | „Buchen“ bucht die gespeicherte vorläufige Verteilung des letzten „Verteilen“, auch wenn sie pro Prüfung noch geändert wurde. Sie wird vorher gegen den aktuellen Stand geprüft. Gibt es keine vorläufige Verteilung, meldet der Report einen Fehler. |
+| IQ41 (2026-11-11) | Die drei Buttons starten einen Ad-hoc-Task. Die Seite zeigt „läuft…“ und lädt nach. Der Report wird gespeichert, der letzte Lauf bleibt nachlesbar. |
+| IQ42 (2026-11-11) | Der Lauf umfasst alle Prüfungen mit trainergesteuerter Planung (`_option.enabled = 1`), die noch ungebuchte Teilnehmer haben. Gebuchte Teilnehmer behalten ihren Termin und stehen im Report als „bereits gebucht“. Die bisherige Planung pro Prüfung bleibt erhalten. |
+| IQ43 (2026-11-11) | Liste „Protokollanten ohne gepflegten Kalender“. Darauf steht ein Protokollant, wenn **alle** Bedingungen gelten: Es gibt einen Planungszeitraum. Er ist in einer trainergesteuerten Prüfung einem Teilnehmer **zugewiesen** (`_assign`), der dort noch nicht gebucht ist. Er hat im Zeitraum keine Abwesenheit eingetragen. Er hat nicht bestätigt, dass er immer Zeit hat. |
+| IQ44 (2026-11-11) | Die Bestätigung „Ich habe im Planungszeitraum immer Zeit“ ist eine Checkbox über dem Abwesenheitskalender (Entities). Sie gilt nur für den Planungszeitraum, in dem sie gesetzt wurde. Bei einem neuen Zeitraum ist sie wieder leer. |
+| IQ45 (2026-11-11) | Die Liste erscheint als eigener Abschnitt auf der Admin-Seite „Alle Prüfungen verteilen und buchen“, mit Name, Prüfungen und Link zum Kalender. |
+| IQ46 (2026-11-11) | Die Liste ist nur ein Hinweis. Sie blockiert Verteilen und Buchen nicht. |
+| IQ47 (2026-11-11) | Nach dem globalen „Verteilen“ passt der Trainer den vorläufigen Plan seiner Prüfung nur über „Ändern“ an (Verschieben, Tauschen, Protokollant). Angeboten wird nur, was frei ist. Dabei zählen auch die vorläufigen Pläne der **anderen** Prüfungen derselben Verteilung als belegt. |
+| IQ48 (2026-11-11) | Solange eine Prüfung zu einer globalen Verteilung gehört und nicht gebucht ist, sind auf ihrer Planungsseite „Verteilen“, „Shuffle“ und „Bestätigen“ ausgeblendet und gesperrt. Ein Hinweis verweist auf die Admin-Seite. |
+| IQ49 (2026-11-11) | „Buchen“ auf der Admin-Seite bucht die Verteilung **so, wie sie ist** (mit den Änderungen der Trainer). Sie wird nur geprüft, nie neu gerechnet. Die Prüfung vorab sieht die vorläufigen Pläne der anderen Prüfungen und meldet alle Konflikte, bevor etwas gebucht wird. |
+| IQ50 (2026-11-11) | Auf der Admin-Seite gibt es neben „Verteilen“ die Checkbox „Protokollanten in die Kurse einschreiben“. Ist sie angehakt, werden nach erfolgreichem Verteilen alle Protokollanten der vorläufigen Pläne in den Kurs ihrer Prüfung eingeschrieben, wie beim Buchen als Trainer/in ohne Bearbeitungsrecht. |
+| IQ51 (2026-11-11) | Der Protokollant sieht seine Termine auf `assign.php`, nur lesend: eine Tabelle seiner Slots (Zeit, Teilnehmer, Prüfer, vorläufig/gebucht), ohne Formular und ohne Buttons. Auf der Optionsseite gibt es dafür den Link „Meine Protokolle“. |
+| IQ52 (2026-11-11) | Die Einschreibung zieht mit: Wer durch eine Änderung neu Protokollant wird, wird eingeschrieben. Wer im Kurs keine vorläufige oder gebuchte Prüfung mehr hat, wird ausgeschrieben, aber nur, wenn die Extension ihn eingeschrieben hat. |
 | IQ17 | Booking-Branch `iqsh-2602` = `origin/MOODLE_405_DEV` + P3-Haken, Version `2026102800` (über der Datenbank-Version von `sofa-2656`). |
 
 ## 3. Wer macht was
@@ -245,7 +261,15 @@ Der Core bekommt nur den Haken aus P3. Alles andere nutzt vorhandene Andockstell
 | P12 | Shuffle | Extension | ja | abgenommen 2026-11-03 |
 | P13 | Bestätigen: neu prüfen, sperren, buchen, Rücknahme bei Abbruch, Nachrichten; Prüfling sieht danach Termin und Protokollant auf der Optionsseite (IQ18) | Extension | ja | abgenommen 2026-11-03 |
 | P14 | Plan zurücknehmen (Storno über Lauf, Nachricht an Protokollanten) | Extension | ja | abgenommen 2026-11-04 |
-| P15 | Gesamttest, Doku, Testdaten | beide | ja | **nächster Schritt** |
+| P15 | Gesamttest, Doku, Testdaten | beide | ja | zurückgestellt bis nach P19 |
+| P16 | Capabilities `:plan` und `:planall` (IQ37), `planning_access` darauf umstellen | Extension | ja | fertig 2026-11-11 |
+| P17 | Gemeinsamer Ablauf über alle Prüfungen (IQ38, IQ39, IQ42): Prüfungen sammeln, gemeinsamer Kalender, Report (Try); `plan_runner::distribute` gemeinsam mit der Seite pro Prüfung; Tests | Extension | nein | fertig 2026-11-11 |
+| P18 | Tabelle für Läufe und Report, Ad-hoc-Task, Plan gehört zu einem Lauf (`batchid`), Modi Verteilen und Buchen (IQ40, IQ41) | Extension | nein | fertig 2026-11-11 |
+| P19 | Admin-Seite mit drei Buttons und kompaktem Report; Privacy für `_batch` | Extension | ja | sichtbar, Privacy offen |
+| P20 | Bestätigung „immer Zeit“ pro Planungszeitraum: Tabelle, Klasse, Webservice, Checkbox im Abwesenheitskalender (IQ44) | Entities | ja | sichtbar 2026-11-11 |
+| P21 | Liste „Protokollanten ohne gepflegten Kalender“ auf der Admin-Seite (IQ43, IQ45, IQ46) | Extension | ja | sichtbar 2026-11-11 |
+| P22 | Vorläufige Pläne derselben Verteilung zählen beim Ändern und Prüfen als belegt; Planungsseite einer Prüfung in globaler Verteilung: nur Ändern (IQ47–IQ49) | Extension | ja | **nächster Schritt** |
+| P23 | Protokollanten beim Verteilen einschreiben (Schalter), Einschreibung zieht mit, Leseansicht „Meine Protokolle“ auf `assign.php` (IQ50–IQ52) | Extension | ja | offen |
 
 Jeder Schritt läuft wie bisher: besprechen, einigen, umsetzen, prüfen (Lint, phpcs, PHPUnit), Sichtprüfung durch Georg.
 Neue Dateien der Extension schreibt Claude direkt; Änderungen am Booking-Core gibt Claude als Text, Georg baut sie ein.
