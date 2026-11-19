@@ -25,6 +25,7 @@
 
 namespace local_entities;
 
+use core_external\external_api;
 use local_entities_external;
 
 /**
@@ -86,7 +87,7 @@ final class external_test extends \advanced_testcase {
         $this->resetAfterTest(true);
         $this->setAdminUser();
         $resultraw = local_entities_external::update_entity($id, $data);
-        $result = \external_api::clean_returnvalue(local_entities_external::update_entity_returns(), $resultraw);
+        $result = external_api::clean_returnvalue(local_entities_external::update_entity_returns(), $resultraw);
         $this->assertEquals($expected, $result);
     }
 
